@@ -5,23 +5,39 @@ namespace YBoard\Abstracts;
 use Library\DbConnection;
 use Library\HttpResponse;
 use Library\TemplateEngine;
-use YBoard\Models;
 use YBoard;
+use YBoard\Model;
 
 abstract class ExtendedController extends YBoard\Controller
 {
     protected $i18n;
     protected $db;
+    protected $requiredData = [];
 
     public function __construct()
     {
         $this->loadConfig();
         $this->dbConnect();
+        $this->loadRequiredData();
     }
 
     protected function dbConnect()
     {
         $this->db = new DbConnection(require(ROOT_PATH . '/YBoard/Config/DbConnection.php'));
+    }
+
+    protected function loadRequiredData()
+    {
+        // Load some data and insert them into the application config
+        // so they are automatically available in templates
+        $boardsModel = new Model\Boards($this->db);
+        $boards = $boardsModel->getBoards();
+
+        $this->config['app']['boardList'] = $boards;
+    }
+
+    protected function loadTemplateEngine($templateFile = false) {
+        return new TemplateEngine($this->config, $templateFile);
     }
 
     protected function disallowNonPost()

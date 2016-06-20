@@ -11,7 +11,7 @@ class Index extends ExtendedController
 {
     public function index()
     {
-        $view = new TemplateEngine();
+        $view = $this->loadTemplateEngine();
 
         $view->display('Index');
     }

@@ -1,1 +1,52 @@
 @import 'lib/normalize';
+
+$baseColor: #5096ff;
+$textColor: #008;
+$linkColor: complement($textColor);
+
+body {
+    background: #fff url('//static.ylilauta.org/img/norpat1.png') no-repeat 50% 0;
+    background-size: 100%;
+    font: 16px "Open Sans", sans-serif;
+    color: darken($baseColor, 30%);
+}
+
+a {
+    text-decoration: none;
+    color: $linkColor;
+}
+a:hover { color: #800; }
+//a:hover { text-decoration: underline }
+
+#sidebar {
+    float: left;
+    width: 200px;
+    min-height: 400px;
+    padding: 10px;
+    overflow: hidden;
+    font-size: 0.9em;
+
+    nav {
+        a { display: block }
+    }
+    #logo {
+        $height: 60px;
+        font-size: 1.5em;
+        font-weight: 300;
+        height: $height;
+        line-height: $height;
+        display: block;
+        text-align: center;
+        margin-bottom: 0.5em;
+
+        img {
+            height: $height;
+            vertical-align: top;
+        }
+    }
+}
+
+#content {
+    padding: 20px;
+    overflow: hidden;
+}

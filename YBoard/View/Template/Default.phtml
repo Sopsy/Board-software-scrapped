@@ -11,6 +11,7 @@
 
     <base href="<?= $baseUrl ?>">
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,800,700italic,800italic">
     <link rel="stylesheet" href="<?= $staticUrl ?>/css/ylilauta.css">
     <link rel="icon" href="<?= $staticUrl ?>/img/favicon.png">
 
@@ -23,9 +24,24 @@
     </script>
 </head>
 <body>
-
-<div id="wrap">
-    <div id="content"><?= $output ?></div>
+<div id="sidebar">
+    <nav id="main">
+        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= $siteName ?>"> <?= $siteName ?></a>
+        <a href="/kultatili">Kultatili</a>
+        <a href="/ukk">UKK</a>
+        <a href="/saannot">Säännöt</a>
+        <a href="/tietoa">Tietoa</a>
+        <a href="/mainostus">Mainostajille</a>
+        <a href="/english">In English</a>
+    </nav>
+    <nav id="boards">
+        <?php foreach($boardList as $board) { ?>
+            <a href="<?= $board['boardurl'] ?>"><?= $board['name'] ?></a>
+        <?php } ?>
+    </nav>
+</div>
+<div id="content">
+    <?= $output ?>
 </div>
 </body>
 </html>

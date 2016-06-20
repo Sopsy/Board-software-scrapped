@@ -7,15 +7,16 @@ class TemplateEngine
     protected $variables = [];
     protected $templateFile = false;
     protected $viewBase;
+    protected $config;
 
-    public function __construct($configFile = false, $templateFile = false)
+    public function __construct($config = false, $templateFile = false)
     {
         $this->viewBase = dirname(__DIR__) . '/YBoard/View/';
         if (!$templateFile) {
             $templateFile = 'Default';
         }
 
-        $this->loadVariables($configFile);
+        $this->loadVariables($config);
 
         $template = $this->viewBase . 'Template/' . $templateFile . '.phtml';
         if (!file_exists($template)) {
@@ -24,13 +25,11 @@ class TemplateEngine
         $this->templateFile = $templateFile;
     }
 
-    protected function loadVariables($configFile)
+    protected function loadVariables($config)
     {
-        if (!$configFile) {
-            $configFile = dirname(__DIR__) . '/YBoard/Config/YBoard.php';
+        if (!$config) {
+            return false;
         }
-
-        $config = require($configFile);
 
         if (empty($config['app'])) {
             return false;
