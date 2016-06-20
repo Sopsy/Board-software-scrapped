@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'application' => [
-        'baseUrl' => 'http://example.com',
+    'app' => [
+        'baseUrl' => '//example.com',
+        'staticUrl' => '//static.example.com',
     ],
 ];

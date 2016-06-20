@@ -8,18 +8,39 @@ class TemplateEngine
     protected $templateFile = false;
     protected $viewBase;
 
-    public function __construct($templateFile = false)
+    public function __construct($configFile = false, $templateFile = false)
     {
         $this->viewBase = dirname(__DIR__) . '/YBoard/View/';
         if (!$templateFile) {
             $templateFile = 'Default';
         }
 
+        $this->loadVariables($configFile);
+
         $template = $this->viewBase . 'Template/' . $templateFile . '.phtml';
         if (!file_exists($template)) {
             throw new \Exception('Error loading the template file ' . $template . ': file does not exist.');
         }
         $this->templateFile = $templateFile;
+    }
+
+    protected function loadVariables($file)
+    {
+        if (!$file) {
+            $file = dirname(__DIR__) . '/YBoard/Config/YBoard.php';
+        }
+
+        $config = require($file);
+
+        if (empty($config['app'])) {
+            return false;
+        }
+
+        foreach ($config['app'] as $key => $val) {
+            $this->variables[$key] = $val;
+        }
+        
+        return true;
     }
 
     public function __get($name)

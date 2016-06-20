@@ -9,13 +9,13 @@
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <base href="<?= APP_URL ?>">
+    <base href="<?= $baseUrl ?>">
 
-    <link rel="stylesheet" href="/css/ylilauta.css">
-    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="<?= $staticUrl ?>/css/ylilauta.css">
+    <link rel="icon" href="<?= $staticUrl ?>/img/favicon.png">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-    <script defer src="/js/scripts.js"></script>
+    <script defer src="<?= $staticUrl ?>/js/scripts.js"></script>
     <script>
         var config = {
             csrfToken: 'nope',
