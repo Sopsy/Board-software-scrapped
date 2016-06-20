@@ -84,4 +84,15 @@ class TemplateEngine
 
         return false;
     }
+
+    protected function getTitle()
+    {
+        $title = '';
+        if (!empty($this->variables['pageTitle'])) {
+            $title .= $this->variables['pageTitle'] . ' | ';
+        }
+        $title .= $this->variables['siteName'];
+
+        return $title;
+    }
 }

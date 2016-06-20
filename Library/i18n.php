@@ -4,28 +4,16 @@ namespace Library;
 
 class i18n
 {
-    private $config;
-    private $localesPath;
-    private $localeFile;
-    private $translations;
-
-    public function setConfig($config)
+    public function __construct($localeFilesPath, $locale, $domain = 'default')
     {
-        if (!is_array($config)) {
-            throw new \InvalidArgumentException('i18n::setConfig() expects parameter 1 to be array, ' . getType($config) . ' given');
-        }
-        $this->config = $config;
-    }
+        $locale = addslashes($locale);
+        $domain = addslashes($domain);
 
-    public function setLocalesPath($path)
-    {
-        $this->localesPath = $path;
-    }
-
-    public function setLocaleFile($locale)
-    {
-        $this->localeFile = $locale;
-        $this->translations = require($this->localesPath . '/' . $this->localeFile);
+        // Load localization
+        setlocale(LC_ALL, $locale);
+        bindtextdomain($domain, $localeFilesPath);
+        bind_textdomain_codeset($domain, 'UTF-8');
+        textdomain($domain);
     }
 
     public function getPreferredTimezone($ip = false)
@@ -105,30 +93,5 @@ class i18n
     public function setDateDefaultTimezone($tz)
     {
         date_default_timezone_set($tz);
-    }
-
-    public function t($strId)
-    {
-        if ($this->translations === null) {
-            trigger_error('Translations are used but i18n is not loaded', E_USER_NOTICE);
-        }
-
-        if (isset($this->translations[$strId])) {
-            return $this->translations[$strId];
-        } else {
-            $displayErrors = strtolower(ini_get('display_errors'));
-            if ($displayErrors == 'on') {
-                ini_set('display_errors', 'off');
-            }
-
-            trigger_error('Missing translation for "' . $strId . '" in locale ' . $this->translations['localeName'],
-                E_USER_NOTICE);
-
-            if ($displayErrors == 'on') {
-                ini_set('display_errors', 'on');
-            }
-
-            return $strId;
-        }
     }
 }

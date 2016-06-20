@@ -14,7 +14,7 @@ class Boards extends YBoard\Model
             return $this->boards;
         }
 
-        $q = $this->db->query('SELECT * FROM boards ORDER BY name DESC');
+        $q = $this->db->query('SELECT * FROM boards ORDER BY name ASC');
         if (!$q) {
             return false;
         }

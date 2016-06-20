@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>???</title>
+    <title><?= htmlspecialchars($this->getTitle()) ?></title>
 
     <meta charset="UTF-8">
 
@@ -26,7 +26,7 @@
 <body>
 <div id="sidebar">
     <nav id="main">
-        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= $siteName ?>"> <?= $siteName ?></a>
+        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>"> <?= htmlspecialchars($siteName) ?></a>
         <a href="/kultatili">Kultatili</a>
         <a href="/ukk">UKK</a>
         <a href="/saannot">Säännöt</a>
@@ -35,9 +35,9 @@
         <a href="/english">In English</a>
     </nav>
     <nav id="boards">
-        <?php foreach($boardList as $board) { ?>
-            <a href="<?= $board['boardurl'] ?>"><?= $board['name'] ?></a>
-        <?php } ?>
+    <?php foreach($boardList as $board) { ?>
+        <a href="/<?= htmlspecialchars($board['url']) ?>/"><?= htmlspecialchars($board['name']) ?></a>
+    <?php } ?>
     </nav>
 </div>
 <div id="content">

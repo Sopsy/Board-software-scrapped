@@ -5,6 +5,7 @@ namespace YBoard\Abstracts;
 use Library\DbConnection;
 use Library\HttpResponse;
 use Library\TemplateEngine;
+use Library\i18n;
 use YBoard;
 use YBoard\Model;
 
@@ -19,6 +20,7 @@ abstract class ExtendedController extends YBoard\Controller
         $this->loadConfig();
         $this->dbConnect();
         $this->loadRequiredData();
+        $this->loadInternalization();
     }
 
     protected function dbConnect()
@@ -34,6 +36,15 @@ abstract class ExtendedController extends YBoard\Controller
         $boards = $boardsModel->getBoards();
 
         $this->config['app']['boardList'] = $boards;
+    }
+
+    protected function loadInternalization() {
+
+        if (empty($this->config['app']['locale'])) {
+            return false;
+        }
+
+        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n', $this->config['app']['locale']);
     }
 
     protected function loadTemplateEngine($templateFile = false) {
@@ -73,7 +84,7 @@ abstract class ExtendedController extends YBoard\Controller
     {
         HttpResponse::setStatusCode(401);
 
-        $view = new TemplateEngine();
+        $view = $this->loadTemplateEngine();
 
         $view->errorTitle = 'Virheellinen pyyntö';
         $view->errorMessage = 'Pyyntöäsi ei voitu käsitellä, koska se sisälsi virheellistä tietoa. Yritä uudelleen.';
@@ -123,6 +134,45 @@ abstract class ExtendedController extends YBoard\Controller
     protected function jsonError($str = '')
     {
         $this->jsonMessage($str, true);
+        $this->stopExecution();
+    }
+
+    public function notFound()
+    {
+        HttpResponse::setStatusCode(404);
+        $view = $this->loadTemplateEngine();
+
+        $view->pageTitle = 'Sivua ei löydy';
+
+        // Get a random 404-image
+        $images = glob(ROOT_PATH . '/static/img/404/*.*');
+        $view->imageSrc = $this->pathToUrl($images[array_rand($images)]);
+
+        $view->display('NotFound');
+        $this->stopExecution();
+    }
+
+    protected function blockAccess($pageTitle, $errorMessage)
+    {
+        $this->showMessage($pageTitle, $errorMessage, 403);
+    }
+
+    protected function badRequest($pageTitle, $errorMessage)
+    {
+        $this->showMessage($pageTitle, $errorMessage, 400);
+    }
+
+    protected function showMessage($errorTitle, $errorMessage, $httpStatus = false)
+    {
+        if ($httpStatus && is_int($httpStatus)) {
+            HttpResponse::setStatusCode($httpStatus);
+        }
+        $view = $this->loadTemplateEngine();
+
+        $view->pageTitle = $view->errorTitle = $errorTitle;
+        $view->errorMessage = $errorMessage;
+
+        $view->display('Error');
         $this->stopExecution();
     }
 }
