@@ -1,0 +1,18 @@
+// Ylilauta 2016 dark style
+$bgColor: #111;
+$sidebarColor: #292929;
+$contentBgColor: #222;
+$textColor: #eee;
+
+$highlightColor: lighten(#117743, 10%);
+$highlightColorLight: lighten(#17a45c, 10%);
+$red: #ba1f27;
+
+$linkColor: $highlightColor;
+$linkHoverColor: $red;
+
+// >quote and <quote
+$quoteColor: #789922;
+$blueQuoteColor: #226199;
+
+@import 'Themes/default';

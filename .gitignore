@@ -1,0 +1,14 @@
+.idea
+.vagrant
+node_modules
+Log/*
+static/js/*.js.map
+static/js/config.js
+static/js/locale/*
+files/*
+YBoard/Config/Database.php
+YBoard/Config/App.php
+Profiler/*
+
+db.sql
+files.zip

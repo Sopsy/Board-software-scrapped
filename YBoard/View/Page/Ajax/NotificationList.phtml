@@ -1,0 +1,40 @@
+<div class="notifications-list">
+<?php if (empty($notifications['list'])): ?>
+    <p><?= _('You don\'t have any notifications...') ?></p>
+<?php else: ?>
+    <?php foreach ($notifications['list'] as $notification): ?>
+    <div class="notification <?= (!$notification->isRead?'not-read':'is-read') ?>" data-id="<?= $notification->id ?>">
+        <div class="notification-info">
+            <?php if (!empty($notification->postId)): ?>
+                <a href="/post-<?= $notification->postId ?>">
+                    <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
+                </a>
+            <?php else: ?>
+                <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
+            <?php endif ?>
+            <div class="notification-meta">
+                <span class="datetime"><?= $notification->time ?></span>
+                <?php if (!empty($notification->postId)): ?>
+                    <a href="/post-<?= $notification->postId ?>" class="ref"
+                       <?php if (!$notification->isRead): ?>
+                           onclick="markNotificationRead(<?= $notification->id ?>, event)"
+                       <?php endif ?>
+                       data-id="<?= $notification->postId ?>">&gt;&gt;<?= $notification->postId ?></a>
+                <?php endif ?>
+            </div>
+        </div>
+        <?php if (!$notification->isRead): ?>
+        <div class="notification-buttons">
+            <button class="e-mark-read icon-checkmark-circle" data-id="<?= $notification->id ?>"></button>
+        </div>
+        <?php endif ?>
+    </div>
+    <?php endforeach ?>
+<?php endif ?>
+</div>
+
+<?php if (!empty($notifications['list'])): ?>
+<div class="buttons">
+    <button class="button primary close-modal e-mark-all-read"><?= _('Mark all as read') ?></button>
+</div>
+<?php endif ?>

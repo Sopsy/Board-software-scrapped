@@ -1,0 +1,4 @@
+<div class="thread-meta">
+    <?= ($thread->replyCount == 1 ? _('one reply') : sprintf(_('%d replies'), $thread->replyCount)) ?>,
+    <?= ($thread->readCount == 1 ? _('read once') : sprintf(_('read %d times'), $thread->readCount)) ?>
+</div>

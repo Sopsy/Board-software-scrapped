@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <title><?= htmlspecialchars($this->getTitle($config['app']['name'])) ?></title>
+
+    <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="<?= $stylesheet['color'] ?>">
+
+    <base href="<?= $config['url']['public'] ?>">
+
+    <link rel="icon" sizes="192x192" href="<?= $config['url']['static'] ?>/img/norppa_icon.png">
+    <link rel="stylesheet" class="css" href="<?= $config['url']['static'] . $stylesheet['active'] ?>"
+          data-light="<?= $config['url']['static'] . $stylesheet['light'] ?>"
+          data-dark="<?= $config['url']['static'] . $stylesheet['dark'] ?>"
+          data-darkTheme="<?= $stylesheet['darkTheme'] ?>">
+
+    <script src="<?= $config['url']['static'] ?>/js/locale/<?= $locale['name'] . '.' . $locale['domain'] ?>.js" defer></script>
+    <script src="<?= $config['url']['static'] ?>/js/config.js" defer></script>
+    <script src="<?= $config['url']['static'] ?>/js/yboard<?= APP_ENV !== 'development' ? '.min' : '' ?>.js" defer></script>
+    <script>let csrfToken='<?= $user->session->csrfToken ?>';</script>
+
+    <?php if ($requireCaptcha): ?>
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" defer></script>
+    <?php endif ?>
+</head>
+<body class="<?= (!empty($bodyClass) ? $bodyClass : '') ?> <?= $user->preferences->hideSidebar ? 'no-sidebar':'' ?>">
+
+<?php include($viewFilesPath . '/Snippet/Sidebar.phtml') ?>
+
+<div id="wrapper">
+    <div id="topbar">
+        <button id="e-sidebar-hide"></button>
+        <button id="e-sidebar-toggle" class="icon-menu"></button>
+        <div class="right">
+            <button class="icon-alarm e-open-notifications" title="<?= _('Notifications') ?>">
+                <span class="unread-notifications unread-count red<?= ($user->notifications['unread'] === 0 ? ' none' : '') ?>">
+                <?= $user->notifications['unread'] ?></span>
+            </button>
+            <a href="/followedthreads/" class="icon-bookmark" title="<?= _('Followed threads') ?>">
+                <?php if($user->threadFollow['unreadThreads'] > 0): ?>
+                    <span class="unread-count green"><?= $user->threadFollow['unreadThreads'] ?></span>
+                <?php endif ?>
+            </a>
+            <button id="scroll-to-bottom" class="icon-enter-down" title="<?= _('Go to bottom') ?>"></button>
+            <button id="scroll-to-top" class="icon-enter-up" title="<?= _('Back to top') ?>"></button>
+            <button id="reload-page" class="icon-sync" title="<?= _('Refresh page') ?>"></button>
+        </div>
+    </div>
+    <div id="content">
+        <?php if ($user->ban): ?>
+        <div id="banned">
+            <h3><?= _('You are banned!') ?></h3>
+            <p>
+                <?= sprintf(_('Reason: %s'), $user->ban->getReasonText()) ?>
+                <?= (empty($user->ban->additionalInfo)?'':', ' . $user->ban->additionalInfo) ?>
+            </p>
+            <p>
+                <?= sprintf(_('Your ban ends: %s'), '<span class="datetime">' . $user->ban->endTime . '</span>') ?>
+            </p>
+            <?php if ($user->ban->messageFrom): ?>
+                <p class="tooltip" title="<?= htmlspecialchars($user->ban->messageFrom) ?>"
+                ><?= _('Click here to see the post that resulted in this ban.') ?></p>
+            <?php endif ?>
+            <?php if ($user->ban->userId != $user->id): ?>
+            <p><?= _('This ban was not given to your user account, but to someone near you.') ?></p>
+            <?php endif ?>
+        </div>
+        <?php endif ?>
+        <?= $output ?>
+    </div>
+</div>
+</body>
+</html>

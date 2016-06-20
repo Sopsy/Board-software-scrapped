@@ -1,0 +1,43 @@
+<div class="post-buttons">
+    <?php if (empty($bodyClass) || $bodyClass !== 'board-catalog-page' && (!$thread->locked || $user->isMod)): ?>
+        <button class="icon-bubbles e-post-reply" title="<?= _('Reply') ?>"></button>
+    <?php endif ?>
+    <!--
+    <a href="#"><?= _('Donate gold') ?></a>
+    -->
+    <?php if (!$post->threadId): ?>
+        <?php if (!$user->threadIsHidden($post->id)): ?>
+            <button class="icon-eye-crossed e-thread-hide" title="<?= _('Hide') ?>"></button>
+        <?php else: ?>
+            <button class="icon-eye act e-thread-hide" title="<?= _('Restore') ?>"></button>
+        <?php endif ?>
+        <?php if (!$user->threadIsFollowed($post->id)): ?>
+            <button class="icon-bookmark-add e-thread-follow" title="<?= _('Follow') ?>"></button>
+        <?php else: ?>
+            <button class="icon-bookmark-remove act e-thread-follow" title="<?= _('Unfollow') ?>"></button>
+        <?php endif ?>
+    <?php endif ?>
+    <button class="icon-flag e-thread-report" title="<?= _('Report') ?>"></button>
+
+    <?php if ($user->isMod): ?>
+        <button class="mod-menu icon-wrench" data-ip="<?= $post->ip ?>" data-uid="<?= $post->userId ?>"
+                data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
+                onclick="openModMenu(this, <?= $post->id ?>)" title="<?= _('Moderation') ?>"></button>
+        <div class="mod-menu-html">
+            <p><?= _('IP') ?>: <?= $post->ip ?> (<?= $post->countryCode ?>)</p>
+            <p><?= _('User ID') ?>: <a href="/profile/<?= $post->userId ?>"><?= $post->userId ?></a></p>
+        <?php if(!empty($post->file)): ?>
+            <button onclick="deleteFile(<?= $post->id ?>)" class="button square icon-file-minus" title="<?= _('Delete file from post') ?>"></button>
+        <?php endif ?>
+            <button onclick="deletePost(<?= $post->id ?>)" class="button square icon-trash" title="<?= _('Delete post') ?>"></button>
+            <button onclick="toggleThreadSticky(<?= $post->id ?>)" class="button square icon-pushpin" title="<?= _('Toggle sticky') ?>"></button>
+            <button onclick="toggleThreadLock(<?= $post->id ?>)" class="button square icon-lock" title="<?= _('Toggle lock') ?>"></button>
+            <button onclick="$.modal.open('/scripts/mod/banform', {postData: {postId: <?= $post->id ?>}})" class="button square icon-prohibited" title="<?= _('Ban user') ?>"></button>
+        </div>
+    <?php else: ?>
+        <?php if ($post->userId != $user->id): ?>
+        <?php else: ?>
+            <button class="icon-trash e-post-delete" title="<?= _('Delete') ?>"></button>
+        <?php endif ?>
+    <?php endif ?>
+</div>

@@ -1,0 +1,13 @@
+<header class="page-header">
+    <div class="board-title">
+        <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->isNsfw): ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
+        <h2><?= htmlspecialchars($board->description) ?></h2>
+    </div>
+    <div class="buttons">
+        <?php if (empty($thread)): ?>
+        <button class="button primary create-thread"><?= _('Create a thread') ?></button>
+        <?php elseif (!$thread->locked): ?>
+        <button class="button primary e-thread-reply"><?= _('Reply to thread') ?></button>
+        <?php endif ?>
+    </div>
+</header>

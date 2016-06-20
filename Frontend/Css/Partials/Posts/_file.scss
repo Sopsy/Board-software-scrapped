@@ -1,0 +1,97 @@
+.post-file {
+    float: left;
+    margin: 0 20px 5px 0;
+    max-width: 100%;
+    min-width: 100px;
+    min-height: 60px;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+
+    @if (lightness($contentBgColor) > 50) {
+        background-color: rgba(0, 0, 0, 0.04);
+    } @else {
+        background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    > a {
+        position: relative;
+        display: block;
+
+        .overlay {
+            position: absolute;
+            max-width: 100%;
+            max-height: 100%;
+            color: #ffffff;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+
+            &.center {
+                left: 50%;
+                top: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                font-size: 32px;
+                padding: 10px;
+            }
+            &.bottom {
+                bottom: 0;
+                font-size: 20px;
+                padding: 5px;
+                &.right {
+                    right: 0;
+                }
+                &.left {
+                    left: 0;
+                }
+            }
+        }
+    }
+
+    .no-image {
+        display: block;
+        font-size: 100px;
+        padding: 20px;
+        background-color: #ddd;
+        color: #444;
+    }
+
+    &:not(.media-player-container) .e-stop-media {
+        display: none;
+    }
+    &.media-player-container {
+        > a {
+            display: none;
+        }
+        .e-stop-media {
+            display: block;
+        }
+    }
+    video {
+        max-width: 100%;
+        min-width: 240px;
+    }
+    &:not(.no).thumbnail {
+        max-width: 240px;
+    }
+    &:not(.no).thumbnail a {
+        height: 0;
+    }
+    &:not(.thumbnail) {
+        width: auto !important;
+        a {
+            padding-bottom: 0 !important;
+        }
+    }
+    figcaption {
+        text-align: left;
+        padding: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.8em;
+        line-height: 1.3em;
+        span {
+            display: block
+        }
+    }
+}

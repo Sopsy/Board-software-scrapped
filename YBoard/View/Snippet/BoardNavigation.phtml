@@ -1,0 +1,40 @@
+<div class="board-navigation">
+    <div class="breadcrumb">
+        <a href="/"><?= htmlspecialchars($config['app']['name']) ?></a>
+        <div class="sep">&raquo;</div>
+        <a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a>
+        <?php if(!empty($thread->id)): ?>
+            <div class="sep">&raquo;</div>
+            <a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a>
+        <?php endif ?>
+    </div>
+    <?php if (empty($thread->id)): ?>
+    <div class="pagination">
+        <?php if ($pagination['page'] == 2): ?>
+            <a href="/<?= $board->url . ($pagination['catalog'] ? '/catalog' : '/') ?>" class="icon icon-chevron-left chevron"></a>
+        <?php elseif ($pagination['page'] > 2): ?>
+            <a href="/<?= $board->url . ($pagination['catalog'] ? '/catalog' : '')?>-<?=
+                $pagination['page']-1 . ($pagination['catalog'] ? '' : '/') ?>" class="icon icon-chevron-left chevron"></a>
+        <?php endif ?>
+        <?php if ($pagination['startPage'] > 1): ?>
+            <a href="/<?= $board->url . ($pagination['catalog'] ? '/catalog' : '/') ?>"<?= ($pagination['page']==1?' class="cur"':'') ?>>1</a>
+            <?php if ($pagination['startPage'] > 2): ?>
+            <span class="sep">&hellip;</span>
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php for ($i = $pagination['startPage']; $i <= $pagination['endPage']; ++$i): ?>
+            <a href="/<?= $board->url . ($pagination['catalog'] ? '/catalog' : '')?>-<?=
+                $i . ($pagination['catalog'] ? '' : '/') ?>"<?= ($pagination['page']==$i?' class="cur"':'') ?>><?= $i ?></a>
+        <?php endfor ?>
+        <?php if ($pagination['page'] < $pagination['maxPages']): ?>
+            <a href="/<?= $board->url . ($pagination['catalog'] ? '/catalog' : '')?>-<?=
+                $pagination['page']+1 . ($pagination['catalog'] ? '' : '/') ?>" class="icon icon-chevron-right chevron"></a>
+        <?php endif ?>
+        <div class="display-styles">
+            <a href="/<?= $board->url ?>/" class="icon-list"></a>
+            <a href="/<?= $board->url ?>/catalog" class="icon-grid"></a>
+        </div>
+    </div>
+    <?php endif ?>
+</div>

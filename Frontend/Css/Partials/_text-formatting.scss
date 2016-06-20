@@ -1,0 +1,66 @@
+.underline {
+    text-decoration: underline;
+}
+.line-through {
+    text-decoration: line-through;
+}
+.spoiler {
+    $color: #000000;
+    @if (lightness($contentBgColor) < 5) {
+        $color: #333;
+    }
+    background-color: $color;
+    display: inline;
+    vertical-align: top;
+    overflow: hidden;
+    color: $color;
+    .quote, a {
+        color: $color;
+    }
+    &:hover, &.spoiled {
+        color: invert($color);
+        .quote, a {
+            color: invert($color);
+        }
+    }
+}
+.big {
+    font-size: 1.25rem;
+}
+.small {
+    font-size: 0.65rem;
+}
+
+.black {
+    color: #000;
+}
+.gray {
+    color: gray;
+}
+.white {
+    color: #fff;
+}
+.brown {
+    color: #a65329;
+}
+.red {
+    color: #f22;
+}
+.orange {
+    color: orange;
+}
+.yellow {
+    color: #ff0;
+}
+.green {
+    color: #2b2;
+}
+.blue {
+    color: #22b;
+}
+.purple {
+    color: purple;
+}
+.pink {
+    color: #ff1493;
+}

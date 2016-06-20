@@ -1,0 +1,74 @@
+.content-box.settings-profile {
+    .columns, .flex {
+        h5 {
+            font-size: 1em;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        span {
+            font-size: 1.5em;
+        }
+
+        > div {
+            margin-bottom: 20px;
+        }
+    }
+
+    .columns {
+        @include columns(220px, 40px);
+        text-align: center;
+
+        div {
+            width: 100%;
+            display: inline-block;
+        }
+    }
+
+    .flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        &.center {
+            text-align: center;
+        }
+    }
+
+    form {
+        input[type="text"], input[type="password"] {
+            min-width: 200px;
+            padding: 3px 5px;
+            width: 50%;
+            display: block;
+            color: $textColor;
+
+            $backgroundColor: #fff;
+            $borderColor: #ccc;
+            @if (lightness($contentBgColor) < 50) {
+                $backgroundColor: #000;
+                $borderColor: #333;
+            }
+            background-color: $backgroundColor;
+            @include input-shadow($borderColor);
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+
+    .session {
+        padding: 10px;
+        $backgroundColor: darken($contentBgColor, 3%);
+        @if (lightness($contentBgColor) < 50) {
+            $backgroundColor: lighten($contentBgColor, 3%);
+        }
+        background-color: $backgroundColor;
+
+        .actions {
+            min-height: 30px;
+        }
+    }
+}

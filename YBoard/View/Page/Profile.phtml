@@ -1,0 +1,103 @@
+<?php include($viewFilesPath . '/Snippet/PageHeader.phtml'); ?>
+
+<div class="content-box settings-profile">
+    <h3><?= _('Trivia') ?></h3>
+    <div class="columns">
+        <div><h5><?= _('Account created') ?></h5><span class="datetime"><?= $profile->accountCreated ?></span></div>
+        <div><h5><?= _('User ID') ?></h5><span class="number"><?= $profile->id ?></span></div>
+        <div><h5><?= _('Gold level') ?></h5><span class="number"><?= $profile->goldLevel ?></span></div>
+        <div><h5><?= _('Page loads') ?></h5><span class="number"><?= $profile->statistics->pageLoads ?></span></div>
+        <div><h5><?= _('Created threads') ?></h5><span class="number"><?= $profile->statistics->createdThreads ?></span></div>
+        <div><h5><?= _('Sent replies') ?></h5><span class="number"><?= $profile->statistics->sentReplies ?></span></div>
+        <div><h5><?= _('Total posts') ?></h5><span class="number"><?= $profile->statistics->totalPosts ?></span></div>
+        <div><h5><?= _('Uploaded files') ?></h5><span class="number"><?= $profile->statistics->uploadedFiles ?></span></div>
+        <div><h5><?= _('Total size of uploaded files') ?></h5><span><?= \YFW\Library\Text::formatBytes($profile->statistics->uploadedFilesTotalSize) ?></span></div>
+        <div><h5><?= _('Total characters in messages') ?></h5><span class="number"><?= $profile->statistics->messageTotalCharacters ?></span></div>
+        <div><h5><?= _('Average message length') ?></h5><span class="number"><?= $profile->statistics->messageAverageLength ?></span></div>
+        <div><h5><?= _('Epic threads') ?></h5><span class="number"><?= $profile->statistics->epicThreads ?></span></div>
+        <div><h5><?= _('Gold accounts donated') ?></h5><span class="number"><?= $profile->statistics->goldAccountsDonated ?></span></div>
+        <div><h5><?= _('Gold accounts received') ?></h5><span class="number"><?= $profile->statistics->goldAccountsReceived ?></span></div>
+        <div><h5><?= _('Total purchases') ?></h5><span class="currency"><?= $profile->statistics->purchasesTotalPrice ?></span></div>
+    </div>
+</div>
+
+<div class="content-box settings-profile">
+    <h3><?= _('Tags') ?></h3>
+    <div class="flex">
+        TODO
+    </div>
+</div>
+
+<?php if ($profile->isRegistered && $user->id == $profile->id): ?>
+<div class="content-box settings-profile">
+    <h3><?= _('User account') ?></h3>
+    <div class="flex">
+        <div>
+            <h4><?= _('Change username') ?></h4>
+            <p><?= _('Current username') ?>: <?= htmlspecialchars($user->username) ?></p>
+            <form data-action="/api/user/changename" method="post" class="ajax">
+                <input type="text" name="newName" placeholder="<?= _('New name') ?>" maxlength="<?= $config['user']['usernameMaxLength'] ?>" required>
+                <input type="text" name="preventautocomplete" style="display:none">
+                <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
+                <input type="submit" class="button primary" value="<?= _('Change username') ?>">
+            </form>
+        </div>
+        <div>
+            <h4><?= _('Change password') ?></h4>
+            <form data-action="/api/user/changepassword" method="post" class="ajax">
+                <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
+                <input type="password" name="newPassword" placeholder="<?= _('New password') ?>" required>
+                <input type="password" name="newPasswordAgain" placeholder="<?= _('New password again') ?>" required>
+                <input type="submit" class="button primary" value="<?= _('Change password') ?>">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="content-box settings-profile">
+    <h3><?= _('Active logins') ?></h3>
+    <div class="flex center">
+    <?php foreach ($loginSessions as $session): ?>
+        <div class="session" id="<?= bin2hex($session->id) ?>">
+            <div><h5><?= _('IP-address') ?></h5><span><?= $session->ip ?></span></div>
+            <div><h5><?= _('Login time') ?></h5><span class="datetime"><?= $session->loginTime ?></span></div>
+            <div><h5><?= _('Last active') ?></h5><span class="datetime"><?= $session->lastActive ?></span></div>
+            <div class="actions">
+                <?php if ($session->id == $user->session->id): ?>
+                <em><?= _('Current session') ?></em>
+                <?php else: ?>
+                <form action="/api/user/session/delete" class="sessiondestroy ajax" method="post">
+                    <input type="hidden" name="sessionId" value="<?= bin2hex($session->id) ?>">
+                    <button class="button primary"><?= _('Log out') ?></button>
+                </form>
+                <?php endif ?>
+            </div>
+        </div>
+    <?php endforeach ?>
+    </div>
+</div>
+
+<div class="content-box settings-profile">
+    <h3><?= _('Delete account') ?></h3>
+    <p>
+        <?= _('When deleting your account, all information associated with it are permanently deleted.') ?>
+        <?= _('If you want to, you can also delete all threads you have created and replies you have sent.') ?>
+        <?= _('After deletion, your username will be freed and a new account can be created with it.') ?>
+        <?= _('If you have a gold account, you will lose all the remaining time it has and you will not be given any compensation or a refund for it.') ?>
+    </p>
+    <p><strong><?= _('Please note that the deletion is permanent &mdash; all data associated with your account will be permanently lost and cannot be restored!') ?></strong></p>
+
+    <form data-action="/api/user/delete" method="post" class="ajax" onsubmit="if(!window.confirm('<?= _('Are you sure? You will lose everything. Everything!') ?>')){event.stopPropagation();return false}">
+        <input type="password" name="password" placeholder="<?= _('Type your current password...') ?>" required>
+        <label>
+            <input type="checkbox" name="confirm" required>
+            <?= _('Yes, I want to permanently delete my user account and all data associated with it.') ?>
+        </label>
+        <label>
+            <input type="checkbox" name="deletePosts">
+            <?= _('Also delete all posts I have sent.') ?>
+        </label>
+        <input class="button primary" type="submit" value="<?= _('Delete account') ?>">
+    </form>
+</div>
+<?php endif ?>

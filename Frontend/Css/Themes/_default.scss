@@ -1,0 +1,79 @@
+@import '../config/variables';
+
+$tooltipBorderColor: #ccc;
+@if (lightness($contentBgColor) < 50) {
+    $tooltipBorderColor: #444;
+}
+
+@import '../Vendor/icomoon';
+
+$sidebarBorderColor: darken($sidebarColor, 15%);
+@if (lightness($sidebarColor) < 50) {
+    $sidebarBorderColor: lighten($sidebarColor, 15%);
+}
+
+$sidebarLinkColor: #eeeeee;
+@if (lightness($sidebarColor) > 50) {
+    $sidebarLinkColor: #111111;
+}
+
+@mixin columns($width, $gap) {
+    columns: $width;
+    -moz-columns: $width;
+    -webkit-columns: $width;
+    column-gap: $gap;
+    -moz-column-gap: $gap;
+    -webkit-column-gap: $gap;
+}
+
+@mixin input-shadow($color: #cccccc) {
+    border: 0;
+    box-shadow: 0 0 3px 0 $color inset;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+span.loading {
+    font-size: 20px;
+    color: $highlightColor;
+}
+
+.old-browser-warning {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffaaaa;
+    text-align: center;
+    font-weight: 600;
+}
+
+@import '../Partials/scrollbar';
+@import '../Partials/content';
+@import '../Partials/tags';
+@import '../Partials/topbar';
+@import '../Partials/sidebar';
+@import '../Partials/header';
+@import '../Partials/page-error';
+@import '../Partials/page-front';
+@import '../Partials/page-profile';
+@import '../Partials/post-form';
+@import '../Partials/boards';
+@import '../Partials/threads';
+@import '../Partials/post';
+@import '../Partials/catalog';
+@import '../Partials/navigation';
+@import '../Partials/text-formatting';
+@import '../Partials/notifications';
+@import '../Partials/reports';
+@import '../Partials/tooltip';
+@import '../Partials/toast';
+@import '../Partials/modal';
+@import '../Partials/mobile';

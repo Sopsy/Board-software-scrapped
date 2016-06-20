@@ -1,0 +1,144 @@
+@media (max-width: 799px) {
+    body {
+        font-size: 13px;
+    }
+
+    #e-sidebar-hide {
+        display: none;
+    }
+    #e-sidebar-toggle {
+        display: inline;
+    }
+
+    .content-box {
+        padding: 20px;
+    }
+
+    #sidebar {
+        padding: 10px;
+        display: none;
+        z-index: 999;
+        @media (max-width: 599px) {
+            position: fixed;
+            top: $topMenuHeight;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 260px;
+            border-right: 350px solid darken($sidebarColor, 10%);
+            box-sizing: content-box;
+        }
+
+        #main {
+            display: flex;
+            .columns {
+                flex-grow: 1;
+            }
+        }
+        #logo {
+            float: left;
+            height: 165px;
+            margin-right: 20px;
+            img {
+                height: 165px;
+            }
+            span {
+                display: none;
+            }
+        }
+        .columns {
+            @include columns(120px, 10px);
+            a {
+                line-height: 3.5em;
+            }
+        }
+        #search {
+            clear: both;
+        }
+    }
+
+    #content {
+        margin-left: 0;
+
+        .page-header {
+            padding: 20px 20px 60px 20px;
+            h1, h2 { margin: 0 }
+        }
+
+        .content-box {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
+    #post-form {
+        margin: 2px;
+        padding: 5px;
+        h3 {
+            margin-bottom: 10px;
+        }
+        textarea {
+            height: 100px;
+        }
+    }
+
+    .board-navigation {
+        text-align: center;
+
+        .breadcrumb, .pagination {
+            float: none;
+            display: block;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+    }
+
+    .thread {
+        .post-info {
+            font-size: 0.8em;
+        }
+
+        .post-file {
+            &.thumbnail, &.no-thumbnail {
+                @media (max-width:339px) {
+                    .image {
+                        font-size: 40px;
+                    }
+                    max-width: 80px;
+                }
+                @media (min-width:340px) and (max-width:499px) {
+                    .image {
+                        font-size: 60px;
+                    }
+                    max-width: 120px;
+                }
+                @media (min-width:500px) and (max-width:599px) {
+                    .image {
+                        font-size: 80px;
+                    }
+                    max-width: 160px;
+                }
+                @media (min-width:600px) {
+                    max-width: 200px;
+                }
+            }
+            &:not(.thumbnail) {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+        #post-form {
+            margin: 10px 5px;
+        }
+    }
+
+    .catalog {
+        margin: 0;
+        .thread-box {
+            margin: 2px;
+            flex: 1 1 150px;
+        }
+    }
+}

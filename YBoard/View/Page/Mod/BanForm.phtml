@@ -1,0 +1,39 @@
+<div class="modal-content has-buttons" id="ban-form">
+    <h3><?= _('Ban user') ?></h3>
+    <form class="modal-form" onsubmit="addBan(event)" target="/scripts/mod/addban">
+        <h4><?= _('IP / User') ?></h4>
+        <input type="text" name="ban_ip" placeholder="<?= _('IP-address') ?>" value="<?= $post->ip ?>">
+        <input type="text" name="ban_user" placeholder="<?= _('User ID') ?>" value="<?= $post->userId ?>">
+
+        <h4><?= _('Reason and length') ?></h4>
+        <select name="ban_reason" onchange="$('#ban-length').val($(this).find('option:selected').data('banlength'))" required>
+            <option selected disabled><?= _('Choose a reason') ?></option>
+            <?php foreach ($banReasons as $reasonId => $reason): ?>
+            <option value="<?= $reasonId ?>" data-banlength="<?= $reason['banLength'] ?>"
+                ><?= $reason['name'] ?></option>
+            <?php endforeach ?>
+        </select>
+        <input type="text" name="ban_additional_info" placeholder="<?= _('Additional information (optional)') ?>" maxlength="120">
+        <input type="number" id="ban-length" name="ban_length" placeholder="<?= _('Ban length in seconds') ?>" required>
+        <button type="button" class="button" onclick="$('#ban-length').val(3600)"><?= sprintf(_('%dh'), 1) ?></button>
+        <button type="button" class="button" onclick="$('#ban-length').val(86400)"><?= sprintf(_('%dd'), 1) ?></button>
+        <button type="button" class="button" onclick="$('#ban-length').val(259200)"><?= sprintf(_('%dd'), 3) ?></button>
+        <button type="button" class="button" onclick="$('#ban-length').val(604800)"><?= sprintf(_('%dw'), 1) ?></button>
+        <button type="button" class="button" onclick="$('#ban-length').val(1209600)"><?= sprintf(_('%dw'), 2) ?></button>
+        <button type="button" class="button" onclick="$('#ban-length').val(2592000)"><?= sprintf(_('%dm'), 1) ?></button>
+
+        <h4><?= _('Message') ?></h4>
+        <input type="text" name="ban_post_id" placeholder="<?= _('Post ID') ?>" value="<?= $post->id ?>">
+        <label>
+            <input type="checkbox" name="ban_delete_post" checked>
+            <?= _('Delete post') ?>
+        </label>
+        <label>
+            <input type="checkbox" name="ban_delete_posts_24h">
+            <?= _('Delete all posts from the user from the last 24 hours') ?>
+        </label>
+        <div class="modal-buttons">
+            <button type="submit" class="button primary right"><?= _('Add ban') ?></button>
+        </div>
+    </form>
+</div>

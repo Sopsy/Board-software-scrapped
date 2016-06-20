@@ -1,0 +1,42 @@
+<?php include($viewFilesPath . '/Snippet/PageHeader.phtml') ?>
+
+<?php if (!empty($reports)): ?>
+<div class="catalog">
+<?php foreach ($reports as $report): ?>
+<div class="thread-box report" data-id="<?= $report->postId ?>" id="post-<?= $report->postId ?>">
+    <h4><?= htmlspecialchars($report->getReasonText()) ?></h4>
+    <p class="additional-info"><?= htmlspecialchars($report->additionalInfo) ?></p>
+    <div class="report-info">
+        <p><span class="title"><?= _('Post') ?></span> <a class="ref" href="/api/post/<?= $report->postId ?>"
+               data-id="<?= $report->postId ?>">&gt;&gt;<?= $report->postId ?></a></p>
+        <p><span class="title"><?= _('IP') ?></span> <?= $report->post->ip ?> (<?= $report->post->countryCode ?>)</p>
+        <p><span class="title"><?= _('User ID') ?></span> <a href="/profile/<?= $report->post->userId ?>"><?= $report->post->userId ?></a></p>
+
+        <p><span class="title"><?= _('Reported by') ?></span> <?= $report->reportedBy ?></p>
+        <p><span class="title"><?= _('Reported') ?></span> <span class="datetime"><?= $report->time ?></span></p>
+    </div>
+    <div class="buttons"
+        ><button class="button primary" onclick="setReportChecked(<?= $report->postId ?>)"><?= _('Checked') ?></button
+        ><button class="button" class="delete-button" onclick="deletePost(<?= $report->postId ?>)"><?= _('Delete post') ?></button
+        ><button class="button" class="ban-button"><?= _('Ban') ?></button
+    ></div>
+</div>
+<?php endforeach ?>
+</div>
+<?php else: ?>
+<div class="content-box">
+    <h3><?= _('No unchecked reports') ?></h3>
+</div>
+<?php endif ?>
+
+<script>
+$('.ban-button').on('click', function() {
+    var postId = this.closest('.report').data('id');
+    openModal('/scripts/mod/banform', {
+        'postData': {id: postId},
+        'onAjaxComplete': function() {
+            $p(postId).remove();
+        }
+    });
+});
+</script>

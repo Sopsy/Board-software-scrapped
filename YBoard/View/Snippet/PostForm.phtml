@@ -1,0 +1,102 @@
+<form class="content-box" id="post-form" method="post">
+    <fieldset>
+        <input type="hidden" id="file-id" name="file_id">
+<?php if (!empty($thread->id)): ?>
+    <h3><?= _('Submit a reply') ?></h3>
+    <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
+<?php else: ?>
+    <h3><?= _('Create a thread') ?></h3>
+    <?php if ($board->id !== null): ?>
+    <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
+    <?php else: ?>
+    <input type="hidden" id="post-destination">
+    <div class="input-row" id="label-board">
+        <label>
+            <span class="label"><?= _('Board') ?></span>
+            <select name="board" required>
+                <option value="" selected disabled><?= _('Select') ?></option>
+                <?php foreach ($boardList as $singleBoard): ?>
+                <option value="<?= $singleBoard->url ?>"><?= htmlspecialchars($singleBoard->name) ?></option>
+                <?php endforeach ?>
+            </select>
+        </label>
+    </div>
+    <?php endif ?>
+    <div class="input-row" id="label-subject">
+        <label>
+            <span class="label"><?= _('Subject') ?></span>
+            <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $config['post']['subjectMaxLength'] ?>">
+        </label>
+    </div>
+<?php endif ?>
+    <div class="input-row">
+        <label id="label-file">
+            <span class="label"><?= _('File') ?> <span>&lt;<?= \YFW\Library\Text::formatBytes($config['file']['maxSize']) ?></span></span>
+            <input multiple type="file" name="files" id="post-files" accept="<?= $config['file']['acceptedTypes'] ?>" data-maxsize="<?= $config['file']['maxSize'] ?>">
+            <span class="button gray"><?= _('Choose file') ?></span>
+        </label>
+        <input type="text" id="file-name" name="file_name" placeholder="<?= _('No file selected') ?>">
+        <button type="button" id="remove-file" class="button gray icon-trash"></button>
+    </div>
+    <div class="file-progress progressbar"><div></div></div>
+
+    <div id="message-input">
+        <div id="format-toolbar">
+            <a class="icon-bold bb-code" title="<?= _('Bold') ?>" data-code="b"></a>
+            <a class="icon-italic bb-code" title="<?= _('Italic') ?>" data-code="em"></a>
+            <a class="icon-strikethrough bb-code" title="<?= _('Strikethrough') ?>" data-code="s"></a>
+            <a class="icon-underline bb-code" title="<?= _('Underline') ?>" data-code="u"></a>
+            <a class="icon-spoiler bb-code" title="<?= _('Spoiler') ?>" data-code="spoiler"></a>
+            <a class="icon-font-small bb-code" title="<?= _('Small text') ?>" data-code="small"></a>
+            <a class="icon-font-big bb-code" title="<?= _('Big text') ?>" data-code="big"></a>
+            <a class="icon-bubble-quote bb-code" title="<?= _('Quote') ?>" data-code="quote"></a>
+            <a class="icon-code bb-code" title="<?= _('Code') ?>" data-code="code"></a>
+            <a class="icon-sup bb-code" title="<?= _('Superscript') ?>" data-code="sup"></a>
+            <a class="icon-sub bb-code" title="<?= _('Subscript') ?>" data-code="sub"></a>
+            <a class="icon-palette e-postform-color-bar" title="<?= _('Colors') ?>"></a>
+            <div id="color-buttons">
+                <a class="icon-palette black bb-code" title="<?= _('Black') ?>" data-code="black"></a>
+                <a class="icon-palette gray bb-code" title="<?= _('Gray') ?>" data-code="gray"></a>
+                <a class="icon-palette white bb-code" title="<?= _('White') ?>" data-code="white"></a>
+                <a class="icon-palette brown bb-code" title="<?= _('Brown') ?>" data-code="brown"></a>
+                <a class="icon-palette red bb-code" title="<?= _('Red') ?>" data-code="red"></a>
+                <a class="icon-palette orange bb-code" title="<?= _('Orange') ?>" data-code="orange"></a>
+                <a class="icon-palette yellow bb-code" title="<?= _('Yellow') ?>" data-code="yellow"></a>
+                <a class="icon-palette green bb-code" title="<?= _('Green') ?>" data-code="green"></a>
+                <a class="icon-palette blue bb-code" title="<?= _('Blue') ?>" data-code="blue"></a>
+                <a class="icon-palette purple bb-code" title="<?= _('Purple') ?>" data-code="purple"></a>
+                <a class="icon-palette pink bb-code" title="<?= _('Pink') ?>" data-code="pink"></a>
+            </div>
+        </div>
+        <textarea id="post-message" class="no-style" name="message" placeholder="<?= _('Message') ?>" maxlength="<?= $config['post']['messageMaxLength'] ?>"></textarea>
+    </div>
+    <div class="buttons">
+        <button type="button" class="button gray toggle-options"><?= _('Options') ?></button>
+        <button type="button" id="reset-button" class="button gray"><?= _('Cancel') ?></button>
+        <input type="submit" class="button primary" value="<?= _('Submit') ?>">
+    </div>
+    <div id="post-options">
+        <h4><?= _('Functions') ?></h4>
+        <label>
+            <input type="checkbox" name="sage">
+            <?= _('Don\'t bump the thread') ?>
+        </label>
+        <h4><?= _('Gold account functions') ?></h4>
+        <label>
+            <input type="checkbox" name="usename">
+            <?= _('Show your username') ?>
+        </label>
+        <label>
+            <input type="checkbox" name="nocompress">
+            <?= _('Keep original file dimensions') ?>
+        </label>
+        <label>
+            <input type="checkbox" name="goldonly">
+            <?= _('Hide message from non-golds') ?>
+        </label>
+    </div>
+    </fieldset>
+    <?php if($requireCaptcha): ?>
+    <div class="captcha"></div>
+    <?php endif ?>
+</form>

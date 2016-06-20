@@ -1,0 +1,154 @@
+body .catalog .thread.hidden {
+    opacity: 0.1;
+    &:hover {
+        opacity: 0.5;
+    }
+    .message, .post-file {
+        display: none;
+    }
+}
+
+.board-additional-functions {
+    display: flex;
+}
+#search-catalog {
+    flex: 1 1 auto;
+    margin: 5px;
+    padding: 5px;
+    background-color: $contentBgColor;
+    color: $textColor;
+    display: block;
+    box-sizing: border-box;
+
+    $shadowColor: #ccc;
+    @if (lightness($contentBgColor) < 50) {
+        $shadowColor: #333;
+    }
+    @include input-shadow($shadowColor);
+}
+
+.catalog {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .thread {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 200px;
+        margin: 5px;
+        padding: 0;
+        background-color: $contentBgColor;
+        box-sizing: border-box;
+        overflow: hidden;
+        transition: background-color $transition;
+        position: relative;
+    }
+
+    h3 {
+        flex: 0 0 auto;
+        display: flex;
+        $height: 30px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        height: $height;
+        line-height: $height;
+        margin: 0;
+        font-size: 1.1em;
+
+        $subjectBgColor: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $subjectBgColor: lighten($contentBgColor, 5%);
+        }
+        background-color: $subjectBgColor;
+        transition: background-color $transition;
+
+        .icon {
+            flex: 0 0 auto;
+            width: $height;
+            height: $height;
+            line-height: $height;
+            background-color: $contentBgColor;
+            color: $textColor;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .subject {
+            padding: 0 5px
+        }
+
+        a {
+            display: block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .notification-count {
+            margin-left: auto;
+            min-width: $height;
+            height: $height;
+            padding: 0 5px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: hsla(hue($highlightColor), saturation($highlightColor), lightness($highlightColor), 0.5);
+            color: #fff;
+        }
+    }
+
+    .post-buttons {
+        text-align: right;
+        flex: 0 0 auto;
+        padding: 3px;
+    }
+
+    .post-file {
+        flex: 0 0 auto;
+        float: none;
+        max-width: 100%;
+        margin: 0;
+        text-align: center;
+        $bg: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $bg: lighten($contentBgColor, 5%);
+        }
+        background-color: $bg;
+        transition: background-color $transition;
+
+        a {
+            height: auto;
+        }
+        img {
+            max-height: 100px;
+        }
+        .no-image {
+            font-size: 80px;
+            padding: 10px;
+        }
+    }
+
+    .message {
+        padding: 0;
+        margin: 5px;
+        font-size: 0.9em;
+        min-height: 50px;
+        max-height: 200px;
+        overflow: hidden;
+    }
+
+    .thread-meta {
+        margin: auto 0 0 0;
+        flex: 0 0 auto;
+        padding: 0 5px 5px 5px;
+        background-color: $contentBgColor;
+        font-size: 0.8em;
+        $color: #777;
+        color: $color;
+        box-shadow: 0 0 10px 10px $contentBgColor;
+        transition:
+                box-shadow $transition,
+                background-color $transition;
+    }
+}

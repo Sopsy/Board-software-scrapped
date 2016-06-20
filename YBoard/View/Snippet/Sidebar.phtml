@@ -1,0 +1,96 @@
+<div id="sidebar">
+    <nav id="main">
+        <a href="/" id="logo">
+            <img src="<?= $config['url']['static'] . $config['app']['logo'] ?>" alt="<?= htmlspecialchars($config['app']['name']) ?>">
+            <span><?= htmlspecialchars($config['app']['name']) ?></span>
+        </a>
+        <div class="columns">
+            <a href="/gold"><?= _('Gold account') ?></a>
+            <a href="/info/faq"><?= _('FAQ') ?></a>
+            <a href="/info/rules"><?= _('Rules') ?></a>
+            <a href="/info/about"><?= _('About') ?></a>
+            <a href="/info/advertising"><?= _('Advertising') ?></a>
+        </div>
+        <?php if($config['search']['enabled']): ?>
+        <form id="search" method="get" action="/search">
+            <input name="cx" value="<?= $config['search']['gCsePartnerPub'] ?>" type="hidden">
+            <input name="cof" value="FORID:10" type="hidden">
+            <input name="ie" value="UTF-8" type="hidden">
+            <input id="searchfield" name="q" size="24" placeholder="<?= _('Search Ylilauta...') ?>" type="text" required>
+            <button id="searchbutton" class="icon-magnifier"></button>
+        </form>
+        <?php endif ?>
+    </nav>
+    <nav id="user">
+        <?php if (!$user->loggedIn): ?>
+            <h3><?= _('Log in') ?></h3>
+            <form id="login" class="ajax" data-action="/api/user/session/create" method="post">
+                <input type="text" name="username" placeholder="<?= _('Username') ?>" maxlength="<?= $config['user']['usernameMaxLength'] ?>" required>
+                <input type="password" name="password" placeholder="<?= _('Password') ?>" required>
+                <div>
+                    <button type="submit" class="button primary" name="login"><?= _('Log_in') ?></button>
+                    <button type="button" class="button transparent e-signup"><?= _('Sign up') ?></button>
+                </div>
+            </form>
+            <form id="signup" class="ajax" data-action="/api/user/create" data-captcha="true" method="post">
+                <input type="text" name="username" placeholder="<?= _('Username') ?>" maxlength="<?= $config['user']['usernameMaxLength'] ?>" required>
+                <input type="password" name="password" placeholder="<?= _('Password') ?>" required>
+                <input type="password" name="repassword" placeholder="<?= _('Password again') ?>" required>
+                <div>
+                    <button type="submit" class="button primary" name="login"><?= _('Sign up') ?></button>
+                    <button type="button" class="button transparent cancel"><?= _('Cancel') ?></button>
+                </div>
+                <?php if($requireCaptcha): ?>
+                    <div class="captcha"></div>
+                <?php endif ?>
+            </form>
+        <?php else: ?>
+            <h3><?= htmlspecialchars($user->username) ?></h3>
+        <?php endif ?>
+        <div class="buttons">
+            <button class="button square icon-alarm e-open-notifications" title="<?= _('Notifications') ?>">
+                <span class="unread-notifications unread-count red<?= ($user->notifications['unread']==0?' none':'') ?>"
+                ><?= $user->notifications['unread'] ?></span>
+            </button>
+            <a href="/followedthreads/" class="button square icon-bookmark" title="<?= _('Followed threads') ?>">
+                <?php if($user->threadFollow['unreadThreads'] > 0): ?>
+                    <span class="unread-count green"><?= $user->threadFollow['unreadThreads'] ?></span>
+                <?php endif ?>
+            </a>
+            <?php if ($user->isMod): ?>
+                <a class="button square icon-flag" href="/mod/reports" title="<?= _('Reports') ?>"><?php
+                    if ($uncheckedReports != 0) :
+                        ?><span class="unread-count red"><?= $uncheckedReports ?></span><?php
+                    endif ?></a>
+                <a class="button square icon-sad" href="/mod/banappeals" title="<?= _('Ban appeals') ?>"><?php
+                    if ($uncheckedBanAppeals != 0) :
+                        ?><span class="unread-count red"><?= $uncheckedBanAppeals ?></span><?php
+                    endif ?></a>
+            <?php endif ?>
+            <a class="button square icon-user" href="/profile/" title="<?= _('Profile') ?>"></a>
+            <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
+            <button class="button square icon-lamp e-switch-theme" title="<?= _('Switch theme colors') ?>"></button>
+            <?php if ($user->loggedIn): ?>
+                <form id="logout" class="ajax" data-action="/api/user/session/delete" method="post">
+                    <button type="submit" class="button square icon-exit" title="<?= _('Log out') ?>"
+                            onclick="if(!confirm(messages.logOutConfirm)){return false}"></button>
+                </form>
+            <?php endif ?>
+        </div>
+        <div class="columns">
+            <a href="/mythreads/"><?= _('My threads') ?></a>
+            <a href="/repliedthreads/"><?= _('Replied threads') ?></a>
+            <a href="/hiddenthreads/"><?= _('Hidden threads') ?></a>
+        </div>
+    </nav>
+    <nav id="boards">
+        <h3><?= _('Discussion boards') ?></h3>
+        <div class="columns">
+            <?php foreach($boardList as $board): ?>
+                <a href="/<?= htmlspecialchars($board->url) ?>/"
+                    <?= ($board->isNsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->isNsfw) :
+                        ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></a>
+            <?php endforeach ?>
+        </div>
+    </nav>
+</div>

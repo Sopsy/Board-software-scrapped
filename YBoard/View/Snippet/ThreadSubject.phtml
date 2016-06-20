@@ -1,0 +1,17 @@
+<h3>
+    <?php if ($thread->sticky): ?>
+        <span class="icon-pushpin icon" title="<?= _('Sticky') ?>"></span>
+    <?php endif ?>
+    <?php if ($thread->locked): ?>
+        <span class="icon-lock icon" title="<?= _('Locked') ?>"></span>
+    <?php endif ?>
+
+    <a class="subject" href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?=
+    $user->getThreadLastSeenReply($thread->id) !== null ? '#post-' . $user->getThreadLastSeenReply($thread->id):''
+    ?>">
+        <?= htmlspecialchars($thread->subject) ?>
+    </a>
+    <?php if (!empty($user->getThreadUnreadCount($thread->id))): ?>
+        <span class="notification-count e-mark-read"><?= $user->getThreadUnreadCount($thread->id) ?></span>
+    <?php endif ?>
+</h3>

@@ -1,0 +1,26 @@
+<?php include($viewFilesPath . '/Snippet/InfoPageHeader.phtml') ?>
+
+<div class="content-box front">
+    <h3><?= _('Welcome to Ylilauta, the biggest discussion board in Finland!') ?></h3>
+    <p>
+        Ylilaudan käyttäminen on täysin anonyymiä - viestien lähettäminen ei vaadi rekisteröitymistä tai edes nimimerkin käyttämistä.<br>
+        Ylilauta on suomen aktiivisin keskustelufoorumi - joka kuukausi Ylilaudan 3 miljoonaa kuukausittaista vierailijaa lähettää keskusteluihin yli miljoona viestiä ja lukee lankoja yhteensä lähes 30 miljoonaa kertaa.
+    </p>
+    <p><strong>Ajattele, mitä kirjoitat. Muista, että ruudun toisella puolella on oikeita ihmisiä, jotka saattavat loukkaantua viestistäsi.</strong></p>
+    <p><strong><em>Varoitus: Saattaa aiheuttaa voimakasta riippuvuutta!</em></strong></p>
+    <p>
+        Luethan <a href="/saannot">Ylilaudan säännöt</a> ennen viestien lähettämistä!<br>
+        Mikäli olet uusi käyttäjä, voit testailla viestien lähettämistä <a href="/hiekkalaatikko/">Ylilaudan hiekkalaatikolla</a>.
+    </p>
+</div>
+
+<div class="content-box front">
+    <h3><?= _('Discussion boards') ?></h3>
+    <nav id="front-boards">
+        <?php foreach($boardList as $board): ?>
+        <a href="/<?= htmlspecialchars($board->url) ?>/"
+            <?= ($board->isNsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->isNsfw) :
+            ?> <span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></a>
+        <?php endforeach ?>
+    </nav>
+</div>

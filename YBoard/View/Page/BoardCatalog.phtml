@@ -1,0 +1,52 @@
+<?php include($viewFilesPath . '/Snippet/BoardHeader.phtml') ?>
+<?php include($viewFilesPath . '/Snippet/BoardNavigation.phtml') ?>
+<?php include($viewFilesPath . '/Snippet/PostForm.phtml') ?>
+
+<?php if (!empty($threads)): ?>
+<div class="board-additional-functions">
+    <input type="text" id="search-catalog" placeholder="<?= _('Search threads...') ?>">
+</div>
+<div class="catalog">
+<?php foreach($threads as $thread): ?>
+    <div class="thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
+        <?php include($viewFilesPath . '/Snippet/ThreadSubject.phtml') ?>
+        <?php $post = $thread ?>
+        <?php include($viewFilesPath . '/Snippet/PostButtons.phtml') ?>
+        <?php if (!empty($post->file)): ?>
+            <figure class="post-file">
+                <a href="/<?= $board->url ?>/<?= $thread->id ?>">
+                    <?php if (in_array($post->file->extension, ['m4a', 'mp4'])): ?>
+                        <?php if ($post->file->hasThumbnail): ?>
+                            <img src="<?= $config['url']['files'] ?>/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                        <?php else: ?>
+                            <span class="no-image icon-music-note"></span>
+                        <?php endif ?>
+                        <?php if ($post->file->isGif): ?>
+                            <span class="overlay bottom right">GIF</span>
+                        <?php else: ?>
+                            <?php if ($post->file->hasSound): ?>
+                                <span class="overlay bottom right icon-volume-high"></span>
+                            <?php else: ?>
+                                <span class="overlay bottom right icon-mute"></span>
+                            <?php endif ?>
+                        <?php endif ?>
+                    <?php else: ?>
+                        <img src="<?= $config['url']['files'] ?>/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                    <?php endif ?>
+                </a>
+            </figure>
+        <?php endif ?>
+        <blockquote class="message">
+            <?= $post->getFormattedMessage() ?>
+        </blockquote>
+        <?php include($viewFilesPath . '/Snippet/ThreadMeta.phtml') ?>
+    </div>
+<?php endforeach; unset($thread); ?>
+</div>
+<?php else: ?>
+<div class="content-box">
+    <h3><?= _('There are no threads here...') ?></h3>
+</div>
+<?php endif ?>
+
+<?php include($viewFilesPath . '/Snippet/BoardNavigation.phtml') ?>

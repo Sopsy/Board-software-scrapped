@@ -1,0 +1,25 @@
+<?php include($viewFilesPath . '/Snippet/BoardHeader.phtml') ?>
+
+<?php include($viewFilesPath . '/Snippet/BoardNavigation.phtml') ?>
+<?php include($viewFilesPath . '/Snippet/PostForm.phtml') ?>
+
+<?php if ($board->url === 'followedthreads'): ?>
+<div class="board-additional-functions">
+    <button class="button primary e-follow-mark-read"><?= _('Mark all as read') ?></button>
+</div>
+<?php endif ?>
+
+<?php if (!empty($threads)): ?>
+    <?php foreach($threads as $thread): ?>
+        <?php include($viewFilesPath . '/Snippet/Thread.phtml') ?>
+    <?php endforeach; unset($thread); ?>
+<?php else: ?>
+    <div class="content-box">
+        <h3><?= _('There are no threads here...') ?></h3>
+    </div>
+<?php endif ?>
+
+<?php include($viewFilesPath . '/Snippet/BoardNavigation.phtml') ?>
+<div class="board-footer">
+    <button class="button primary create-thread"><?= _('Create a thread') ?></button>
+</div>

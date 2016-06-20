@@ -1,0 +1,175 @@
+.post {
+    padding: 10px;
+
+    // Thread replies
+    &.reply {
+        $bg: darken($contentBgColor, 4%);
+        $ownReplyBg: darken($contentBgColor, 10%);
+        @if (lightness($contentBgColor) < 50) {
+            $bg: lighten($contentBgColor, 4%);
+            $ownReplyBg: lighten($contentBgColor, 10%);
+        }
+        background-color: $bg;
+        transition: background-color $transition;
+
+        overflow: hidden;
+        margin-bottom: 5px;
+
+        // Own reply
+        &.own-post {
+            background-color: $ownReplyBg;
+        }
+    }
+
+    // Highlighted posts
+    &:target {
+        $bgColor: hsl(hue($highlightColor), 90, 90);
+        @if (lightness($contentBgColor) < 50) {
+            $bgColor: hsl(hue($highlightColor), 80, 16);
+        }
+        background-color: $bgColor !important;
+        margin-top: -100px;
+        border-top: 100px solid transparent;
+        background-clip: padding-box;
+    }
+
+    .message {
+        margin: 5px 0 10px 0;
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+
+    .post-meta {
+        display: flex;
+        min-height: $postMetaHeight;
+        @if (lightness($textColor) > 50) {
+            color: darken($textColor, 40%);
+        } @else {
+            color: lighten($textColor, 40%);
+        }
+        .user-info, .post-info {
+            display: inline-block;
+            overflow: hidden;
+        }
+        .user-info {
+            margin-right: 5px;
+        }
+        .post-info {
+            font-size: 0.85em;
+            > * {
+                margin-right: 5px;
+            }
+        }
+        .username {
+            color: $highlightColor;
+            font-weight: 600;
+        }
+        .post-id {
+            white-space: nowrap;
+            @if (lightness($textColor) > 50) {
+                color: darken($textColor, 40%);
+            } @else {
+                color: lighten($textColor, 40%);
+            }
+            &:hover {
+                color: $linkHoverColor
+            }
+        }
+    }
+
+    .post-replies {
+        font-size: 0.8em;
+        $color: #777777;
+        padding-top: 3px;
+        $borderColor: darken($contentBgColor, 10%);
+        @if (lightness($contentBgColor) < 50) {
+            $borderColor: lighten($contentBgColor, 10%);
+        }
+        border-top: 1px solid $borderColor;
+        @if (lightness($contentBgColor) < 50) {
+            $color: #999999;
+        }
+        color: $color;
+        transition:
+                color $transition,
+                border-color $transition;
+    }
+
+    .quote {
+        color: $quoteColor;
+        &.blue {
+            color: $blueQuoteColor;
+        }
+    }
+
+    .referring {
+        border-bottom: 1px dotted green;
+        font-weight: bold;
+    }
+    .invalid-ref {
+        text-decoration: line-through;
+    }
+}
+
+@import 'Posts/file';
+
+.mod-menu-html {
+    display: none;
+
+    p {
+        margin: 0 0 5px 0;
+    }
+}
+
+.post-buttons {
+    margin-left: auto;
+    display: inline-flex;
+    button {
+        border: 0;
+        padding: 0;
+        margin-left: 5px;
+        height: $postMetaHeight;
+        width: $postMetaHeight;
+        line-height: $postMetaHeight;
+        cursor: pointer;
+        font-size: 16px;
+        vertical-align: middle;
+        transition:
+                color $transition,
+                background-color $transition;
+
+        $hoverBg: rgba(0, 0, 0, 0.1);
+        $bg: rgba(0, 0, 0, 0.05);
+        $color: #111111;
+        @if (lightness($contentBgColor) < 50) {
+            $hoverBg: rgba(255, 255, 255, 0.1);
+            $bg: rgba(255, 255, 255, 0.05);
+            $color: #eeeeee;
+        }
+
+        background-color: $bg;
+        color: $color;
+        border-radius: 5px;
+        &.act {
+            background-color: hsl(hue($highlightColor), saturation($highlightColor), lightness($highlightColor));
+            color: #fff;
+        }
+        &:hover {
+            background-color: $hoverBg;
+            color: $color;
+        }
+    }
+    .icon-bookmark-remove {
+        color: $highlightColor;
+    }
+}
+
+.tooltip {
+    // When viewing reflinks
+    .post {
+        padding: 0;
+    }
+    .post-buttons, .post-replies {
+        display: none;
+    }
+}

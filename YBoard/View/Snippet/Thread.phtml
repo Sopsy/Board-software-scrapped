@@ -1,0 +1,43 @@
+<div class="thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
+    <?php include($viewFilesPath . '/Snippet/ThreadSubject.phtml') ?>
+
+    <div class="post first-post<?= ($thread->userId==$user->id?' own-post':'') ?>" id="post-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
+        <?php $post = $thread; include($viewFilesPath . '/Snippet/Post.phtml') ?>
+    </div>
+
+    <?php include($viewFilesPath . '/Snippet/ThreadMeta.phtml') ?>
+    <div class="replies">
+        <?php if($viewFile === 'Board' && !empty($thread->replies)): ?>
+            <?php if ($thread->replyCount > $config['view']['previewPosts']): ?>
+                <div class="replies-buttons">
+                    <button class="link e-more-replies"><?= _('show more replies') ?></button>
+                    <button class="link e-less-replies"><?= _('show less replies') ?></button>
+                </div>
+            <?php endif ?>
+            <div class="more-replies-container"></div>
+        <?php endif ?>
+
+        <?php foreach($thread->replies as $reply): ?>
+            <div class="post reply<?= ($reply->userId==$user->id?' own-post':'') ?><?= ($reply->userId==$thread->userId?' op-post':'') ?>"
+                 id="post-<?= $reply->id ?>" data-id="<?= $reply->id ?>">
+                <?php $post = $reply; include($viewFilesPath . '/Snippet/Post.phtml') ?>
+            </div>
+        <?php endforeach ?>
+    </div>
+
+    <div class="thread-buttons">
+        <?php if ($viewFile === 'Board'): ?>
+            <a class="link" href="/<?= $board->url ?>/<?= $thread->id ?><?=
+            $user->getThreadLastSeenReply($thread->id) !== null ? '#post-' . $user->getThreadLastSeenReply($thread->id):''
+            ?>"><?= _('open') ?></a>
+        <?php endif ?>
+        <?php if ($viewFile === 'Board' && (!$thread->locked || $user->isMod)): ?>
+            <button class="link e-thread-reply"><?= _('reply') ?></button>
+        <?php endif ?>
+        <button class="link e-get-replies"><?= _('update') ?></button>
+    </div>
+
+    <?php if ($viewFile === 'Thread' && (!$thread->locked || $user->isMod)): ?>
+        <?php include($viewFilesPath . '/Snippet/PostForm.phtml') ?>
+    <?php endif ?>
+</div>

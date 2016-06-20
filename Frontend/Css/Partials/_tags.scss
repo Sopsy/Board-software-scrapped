@@ -1,0 +1,19 @@
+.text-tag {
+    font-size: 0.7rem;
+    padding: 0 5px;
+    line-height: 15px;
+    height: 15px;
+    border-radius: 15px;
+    display: inline;
+    text-align: center;
+
+    &.nsfw {
+        color: $red;
+        font-size: 0.6rem;
+        vertical-align: top;
+    }
+    &.op {
+        background-color: $highlightColor;
+        color: #fff;
+    }
+}

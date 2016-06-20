@@ -1,0 +1,139 @@
+$postMetaHeight: 24px;
+
+body:not(.thread-page) .thread.hidden {
+    opacity: 0.1;
+    &:hover {
+        opacity: 0.5;
+    }
+    .replies, .message, .thread-buttons, .thread-meta,
+    .post-replies {
+        display: none;
+    }
+}
+
+.thread {
+    padding: 0;
+    overflow: hidden;
+    color: $textColor;
+    margin: 40px 0;
+    background-color: $contentBgColor;
+    $shadowColor: darken($bgColor, 20%);
+    @if (lightness($bgColor) < 10) {
+        $shadowColor: lighten($bgColor, 10%);
+    }
+    box-shadow: 0 0 20px 0 $shadowColor;
+    transition:
+            box-shadow $transition,
+            color $transition,
+            background-color $transition;
+
+    &:not(.expanded) {
+        .e-less-replies {
+            display: none;
+        }
+    }
+
+    #post-form {
+        display: block;
+        box-shadow: none;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+        #label-subject, h3 {
+            display: none
+        }
+    }
+    > #post-form {
+        padding: 5px;
+        margin: 0;
+    }
+    .post #post-form {
+        margin-top: 20px;
+    }
+
+    > h3 {
+        $height: 35px;
+        margin-bottom: 0;
+        font-weight: 400;
+        height: $height;
+        line-height: $height;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+        $subjectBgColor: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $subjectBgColor: lighten($contentBgColor, 5%);
+        }
+        background-color: $subjectBgColor;
+        transition: background-color $transition;
+        display: flex;
+
+        .subject {
+            flex-grow: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 0 10px
+        }
+
+        .icon {
+            flex: 0 0 $height;
+            width: $height;
+            height: $height;
+            line-height: $height;
+            background-color: $contentBgColor;
+            color: $textColor;
+            text-align: center;
+            transition:
+                    color $transition,
+                    background-color $transition;
+        }
+
+        .notification-count {
+            flex: 0 0 $height;
+            margin-left: auto;
+            min-width: $height;
+            height: $height;
+            padding: 0 5px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: hsla(hue($highlightColor), saturation($highlightColor), lightness($highlightColor), 0.8);
+            color: #fff;
+            cursor: pointer;
+            &:hover {
+                background-color: hsl(hue($highlightColor), saturation($highlightColor), lightness($highlightColor));
+            }
+        }
+    }
+
+    .thread-meta {
+        font-size: 0.85em;
+        @if (lightness($textColor) > 50) {
+            color: darken($textColor, 40%);
+        } @else {
+            color: lighten($textColor, 40%);
+        }
+        margin: 5px 10px;
+    }
+
+    .replies-buttons,
+    .thread-buttons {
+        padding: 5px 10px 10px 10px;
+        display: flex;
+        * {
+            margin-right: 10px
+        }
+    }
+
+    .replies > .ajax:last-of-type::before  {
+        content: '';
+        $color: #000;
+        @if (lightness($contentBgColor) < 50) {
+            $color: #ffffff;
+        }
+        border-top: 1px solid $color;
+        margin: 10px 0;
+        display: block;
+    }
+}

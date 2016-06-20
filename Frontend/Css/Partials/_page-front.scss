@@ -1,0 +1,19 @@
+.front-header {
+    text-align: center;
+    background: #333 url('../img/header_bg.jpg') no-repeat 50% 50%;
+    background-size: cover;
+    padding: 40px;
+    color: #fff;
+}
+
+#front-boards {
+    @include columns(150px, 20px);
+    a {
+        padding: 8px 0;
+        color: $textColor;
+        display: block;
+        &:hover {
+            color: $linkHoverColor;
+        }
+    }
+}

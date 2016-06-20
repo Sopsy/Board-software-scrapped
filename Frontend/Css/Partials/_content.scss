@@ -1,0 +1,248 @@
+body {
+    background: $bgColor;
+    font: $fontSize $fontFamily;
+    color: $textColor;
+    word-wrap: break-word;
+    margin: $topMenuHeight auto 0 auto;
+    transition:
+            background-color $transition,
+            color $transition;
+}
+
+img { max-width: 100% }
+
+a {
+    text-decoration: none;
+    color: $linkColor;
+    transition: color $transition;
+}
+a:hover { color: $linkHoverColor }
+img { vertical-align: top }
+
+button, a, input, textarea, select {
+    outline: none !important;
+    font-family: $fontFamily;
+    transition:
+            border-color $transition,
+            box-shadow $transition,
+            background-color $transition;
+}
+button {
+    font-size: $fontSize;
+}
+
+button.link {
+    color: $linkColor;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    transition: color $transition;
+
+    &:hover {
+        color: $linkHoverColor;
+    }
+}
+
+.button {
+    border: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1.5em;
+
+    $color: #000;
+    $bg: #dfdfdf;
+    @if (lightness($bgColor) < 50) {
+        $bg: #333;
+        $color: #eee
+    }
+
+    color: $color;
+    background-color: $bg;
+    transition:
+            background-color $transition,
+            color $transition;
+    &:hover {
+        background-color: darken($bg, 10%);
+    }
+
+    &.primary {
+        color: #fff;
+        background-color: $highlightColor;
+        &:hover {
+            background-color: lighten($highlightColor, 10%);
+        }
+    }
+    &.transparent {
+        color: #fff;
+        padding: 5px 0;
+        background-color: transparent;
+    }
+
+    &.square {
+        box-sizing: border-box;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        padding: 0;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+    }
+}
+
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: 400;
+}
+h2 {
+    font-size: 1.25em;
+    font-weight: 400;
+}
+h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $highlightColor;
+    margin-bottom: 20px;
+}
+h4 {
+    font-size: 1.25em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $highlightColor;
+    margin-bottom: 10px;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+#content {
+    flex-grow: 1;
+
+    .error-image {
+        margin-top: 60px;
+        max-width: 100%;
+    }
+
+    .content-box {
+        background-color: $contentBgColor;
+        $shadowColor: darken($bgColor, 5%);
+        @if (lightness($bgColor) < 10) {
+            $shadowColor: lighten($bgColor, 5%);
+        }
+        box-shadow: 0 0 10px 0 $shadowColor;
+        transition:
+                opacity 0.5s,
+                box-shadow $transition,
+                background-color $transition;
+    }
+}
+
+.content-box {
+    padding: 40px 60px;
+    margin: 20px 0;
+
+    p {
+        line-height: 1.25em;
+    }
+
+    h3 {
+        text-align: center;
+    }
+}
+
+.unread-count {
+    $size: 18px;
+    font-size: 0.6rem;
+    border-radius: $size;
+    width: $size;
+    height: $size;
+    text-align: center;
+    line-height: $size;
+    overflow: hidden;
+    font-family: $fontFamily;
+
+    &.red {
+        color: #fff;
+        background-color: darkred;
+    }
+    &.green {
+        color: #fff;
+        background: darkgreen;
+    }
+    &.none {
+        display: none !important;
+    }
+}
+
+#banned {
+    background-color: $red;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px 10px;
+    h3 {
+        font-size: 1.5em;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+    p {
+        margin: 0;
+    }
+    a {
+        color: #eee;
+    }
+    .tooltip {
+        cursor: pointer;
+    }
+}
+
+form.ajax {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+
+    .form-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        background-color: rgba(0,0,0,0.5);
+
+        > div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+}
+
+form.ajax .form-overlay .loading,
+.overlay .loading {
+    font-size: 30px;
+    color: #fff;
+    vertical-align: top;
+}
+
+code {
+    white-space: pre-wrap;
+    br {
+        display: none;
+    }
+}
