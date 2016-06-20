@@ -5,18 +5,31 @@ $textColor: #008;
 $linkColor: complement($textColor);
 
 body {
-    background: #fff url('//static.ylilauta.org/img/norpat1.png') no-repeat 50% 0;
-    background-size: 100%;
+    background: #f5f8fa;
     font: 16px "Open Sans", sans-serif;
     color: darken($baseColor, 30%);
 }
+
+img { max-width: 100% }
 
 a {
     text-decoration: none;
     color: $linkColor;
 }
-a:hover { color: #800; }
+a:hover { color: #800 }
+a img { vertical-align: top }
 //a:hover { text-decoration: underline }
+
+h1 {
+    font-size: 3em;
+    font-weight: 300;
+    margin: 0;
+}
+h2 {
+    font-size: 1.5em;
+    font-weight: 300;
+    margin: 0;
+}
 
 #sidebar {
     float: left;
@@ -47,6 +60,16 @@ a:hover { color: #800; }
 }
 
 #content {
-    padding: 20px;
     overflow: hidden;
+    .header-image {
+        margin-bottom: -150px;
+        vertical-align: top;
+    }
+}
+
+.infopage {
+    text-align: center;
+    .decoimg {
+        margin-top: 20px;
+    }
 }

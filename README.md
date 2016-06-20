@@ -19,6 +19,8 @@ Static root is static/. Example config coming soon.
 Should work with Apache, but it's not supported as we do not use that.
 
 ## Other
-For discussions in finnish, please see http://ylilauta.org/ohjelmistot/
+* You need to generate locales to the server in order for i18n translations to work.
+They use native gettext for maximum performance.
+* For discussions in finnish, please see http://ylilauta.org/ohjelmistot/
 
 Sorry for lacking comments.

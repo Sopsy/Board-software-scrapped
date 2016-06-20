@@ -31,7 +31,7 @@ abstract class ExtendedController extends YBoard\Controller
     protected function loadRequiredData()
     {
         // Load some data and insert them into the application config
-        // so they are automatically available in templates
+        // so they are automatically available in templates etc.
         $boardsModel = new Model\Boards($this->db);
         $boards = $boardsModel->getBoards();
 

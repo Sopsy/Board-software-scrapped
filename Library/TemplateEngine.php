@@ -64,10 +64,10 @@ class TemplateEngine
             throw new \Exception('Error loading the view file ' . $viewFile . ': file does not exist.');
         }
 
-        foreach ($this->variables AS $variable => $content) {
-            $$variable = $content;
-        }
+        // Extract variables set for template
+        extract($this->variables, EXTR_OVERWRITE);
 
+        // Needs output buffering to just get the executed content as a variable
         ob_start();
         require($viewFile);
         $output = ob_get_clean();
@@ -76,6 +76,7 @@ class TemplateEngine
             ob_start();
         }
 
+        // $output is used inside the template file
         require($this->viewBase . 'Template/' . $this->templateFile . '.phtml');
 
         if ($returnAsString) {
