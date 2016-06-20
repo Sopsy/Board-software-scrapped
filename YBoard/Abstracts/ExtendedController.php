@@ -57,12 +57,12 @@ abstract class ExtendedController extends YBoard\Controller
     {
         HttpResponse::setStatusCode(401);
 
-        $view = new TemplateEngine(ROOT_PATH . '/YBoard/Views/Templates/Default.phtml');
+        $view = new TemplateEngine();
 
         $view->errorTitle = 'Virheellinen pyyntö';
         $view->errorMessage = 'Pyyntöäsi ei voitu käsitellä, koska se sisälsi virheellistä tietoa. Yritä uudelleen.';
 
-        $view->display(ROOT_PATH . '/YBoard/Views/Pages/Error.phtml');
+        $view->display('Error');
 
         $this->stopExecution();
     }

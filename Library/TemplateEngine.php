@@ -24,13 +24,13 @@ class TemplateEngine
         $this->templateFile = $templateFile;
     }
 
-    protected function loadVariables($file)
+    protected function loadVariables($configFile)
     {
-        if (!$file) {
-            $file = dirname(__DIR__) . '/YBoard/Config/YBoard.php';
+        if (!$configFile) {
+            $configFile = dirname(__DIR__) . '/YBoard/Config/YBoard.php';
         }
 
-        $config = require($file);
+        $config = require($configFile);
 
         if (empty($config['app'])) {
             return false;
@@ -39,7 +39,7 @@ class TemplateEngine
         foreach ($config['app'] as $key => $val) {
             $this->variables[$key] = $val;
         }
-        
+
         return true;
     }
 

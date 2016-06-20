@@ -46,5 +46,8 @@ if (!isset($controller)) {
     throw new \Exception('No routes found for the requested URL: ' . $rawRequestUrl);
 }
 
-echo round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), 'ms<br>';
-echo round(memory_get_usage()/1024/1024, 2) . ' MB';
+// Debug: Execution time and memory usage
+echo '<!-- ',
+    round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
+    round(memory_get_usage()/1024/1024, 2) . ' MB',
+    ' -->';
