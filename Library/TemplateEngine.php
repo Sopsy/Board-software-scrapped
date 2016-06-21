@@ -6,19 +6,20 @@ class TemplateEngine
 {
     protected $variables = [];
     protected $templateFile = false;
-    protected $viewBase;
+    protected $viewFilesPath;
 
-    public function __construct($viewBase, $templateFile = false)
+    public function __construct($viewFilesPath, $templateFile = false)
     {
-        if (!is_dir($viewBase)) {
-            throw new \Exception('Invalid view base: ' . $viewBase);
+        if (!is_dir($viewFilesPath)) {
+            throw new \Exception('Invalid path for view files: ' . $viewFilesPath);
         }
-        $this->viewBase = $viewBase;
+        $this->viewFilesPath = $viewFilesPath;
+
         if (!$templateFile) {
             $templateFile = 'Default';
         }
 
-        $template = $this->viewBase . 'Template/' . $templateFile . '.phtml';
+        $template = $this->viewFilesPath . 'Template/' . $templateFile . '.phtml';
         if (!file_exists($template)) {
             throw new \Exception('Error loading the template file ' . $template . ': file does not exist.');
         }
@@ -41,7 +42,7 @@ class TemplateEngine
         if (!preg_match('/^[a-z0-9_\-]+$/i', $viewFile)) {
             throw new \Exception('Invalid view file: ' . $viewFile . '.');
         }
-        $viewFile = $this->viewBase . 'Page/' . $viewFile . '.phtml';
+        $viewFile = $this->viewFilesPath . 'Page/' . $viewFile . '.phtml';
 
         if (!file_exists($viewFile)) {
             throw new \Exception('Error loading the view file ' . $viewFile . ': file does not exist.');
@@ -60,7 +61,7 @@ class TemplateEngine
         }
 
         // $output is used inside the template file
-        require($this->viewBase . 'Template/' . $this->templateFile . '.phtml');
+        require($this->viewFilesPath . 'Template/' . $this->templateFile . '.phtml');
 
         if ($returnAsString) {
             return ob_get_clean();

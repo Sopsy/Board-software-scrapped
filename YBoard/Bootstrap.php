@@ -23,8 +23,8 @@ spl_autoload_register(function ($className) {
 
 // Set the encoding
 mb_internal_encoding('UTF-8');
-// Timezone will be moved to i18n later
-date_default_timezone_set('Europe/Helsinki');
+// Strict standards, set to something as a fallback. Will be overridden later.
+date_default_timezone_set('UTC');
 
 // Remove query string from route
 $rawRequestUrl = preg_replace('/\?.*/i', '', $_SERVER['REQUEST_URI']);
@@ -45,9 +45,3 @@ foreach ($routes AS $routeUrl => $routeTo) {
 if (!isset($controller)) {
     throw new \Exception('No routes found for the requested URL: ' . $rawRequestUrl);
 }
-
-// Debug: Execution time and memory usage
-echo '<!-- ',
-    round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
-    round(memory_get_usage()/1024/1024, 2) . ' MB',
-    ' -->';

@@ -4,7 +4,17 @@ namespace Library;
 
 class i18n
 {
-    public function __construct($localeFilesPath, $locale, $domain = 'default')
+    protected $localeFilesPath;
+    
+    public function __construct($localeFilesPath)
+    {
+        if (!is_dir($localeFilesPath)) {
+            throw new \Exception('Invalid path for locale files: ' . $localeFilesPath);
+        }
+        $this->localeFilesPath = $localeFilesPath;
+    }
+
+    public function loadLocale($locale, $domain = 'default')
     {
         $locale = addslashes($locale);
         $domain = addslashes($domain);

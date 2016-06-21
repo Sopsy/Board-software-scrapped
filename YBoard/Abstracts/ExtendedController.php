@@ -13,7 +13,8 @@ abstract class ExtendedController extends YBoard\Controller
 {
     protected $i18n;
     protected $db;
-    protected $boardList;
+    protected $boards;
+    protected $locale;
 
     public function __construct()
     {
@@ -21,6 +22,15 @@ abstract class ExtendedController extends YBoard\Controller
         $this->dbConnect();
         $this->loadRequiredData();
         $this->loadInternalization();
+    }
+
+    public function __destruct()
+    {
+        // Debug: Execution time and memory usage
+        echo '<!-- ',
+        round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
+            round(memory_get_usage()/1024/1024, 2) . ' MB',
+        ' -->';
     }
 
     protected function dbConnect()
@@ -31,29 +41,31 @@ abstract class ExtendedController extends YBoard\Controller
     protected function loadRequiredData()
     {
         // Load some data that are required on almost every page, like the list of boards and user data
-        $boardsModel = new Model\Boards($this->db);
-        $this->boardList = $boardsModel->getBoards();
+        $this->boards = new Model\Boards($this->db);
+
+        // Load user here
+        $this->locale = $this->config['i18n']['defaultLocale'];
     }
 
     protected function loadInternalization()
     {
 
-        if (empty($this->config['app']['locale'])) {
+        if (empty($this->locale)) {
             return false;
         }
 
-        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n', $this->config['app']['locale']);
+        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n', $this->locale);
     }
 
     protected function loadTemplateEngine($templateFile = 'Default')
     {
-        $templateEngine = new TemplateEngine(dirname(__DIR__) . '/View/', $templateFile);
+        $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
 
         foreach ($this->config['app'] as $var => $val) {
             $templateEngine->$var = $val;
         }
 
-        $templateEngine->boardList = $this->boardList;
+        $templateEngine->boardList = $this->boards->getBoards();
 
         return $templateEngine;
     }
@@ -63,7 +75,7 @@ abstract class ExtendedController extends YBoard\Controller
         HttpResponse::setStatusCode(404);
         $view = $this->loadTemplateEngine();
 
-        $view->pageTitle = 'Sivua ei löydy';
+        $view->pageTitle = _('Page not found');
 
         // Get a random 404-image
         $images = glob(ROOT_PATH . '/static/img/404/*.*');
