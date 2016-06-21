@@ -4,8 +4,8 @@ namespace YBoard\Abstracts;
 
 use Library\DbConnection;
 use Library\HttpResponse;
-use Library\TemplateEngine;
 use Library\i18n;
+use Library\TemplateEngine;
 use YBoard;
 use YBoard\Model;
 
@@ -13,7 +13,7 @@ abstract class ExtendedController extends YBoard\Controller
 {
     protected $i18n;
     protected $db;
-    protected $requiredData = [];
+    protected $boardList;
 
     public function __construct()
     {
@@ -30,15 +30,13 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function loadRequiredData()
     {
-        // Load some data and insert them into the application config
-        // so they are automatically available in templates etc.
+        // Load some data that are required on almost every page, like the list of boards and user data
         $boardsModel = new Model\Boards($this->db);
-        $boards = $boardsModel->getBoards();
-
-        $this->config['app']['boardList'] = $boards;
+        $this->boardList = $boardsModel->getBoards();
     }
 
-    protected function loadInternalization() {
+    protected function loadInternalization()
+    {
 
         if (empty($this->config['app']['locale'])) {
             return false;
@@ -47,8 +45,32 @@ abstract class ExtendedController extends YBoard\Controller
         $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n', $this->config['app']['locale']);
     }
 
-    protected function loadTemplateEngine($templateFile = false) {
-        return new TemplateEngine($this->config, $templateFile);
+    protected function loadTemplateEngine($templateFile = 'Default')
+    {
+        $templateEngine = new TemplateEngine(dirname(__DIR__) . '/View/', $templateFile);
+
+        foreach ($this->config['app'] as $var => $val) {
+            $templateEngine->$var = $val;
+        }
+
+        $templateEngine->boardList = $this->boardList;
+
+        return $templateEngine;
+    }
+
+    public function notFound()
+    {
+        HttpResponse::setStatusCode(404);
+        $view = $this->loadTemplateEngine();
+
+        $view->pageTitle = 'Sivua ei löydy';
+
+        // Get a random 404-image
+        $images = glob(ROOT_PATH . '/static/img/404/*.*');
+        $view->imageSrc = $this->pathToUrl($images[array_rand($images)]);
+
+        $view->display('NotFound');
+        $this->stopExecution();
     }
 
     protected function disallowNonPost()
@@ -137,29 +159,9 @@ abstract class ExtendedController extends YBoard\Controller
         $this->stopExecution();
     }
 
-    public function notFound()
-    {
-        HttpResponse::setStatusCode(404);
-        $view = $this->loadTemplateEngine();
-
-        $view->pageTitle = 'Sivua ei löydy';
-
-        // Get a random 404-image
-        $images = glob(ROOT_PATH . '/static/img/404/*.*');
-        $view->imageSrc = $this->pathToUrl($images[array_rand($images)]);
-
-        $view->display('NotFound');
-        $this->stopExecution();
-    }
-
     protected function blockAccess($pageTitle, $errorMessage)
     {
         $this->showMessage($pageTitle, $errorMessage, 403);
-    }
-
-    protected function badRequest($pageTitle, $errorMessage)
-    {
-        $this->showMessage($pageTitle, $errorMessage, 400);
     }
 
     protected function showMessage($errorTitle, $errorMessage, $httpStatus = false)
@@ -174,5 +176,10 @@ abstract class ExtendedController extends YBoard\Controller
 
         $view->display('Error');
         $this->stopExecution();
+    }
+
+    protected function badRequest($pageTitle, $errorMessage)
+    {
+        $this->showMessage($pageTitle, $errorMessage, 400);
     }
 }

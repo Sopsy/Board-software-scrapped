@@ -7,39 +7,22 @@ class TemplateEngine
     protected $variables = [];
     protected $templateFile = false;
     protected $viewBase;
-    protected $config;
 
-    public function __construct($config = false, $templateFile = false)
+    public function __construct($viewBase, $templateFile = false)
     {
-        $this->viewBase = dirname(__DIR__) . '/YBoard/View/';
+        if (!is_dir($viewBase)) {
+            throw new \Exception('Invalid view base: ' . $viewBase);
+        }
+        $this->viewBase = $viewBase;
         if (!$templateFile) {
             $templateFile = 'Default';
         }
-
-        $this->loadVariables($config);
 
         $template = $this->viewBase . 'Template/' . $templateFile . '.phtml';
         if (!file_exists($template)) {
             throw new \Exception('Error loading the template file ' . $template . ': file does not exist.');
         }
         $this->templateFile = $templateFile;
-    }
-
-    protected function loadVariables($config)
-    {
-        if (!$config) {
-            return false;
-        }
-
-        if (empty($config['app'])) {
-            return false;
-        }
-
-        foreach ($config['app'] as $key => $val) {
-            $this->variables[$key] = $val;
-        }
-
-        return true;
     }
 
     public function __get($name)
