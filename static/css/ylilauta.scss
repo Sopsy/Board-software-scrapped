@@ -1,11 +1,11 @@
 @import 'lib/normalize';
 
-$baseColor: #5096ff;
+$baseColor: #58bbf9;
 $textColor: #008;
 $linkColor: complement($textColor);
 
 body {
-    background: #f5f8fa;
+    background: lighten($baseColor, 30%);
     font: 16px "Open Sans", sans-serif;
     color: darken($baseColor, 30%);
 }
@@ -18,28 +18,30 @@ a {
 }
 a:hover { color: #800 }
 a img { vertical-align: top }
-//a:hover { text-decoration: underline }
 
-h1 {
-    font-size: 3em;
-    font-weight: 300;
-    margin: 0;
-}
-h2 {
-    font-size: 1.5em;
-    font-weight: 300;
-    margin: 0;
-}
 
 #sidebar {
+    $bgcolor: #2b3f4b;
     float: left;
     width: 200px;
     min-height: 400px;
-    padding: 10px;
+    padding: 10px 20px;
     overflow: hidden;
     font-size: 0.9em;
+    background-color: $bgcolor;
+
+    a {
+        color: #eee;
+    }
 
     nav {
+        line-height: 1.75em;
+
+        &:not(:first-of-type) {
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid lighten($bgcolor, 15%);
+        }
         a { display: block }
     }
     #logo {
@@ -49,27 +51,56 @@ h2 {
         height: $height;
         line-height: $height;
         display: block;
-        text-align: center;
         margin-bottom: 0.5em;
 
         img {
             height: $height;
             vertical-align: top;
+            margin-right: 10px;
         }
     }
 }
 
 #content {
     overflow: hidden;
-    .header-image {
-        margin-bottom: -150px;
-        vertical-align: top;
+    .page-header {
+        background: $baseColor url('../img/hoporider.jpg') no-repeat 50% 50%;
+        background-size: cover;
+        padding: 80px 20px 20px 20px;
+        color: #fff;
+        text-shadow: 0 0 10px #000;
+        box-shadow: 0 -200px 200px -120px #000 inset;
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin: 0;
+        }
+        h2 {
+            font-size: 1.25em;
+            font-weight: 300;
+            margin: 0;
+        }
     }
 }
 
-.infopage {
-    text-align: center;
-    .decoimg {
-        margin-top: 20px;
+body.notfound {
+    background-color: #838383;
+    #content {
+        background: #58bbf9 url('../img/norpat.png') no-repeat 50% 100%;
+        background-size: 100%;
+
+        .page-header {
+            text-align: center;
+            box-shadow: none;
+            text-shadow: none;
+            background: none;
+            color: #fff;
+            padding: 40px 0 30% 0;
+        }
+        .not-found-image {
+            margin-top: 60px;
+            max-width: 100%;
+        }
     }
 }

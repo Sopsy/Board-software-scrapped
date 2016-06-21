@@ -3,7 +3,6 @@
 namespace YBoard\Controller;
 
 use Library\HttpResponse;
-use Library\TemplateEngine;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Model;
 
@@ -15,6 +14,7 @@ class Board extends ExtendedController
 
         if ($this->boards->isAltUrl($boardUrl)) {
             HttpResponse::redirectExit('/' . $this->boards->getUrlByAltUrl($boardUrl) . '/', 302);
+            // TODO: Change to 301 after everything works
         }
 
         $board = $this->boards->getBoardByUrl($boardUrl);

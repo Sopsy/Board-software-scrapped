@@ -76,6 +76,7 @@ abstract class ExtendedController extends YBoard\Controller
         $view = $this->loadTemplateEngine();
 
         $view->pageTitle = _('Page not found');
+        $view->bodyClass = 'notfound';
 
         // Get a random 404-image
         $images = glob(ROOT_PATH . '/static/img/404/*.*');
@@ -120,6 +121,7 @@ abstract class ExtendedController extends YBoard\Controller
 
         $view = $this->loadTemplateEngine();
 
+        $view->bodyClass = 'error';
         $view->errorTitle = 'Virheellinen pyyntö';
         $view->errorMessage = 'Pyyntöäsi ei voitu käsitellä, koska se sisälsi virheellistä tietoa. Yritä uudelleen.';
 

@@ -23,10 +23,10 @@
         };
     </script>
 </head>
-<body>
+<body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>
 <div id="sidebar">
     <nav id="main">
-        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>"> <?= htmlspecialchars($siteName) ?></a>
+        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>"><?= htmlspecialchars($siteName) ?></a>
         <a href="/kultatili">Kultatili</a>
         <a href="/ukk">UKK</a>
         <a href="/saannot">Säännöt</a>
@@ -41,7 +41,6 @@
     </nav>
 </div>
 <div id="content">
-    <img class="header-image" src="http://static.ylilauta.org/img/norpat1.png" alt="">
     <?= $output ?>
 </div>
 </body>
