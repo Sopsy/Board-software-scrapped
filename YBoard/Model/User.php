@@ -4,10 +4,19 @@ namespace YBoard\Model;
 
 use YBoard\Library\Database;
 use YBoard\Library\HttpResponse;
+use YBoard\Library\Text;
 use YBoard;
 
 class User extends YBoard\Model
 {
+
+    public $id;
+    public $username;
+    public $userClass;
+    public $csrfToken;
+    public $ip;
+
+
     public function __construct(Database $dbConnection)
     {
         parent::__construct($dbConnection);
@@ -54,38 +63,24 @@ class User extends YBoard\Model
         return false;
     }
 
-    private function createProfile()
+    private function create()
     {
-        global $db, $engine;
+        $this->username = Text::randomStr();
+        $this->csrfToken = Text::randomStr();
+        $this->ip = $_SERVER['REMOTE_ADDR'];
 
-        $username = $db->escape($engine->randString(8));
-        $this->csrf_token = $csrf_token = $db->escape($engine->randString(8));
-        $lastIp = $db->escape(inet_pton($this->getIp()));
+        $q = $this->db->prepare("INSERT INTO user_accounts (username, csrf_token, last_ip) VALUES (:username, :csrf_token, :last_ip)");
+        $q->bindParam(':username', $this->username);
+        $q->bindParam(':csrf_token', $this->csrfToken);
+        $q->bindParam(':last_ip', inet_pton($this->ip));
+        $q->execute();
 
-        // Prevent cookieless spam
-        /*
-        $q = $db->q("SELECT * FROM user_accounts WHERE last_ip = '" . $lastIp . "' AND account_created > DATE_SUB(NOW(), INTERVAL 1 SECOND) LIMIT 1");
-        if ($q->num_rows != 0) {
-            return false;
-        }
-        */
-
-        $q = $db->q("
-			INSERT IGNORE INTO `user_accounts`
-			(`username`, `csrf_token`, `last_ip`)
-			VALUES ('" . $username . "', '" . $csrf_token . "', '" . $lastIp . "')
-		");
-
-        if ($q) {
-            $this->id = $db->mysql0->insert_id;
-
-            $this->updatePreferences('timezone', $this->getPreferredTimezone());
-            $this->updatePreferences('language', $this->getPreferredLanguage());
-
-            return $this->id;
-        } else {
+        if (!$q) {
             return false;
         }
 
+        $this->id = $this->db->lastInsertId();
+
+        return true;
     }
 }

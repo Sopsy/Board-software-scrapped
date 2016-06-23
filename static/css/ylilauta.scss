@@ -21,7 +21,7 @@ a img { vertical-align: top }
 
 
 #sidebar {
-    $bgcolor: #2b3f4b;
+    $bgcolor: #36505f;
     float: left;
     width: 200px;
     min-height: 400px;
@@ -32,8 +32,25 @@ a img { vertical-align: top }
 
     a {
         color: #eee;
+        &:hover {
+            color: lighten($bgcolor, 40%);
+        }
     }
 
+    #logo {
+        $height: 80px;
+        font-size: 1.5em;
+        font-weight: 300;
+        height: $height;
+        line-height: $height;
+        display: block;
+        margin-bottom: 0.5em;
+        img {
+            height: $height;
+            vertical-align: top;
+            margin-right: 10px;
+        }
+    }
     nav {
         line-height: 1.75em;
 
@@ -44,15 +61,16 @@ a img { vertical-align: top }
         }
         a { display: block }
         h3 {
-            color: #f08700;
+            color: lighten($bgcolor, 40%);
             margin: 0 0 10px 0;
             font-size: 1.25em;
             font-weight: 300;
         }
     }
-    #search form {
+    #search {
         background-color: darken($bgcolor, 10%);
         overflow: hidden;
+        margin-top: 10px;
         input {
             border: 0;
             float: left;
@@ -74,6 +92,7 @@ a img { vertical-align: top }
     }
     #user form {
         overflow: hidden;
+
         input[type="text"], input[type="password"] {
             background-color: darken($bgcolor, 10%);
             border: 0;
@@ -83,28 +102,8 @@ a img { vertical-align: top }
             padding: 5px 10px;
             width: calc(100% - 20px);
         }
-        input[type="submit"] {
-            margin-top: 5px;
-        }
         a {
-            margin-top: 5px;
             float: right;
-        }
-    }
-    #logo {
-        $height: 60px;
-        font-size: 1.5em;
-        font-weight: 300;
-        height: $height;
-        line-height: $height;
-        display: block;
-        margin-bottom: 0.5em;
-        color: #f08700;
-
-        img {
-            height: $height;
-            vertical-align: top;
-            margin-right: 10px;
         }
     }
 }
@@ -112,11 +111,10 @@ a img { vertical-align: top }
 .button {
     border: 0;
     padding: 5px 20px;
-    border-radius: 5px;
     cursor: pointer;
 
     &.green {
-        background-color: #6b9c00;
+        background-color: #689800;
         color: #fff;
     }
     &.transparent {

@@ -33,9 +33,8 @@
         <a href="/tietoa">Tietoa</a>
         <a href="/mainostus">Mainostajille</a>
         <a href="/english">In English</a>
-    </nav>
-    <nav id="search">
-        <form class="search" action="/search" id="cse-search-box2">
+
+        <form id="search" action="/search" id="cse-search-box2">
             <input name="cx" value="partner-pub-8488309688101323:6580750696" type="hidden">
             <input name="cof" value="FORID:10" type="hidden">
             <input name="ie" value="UTF-8" type="hidden">
@@ -45,7 +44,7 @@
     </nav>
     <nav id="user">
         <h3>Kirjaudu sisään</h3>
-        <form id="login">
+        <form id="login" action="/login" method="post">
             <input type="text" name="user" placeholder="Käyttäjätunnus">
             <input type="password" name="password" placeholder="Salasana">
             <input type="submit" class="button green" value="Kirjaudu">
