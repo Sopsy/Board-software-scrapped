@@ -34,7 +34,26 @@
         <a href="/mainostus">Mainostajille</a>
         <a href="/english">In English</a>
     </nav>
+    <nav id="search">
+        <form class="search" action="/search" id="cse-search-box2">
+            <input name="cx" value="partner-pub-8488309688101323:6580750696" type="hidden">
+            <input name="cof" value="FORID:10" type="hidden">
+            <input name="ie" value="UTF-8" type="hidden">
+            <input id="searchfield" name="q" size="24" placeholder="Hae Ylilaudalta..." type="text">
+            <input id="searchbutton" value="»" type="submit">
+        </form>
+    </nav>
+    <nav id="user">
+        <h3>Kirjaudu sisään</h3>
+        <form id="login">
+            <input type="text" name="user" placeholder="Käyttäjätunnus">
+            <input type="password" name="password" placeholder="Salasana">
+            <input type="submit" class="button green" value="Kirjaudu">
+            <a href="#" class="button transparent">Luo tunnus</a>
+        </form>
+    </nav>
     <nav id="boards">
+        <h3>Keskustelualueet</h3>
     <?php foreach($boardList as $board) { ?>
         <a href="/<?= htmlspecialchars($board['url']) ?>/"><?= htmlspecialchars($board['name']) ?></a>
     <?php } ?>
