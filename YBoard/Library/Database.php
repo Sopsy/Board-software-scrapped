@@ -1,49 +1,39 @@
 <?php
 
-namespace Library;
+namespace YBoard\Library;
 
 use PDO;
 
-class DbConnection extends PDO
+class Database extends PDO
 {
-    private $config;
+    protected $config;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
-
-        $this->config = $config;
-        if (!$this->validateConfig()) {
+        // Validate config
+        if (empty($config['pdoDsn']) || empty($config['dbUsername']) || empty($config['dbPassword'])) {
             throw new \InvalidArgumentException('Malformed ' . __CLASS__ . ' configuration data');
         }
 
-        $db = parent::__construct($this->config['pdoDsn'], $this->config['dbUsername'], $this->config['dbPassword'],
-            $this->config['pdoParams']);
+        // Set defaults
+        if (!isset($config['debug'])) {
+            $config['debug'] = false;
+        }
+        $config['debug'] = (bool)$config['debug'];
+
+        if (empty($config['pdoParams'])) {
+            $config['pdoParams'] = [];
+        }
+
+        $this->config = $config;
+
+        // Connect
+        parent::__construct($this->config['pdoDsn'], $this->config['dbUsername'],
+            $this->config['dbPassword'], $this->config['pdoParams']);
 
         if ($this->config['debug']) {
             $this->query("SET PROFILING = 1");
             $this->query("SET profiling_history_size = 100");
-        }
-
-        return $db;
-    }
-
-    private function validateConfig()
-    {
-
-        if (!is_array($this->config)) {
-            return false;
-        }
-        if (!isset($this->config['debug'])) {
-            $this->config['debug'] = false;
-        }
-        $this->config['debug'] = (bool)$this->config['debug'];
-
-        if (empty($this->config['pdoDsn']) OR empty($this->config['dbUsername']) OR empty($this->config['dbPassword'])) {
-            return false;
-        }
-
-        if (empty($this->config['pdoParams'])) {
-            $this->config['pdoParams'] = [];
         }
 
         return true;

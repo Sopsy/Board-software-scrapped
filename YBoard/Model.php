@@ -2,16 +2,15 @@
 
 namespace YBoard;
 
-use Library\DbConnection;
+use YBoard\Library\Database;
 
 abstract class Model
 {
     protected $db;
 
-    public function __construct(DbConnection $db = null)
+    public function __construct(Database $db)
     {
-        if ($db) {
-            $this->db = $db;
-        }
+        $this->db = $db;
     }
+
 }

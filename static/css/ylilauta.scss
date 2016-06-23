@@ -82,6 +82,10 @@ a img { vertical-align: top }
             margin: 0;
         }
     }
+    .error-image {
+        margin-top: 60px;
+        max-width: 100%;
+    }
 }
 
 body.notfound {
@@ -97,10 +101,6 @@ body.notfound {
             background: none;
             color: #fff;
             padding: 40px 0 30% 0;
-        }
-        .not-found-image {
-            margin-top: 60px;
-            max-width: 100%;
         }
     }
 }

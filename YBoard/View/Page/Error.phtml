@@ -1,0 +1,9 @@
+<div class="page-header">
+    <h1><?= htmlspecialchars($errorTitle) ?></h1>
+    <h2><?= htmlspecialchars($errorMessage) ?></h2>
+
+    <?php if (!empty($errorImageSrc)) : ?>
+    <img class="error-image" src="<?= htmlspecialchars($errorImageSrc) ?>" alt="">
+    <?php endif ?>
+</div>
+

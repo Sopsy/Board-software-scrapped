@@ -2,25 +2,33 @@
 
 namespace YBoard\Model;
 
+use YBoard\Library\DbConnection;
 use YBoard;
-use YBoard\Library\Database;
 
-class Boards extends YBoard\Model
+class User extends YBoard\Model
 {
     protected $boards = false;
 
-    public function __construct(Database $db)
-    {
-        parent::__construct($db);
+    public function __construct(DbConnection $dbConnection) {
+        parent::__construct($dbConnection);
+
+        $this->boards = $this->loadBoardList();
+    }
+
+    protected function loadBoardList() {
+        if ($this->boards !== false) {
+            return true;
+        }
 
         $q = $this->db->query('SELECT id, name, description, url, alt_url, is_hidden FROM boards ORDER BY name ASC');
         if ($q === false) {
             return false;
         }
-        $this->boards = $q->fetchAll(Database::FETCH_ASSOC);
+
+        return $q->fetchAll(DbConnection::FETCH_ASSOC);
     }
 
-    public function getAll() : array
+    public function getBoards() : array
     {
         return $this->boards;
     }
@@ -28,7 +36,6 @@ class Boards extends YBoard\Model
     public function isAltUrl(string $url) : bool
     {
         $exists = array_search($url, array_column($this->boards, 'alt_url'));
-
         return $exists !== false;
     }
 
@@ -37,14 +44,13 @@ class Boards extends YBoard\Model
         return $this->boards[array_search($altUrl, array_column($this->boards, 'alt_url'))]['url'];
     }
 
-    public function exists(string $url) : bool
+    public function boardExists(string $url) : bool
     {
         $exists = array_search($url, array_column($this->boards, 'url'));
-
         return $exists !== false;
     }
 
-    public function getByUrl(string $url) : array
+    public function getBoardByUrl(string $url) : array
     {
         return $this->boards[array_search($url, array_column($this->boards, 'url'))];
     }

@@ -2,15 +2,16 @@
 
 namespace YBoard\Abstracts;
 
-use Library\DbConnection;
-use Library\HttpResponse;
-use Library\i18n;
-use Library\TemplateEngine;
+use YBoard\Library\Database;
+use YBoard\Library\HttpResponse;
+use YBoard\Library\i18n;
+use YBoard\Library\TemplateEngine;
 use YBoard;
 use YBoard\Model;
 
 abstract class ExtendedController extends YBoard\Controller
 {
+    protected $config;
     protected $i18n;
     protected $db;
     protected $boards;
@@ -18,10 +19,29 @@ abstract class ExtendedController extends YBoard\Controller
 
     public function __construct()
     {
-        $this->loadConfig();
-        $this->dbConnect();
-        $this->loadRequiredData();
-        $this->loadInternalization();
+        // Load config
+        $this->config = require(ROOT_PATH . '/YBoard/Config/YBoard.php');
+
+        // Get a database connection
+        $this->db = new Database(require(ROOT_PATH . '/YBoard/Config/Database.php'));
+
+        // Load some data that are required on almost every page, like the list of boards and user data
+        $this->boards = new Model\Boards($this->db);
+
+        // Load internalization
+        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n');
+
+        // Load user here
+
+        // Get locale
+        $this->locale = $this->i18n->getPreferredLocale();
+        if (!$this->locale) {
+            // Fallback
+            $this->locale = $this->config['i18n']['defaultLocale'];
+        }
+
+        // Set locale
+        $this->i18n->loadLocale($this->locale);
     }
 
     public function __destruct()
@@ -33,30 +53,6 @@ abstract class ExtendedController extends YBoard\Controller
         ' -->';
     }
 
-    protected function dbConnect()
-    {
-        $this->db = new DbConnection(require(ROOT_PATH . '/YBoard/Config/DbConnection.php'));
-    }
-
-    protected function loadRequiredData()
-    {
-        // Load some data that are required on almost every page, like the list of boards and user data
-        $this->boards = new Model\Boards($this->db);
-
-        // Load user here
-        $this->locale = $this->config['i18n']['defaultLocale'];
-    }
-
-    protected function loadInternalization()
-    {
-
-        if (empty($this->locale)) {
-            return false;
-        }
-
-        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n', $this->locale);
-    }
-
     protected function loadTemplateEngine($templateFile = 'Default')
     {
         $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
@@ -65,24 +61,32 @@ abstract class ExtendedController extends YBoard\Controller
             $templateEngine->$var = $val;
         }
 
-        $templateEngine->boardList = $this->boards->getBoards();
+        $templateEngine->boardList = $this->boards->getAll();
 
         return $templateEngine;
     }
 
-    public function notFound()
+    public function notFound($title = false, $message = false)
     {
         HttpResponse::setStatusCode(404);
         $view = $this->loadTemplateEngine();
 
-        $view->pageTitle = _('Page not found');
+        if (!$title) {
+            $title = _('Page not found');
+        }
+        if (!$message) {
+            $message = _('You tried to go somewhere. Too bad, but there\'s no such thing here. Sorry.');
+        }
+
+        $view->pageTitle = $view->errorTitle = $title;
+        $view->errorMessage = $message;
         $view->bodyClass = 'notfound';
 
         // Get a random 404-image
         $images = glob(ROOT_PATH . '/static/img/404/*.*');
-        $view->imageSrc = $this->pathToUrl($images[array_rand($images)]);
+        $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $images[array_rand($images)]);
 
-        $view->display('NotFound');
+        $view->display('Error');
         $this->stopExecution();
     }
 

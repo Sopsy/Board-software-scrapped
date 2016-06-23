@@ -1,11 +1,11 @@
 <?php
 
-namespace Library;
+namespace YBoard\Library;
 
 class i18n
 {
     protected $localeFilesPath;
-    
+
     public function __construct($localeFilesPath)
     {
         if (!is_dir($localeFilesPath)) {
@@ -21,9 +21,14 @@ class i18n
 
         // Load localization
         setlocale(LC_ALL, $locale);
-        bindtextdomain($domain, $localeFilesPath);
+        bindtextdomain($domain, $this->localeFilesPath);
         bind_textdomain_codeset($domain, 'UTF-8');
         textdomain($domain);
+    }
+
+    public function setTimezone($tz)
+    {
+        date_default_timezone_set($tz);
     }
 
     public function getPreferredTimezone($ip = false)
@@ -35,23 +40,22 @@ class i18n
             trigger_error('Cannot find the required PHP-GeoIP library. Using the default value for timezone.',
                 E_USER_NOTICE);
 
-            return $this->config['defaultTimezone'];
+            return 'UTC';
         }
 
         $record = geoip_record_by_name($ip);
         if ($record) {
             return geoip_time_zone_by_country_and_region($record['country_code'], $record['region']);
         } else {
-            return $this->config['defaultTimezone'];
+            return 'UTC';
         }
     }
 
-    public function getPreferredLocaleFile()
+    public function getPreferredLocale()
     {
         // Originally from http://www.thefutureoftheweb.com/blog/use-accept-language-header
-
         if (!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            return $this->config['defaultLocale'] . '.php';
+            return false;
         }
 
         $locales = [];
@@ -88,7 +92,7 @@ class i18n
         array_unique($locales);
 
         foreach ($locales AS $locale => $priority) {
-            $arr = glob($this->localesPath . '/' . $locale . '*');
+            $arr = glob($this->localeFilesPath . '/' . $locale . '*');
             if (!empty($arr[0])) {
                 $arr = array_reverse(explode('/', $arr[0]));
                 $locale = $arr[0];
@@ -97,11 +101,6 @@ class i18n
             }
         }
 
-        return $this->config['defaultLocale'] . '.php';
-    }
-
-    public function setDateDefaultTimezone($tz)
-    {
-        date_default_timezone_set($tz);
+        return false;
     }
 }

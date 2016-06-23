@@ -1,4 +1,4 @@
 .idea
 sqlupdate.sql
-/YBoard/Config/DbConnection.php
+/YBoard/Config/Database.php
 /YBoard/Config/YBoard.php

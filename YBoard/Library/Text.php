@@ -1,6 +1,6 @@
 <?php
 
-namespace Library;
+namespace YBoard\Library;
 
 class Text
 {
