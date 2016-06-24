@@ -15,6 +15,7 @@ abstract class ExtendedController extends YBoard\Controller
     protected $i18n;
     protected $db;
     protected $boards;
+    protected $user;
     protected $locale;
 
     public function __construct()
@@ -31,7 +32,8 @@ abstract class ExtendedController extends YBoard\Controller
         // Load internalization
         $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n');
 
-        // Load user here
+        // Load user
+        $this->loadUser();
 
         // Get locale
         $this->locale = $this->i18n->getPreferredLocale();
@@ -48,9 +50,61 @@ abstract class ExtendedController extends YBoard\Controller
     {
         // Debug: Execution time and memory usage
         echo '<!-- ',
-        round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
+            round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
             round(memory_get_usage()/1024/1024, 2) . ' MB',
-        ' -->';
+            ' -->';
+    }
+
+    protected function loadUser()
+    {
+        $this->user = new Model\User($this->db);
+
+        if (!empty($_COOKIE['user'])) {
+            $session = str_split($_COOKIE['user'], 32);
+
+            if (count($session) != 2) {
+                $this->deleteLoginCookie();
+            }
+
+            $userId = $session[1];
+            $sessionId = $session[0];
+
+            $load = $this->user->load($userId);
+            if (!$load) {
+                $this->deleteLoginCookie();
+            }
+
+            if (!$this->user->verifySession($userId, $sessionId)) {
+                $this->deleteLoginCookie();
+            }
+        } else {
+            // Session does not exist
+            if ($this->userMaybeBot()) {
+                return false;
+            }
+
+            $createUser = $this->user->create();
+            if (!$createUser) {
+                $this->dieWithError(500);
+            }
+            $createSession = $this->user->createSession($this->user->id);
+            if (!$createSession) {
+                $this->dieWithError(500);
+            }
+
+            $this->setLoginCookie($this->user->sessionId . $this->user->id);
+        }
+    }
+
+    protected function deleteLoginCookie()
+    {
+        HttpResponse::setCookie('user', '', false);
+        HttpResponse::redirectExit($_SERVER['REQUEST_URI']);
+    }
+
+    protected function setLoginCookie($val)
+    {
+        HttpResponse::setCookie('user', $val);
     }
 
     protected function loadTemplateEngine($templateFile = 'Default')
@@ -68,26 +122,7 @@ abstract class ExtendedController extends YBoard\Controller
 
     public function notFound($title = false, $message = false)
     {
-        HttpResponse::setStatusCode(404);
-        $view = $this->loadTemplateEngine();
-
-        if (!$title) {
-            $title = _('Page not found');
-        }
-        if (!$message) {
-            $message = _('You tried to go somewhere. Too bad, but there\'s no such thing here. Sorry.');
-        }
-
-        $view->pageTitle = $view->errorTitle = $title;
-        $view->errorMessage = $message;
-        $view->bodyClass = 'notfound';
-
-        // Get a random 404-image
-        $images = glob(ROOT_PATH . '/static/img/404/*.*');
-        $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $images[array_rand($images)]);
-
-        $view->display('Error');
-        $this->stopExecution();
+        $this->dieWithMessage($title, $message, 404);
     }
 
     protected function disallowNonPost()
@@ -121,17 +156,9 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function invalidData()
     {
-        HttpResponse::setStatusCode(401);
-
-        $view = $this->loadTemplateEngine();
-
-        $view->bodyClass = 'error';
-        $view->errorTitle = 'Virheellinen pyyntö';
-        $view->errorMessage = 'Pyyntöäsi ei voitu käsitellä, koska se sisälsi virheellistä tietoa. Yritä uudelleen.';
-
-        $view->display('Error');
-
-        $this->stopExecution();
+        $title = _('Invalid request');
+        $message = _('Your request did not complete because it contained invalid information.');
+        $this->dieWithMessage($title, $message, 401);
     }
 
     protected function validateCsrfToken($token)
@@ -162,6 +189,8 @@ abstract class ExtendedController extends YBoard\Controller
         }
 
         $this->ajaxCsrfValidationFail();
+
+        return false;
     }
 
     protected function ajaxCsrfValidationFail()
@@ -179,10 +208,19 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function blockAccess($pageTitle, $errorMessage)
     {
-        $this->showMessage($pageTitle, $errorMessage, 403);
+        $this->dieWithMessage($pageTitle, $errorMessage, 403);
     }
 
-    protected function showMessage($errorTitle, $errorMessage, $httpStatus = false)
+    protected function dieWithError($httpStatus = 500, $errorTitle = false, $errorMessage = false)
+    {
+        if (!$errorTitle) {
+            $errorTitle = _('Oh noes!');
+            $errorMessage = _('We\'re terribly sorry. An internal error occurred when we tried to complete your request.');
+        }
+        $this->dieWithMessage($errorTitle, $errorMessage, $httpStatus);
+    }
+
+    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false)
     {
         if ($httpStatus && is_int($httpStatus)) {
             HttpResponse::setStatusCode($httpStatus);
@@ -192,6 +230,17 @@ abstract class ExtendedController extends YBoard\Controller
         $view->pageTitle = $view->errorTitle = $errorTitle;
         $view->errorMessage = $errorMessage;
 
+        if ($httpStatus == 500) {
+            $images = glob(ROOT_PATH . '/static/img/500/*.*');
+            $view->bodyClass = 'internalerror';
+        } elseif ($httpStatus == 404) {
+            $images = glob(ROOT_PATH . '/static/img/404/*.*');
+            $view->bodyClass = 'notfound';
+        }
+        if (!empty($images)) {
+            $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $images[array_rand($images)]);
+        }
+
         $view->display('Error');
         $this->stopExecution();
     }
@@ -199,5 +248,27 @@ abstract class ExtendedController extends YBoard\Controller
     protected function badRequest($pageTitle, $errorMessage)
     {
         $this->showMessage($pageTitle, $errorMessage, 400);
+    }
+
+    protected function userMaybeBot()
+    {
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) // Great way of detecting crawlers!
+        {
+            return true;
+        }
+
+        if (empty($_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        if (preg_match('/Baiduspider/i', $_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        if (preg_match('/msnbot/i', $_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        return false;
     }
 }

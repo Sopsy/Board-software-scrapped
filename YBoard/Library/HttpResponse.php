@@ -17,12 +17,12 @@ class HttpResponse
     public static function setCookie($name, $value, $ttlDays = 365) : bool
     {
         if ($ttlDays !== false) {
-            $ttl = (int)$ttlDays * 86400;
+            $expire = time() + ((int)$ttlDays * 86400);
         } else {
-            $ttl = 1;
+            $expire = 1;
         }
 
-        return setcookie($name, $value, $ttl, '/', null, false, true) !== false;
+        return setcookie($name, $value, $expire, '/', null, false, true) !== false;
     }
 
     public static function setStatusCode($statusCode, $additionalHeaders = false)
