@@ -21,9 +21,11 @@ class Database extends PDO
         }
         $config['debug'] = (bool)$config['debug'];
 
-        if (empty($config['pdoParams'])) {
-            $config['pdoParams'] = [];
-        }
+        $config['pdoParams'] = [
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ];
 
         $this->config = $config;
 
