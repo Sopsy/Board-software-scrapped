@@ -17,13 +17,6 @@ class User extends YBoard\Model
     public $ip;
     public $isRegistered;
 
-    public function logout()
-    {
-        // TODO: Destroy session here
-
-        return true;
-    }
-
     public function load(int $userId)
     {
         $q = $this->db->prepare("SELECT * FROM user_accounts WHERE id = ? LIMIT 1");
@@ -103,8 +96,8 @@ class User extends YBoard\Model
         $this->csrfToken = Text::randomStr();
 
         $q = $this->db->prepare("INSERT INTO user_accounts (username, csrf_token) VALUES (:username, :csrfToken)");
-        $q->bindParam(':username', $this->username);
-        $q->bindParam(':csrfToken', $this->csrfToken);
+        $q->bindParam('username', $this->username);
+        $q->bindParam('csrfToken', $this->csrfToken);
         $q->execute();
 
         if (!$q) {
@@ -114,6 +107,17 @@ class User extends YBoard\Model
         $this->id = $this->db->lastInsertId();
 
         return true;
+    }
+
+    public function delete($userId)
+    {
+        $q = $this->db->prepare("DELETE FROM user_accounts WHERE id = :userId LIMIT 1");
+        $q->bindParam('userId', $userId);
+        $q->execute();
+        // Relations will handle the deletion of rest of the data, so we don't have to care.
+        // Thank you relations!
+
+        return $q !== false;
     }
 
     public function createSession($userId)
@@ -126,11 +130,12 @@ class User extends YBoard\Model
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
 
-        if ($q !== false) {
-            $this->sessionId = $sessionId;
-            return true;
+        if ($q === false) {
+            throw new \Exception('Cannot create session for user');
         }
-        return false;
+
+        $this->sessionId = $sessionId;
+        return true;
     }
 
     public function verifySession($userId, $sessionId)
@@ -153,6 +158,24 @@ class User extends YBoard\Model
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
 
+        return true;
+    }
+
+    public function destroyCurrentSession() {
+        return $this->destroySession($this->id, $this->sessionId);
+    }
+
+    public function destroySession($userId, $sessionId)
+    {
+        $q = $this->db->prepare("DELETE FROM user_sessions WHERE user_id = :userId AND session_id = UNHEX(:sessionId) LIMIT 1");
+        $q->bindValue('userId', (int)$userId);
+        $q->bindValue('sessionId', $sessionId);
+        $q->execute();
+
+        if ($q === false) {
+            throw new \Exception('Cannot destroy user session');
+        }
+        
         return true;
     }
 }

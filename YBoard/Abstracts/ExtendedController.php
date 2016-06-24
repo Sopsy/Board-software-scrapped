@@ -2,15 +2,18 @@
 
 namespace YBoard\Abstracts;
 
+use YBoard;
 use YBoard\Library\Database;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\i18n;
 use YBoard\Library\TemplateEngine;
-use YBoard;
 use YBoard\Model;
+use YBoard\Traits\ErrorPages;
 
 abstract class ExtendedController extends YBoard\Controller
 {
+    use ErrorPages;
+
     protected $config;
     protected $i18n;
     protected $db;
@@ -49,10 +52,8 @@ abstract class ExtendedController extends YBoard\Controller
     public function __destruct()
     {
         // Debug: Execution time and memory usage
-        echo '<!-- ',
-            round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'])*1000, 2), ' ms ',
-            round(memory_get_usage()/1024/1024, 2) . ' MB',
-            ' -->';
+        echo '<!-- ', round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
+            2), ' ms ', round(memory_get_usage() / 1024 / 1024, 2) . ' MB', ' -->';
     }
 
     protected function loadUser()
@@ -85,26 +86,77 @@ abstract class ExtendedController extends YBoard\Controller
 
             $createUser = $this->user->create();
             if (!$createUser) {
-                $this->dieWithError(500);
+                $this->dieWithError();
             }
             $createSession = $this->user->createSession($this->user->id);
             if (!$createSession) {
-                $this->dieWithError(500);
+                $this->dieWithError();
             }
 
             $this->setLoginCookie($this->user->sessionId . $this->user->id);
         }
     }
 
-    protected function deleteLoginCookie()
-    {
-        HttpResponse::setCookie('user', '', false);
-        HttpResponse::redirectExit($_SERVER['REQUEST_URI']);
-    }
-
     protected function setLoginCookie($val)
     {
         HttpResponse::setCookie('user', $val);
+    }
+
+    protected function deleteLoginCookie($reload = true)
+    {
+        HttpResponse::setCookie('user', '', false);
+        if ($reload) {
+            HttpResponse::redirectExit($_SERVER['REQUEST_URI']);
+        }
+    }
+
+    protected function userMaybeBot()
+    {
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) // Great way of detecting crawlers!
+        {
+            return true;
+        }
+
+        if (empty($_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        if (preg_match('/Baiduspider/i', $_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        if (preg_match('/msnbot/i', $_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false)
+    {
+        if ($httpStatus && is_int($httpStatus)) {
+            HttpResponse::setStatusCode($httpStatus);
+        }
+        $view = $this->loadTemplateEngine();
+
+        $view->pageTitle = $view->errorTitle = $errorTitle;
+        $view->errorMessage = $errorMessage;
+
+        $view->bodyClass = 'error';
+        if ($httpStatus == 500) {
+            $images = glob(ROOT_PATH . '/static/img/500/*.*');
+            $view->bodyClass .= ' internalerror';
+        } elseif ($httpStatus == 404) {
+            $images = glob(ROOT_PATH . '/static/img/404/*.*');
+            $view->bodyClass .= ' notfound';
+        }
+        if (!empty($images)) {
+            $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '',
+                    $images[array_rand($images)]);
+        }
+
+        $view->display('Error');
+        $this->stopExecution();
     }
 
     protected function loadTemplateEngine($templateFile = 'Default')
@@ -118,11 +170,6 @@ abstract class ExtendedController extends YBoard\Controller
         $templateEngine->boardList = $this->boards->getAll();
 
         return $templateEngine;
-    }
-
-    public function notFound($title = false, $message = false)
-    {
-        $this->dieWithMessage($title, $message, 404);
     }
 
     protected function disallowNonPost()
@@ -154,20 +201,13 @@ abstract class ExtendedController extends YBoard\Controller
         echo json_encode(['error' => $error, 'message' => $str]);
     }
 
-    protected function invalidData()
-    {
-        $title = _('Invalid request');
-        $message = _('Your request did not complete because it contained invalid information.');
-        $this->dieWithMessage($title, $message, 401);
-    }
-
     protected function validateCsrfToken($token)
     {
-        if (empty($token) || empty($_SESSION['csrfToken'])) {
+        if (empty($token) || empty($this->user->csrfToken)) {
             return false;
         }
 
-        if ($token == $_SESSION['csrfToken']) {
+        if ($token == $this->user->csrfToken) {
             return true;
         }
 
@@ -180,11 +220,11 @@ abstract class ExtendedController extends YBoard\Controller
             $this->ajaxCsrfValidationFail();
         }
 
-        if (empty($_SERVER['HTTP_X_CSRF_TOKEN']) || empty($_SESSION['csrfToken'])) {
+        if (empty($_SERVER['HTTP_X_CSRF_TOKEN']) || empty($this->user->csrfToken)) {
             $this->ajaxCsrfValidationFail();
         }
 
-        if ($_SERVER['HTTP_X_CSRF_TOKEN'] == $_SESSION['csrfToken']) {
+        if ($_SERVER['HTTP_X_CSRF_TOKEN'] == $this->user->csrfToken) {
             return true;
         }
 
@@ -204,71 +244,5 @@ abstract class ExtendedController extends YBoard\Controller
     {
         $this->jsonMessage($str, true);
         $this->stopExecution();
-    }
-
-    protected function blockAccess($pageTitle, $errorMessage)
-    {
-        $this->dieWithMessage($pageTitle, $errorMessage, 403);
-    }
-
-    protected function dieWithError($httpStatus = 500, $errorTitle = false, $errorMessage = false)
-    {
-        if (!$errorTitle) {
-            $errorTitle = _('Oh noes!');
-            $errorMessage = _('We\'re terribly sorry. An internal error occurred when we tried to complete your request.');
-        }
-        $this->dieWithMessage($errorTitle, $errorMessage, $httpStatus);
-    }
-
-    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false)
-    {
-        if ($httpStatus && is_int($httpStatus)) {
-            HttpResponse::setStatusCode($httpStatus);
-        }
-        $view = $this->loadTemplateEngine();
-
-        $view->pageTitle = $view->errorTitle = $errorTitle;
-        $view->errorMessage = $errorMessage;
-
-        if ($httpStatus == 500) {
-            $images = glob(ROOT_PATH . '/static/img/500/*.*');
-            $view->bodyClass = 'internalerror';
-        } elseif ($httpStatus == 404) {
-            $images = glob(ROOT_PATH . '/static/img/404/*.*');
-            $view->bodyClass = 'notfound';
-        }
-        if (!empty($images)) {
-            $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $images[array_rand($images)]);
-        }
-
-        $view->display('Error');
-        $this->stopExecution();
-    }
-
-    protected function badRequest($pageTitle, $errorMessage)
-    {
-        $this->showMessage($pageTitle, $errorMessage, 400);
-    }
-
-    protected function userMaybeBot()
-    {
-        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) // Great way of detecting crawlers!
-        {
-            return true;
-        }
-
-        if (empty($_SERVER['HTTP_USER_AGENT'])) {
-            return true;
-        }
-
-        if (preg_match('/Baiduspider/i', $_SERVER['HTTP_USER_AGENT'])) {
-            return true;
-        }
-
-        if (preg_match('/msnbot/i', $_SERVER['HTTP_USER_AGENT'])) {
-            return true;
-        }
-
-        return false;
     }
 }
