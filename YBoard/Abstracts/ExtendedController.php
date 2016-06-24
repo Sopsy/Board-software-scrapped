@@ -8,11 +8,11 @@ use YBoard\Library\HttpResponse;
 use YBoard\Library\i18n;
 use YBoard\Library\TemplateEngine;
 use YBoard\Model;
-use YBoard\Traits\ErrorPages;
 
 abstract class ExtendedController extends YBoard\Controller
 {
-    use ErrorPages;
+    use YBoard\Traits\ErrorPages;
+    use YBoard\Traits\Cookies;
 
     protected $config;
     protected $i18n;
@@ -60,23 +60,12 @@ abstract class ExtendedController extends YBoard\Controller
     {
         $this->user = new Model\User($this->db);
 
-        if (!empty($_COOKIE['user'])) {
-            $session = str_split($_COOKIE['user'], 32);
+        $sessionId = $this->getLoginCookie();
+        if ($sessionId !== false) {
 
-            if (count($session) != 2) {
-                $this->deleteLoginCookie();
-            }
-
-            $userId = $session[1];
-            $sessionId = $session[0];
-
-            $load = $this->user->load($userId);
+            $load = $this->user->load($sessionId);
             if (!$load) {
-                $this->deleteLoginCookie();
-            }
-
-            if (!$this->user->loadSession($userId, $sessionId)) {
-                $this->deleteLoginCookie();
+                $this->deleteLoginCookie(true);
             }
         } else {
             // Session does not exist
@@ -93,20 +82,7 @@ abstract class ExtendedController extends YBoard\Controller
                 $this->dieWithError();
             }
 
-            $this->setLoginCookie($this->user->sessionId . $this->user->id);
-        }
-    }
-
-    protected function setLoginCookie($val)
-    {
-        HttpResponse::setCookie('user', $val);
-    }
-
-    protected function deleteLoginCookie($reload = true)
-    {
-        HttpResponse::setCookie('user', '', false);
-        if ($reload) {
-            HttpResponse::redirectExit($_SERVER['REQUEST_URI']);
+            $this->setLoginCookie($this->user->sessionId);
         }
     }
 
@@ -163,6 +139,7 @@ abstract class ExtendedController extends YBoard\Controller
         }
 
         $templateEngine->csrfToken = $this->user->csrfToken;
+        $templateEngine->user = $this->user;
         $templateEngine->boardList = $this->boards->getAll();
 
         return $templateEngine;

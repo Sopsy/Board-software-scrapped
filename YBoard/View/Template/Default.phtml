@@ -43,13 +43,23 @@
         </form>
     </nav>
     <nav id="user">
+        <?php if (!$user->loggedIn) : ?>
         <h3>Kirjaudu sisään</h3>
         <form id="login" action="/login" method="post">
-            <input type="text" name="user" placeholder="Käyttäjätunnus">
+            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+            <input type="hidden" name="redirto" value="<?= $_SERVER['REQUEST_URI'] ?>">
+            <input type="text" name="username" placeholder="Käyttäjätunnus">
             <input type="password" name="password" placeholder="Salasana">
             <input type="submit" class="button green" value="Kirjaudu">
             <a href="#" class="button transparent">Luo tunnus</a>
         </form>
+        <?php else : ?>
+        <h3><?= $user->username ?></h3>
+        <form id="logout" action="/logout" method="post">
+            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+            <input type="submit" value="<?= _('Logout') ?>">
+        </form>
+        <?php endif ?>
     </nav>
     <nav id="boards">
         <h3>Keskustelualueet</h3>

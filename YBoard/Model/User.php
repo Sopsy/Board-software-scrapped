@@ -8,29 +8,41 @@ use YBoard\Library\Database;
 
 class User extends YBoard\Model
 {
+    const PASSWORD_HASH_COST = 12;
+    const PASSWORD_HASH_TYPE = PASSWORD_BCRYPT;
 
     public $id;
     public $sessionId;
     public $username;
-    public $userClass;
+    public $class;
     public $csrfToken;
     public $ip;
-    public $isRegistered;
+    public $loggedIn;
 
-    public function load(int $userId)
+    public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT * FROM user_accounts WHERE id = ? LIMIT 1");
-        $q->execute([$userId]);
+        $q = $this->db->prepare("SELECT * FROM user_sessions LEFT JOIN user_accounts ON id = user_id WHERE session_id = :sessionId LIMIT 1");
+        $q->bindValue('sessionId', $sessionId);
+        $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
         }
 
         $user = $q->fetch();
-        $this->id = $user['id'];
-        $this->username = $user['username'];
-        $this->userClass = $user['user_class'];
-        $this->isRegistered = empty($user['password']) ? false : true;
+        $this->id = $user->id;
+        $this->sessionId = $user->session_id;
+        $this->csrfToken = bin2hex($user->csrf_token);
+        $this->username = $user->username;
+        $this->class = $user->class;
+        $this->loggedIn = empty($user->password) ? false : true;
+
+        // Update last active -timestamp and IP-address
+        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip) WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
+        $q->bindValue('userId', (int)$this->id);
+        $q->bindValue('sessionId', $this->sessionId);
+        $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
+        $q->execute();
 
         return true;
     }
@@ -117,6 +129,47 @@ class User extends YBoard\Model
         return $q !== false;
     }
 
+    public function validateLogin($username, $password)
+    {
+        $q = $this->db->prepare("SELECT id, password, class FROM user_accounts WHERE username = ? LIMIT 1");
+        $q->execute([$username]);
+
+        if ($q->rowCount() == 0) {
+            // Prevent leaking of usernames by timing the page loads
+            password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
+            return false;
+        }
+
+        $user = $q->fetch();
+
+        if (empty($user->password)) {
+            // Prevent leaking of usernames by timing the page loads
+            password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
+            return false;
+        }
+
+        if (password_verify($password, $user->password)) {
+            $this->id = $user->id;
+            $this->class = $user->class;
+            return true;
+        }
+
+        return false;
+    }
+
+    public function setPassword($userId, $newPassword)
+    {
+        // Do note that this function does not verify old password!
+        $newPassword = password_hash($newPassword, static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
+
+        $q = $this->db->prepare("UPDATE user_accounts SET password = :newPassword WHERE id = :userId LIMIT 1");
+        $q->bindValue('newPassword', $newPassword);
+        $q->bindValue('userId', $userId);
+        $q->execute();
+
+        return $q !== false;
+    }
+
     public function createSession($userId)
     {
         $sessionId = random_bytes(32);
@@ -138,6 +191,7 @@ class User extends YBoard\Model
         return true;
     }
 
+    /*
     public function loadSession($userId, $sessionId)
     {
         $q = $this->db->prepare("SELECT user_id, session_id, csrf_token FROM user_sessions WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
@@ -153,23 +207,23 @@ class User extends YBoard\Model
         // Update last active -timestamp and IP-address
         $session = $q->fetch();
         $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip) WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
-        $q->bindValue('userId', (int)$session['user_id']);
-        $q->bindValue('sessionId', $session['session_id']);
+        $q->bindValue('userId', (int)$session->user_id);
+        $q->bindValue('sessionId', $session->session_id);
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
 
-        $this->csrfToken = bin2hex($session['csrf_token']);
+        $this->csrfToken = bin2hex($session->csrf_token);
         return true;
     }
+    */
 
     public function destroyCurrentSession() {
-        return $this->destroySession($this->id, $this->sessionId);
+        return $this->destroySession($this->sessionId);
     }
 
-    public function destroySession($userId, $sessionId)
+    public function destroySession($sessionId)
     {
-        $q = $this->db->prepare("DELETE FROM user_sessions WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
-        $q->bindValue('userId', (int)$userId);
+        $q = $this->db->prepare("DELETE FROM user_sessions WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
 
