@@ -30,7 +30,6 @@ class User extends YBoard\Model
         $this->id = $user['id'];
         $this->username = $user['username'];
         $this->userClass = $user['user_class'];
-        $this->csrfToken = $user['csrf_token'];
         $this->isRegistered = empty($user['password']) ? false : true;
 
         return true;
@@ -93,11 +92,9 @@ class User extends YBoard\Model
     public function create()
     {
         $this->username = Text::randomStr();
-        $this->csrfToken = Text::randomStr();
 
-        $q = $this->db->prepare("INSERT INTO user_accounts (username, csrf_token) VALUES (:username, :csrfToken)");
+        $q = $this->db->prepare("INSERT INTO user_accounts (username) VALUES (:username)");
         $q->bindParam('username', $this->username);
-        $q->bindParam('csrfToken', $this->csrfToken);
         $q->execute();
 
         if (!$q) {
@@ -122,11 +119,13 @@ class User extends YBoard\Model
 
     public function createSession($userId)
     {
-        $sessionId = md5(uniqid(true) . $userId);
+        $sessionId = random_bytes(32);
+        $csrfToken = random_bytes(32);
 
-        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, ip) VALUES (:userId, UNHEX(:sessionId), INET6_ATON(:ip))");
+        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, csrf_token, ip) VALUES (:userId, :sessionId, :csrfToken, INET6_ATON(:ip))");
         $q->bindValue('userId', (int)$userId);
         $q->bindValue('sessionId', $sessionId);
+        $q->bindParam('csrfToken', $csrfToken);
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
 
@@ -135,12 +134,13 @@ class User extends YBoard\Model
         }
 
         $this->sessionId = $sessionId;
+        $this->csrfToken = bin2hex($csrfToken);
         return true;
     }
 
-    public function verifySession($userId, $sessionId)
+    public function loadSession($userId, $sessionId)
     {
-        $q = $this->db->prepare("SELECT user_id, session_id FROM user_sessions WHERE user_id = :userId AND session_id = UNHEX(:sessionId) LIMIT 1");
+        $q = $this->db->prepare("SELECT user_id, session_id, csrf_token FROM user_sessions WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
         $q->bindValue('userId', (int)$userId);
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
@@ -158,6 +158,7 @@ class User extends YBoard\Model
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
 
+        $this->csrfToken = bin2hex($session['csrf_token']);
         return true;
     }
 
@@ -167,7 +168,7 @@ class User extends YBoard\Model
 
     public function destroySession($userId, $sessionId)
     {
-        $q = $this->db->prepare("DELETE FROM user_sessions WHERE user_id = :userId AND session_id = UNHEX(:sessionId) LIMIT 1");
+        $q = $this->db->prepare("DELETE FROM user_sessions WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
         $q->bindValue('userId', (int)$userId);
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
@@ -175,7 +176,7 @@ class User extends YBoard\Model
         if ($q === false) {
             throw new \Exception('Cannot destroy user session');
         }
-        
+
         return true;
     }
 }

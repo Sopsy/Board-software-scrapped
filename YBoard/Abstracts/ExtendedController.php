@@ -75,7 +75,7 @@ abstract class ExtendedController extends YBoard\Controller
                 $this->deleteLoginCookie();
             }
 
-            if (!$this->user->verifySession($userId, $sessionId)) {
+            if (!$this->user->loadSession($userId, $sessionId)) {
                 $this->deleteLoginCookie();
             }
         } else {
@@ -132,7 +132,7 @@ abstract class ExtendedController extends YBoard\Controller
         return false;
     }
 
-    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false)
+    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false, $bodyClass = false, $image = false)
     {
         if ($httpStatus && is_int($httpStatus)) {
             HttpResponse::setStatusCode($httpStatus);
@@ -143,16 +143,11 @@ abstract class ExtendedController extends YBoard\Controller
         $view->errorMessage = $errorMessage;
 
         $view->bodyClass = 'error';
-        if ($httpStatus == 500) {
-            $images = glob(ROOT_PATH . '/static/img/500/*.*');
-            $view->bodyClass .= ' internalerror';
-        } elseif ($httpStatus == 404) {
-            $images = glob(ROOT_PATH . '/static/img/404/*.*');
-            $view->bodyClass .= ' notfound';
+        if (!empty($bodyClass)) {
+            $view->bodyClass .= ' ' . $bodyClass;
         }
-        if (!empty($images)) {
-            $view->errorImageSrc = $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '',
-                    $images[array_rand($images)]);
+        if (!empty($image)) {
+            $view->errorImageSrc = $image;
         }
 
         $view->display('Error');
@@ -167,6 +162,7 @@ abstract class ExtendedController extends YBoard\Controller
             $templateEngine->$var = $val;
         }
 
+        $templateEngine->csrfToken = $this->user->csrfToken;
         $templateEngine->boardList = $this->boards->getAll();
 
         return $templateEngine;
