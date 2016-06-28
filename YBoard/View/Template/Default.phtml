@@ -64,7 +64,7 @@
             <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
         </form>
         <?php else : ?>
-        <h3><?= $user->username ?></h3>
+        <h3><?= htmlspecialchars($user->username) ?></h3>
         <form id="logout" action="/logout" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="submit" class="link" value="<?= _('Log out') ?>">

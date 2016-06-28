@@ -113,7 +113,7 @@ class User extends YBoard\Model
         $q = $this->db->query("INSERT INTO user_accounts VALUES ()");
 
         if ($q === false) {
-            Throw new DatabaseException(_('Could not create a user account...'));
+            Throw new DatabaseException(_('Could not create an user account...'));
         }
 
         $this->id = $this->db->lastInsertId();
