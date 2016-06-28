@@ -3,8 +3,7 @@
 namespace YBoard\Model;
 
 use YBoard;
-use YBoard\Library\Text;
-use YBoard\Library\Database;
+use YBoard\Exceptions\DatabaseException;
 
 class User extends YBoard\Model
 {
@@ -21,7 +20,9 @@ class User extends YBoard\Model
 
     public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT * FROM user_sessions LEFT JOIN user_accounts ON id = user_id WHERE session_id = :sessionId LIMIT 1");
+        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class FROM user_sessions
+            LEFT JOIN user_accounts ON id = user_id
+            WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
 
@@ -35,10 +36,11 @@ class User extends YBoard\Model
         $this->csrfToken = bin2hex($user->csrf_token);
         $this->username = $user->username;
         $this->class = $user->class;
-        $this->loggedIn = empty($user->password) ? false : true;
+        $this->loggedIn = empty($user->username) ? false : true;
 
         // Update last active -timestamp and IP-address
-        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip) WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
+        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip)
+            WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
         $q->bindValue('userId', (int)$this->id);
         $q->bindValue('sessionId', $this->sessionId);
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
@@ -98,19 +100,20 @@ class User extends YBoard\Model
         }
 
         $q->execute();
-        return $q !== false;
+
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not update the user account...'));
+        }
+
+        return true;
     }
 
     public function create()
     {
-        $this->username = Text::randomStr();
+        $q = $this->db->query("INSERT INTO user_accounts VALUES ()");
 
-        $q = $this->db->prepare("INSERT INTO user_accounts (username) VALUES (:username)");
-        $q->bindParam('username', $this->username);
-        $q->execute();
-
-        if (!$q) {
-            return false;
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not create a user account...'));
         }
 
         $this->id = $this->db->lastInsertId();
@@ -126,7 +129,11 @@ class User extends YBoard\Model
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
 
-        return $q !== false;
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not delete the user account...'));
+        }
+
+        return true;
     }
 
     public function validateLogin($username, $password)
@@ -134,9 +141,14 @@ class User extends YBoard\Model
         $q = $this->db->prepare("SELECT id, password, class FROM user_accounts WHERE username = ? LIMIT 1");
         $q->execute([$username]);
 
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not validate login info...'));
+        }
+
         if ($q->rowCount() == 0) {
             // Prevent leaking of usernames by timing the page loads
             password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
+
             return false;
         }
 
@@ -145,20 +157,26 @@ class User extends YBoard\Model
         if (empty($user->password)) {
             // Prevent leaking of usernames by timing the page loads
             password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
+
             return false;
         }
 
         if (password_verify($password, $user->password)) {
             $this->id = $user->id;
             $this->class = $user->class;
+
             return true;
         }
 
         return false;
     }
 
-    public function setPassword($userId, $newPassword)
+    public function setPassword($newPassword, $userId = false)
     {
+        if ($userId === false) {
+            $userId = $this->id;
+        }
+
         // Do note that this function does not verify old password!
         $newPassword = password_hash($newPassword, static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
 
@@ -167,7 +185,29 @@ class User extends YBoard\Model
         $q->bindValue('userId', $userId);
         $q->execute();
 
-        return $q !== false;
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not set password for the user account...'));
+        }
+
+        return true;
+    }
+
+    public function setUsername($newUsername, $userId = false)
+    {
+        if ($userId === false) {
+            $userId = $this->id;
+        }
+
+        $q = $this->db->prepare("UPDATE user_accounts SET username = :newUsername WHERE id = :userId LIMIT 1");
+        $q->bindValue('newUsername', $newUsername);
+        $q->bindValue('userId', $userId);
+        $q->execute();
+
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not set username for the user account...'));
+        }
+
+        return true;
     }
 
     public function createSession($userId)
@@ -183,54 +223,46 @@ class User extends YBoard\Model
         $q->execute();
 
         if ($q === false) {
-            throw new \Exception('Cannot create session for user');
+            throw new DatabaseException(_('Could not create session for the user account..'));
         }
 
         $this->sessionId = $sessionId;
         $this->csrfToken = bin2hex($csrfToken);
+
         return true;
     }
 
-    /*
-    public function loadSession($userId, $sessionId)
+    public function destroySession($sessionId = false)
     {
-        $q = $this->db->prepare("SELECT user_id, session_id, csrf_token FROM user_sessions WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
-        $q->bindValue('userId', (int)$userId);
-        $q->bindValue('sessionId', $sessionId);
-        $q->execute();
-
-        // Invalid session
-        if ($q->rowCount() != 1) {
-            return false;
+        if ($sessionId === false) {
+            $sessionId = $this->sessionId;
         }
 
-        // Update last active -timestamp and IP-address
-        $session = $q->fetch();
-        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip) WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
-        $q->bindValue('userId', (int)$session->user_id);
-        $q->bindValue('sessionId', $session->session_id);
-        $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
-        $q->execute();
-
-        $this->csrfToken = bin2hex($session->csrf_token);
-        return true;
-    }
-    */
-
-    public function destroyCurrentSession() {
-        return $this->destroySession($this->sessionId);
-    }
-
-    public function destroySession($sessionId)
-    {
         $q = $this->db->prepare("DELETE FROM user_sessions WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
 
         if ($q === false) {
-            throw new \Exception('Cannot destroy user session');
+            throw new DatabaseException(_('Could not destroy the login session...'));
         }
 
         return true;
+    }
+
+    public function usernameIsFree($username)
+    {
+        $q = $this->db->prepare("SELECT id FROM user_accounts WHERE username LIKE :username LIMIT 1");
+        $q->bindValue('username', $username);
+        $q->execute();
+
+        if ($q === false) {
+            throw new DatabaseException(_('Could not check if the username is free...'));
+        }
+
+        if ($q->rowCount() == 0) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -117,6 +117,11 @@ abstract class ExtendedController extends YBoard\Controller
 
         $view->pageTitle = $view->errorTitle = $errorTitle;
         $view->errorMessage = $errorMessage;
+        
+        // Support for "state saving", for login etc.
+        if (!empty($_POST['redirto'])) {
+            $view->redirTo = $_POST['redirto'];
+        }
 
         $view->bodyClass = 'error';
         if (!empty($bodyClass)) {
@@ -139,6 +144,7 @@ abstract class ExtendedController extends YBoard\Controller
         }
 
         $templateEngine->csrfToken = $this->user->csrfToken;
+        $templateEngine->reCaptchaPublicKey = $this->config['reCaptcha']['publicKey'];
         $templateEngine->user = $this->user;
         $templateEngine->boardList = $this->boards->getAll();
 

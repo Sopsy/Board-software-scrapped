@@ -30,6 +30,16 @@ a img { vertical-align: top }
     font-size: 0.9em;
     background-color: $bgcolor;
 
+    button.link, input.link {
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        cursor: pointer;
+        color: #eee;
+        &:hover {
+            color: lighten($bgcolor, 40%);
+        }
+    }
     a {
         color: #eee;
         &:hover {
@@ -102,8 +112,11 @@ a img { vertical-align: top }
             padding: 5px 10px;
             width: calc(100% - 20px);
         }
-        a {
+        button.transparent {
             float: right;
+        }
+        #signupform {
+            display: none;
         }
     }
 }
@@ -112,13 +125,14 @@ a img { vertical-align: top }
     border: 0;
     padding: 5px 20px;
     cursor: pointer;
+    color: #fff;
 
     &.green {
         background-color: #689800;
-        color: #fff;
     }
     &.transparent {
         padding: 5px 0;
+        background-color: transparent;
     }
 }
 
