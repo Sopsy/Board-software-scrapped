@@ -21,6 +21,19 @@ spl_autoload_register(function ($className) {
     }
 });
 
+// Exception handler
+set_exception_handler(function (Throwable $e) {
+    $auxMessage = false;
+    if (get_class($e) == 'YBoard\Exceptions\DatabaseException') {
+        $auxMessage = $e->getMessage();
+    }
+    $c = new \YBoard\Controller\BasicErrors();
+    $c->showException(false, false, $auxMessage);
+
+    error_log(get_class($e) . ': ' . $e->getMessage() . ' in file ' . $e->getFile() . ' on line ' . $e->getLine());
+    die();
+});
+
 // Set the encoding
 mb_internal_encoding('UTF-8');
 // Strict standards, set to something as a fallback. Will be overridden later.

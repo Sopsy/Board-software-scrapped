@@ -117,6 +117,18 @@ a img { vertical-align: top }
         }
         #signupform {
             display: none;
+
+            .g-recaptcha {
+                background-color: #222;
+                margin-bottom: 5px;
+                overflow: hidden;
+                > div {
+                    height: 136px;
+                    margin: -2px auto 5px -2px;
+                    overflow: hidden;
+                    width: 155px;
+                }
+            }
         }
     }
 }

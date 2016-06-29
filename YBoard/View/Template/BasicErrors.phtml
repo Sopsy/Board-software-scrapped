@@ -1,0 +1,40 @@
+<?php header('Content-Type: text/html; charset=utf-8'); ?>
+<!doctype html>
+<html>
+<head>
+    <title><?= (!empty($pageTitle)?htmlspecialchars($pageTitle):'Oh noes!') ?></title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300">
+
+    <style>
+        html {
+            min-height: 100%;
+        }
+        body {
+            margin: 0;
+            /* You probably need to change this url... */
+            background: #58bbf9 url('//static.northpole.fi/img/norpat.png') no-repeat 50% 100%;
+            background-size: 100%;
+            font: 300 16px "Open Sans", sans-serif;
+        }
+        h1, h2 { font-weight: 300 }
+        h1 { font-size: 2.5em }
+        .page-header {
+            text-align: center;
+            box-shadow: none;
+            text-shadow: none;
+            background: none;
+            color: #fff;
+            padding: 40px 0 30% 0;
+        }
+    </style>
+</head>
+<body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>
+
+<?= $output ?>
+
+</body>
+</html>

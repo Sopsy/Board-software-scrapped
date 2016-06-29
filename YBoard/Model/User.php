@@ -20,11 +20,15 @@ class User extends YBoard\Model
 
     public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class FROM user_sessions
+        $q = $this->db->prepare("SELECT id, ssession_id, csrf_token, username, class FROM user_sessions
             LEFT JOIN user_accounts ON id = user_id
             WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
+
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not load your user account...'));
+        }
 
         if ($q->rowCount() == 0) {
             return false;
@@ -45,6 +49,10 @@ class User extends YBoard\Model
         $q->bindValue('sessionId', $this->sessionId);
         $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
         $q->execute();
+
+        if ($q === false) {
+            Throw new DatabaseException(_('Could not refresh your user account...'));
+        }
 
         return true;
     }
