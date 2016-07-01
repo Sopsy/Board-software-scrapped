@@ -1,4 +1,31 @@
-<div class="page-header">
+<header class="page-header front">
+    <img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" height="300">
     <h1><?= $siteName ?></h1>
     <h2><?= $siteMotto ?></h2>
+</header>
+
+<div class="content-box front">
+    <h3>Tervetuloa Ylilaudalle, Suomen suosituimmalle keskustelufoorumille!</h3>
+    <p>
+        Ylilaudan käytäminen on täysin anonyymiä - viestien lähettäminen ei vaadi rekisteröitymistä tai edes nimimerkin käyttämistä.<br>
+        Ylilauta on suomen aktiivisin keskustelufoorumi - joka kuukausi Ylilaudan 3 miljoonaa kuukausittaista vierailijaa lähettää keskusteluihin yli miljoona viestiä ja lukee lankoja yhteensä lähes 30 miljoonaa kertaa.
+    </p>
+    <p><strong>Ajattele, mitä kirjoitat. Muista, että ruudun toisella puolella on oikeita ihmisiä, jotka saattavat loukkaantua viestistäsi.</strong></p>
+    <p><strong><em>Varoitus: Saattaa aiheuttaa voimakasta riippuvuutta!</em></strong></p>
+    <p>
+        Luethan <a href="/saannot">Ylilaudan säännöt</a> ennen viestien lähettämistä!<br>
+        Mikäli olet uusi käyttäjä, voit testailla viestien lähettämistä <a href="/hiekkalaatikko/">Ylilaudan hiekkalaatikolla</a>.
+    </p>
+</div>
+
+
+<div class="content-box front">
+    <h3><?= _('Discussion boards') ?></h3>
+    <nav id="front-boards">
+        <?php foreach($boardList as $board) : ?>
+        <a href="/<?= htmlspecialchars($board['url']) ?>/"
+            <?= ($board['nsfw']?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board['name']) ?><?php if($board['nsfw']) :
+            ?><span class="nsfwtag"><?= _('NSFW') ?></span><?php endif ?></a>
+        <?php endforeach ?>
+    </nav>
 </div>

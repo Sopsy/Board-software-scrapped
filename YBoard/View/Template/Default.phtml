@@ -11,7 +11,7 @@
 
     <base href="<?= $baseUrl ?>">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,800,700italic,800italic">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:100,100italic,300,300italic,400,400italic,700,700italic">
     <link rel="stylesheet" href="<?= $staticUrl ?>/css/ylilauta.css">
     <link rel="icon" href="<?= $staticUrl ?>/img/favicon.png">
 
@@ -49,7 +49,7 @@
         </form>
     </nav>
     <nav id="user">
-        <?php if (!$user->loggedIn) : ?>
+    <?php if (!$user->loggedIn) : ?>
         <h3><?= _('Log in') ?></h3>
         <form id="login" action="/login" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
@@ -63,19 +63,21 @@
             <input type="submit" class="button green" name="login" id="loginbutton" value="<?= _('Log_in') ?>">
             <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
         </form>
-        <?php else : ?>
+    <?php else : ?>
         <h3><?= htmlspecialchars($user->username) ?></h3>
         <form id="logout" action="/logout" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="submit" class="link" value="<?= _('Log out') ?>">
         </form>
-        <?php endif ?>
+    <?php endif ?>
     </nav>
     <nav id="boards">
         <h3><?= _('Discussion boards') ?></h3>
-    <?php foreach($boardList as $board) { ?>
-        <a href="/<?= htmlspecialchars($board['url']) ?>/"><?= htmlspecialchars($board['name']) ?></a>
-    <?php } ?>
+    <?php foreach($boardList as $board) : ?>
+        <a href="/<?= htmlspecialchars($board['url']) ?>/"
+            <?= ($board['nsfw']?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board['name']) ?><?php if($board['nsfw']) :
+            ?><span class="nsfwtag"><?= _('NSFW') ?></span><?php endif ?></a>
+    <?php endforeach ?>
     </nav>
 </div>
 <div id="content">

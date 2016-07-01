@@ -13,7 +13,7 @@ class Boards extends YBoard\Model
     {
         parent::__construct($db);
 
-        $q = $this->db->query('SELECT id, name, description, url, alt_url, is_hidden FROM boards ORDER BY name ASC');
+        $q = $this->db->query('SELECT id, name, description, url, alt_url, nsfw, is_hidden FROM boards ORDER BY name ASC');
         if ($q === false) {
             return false;
         }
