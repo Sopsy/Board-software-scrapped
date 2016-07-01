@@ -29,7 +29,7 @@
     #logo {
         $height: 80px;
         font-size: 1.5em;
-        font-weight: 300;
+        font-weight: 400;
         height: $height;
         line-height: $height;
         display: block;
@@ -53,7 +53,7 @@
             color: lighten($bgcolor, 40%);
             margin: 0 0 10px 0;
             font-size: 1.25em;
-            font-weight: 300;
+            font-weight: 400;
         }
         @include nsfwtag();
     }

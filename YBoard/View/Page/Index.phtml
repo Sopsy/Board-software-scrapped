@@ -1,11 +1,7 @@
-<header class="front-header">
-    <img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" height="300">
-    <h1><?= $siteName ?></h1>
-    <h2><?= $siteMotto ?></h2>
-</header>
+<?php $this->getPartial('Snippets/InfoPageHeader.phtml'); ?>
 
 <div class="content-box front">
-    <h3>Tervetuloa Ylilaudalle, Suomen suosituimmalle keskustelufoorumille!</h3>
+    <h3><?= _('Welcome to Ylilauta, the biggest discussion board in Finland!') ?></h3>
     <p>
         Ylilaudan käyttäminen on täysin anonyymiä - viestien lähettäminen ei vaadi rekisteröitymistä tai edes nimimerkin käyttämistä.<br>
         Ylilauta on suomen aktiivisin keskustelufoorumi - joka kuukausi Ylilaudan 3 miljoonaa kuukausittaista vierailijaa lähettää keskusteluihin yli miljoona viestiä ja lukee lankoja yhteensä lähes 30 miljoonaa kertaa.

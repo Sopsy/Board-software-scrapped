@@ -39,7 +39,7 @@ class TemplateEngine
     public function display($viewFile, $returnAsString = false)
     {
         // Validate viewFile
-        if (!preg_match('/^[a-z0-9_\-]+$/i', $viewFile)) {
+        if (!preg_match('/^[a-z0-9_\-\/]+$/i', $viewFile)) {
             throw new \Exception('Invalid view file: ' . $viewFile . '.');
         }
         $viewFile = $this->viewFilesPath . 'Page/' . $viewFile . '.phtml';
@@ -79,5 +79,13 @@ class TemplateEngine
         $title .= $this->variables['siteName'];
 
         return $title;
+    }
+
+    protected function getPartial($file) {
+        // Might use quite a bit of memory if getPartial is used extensively...
+        // Maybe test it out later.
+        extract($this->variables, EXTR_OVERWRITE);
+
+        return include($this->viewFilesPath . $file);
     }
 }

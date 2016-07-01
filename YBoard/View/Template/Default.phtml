@@ -33,12 +33,11 @@
 <div id="sidebar">
     <nav id="main">
         <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>"><?= htmlspecialchars($siteName) ?></a>
-        <a href="/kultatili">Kultatili</a>
-        <a href="/ukk">UKK</a>
-        <a href="/saannot">Säännöt</a>
-        <a href="/tietoa">Tietoa</a>
-        <a href="/mainostus">Mainostajille</a>
-        <a href="/english">In English</a>
+        <a href="/gold"><?= _('Gold account') ?></a>
+        <a href="/faq"><?= _('FAQ') ?></a>
+        <a href="/rules"><?= _('Rules') ?></a>
+        <a href="/about"><?= _('About') ?></a>
+        <a href="/advertising"><?= _('Advertising') ?></a>
 
         <form id="search" action="/search" id="cse-search-box2">
             <input name="cx" value="partner-pub-8488309688101323:6580750696" type="hidden">
@@ -64,7 +63,8 @@
             <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
         </form>
     <?php else : ?>
-        <h3><?= htmlspecialchars($user->username) ?></h3>
+        <h3><a href="/profile"><?= htmlspecialchars($user->username) ?></a></h3>
+        <a href="/preferences"><?= _('Preferences') ?></a>
         <form id="logout" action="/logout" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="submit" class="link" value="<?= _('Log out') ?>">

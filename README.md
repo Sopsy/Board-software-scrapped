@@ -10,11 +10,10 @@ Code style is PSR-1/PSR-2, please follow that.
 * More to come
 
 For Nginx you should just forward all requests (or just for files that do not exist) to public/index.php.
-Example config coming soon.
 
 You also need to setup a different domain for static content.
 Do not run any PHP code under that domain, just plain Nginx.
-Static root is static/. Example config coming soon.
+Static root is static/.
 
 Should work with Apache, but it's not supported as we do not use that.
 
