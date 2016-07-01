@@ -3,12 +3,12 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 
-class Index extends ExtendedController
+class GoldAccount extends ExtendedController
 {
     public function index()
     {
         $view = $this->loadTemplateEngine();
 
-        $view->display('Index');
+        $view->display('Gold');
     }
 }

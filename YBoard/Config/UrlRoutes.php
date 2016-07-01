@@ -4,6 +4,9 @@
 // URL Regex => array(Controller name, Action name]
 return [
     '#^/$#' => ['Index', 'index'],
+
+    '#^/gold#' => ['GoldAccount', 'index'],
+
     '#^/faq#' => ['InfoPages', 'faq'],
     '#^/rules#' => ['InfoPages', 'rules'],
     '#^/about#' => ['InfoPages', 'about'],
@@ -12,7 +15,7 @@ return [
     '#^/login$#' => ['LogInOut', 'login'],
     '#^/logout$#' => ['LogInOut', 'logout'],
 
-    '#^/([a-z0-9]+)-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'index'],
+    '#^/([a-z0-9]+)-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'index'], // Checked at the end
 
     '#.*#' => ['Errors', 'notFound'], // Everything else should just return a 404
 ];
