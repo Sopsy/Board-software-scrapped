@@ -2,3 +2,53 @@
     <h1><?= $board['name'] ?><?= ($pageNum>1?' sivu ' . $pageNum:'') ?></h1>
     <h2><?= $board['description'] ?></h2>
 </header>
+
+<div class="content-box">
+    <form id="post" action="/scripts/post" method="post">
+        <h4><?= _('Create a thread') ?></h4>
+        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+        <input type="hidden" name="board" value="<?= $board['id'] ?>">
+        <label id="label-subject">
+            <span><?= _('Subject') ?></span>
+            <input type="text" name="subject" placeholder="<?= _('Subject') ?>">
+        </label>
+        <label id="label-file">
+            <span><?= _('File') ?> <span><100MB</span></span>
+            <input type="file" name="files" multiple accept=".jpg,.png">
+        </label>
+
+        <div id="message-input">
+            <div id="format-toolbar">
+                <a class="icon-bold" onclick="addBbCode('b')"></a>
+                <a class="icon-italic" onclick="addBbCode('em')"></a>
+                <a class="icon-strikethrough" onclick="addBbCode('s')"></a>
+                <a class="icon-underline" onclick="addBbCode('u')"></a>
+                <a class="icon-eye-crossed" onclick="addBbCode('spoiler')"></a>
+                <a class="icon-plus" onclick="addBbCode('big')"></a>
+                <a class="icon-minus" onclick="addBbCode('small')"></a>
+                <a class="icon-bubble-quote" onclick="addBbCode('quote')"></a>
+                <a class="icon-code" onclick="addBbCode('code')"></a>
+                <a class="icon-superscript" onclick="addBbCode('sup')"></a>
+                <a class="icon-subscript" onclick="addBbCode('sub')"></a>
+                <a class="icon-palette" onclick="$('#colorbuttons').toggle()"></a>
+                <a class="icon-popout right" onclick="$('#post').toggleClass('asyncreply')"></a>
+                <div id="colorbuttons" style="display: none;">
+                    <a class="icon-palette black" onclick="addBbCode('black')"></a>
+                    <a class="icon-palette gray" onclick="addBbCode('gray')"></a>
+                    <a class="icon-palette white" onclick="addBbCode('white')"></a>
+                    <a class="icon-palette brown" onclick="addBbCode('brown')"></a>
+                    <a class="icon-palette red" onclick="addBbCode('red')"></a>
+                    <a class="icon-palette orange" onclick="addBbCode('orange')"></a>
+                    <a class="icon-palette yellow" onclick="addBbCode('yellow')"></a>
+                    <a class="icon-palette green" onclick="addBbCode('green')"></a>
+                    <a class="icon-palette blue" onclick="addBbCode('blue')"></a>
+                    <a class="icon-palette purple" onclick="addBbCode('purple')"></a>
+                    <a class="icon-palette pink" onclick="addBbCode('pink')"></a>
+                </div>
+            </div>
+            <textarea name="message" placeholder="<?= _('Message') ?>" required></textarea>
+        </div>
+        <button onclick="event.preventDefault();$('#post-options').toggle()" class="button gray"><?= _('Options') ?></button>
+        <input type="submit" class="button green" value="<?= _('Submit') ?>">
+    </form>
+</div>

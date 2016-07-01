@@ -29,9 +29,16 @@ a img { vertical-align: top }
     border: 0;
     padding: 5px 20px;
     cursor: pointer;
-    color: #fff;
 
+    &.gray {
+        color: #000;
+        background-color: #ccc;
+        &:hover {
+            background-color: #d5d5d5;
+        }
+    }
     &.green {
+        color: #fff;
         background-color: #689800;
         &:hover {
             background-color: #72a500;
@@ -43,18 +50,19 @@ a img { vertical-align: top }
     }
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     margin: 0;
 }
 
 #content {
     overflow: hidden;
     .page-header {
-        background: lighten($baseColor, 5%) url('../img/ES-meri.jpg') repeat-x 0 100%;
-        background-size: contain;
-        padding: 60px 20px 20px 20px;
+        background: lighten($baseColor, 5%) url('../img/header_bg.jpg') no-repeat 50% 50%;
+        background-size: cover;
+        padding: 80px 20px 20px 20px;
         color: #fff;
-        @include text-stroke();
+        box-shadow: 100px -100px 120px -100px #000 inset;
+        text-shadow: 0 0 40px #000, 0 0 10px #000;
     }
     .error-image {
         margin-top: 60px;
@@ -76,6 +84,13 @@ h1, h2, h3 {
         color: $titleColor;
         margin-bottom: 20px;
     }
+    h4 {
+        font-size: 1.25em;
+        font-weight: 400;
+        line-height: 1.5em;
+        color: $titleColor;
+        margin-bottom: 10px;
+    }
 }
 .content-box {
     padding: 40px 60px;
@@ -91,3 +106,4 @@ h1, h2, h3 {
 @import 'partials/sidebar';
 @import 'partials/errorpage';
 @import 'partials/frontpage';
+@import 'partials/postform';

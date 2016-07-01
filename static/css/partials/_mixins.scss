@@ -27,3 +27,7 @@
         }
     }
 }
+
+@mixin input-shadow($color: #ddd) {
+    box-shadow: 0 1px 4px $color inset;
+}
