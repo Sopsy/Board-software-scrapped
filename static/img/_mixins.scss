@@ -1,0 +1,29 @@
+@mixin text-stroke($color: #000) {
+    text-shadow: -1px -1px 0 $color,
+    1px -1px 0 $color,
+    -1px  1px 0 $color,
+    1px  1px 0 $color,
+    1px 0 0 $color,
+    0  1px 0 $color,
+    -1px  0 0 $color,
+    0 -1px 0 $color;
+}
+
+@mixin nsfwtag() {
+    .nsfwboard {
+        position: relative;
+        padding-right: 50px;
+        .nsfwtag {
+            position: absolute;
+            right: 0;
+            font-size: 0.7rem;
+            background-color: $nsfwColor;
+            color: #fff;
+            padding: 3px 5px;
+            line-height: 1em;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 20px;
+        }
+    }
+}
