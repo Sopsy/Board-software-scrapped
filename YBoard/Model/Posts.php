@@ -6,7 +6,7 @@ use YBoard\Library\Text;
 
 class Posts extends Model
 {
-    public function getThread($id, $metaOnly = false)
+    public function getThread(int $id, bool $metaOnly = false)
     {
         if (!$metaOnly) {
             $selectFields = ', username, subject, message';
@@ -53,6 +53,48 @@ class Posts extends Model
         return $thread;
     }
 
+    public function getBoardThreads(int $boardId, int $count, int $replyCount) : array
+    {
+        $q = $this->db->prepare('SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
+            sticky, username, subject, message FROM posts WHERE board_id = :board_id AND thread_id IS NULL
+            LIMIT ' . (int)$count);
+        $q->bindValue('board_id', $boardId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        $threads = [];
+
+        while ($row = $q->fetch()) {
+            if (empty($row->subject)) {
+                $row->subject = $this->createSubject($row->message);
+            }
+
+            // Assign values to a class to return
+            // Maybe create a "Thread" -class instead of stdClass?
+            $thread = new \stdClass();
+            $thread->id = $row->id;
+            $thread->locked = (bool)$row->locked;
+            $thread->boardId = $row->board_id;
+            $thread->userId = $row->user_id;
+            $thread->ip = inet_ntop($row->ip);
+            $thread->countryCode = $row->country_code;
+            $thread->time = strtotime($row->time . ' UTC');
+            $thread->locked = $row->locked;
+            $thread->sticky = $row->sticky;
+            $thread->points = $row->upvote_count;
+            $thread->username = $row->username;
+            $thread->subject = $row->subject;
+            $thread->message = $row->message;
+            $thread->replies = $this->getReplies($row->id);
+            $threads[] = $thread;
+        }
+
+        return $threads;
+    }
+
     protected function getReplies(int $threadId, int $count = null, bool $newest = false) : array
     {
         if ($newest) {
@@ -94,7 +136,7 @@ class Posts extends Model
         return $replies;
     }
 
-    protected function createSubject($message)
+    protected function createSubject(string $message) : string
     {
         $subject = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
         $subject = Text::stripBbCode($subject);
@@ -105,16 +147,16 @@ class Posts extends Model
         return $subject;
     }
 
-    public function createThread($userId, $boardId, $subject, $message, $username, $ip, $countryCode)
+    public function createThread(int $userId, int $boardId, string $subject, string $message, string $username,
+        string $ip, string $countryCode) : int
     {
         $q = $this->db->prepare("INSERT INTO posts
             (user_id, board_id, ip, country_code, username, subject, message, bump_time, locked, sticky)
-            VALUES
-            (:user_id, :board_id, :ip, :country_code, :username, :subject, :message, NOW(), 0, 0)
+            VALUES (:user_id, :board_id, :ip, :country_code, :username, :subject, :message, NOW(), 0, 0)
         ");
 
-        $q->bindValue('user_id', (int)$userId);
-        $q->bindValue('board_id', (int)$boardId);
+        $q->bindValue('user_id', $userId);
+        $q->bindValue('board_id', $boardId);
         $q->bindValue('ip', inet_pton($ip));
         $q->bindValue('country_code', $countryCode);
         $q->bindValue('username', $username);
@@ -126,16 +168,16 @@ class Posts extends Model
         return $this->db->lastInsertId();
     }
 
-    public function addReply($userId, $threadId, $message, $username, $ip, $countryCode)
+    public function addReply(int $userId, int $threadId, string $message, string $username, string $ip,
+        string $countryCode) : int
     {
         $q = $this->db->prepare("INSERT INTO posts
             (user_id, thread_id, ip, country_code, username, message)
-            VALUES
-            (:user_id, :thread_id, :ip, :country_code, :username, :message)
+            VALUES (:user_id, :thread_id, :ip, :country_code, :username, :message)
         ");
 
-        $q->bindValue('user_id', (int)$userId);
-        $q->bindValue('thread_id', (int)$threadId);
+        $q->bindValue('user_id', $userId);
+        $q->bindValue('thread_id', $threadId);
         $q->bindValue('ip', inet_pton($ip));
         $q->bindValue('country_code', $countryCode);
         $q->bindValue('username', $username);
@@ -146,10 +188,10 @@ class Posts extends Model
         return $this->db->lastInsertId();
     }
 
-    public function bumpThread($threadId)
+    public function bumpThread(int $threadId) : bool
     {
         $q = $this->db->prepare("UPDATE posts SET bump_time = NOW() WHERE id = :thread_id LIMIT 1");
-        $q->bindValue('thread_id', (int)$threadId);
+        $q->bindValue('thread_id', $threadId);
         $q->execute();
 
         return true;

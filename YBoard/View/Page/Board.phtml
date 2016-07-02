@@ -4,3 +4,10 @@
 </header>
 
 <?php $this->getPartial('Snippets/PostForm') ?>
+
+<?php foreach($threads as $thread) : ?>
+<div class="content-box">
+    <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= $thread->subject ?></a></h3>
+    <?php var_dump($thread) ?>
+</div>
+<?php endforeach ?>

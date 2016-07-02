@@ -3,7 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Library\HttpResponse;
-use YBoard\Model;
+use YBoard\Model\Posts;
 
 class Board extends ExtendedController
 {
@@ -19,11 +19,13 @@ class Board extends ExtendedController
             $this->notFound(_('Not found'), sprintf(_('There\'s no such thing as a board called "%s" here.'), $boardUrl));
         }
 
+        $posts = new Posts($this->db);
+        
         $view = $this->loadTemplateEngine();
 
         $board = $this->boards->getByUrl($boardUrl);
-
-        // TODO: Maybe we should get some posts too...
+        
+        $view->threads = $posts->getBoardThreads($board->id, 10, 3);
 
         $view->board = $board;
         $view->pageNum = $pageNum;
