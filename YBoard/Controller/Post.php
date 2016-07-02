@@ -2,9 +2,9 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
-use YBoard\Model;
+use YBoard\Model\Posts;
 
-class Posts extends ExtendedController
+class Post extends ExtendedController
 {
     public function submit()
     {
@@ -15,7 +15,7 @@ class Posts extends ExtendedController
             $this->throwJsonError(403, _('You are banned...'));
         }
 
-        $postsModel = new Model\Posts($this->db);
+        $posts = new Posts($this->db);
 
         // Is this a reply or a new thread?
         if (empty($_POST['thread'])) {
@@ -35,7 +35,7 @@ class Posts extends ExtendedController
                 $this->throwJsonError(400, _('Please type a message'));
             }
         } else { // Replying to a thread
-            $thread = $postsModel->getThread($_POST['thread']);
+            $thread = $posts->getThread($_POST['thread']);
 
             // Verify thread
             if (!$thread) {
@@ -82,7 +82,7 @@ class Posts extends ExtendedController
 
         // TODO: Check word blacklist
 
-        $subject = NULL;
+        $subject = null;
         if (!$isReply && isset($_POST['subject'])) {
             $subject = trim(mb_substr($_POST['subject'], 0, $this->config['posts']['subjectMaxLength']));
         }
@@ -98,11 +98,14 @@ class Posts extends ExtendedController
         $username = $this->user->username;
 
         if (!$isReply) {
-            $postId = $postsModel->createThread($this->user->id, $board->id, $subject, $message, $username, $_SERVER['REMOTE_ADDR'], $countryCode);
+            $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
+                $_SERVER['REMOTE_ADDR'], $countryCode);
         } else {
-            $postId = $postsModel->addReply($thread->id, $message);
+            $postId = $posts->addReply($thread->id, $message);
         }
 
+        // TODO: Bump thread
+        // TODO: Update thread stats
         // TODO: Save replies
         // TODO: Save tags
         // TODO: Process uploaded file(s)

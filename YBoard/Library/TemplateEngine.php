@@ -86,6 +86,6 @@ class TemplateEngine
         // Maybe test it out later.
         extract($this->variables, EXTR_OVERWRITE);
 
-        return include($this->viewFilesPath . $file);
+        return include($this->viewFilesPath . $file . '.phtml');
     }
 }

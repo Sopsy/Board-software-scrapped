@@ -19,12 +19,12 @@ return [
     '#^/logout$#' => ['LogInOut', 'logout'],
 
     // Scripts
-    '#^/scripts/post$#' => ['Posts', 'submit'],
+    '#^/scripts/post$#' => ['Post', 'submit'],
 
     // Boards
     // Checked at the end so other rules override
-    '#^/([a-z0-9]+)-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'index'],
-    '#^/([a-z0-9]+)/([0-9]+)$#' => ['Thread', 'index'],
+    '#^/([a-zA-Z0-9åäö]+)-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'index'],
+    '#^/([a-zA-Z0-9åäö]+)/([0-9]+)$#' => ['Thread', 'index'],
 
     // Everything else should just return a 404
     '#.*#' => ['Errors', 'notFound'],

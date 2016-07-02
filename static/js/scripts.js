@@ -79,7 +79,6 @@ function submitPost(e) {
         }
     }).done(function (data, textStatus, xhr) {
         toastr.success(messages.messageSent);
-        $('#post-progress').find('div').css('width', '');
         form[0].reset();
     }).fail(function (xhr, textStatus, errorThrown) {
         if (xhr.responseText.length != 0) {
@@ -90,6 +89,7 @@ function submitPost(e) {
         }
         toastr.error(errorThrown, messages.errorOccurred);
     }).always(function () {
+        $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
     });
 }

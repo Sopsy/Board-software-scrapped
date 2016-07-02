@@ -51,11 +51,14 @@ abstract class ExtendedController extends YBoard\Controller
 
     public function __destruct()
     {
+        $resourceUsage = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
+            2) . ' ms ' . round(memory_get_usage() / 1024 / 1024, 2) . ' MB';
         // Only for non-ajax requests
         if (!isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
             // Debug: Execution time and memory usage
-            echo '<!-- ', round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
-                2), ' ms ', round(memory_get_usage() / 1024 / 1024, 2) . ' MB', ' -->';
+            echo '<!-- ' . $resourceUsage . ' -->';
+        } else {
+            error_log($resourceUsage);
         }
     }
 

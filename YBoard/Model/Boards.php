@@ -52,4 +52,10 @@ class Boards extends YBoard\Model
         $board = $this->boards[array_search($url, array_column($this->boards, 'url'))];
         return (object)$board;
     }
+
+    public function getById(int $boardId)
+    {
+        $board = $this->boards[array_search($boardId, array_column($this->boards, 'id'))];
+        return (object)$board;
+    }
 }
