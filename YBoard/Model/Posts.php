@@ -100,6 +100,7 @@ class Posts extends Model
         $subject = Text::stripBbCode($subject);
         $subject = Text::removeForbiddenUnicode($subject);
         $subject = Text::truncate($subject, 40);
+        $subject = trim($subject);
 
         return $subject;
     }

@@ -43,11 +43,11 @@ class User extends YBoard\Model
         $this->loggedIn = empty($user->username) ? false : true;
 
         // Update last active -timestamp and IP-address
-        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = INET6_ATON(:ip)
+        $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = :ip
             WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
         $q->bindValue('userId', (int)$this->id);
         $q->bindValue('sessionId', $this->sessionId);
-        $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
+        $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
 
         if ($q === false) {
@@ -132,7 +132,7 @@ class User extends YBoard\Model
     public function delete($userId)
     {
         $q = $this->db->prepare("DELETE FROM user_accounts WHERE id = :userId LIMIT 1");
-        $q->bindParam('userId', $userId);
+        $q->bindValue('userId', $userId);
         $q->execute();
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
@@ -223,11 +223,11 @@ class User extends YBoard\Model
         $sessionId = random_bytes(32);
         $csrfToken = random_bytes(32);
 
-        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, csrf_token, ip) VALUES (:userId, :sessionId, :csrfToken, INET6_ATON(:ip))");
+        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, csrf_token, ip) VALUES (:userId, :sessionId, :csrfToken, :ip)");
         $q->bindValue('userId', (int)$userId);
         $q->bindValue('sessionId', $sessionId);
-        $q->bindParam('csrfToken', $csrfToken);
-        $q->bindValue('ip', $_SERVER['REMOTE_ADDR']);
+        $q->bindValue('csrfToken', $csrfToken);
+        $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
 
         if ($q === false) {
@@ -283,8 +283,8 @@ class User extends YBoard\Model
             $userId = $this->id;
         }
 
-        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = INET6_ATON(:ip) OR user_id = :userId AND expired = 0 LIMIT 1");
-        $q->bindValue('ip', $ip);
+        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :userId AND expired = 0 LIMIT 1");
+        $q->bindValue('ip', inet_pton($ip));
         $q->bindValue('userId', $userId);
         $q->execute();
 
