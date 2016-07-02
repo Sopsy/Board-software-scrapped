@@ -101,7 +101,6 @@ class Post extends ExtendedController
         $postReplies = array_unique($postReplies[1]);
         */
 
-
         // TODO: Check if username can be used at all
         $username = $this->user->username;
 
@@ -110,9 +109,12 @@ class Post extends ExtendedController
                 $_SERVER['REMOTE_ADDR'], $countryCode);
         } else {
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'], $countryCode);
+
+            if (!$sage) {
+                $posts->bumpThread($thread->id);
+            }
         }
 
-        // TODO: Bump thread
         // TODO: Update thread stats
         // TODO: Save replies
         // TODO: Save tags

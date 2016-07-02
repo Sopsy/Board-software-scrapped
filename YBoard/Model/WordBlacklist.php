@@ -10,7 +10,6 @@ class WordBlacklist extends Model
     public function match($str)
     {
         foreach ($this->getAll() as $word => $description) {
-            error_log($word);
             if (stripos($str, $word) !== false) {
                 return $description;
             }

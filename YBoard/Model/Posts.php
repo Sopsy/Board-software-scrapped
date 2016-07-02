@@ -145,4 +145,13 @@ class Posts extends Model
 
         return $this->db->lastInsertId();
     }
+
+    public function bumpThread($threadId)
+    {
+        $q = $this->db->prepare("UPDATE posts SET bump_time = NOW() WHERE id = :thread_id LIMIT 1");
+        $q->bindValue('thread_id', (int)$threadId);
+        $q->execute();
+
+        return true;
+    }
 }
