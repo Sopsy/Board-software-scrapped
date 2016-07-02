@@ -107,9 +107,9 @@ class Posts extends Model
     public function createThread($userId, $boardId, $subject, $message, $username, $ip, $countryCode)
     {
         $q = $this->db->prepare("INSERT INTO posts
-            (user_id, board_id, ip, country_code, username, subject, message, bump_time)
+            (user_id, board_id, ip, country_code, username, subject, message, bump_time, locked, sticky)
             VALUES
-            (:user_id, :board_id, :ip, :country_code, :username, :subject, :message, NOW())
+            (:user_id, :board_id, :ip, :country_code, :username, :subject, :message, NOW(), 0, 0)
         ");
 
         $q->bindValue('user_id', (int)$userId);
