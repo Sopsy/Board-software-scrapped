@@ -57,7 +57,7 @@ class Posts extends Model
     {
         $q = $this->db->prepare('SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
             sticky, username, subject, message FROM posts WHERE board_id = :board_id AND thread_id IS NULL
-            LIMIT ' . (int)$count);
+            ORDER BY sticky DESC, bump_time DESC LIMIT ' . (int)$count);
         $q->bindValue('board_id', $boardId);
         $q->execute();
 
