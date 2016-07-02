@@ -34,8 +34,10 @@ class Post extends ExtendedController
             if (!isset($_POST['message'])) {
                 $this->throwJsonError(400, _('Please type a message'));
             }
+
+            $board = $this->boards->getByUrl($_POST['board']);
         } else { // Replying to a thread
-            $thread = $posts->getThread($_POST['thread']);
+            $thread = $posts->getThread($_POST['thread'], true);
 
             // Verify thread
             if (!$thread) {
@@ -45,6 +47,7 @@ class Post extends ExtendedController
             if ($thread->locked) {
                 $this->throwJsonError(400, _('This thread is locked'));
             }
+            $board = $this->boards->getById($thread->boardId);
         }
 
         // TODO: Verify user can post to this board (locked?, mod only?)
@@ -92,7 +95,6 @@ class Post extends ExtendedController
         $postReplies = array_unique($postReplies[1]);
         */
 
-        $board = $this->boards->getByUrl($_POST['board']);
 
         // TODO: Check if username can be used at all
         $username = $this->user->username;
@@ -101,7 +103,7 @@ class Post extends ExtendedController
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
                 $_SERVER['REMOTE_ADDR'], $countryCode);
         } else {
-            $postId = $posts->addReply($thread->id, $message);
+            $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'], $countryCode);
         }
 
         // TODO: Bump thread

@@ -6,10 +6,16 @@ use YBoard\Model;
 
 class Posts extends Model
 {
-    public function getThread($id)
+    public function getThread($id, $metaOnly = false)
     {
-        $q = $this->db->prepare('SELECT id, locked, board_id, upvote_count, user_id, ip, country_code, username,
-            time, subject, message, locked, sticky FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1');
+        if (!$metaOnly) {
+            $selectFields = ', username, subject, message';
+        } else {
+            $selectFields = '';
+        }
+
+        $q = $this->db->prepare('SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
+            sticky' . $selectFields . ' FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1');
         $q->bindValue('id', (int)$id);
         $q->execute();
 
@@ -19,7 +25,7 @@ class Posts extends Model
 
         $post = $q->fetch();
 
-        if (empty($post->subject)) {
+        if (!$metaOnly && empty($post->subject)) {
             $post->subject = $this->createSubject($post->message);
         }
 
@@ -32,26 +38,19 @@ class Posts extends Model
         $thread->userId = $post->user_id;
         $thread->ip = inet_ntop($post->ip);
         $thread->countryCode = $post->country_code;
-        $thread->username = $post->username;
-        $thread->time = $post->time;
-        $thread->subject = $post->subject;
-        $thread->message = $post->message;
+        $thread->time = strtotime($post->time . ' UTC');
         $thread->locked = $post->locked;
         $thread->sticky = $post->sticky;
         $thread->points = $post->upvote_count;
-        $thread->replies = $this->getReplies($post->id);
+
+        if (!$metaOnly) {
+            $thread->username = $post->username;
+            $thread->subject = $post->subject;
+            $thread->message = $post->message;
+            $thread->replies = $this->getReplies($post->id);
+        }
 
         return $thread;
-    }
-
-    protected function createSubject($message)
-    {
-        $subject = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
-        $subject = Text::stripBbCode($subject);
-        $subject = Text::removeForbiddenUnicode($subject);
-        $subject = Text::truncate($subject, 40);
-
-        return $subject;
     }
 
     protected function getReplies(int $threadId, int $count = null, bool $newest = false) : array
@@ -83,7 +82,7 @@ class Posts extends Model
             $tmp->ip = inet_ntop($reply->ip);
             $tmp->countryCode = $reply->country_code;
             $tmp->username = $reply->username;
-            $tmp->time = $reply->time;
+            $tmp->time = strtotime($reply->time . ' UTC');
             $tmp->message = $reply->message;
             $replies[] = $tmp;
         }
@@ -93,6 +92,16 @@ class Posts extends Model
         }
 
         return $replies;
+    }
+
+    protected function createSubject($message)
+    {
+        $subject = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
+        $subject = Text::stripBbCode($subject);
+        $subject = Text::removeForbiddenUnicode($subject);
+        $subject = Text::truncate($subject, 40);
+
+        return $subject;
     }
 
     public function createThread($userId, $boardId, $subject, $message, $username, $ip, $countryCode)
