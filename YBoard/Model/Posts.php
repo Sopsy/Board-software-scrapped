@@ -88,7 +88,7 @@ class Posts extends Model
             $thread->username = $row->username;
             $thread->subject = $row->subject;
             $thread->message = $row->message;
-            $thread->replies = $this->getReplies($row->id);
+            $thread->replies = $this->getReplies($row->id, $replyCount, true);
             $threads[] = $thread;
         }
 
