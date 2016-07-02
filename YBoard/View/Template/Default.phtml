@@ -16,15 +16,19 @@
     <link rel="icon" href="<?= $staticUrl ?>/img/favicon.png">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.2/toastr.min.js"></script>
     <script defer src="<?= $staticUrl ?>/js/scripts.js"></script>
     <script>
         var config = {
             csrfToken: '<?= $csrfToken ?>',
         };
         var messages = {
+            errorOccurred: '<?= _('An error occurred') ?>',
             signUp: '<?= _('Sign up') ?>',
             cancel: '<?= _('Cancel') ?>',
             logIn: '<?= _('Log_in') ?>',
+            maxSizeExceeded: '<?= _('Your files exceed the maximum upload size.') ?>',
+            messageSent: '<?= _('Message sent') ?>',
         };
     </script>
     <script src="//www.google.com/recaptcha/api.js"></script>

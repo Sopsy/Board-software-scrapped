@@ -4,8 +4,8 @@
 </header>
 
 <div class="content-box">
-    <form id="post" action="/scripts/post" method="post">
-        <h4><?= _('Create a thread') ?></h4>
+    <form id="post" action="/scripts/post" method="post" onsubmit="submitPost(event)">
+        <h3><?= _('Create a thread') ?></h3>
         <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
         <input type="hidden" name="board" value="<?= $board['id'] ?>">
         <label id="label-subject">
@@ -14,7 +14,7 @@
         </label>
         <label id="label-file">
             <span><?= _('File') ?> <span><100MB</span></span>
-            <input type="file" name="files" multiple accept=".jpg,.png">
+            <input type="file" name="files" id="post-files" multiple accept="*.*" data-maxsize="1048576">
         </label>
 
         <div id="message-input">
@@ -47,8 +47,29 @@
                 </div>
             </div>
             <textarea name="message" placeholder="<?= _('Message') ?>" required></textarea>
+            <div id="post-progress"><div></div></div>
         </div>
         <button onclick="event.preventDefault();$('#post-options').toggle()" class="button gray"><?= _('Options') ?></button>
         <input type="submit" class="button green" value="<?= _('Submit') ?>">
+        <div id="post-options">
+            <h4><?= _('Functions') ?></h4>
+            <label>
+                <input type="checkbox" name="sage">
+                <?= _('Don\'t bump the thread') ?>
+            </label>
+            <label>
+                <input type="checkbox" name="hidename">
+                <?= _('Hide your name') ?>
+            </label>
+            <h4><?= _('Gold account functions') ?></h4>
+            <label>
+                <input type="checkbox" name="nocompress">
+                <?= _('Keep original file dimensions') ?>
+            </label>
+            <label>
+                <input type="checkbox" name="goldonly">
+                <?= _('Hide message from non-golds') ?>
+            </label>
+        </div>
     </form>
 </div>

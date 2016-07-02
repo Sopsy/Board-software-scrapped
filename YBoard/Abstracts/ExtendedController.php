@@ -51,9 +51,12 @@ abstract class ExtendedController extends YBoard\Controller
 
     public function __destruct()
     {
-        // Debug: Execution time and memory usage
-        echo '<!-- ', round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
-            2), ' ms ', round(memory_get_usage() / 1024 / 1024, 2) . ' MB', ' -->';
+        // Only for non-ajax requests
+        if (!isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
+            // Debug: Execution time and memory usage
+            echo '<!-- ', round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
+                2), ' ms ', round(memory_get_usage() / 1024 / 1024, 2) . ' MB', ' -->';
+        }
     }
 
     protected function loadUser()
@@ -117,7 +120,7 @@ abstract class ExtendedController extends YBoard\Controller
 
         $view->pageTitle = $view->errorTitle = $errorTitle;
         $view->errorMessage = $errorMessage;
-        
+
         // Support for "state saving", for login etc.
         if (!empty($_POST['redirto'])) {
             $view->redirTo = $_POST['redirto'];
@@ -171,13 +174,8 @@ abstract class ExtendedController extends YBoard\Controller
     protected function invalidAjaxData()
     {
         HttpResponse::setStatusCode(401);
-        $this->jsonMessage('Virheellinen pyyntö', true);
+        $this->jsonMessage(_('Invalid request'), true);
         $this->stopExecution();
-    }
-
-    protected function jsonMessage($str = '', $error = false)
-    {
-        echo json_encode(['error' => $error, 'message' => $str]);
     }
 
     protected function validateCsrfToken($token)
@@ -215,13 +213,19 @@ abstract class ExtendedController extends YBoard\Controller
     protected function ajaxCsrfValidationFail()
     {
         HttpResponse::setStatusCode(401);
-        $this->jsonMessage('Istuntosi on vanhentunut. Ole hyvä ja päivitä tämä sivu.', true);
+        $this->jsonMessage(_('Your session has expired. Please refresh this page and try again.'), true);
         $this->stopExecution();
     }
 
-    protected function jsonError($str = '')
+    protected function jsonMessage($str = '', $error = false, $statusCode = false, $die = false)
     {
-        $this->jsonMessage($str, true);
-        $this->stopExecution();
+        echo json_encode(['error' => $error, 'message' => $str]);
+
+        if ($statusCode) {
+            HttpResponse::setStatusCode($statusCode);
+        }
+        if ($die) {
+            $this->stopExecution();
+        }
     }
 }
