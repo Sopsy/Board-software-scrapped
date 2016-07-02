@@ -78,8 +78,8 @@
     <nav id="boards">
         <h3><?= _('Discussion boards') ?></h3>
     <?php foreach($boardList as $board) : ?>
-        <a href="/<?= htmlspecialchars($board['url']) ?>/"
-            <?= ($board['nsfw']?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board['name']) ?><?php if($board['nsfw']) :
+        <a href="/<?= htmlspecialchars($board->url) ?>/"
+            <?= ($board->nsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->nsfw) :
             ?><span class="nsfwtag"><?= _('NSFW') ?></span><?php endif ?></a>
     <?php endforeach ?>
     </nav>

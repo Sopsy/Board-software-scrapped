@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Model;
 
 use YBoard;
@@ -22,7 +21,11 @@ class Boards extends YBoard\Model
 
     public function getAll() : array
     {
-        return $this->boards;
+        $boards = [];
+        foreach ($this->boards as $board) {
+            $boards[] = (object)$board;
+        }
+        return $boards;
     }
 
     public function isAltUrl(string $url) : bool
@@ -44,8 +47,9 @@ class Boards extends YBoard\Model
         return $exists !== false;
     }
 
-    public function getByUrl(string $url) : array
+    public function getByUrl(string $url)
     {
-        return $this->boards[array_search($url, array_column($this->boards, 'url'))];
+        $board = $this->boards[array_search($url, array_column($this->boards, 'url'))];
+        return (object)$board;
     }
 }

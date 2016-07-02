@@ -50,7 +50,9 @@ class Posts extends ExtendedController
         // TODO: Verify user can post to this board (locked?, mod only?)
         // TODO: Add flood prevention
         // TODO: Add CAPTCHA
+
         // TODO: Add country detection (ip2location?)
+        $countryCode = 'FI';
 
         // Message options
         $sage = false;
@@ -80,9 +82,9 @@ class Posts extends ExtendedController
 
         // TODO: Check word blacklist
 
-        $postSubject = NULL;
+        $subject = NULL;
         if (!$isReply && isset($_POST['subject'])) {
-            $postSubject = trim(mb_substr($postSubject, 0, $this->config['posts']['subjectMaxLength']));
+            $subject = trim(mb_substr($_POST['subject'], 0, $this->config['posts']['subjectMaxLength']));
         }
 
         /*
@@ -90,8 +92,13 @@ class Posts extends ExtendedController
         $postReplies = array_unique($postReplies[1]);
         */
 
+        $board = $this->boards->getByUrl($_POST['board']);
+
+        // TODO: Check if username can be used at all
+        $username = $this->user->username;
+
         if (!$isReply) {
-            $postId = $postsModel->createThread($postSubject, $message);
+            $postId = $postsModel->createThread($this->user->id, $board->id, $subject, $message, $username, $_SERVER['REMOTE_ADDR'], $countryCode);
         } else {
             $postId = $postsModel->addReply($thread->id, $message);
         }
@@ -101,6 +108,6 @@ class Posts extends ExtendedController
         // TODO: Process uploaded file(s)
         // TODO: Add notifications
 
-        $this->throwJsonError(400, 'Ketä');
+        $this->throwJsonError(400, $postId);
     }
 }
