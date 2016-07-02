@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Model;
 
 use YBoard;
@@ -12,15 +11,15 @@ class User extends YBoard\Model
 
     public $id;
     public $sessionId;
+    public $csrfToken;
     public $username;
     public $class;
-    public $csrfToken;
-    public $ip;
+    public $goldLevel;
     public $loggedIn;
 
     public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class FROM user_sessions
+        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class, gold_level FROM user_sessions
             LEFT JOIN user_accounts ON id = user_id
             WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
@@ -40,6 +39,7 @@ class User extends YBoard\Model
         $this->csrfToken = bin2hex($user->csrf_token);
         $this->username = $user->username;
         $this->class = $user->class;
+        $this->goldLevel = $user->gold_level;
         $this->loggedIn = empty($user->username) ? false : true;
 
         // Update last active -timestamp and IP-address
@@ -268,6 +268,27 @@ class User extends YBoard\Model
         }
 
         if ($q->rowCount() == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isBanned($ip = false, $userId = false)
+    {
+        if (!$ip) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        if (!$userId) {
+            $userId = $this->id;
+        }
+
+        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = INET6_ATON(:ip) OR user_id = :userId AND expired = 0 LIMIT 1");
+        $q->bindValue('ip', $ip);
+        $q->bindValue('userId', $userId);
+        $q->execute();
+
+        if ($q->rowCount() >= 1) {
             return true;
         }
 

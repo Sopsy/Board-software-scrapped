@@ -7,7 +7,7 @@
     <form id="post" action="/scripts/post" method="post" onsubmit="submitPost(event)">
         <h3><?= _('Create a thread') ?></h3>
         <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-        <input type="hidden" name="board" value="<?= $board['id'] ?>">
+        <input type="hidden" name="board" value="<?= $board['url'] ?>">
         <label id="label-subject">
             <span><?= _('Subject') ?></span>
             <input type="text" name="subject" placeholder="<?= _('Subject') ?>">

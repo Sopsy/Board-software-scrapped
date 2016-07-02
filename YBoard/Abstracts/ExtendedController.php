@@ -217,15 +217,18 @@ abstract class ExtendedController extends YBoard\Controller
         $this->stopExecution();
     }
 
-    protected function jsonMessage($str = '', $error = false, $statusCode = false, $die = false)
+    protected function jsonMessage($str, $error = false)
     {
         echo json_encode(['error' => $error, 'message' => $str]);
+    }
 
-        if ($statusCode) {
-            HttpResponse::setStatusCode($statusCode);
-        }
-        if ($die) {
-            $this->stopExecution();
-        }
+    protected function throwJsonError($statusCode, $message = false)
+    {
+         if ($message) {
+             $this->jsonMessage($message, true);
+         }
+
+         HttpResponse::setStatusCode($statusCode);
+         $this->stopExecution();
     }
 }
