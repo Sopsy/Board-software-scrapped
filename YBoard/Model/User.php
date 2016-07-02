@@ -1,10 +1,10 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard;
+use YBoard\Model;
 use YBoard\Exceptions\DatabaseException;
 
-class User extends YBoard\Model
+class User extends Model
 {
     const PASSWORD_HASH_COST = 12;
     const PASSWORD_HASH_TYPE = PASSWORD_BCRYPT;

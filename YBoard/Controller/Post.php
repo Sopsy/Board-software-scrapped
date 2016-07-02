@@ -3,6 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Model\Posts;
+use YBoard\Model\WordBlacklist;
 
 class Post extends ExtendedController
 {
@@ -83,7 +84,12 @@ class Post extends ExtendedController
             $message = '';
         }
 
-        // TODO: Check word blacklist
+        // Check blacklist
+        $wordBlacklist = new WordBlacklist($this->db);
+        $blacklistReason = $wordBlacklist->match($message);
+        if ($blacklistReason !== false) {
+            $this->throwJsonError(403, sprintf(_('Your message contained a blacklisted word: %s'), $blacklistReason));
+        }
 
         $subject = null;
         if (!$isReply && isset($_POST['subject'])) {

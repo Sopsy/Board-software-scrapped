@@ -1,8 +1,8 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Library\Text;
 use YBoard\Model;
+use YBoard\Library\Text;
 
 class Posts extends Model
 {
@@ -68,7 +68,7 @@ class Posts extends Model
         }
 
         $q = $this->db->prepare('SELECT id, user_id, upvote_count, ip, country_code, username, time, message
-            FROM posts WHERE thread_id = :thread_id ORDER BY id ' . $order .  $limit);
+            FROM posts WHERE thread_id = :thread_id ORDER BY id ' . $order . $limit);
         $q->bindValue('thread_id', $threadId);
         $q->execute();
 

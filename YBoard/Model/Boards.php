@@ -1,10 +1,10 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard;
+use YBoard\Model;
 use YBoard\Library\Database;
 
-class Boards extends YBoard\Model
+class Boards extends Model
 {
     protected $boards = false;
 
