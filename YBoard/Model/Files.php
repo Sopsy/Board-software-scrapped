@@ -55,13 +55,17 @@ class Files extends Model
         $uploadedFile->origName = pathinfo($file['name'], PATHINFO_FILENAME);
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
+        if ($uploadedFile->extension == 'jpeg') {
+            $uploadedFile->extension = 'jpg';
+        }
+
         // If the file already exists, use the old one
-        $oldId = $this->getByMd5($md5);
+        /*$oldId = $this->getByMd5($md5);
         if ($oldId) {
             $uploadedFile->id = $oldId;
 
             return $uploadedFile;
-        }
+        }*/
 
         $uploadedFile->md5[] = $md5;
 
@@ -69,9 +73,22 @@ class Files extends Model
         $uploadedFile->name = Text::randomStr(8, false);
         $uploadedFile->size = filesize($uploadedFile->tmpName);
 
+        switch ($uploadedFile->extension) {
+            case 'jpg':
+                $uploadedFile->destinationFormat = 'jpg';
+                break;
+            case 'png':
+            case 'gif':
+                $uploadedFile->destinationFormat = 'png';
+                break;
+            default:
+                $uploadedFile->destinationFormat = $uploadedFile->extension;
+                break;
+        }
+
         // Set file destination names
         $uploadedFile->thumbDestination = $this->savePath . '/' . $uploadedFile->folder . '/t/' . $uploadedFile->name . '.jpg';
-        $uploadedFile->destination = $this->savePath . '/' . $uploadedFile->folder . '/o/' . $uploadedFile->name . '.' . $uploadedFile->extension;
+        $uploadedFile->destination = $this->savePath . '/' . $uploadedFile->folder . '/o/' . $uploadedFile->name . '.' . $uploadedFile->destinationFormat;
 
         // Create directories if needed
         if (!is_dir($this->savePath . '/' . $uploadedFile->folder . '/t')) {
@@ -85,32 +102,46 @@ class Files extends Model
             }
         }
 
-        if ($uploadedFile->extension == 'jpeg') {
-            $uploadedFile->extension = 'jpg';
-        }
-
         switch ($uploadedFile->extension) {
             case 'jpg':
                 $this->limitPixelCount($uploadedFile->tmpName);
+
                 FileHandler::jheadAutorot($uploadedFile->tmpName);
                 FileHandler::createImage($uploadedFile->tmpName, $uploadedFile->destination, $this->imgMaxWidth,
-                    $this->imgMaxHeight);
-                FileHandler::createImage($uploadedFile->destination, $uploadedFile->thumbDestination,
-                    $this->thumbMaxWidth, $this->thumbMaxHeight);
+                    $this->imgMaxHeight, $uploadedFile->destinationFormat);
+                FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
+                    $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
+
+                if (!$this->verifyFile($uploadedFile->destination) || !$this->verifyFile($uploadedFile->thumbDestination)) {
+                    $uploadedFile->destroy();
+                    throw new InternalException(_('Saving the uploaded file failed'));
+                }
 
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
 
-                // TODO: Might need some error handling
                 break;
             case 'png':
                 $this->limitPixelCount($uploadedFile->tmpName);
-                FileHandler::pngCrush($uploadedFile->tmpName);
-                throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add support
+
+                FileHandler::createImage($uploadedFile->tmpName, $uploadedFile->destination, $this->imgMaxWidth,
+                    $this->imgMaxHeight, $uploadedFile->destinationFormat);
+                FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
+                    $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
+
+                FileHandler::pngCrush($uploadedFile->destination);
+
+                if (!$this->verifyFile($uploadedFile->destination) || !$this->verifyFile($uploadedFile->thumbDestination)) {
+                    $uploadedFile->destroy();
+                    throw new InternalException(_('Saving the uploaded file failed'));
+                }
+
+                $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
+                $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
                 break;
             case 'gif':
                 $this->limitPixelCount($uploadedFile->tmpName);
+
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
                 // TODO: Add support
                 break;
@@ -133,7 +164,7 @@ class Files extends Model
         $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size) VALUES (:folder, :name, :extension, :size)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
-        $q->bindValue('extension', $uploadedFile->extension);
+        $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->execute();
 
@@ -185,14 +216,23 @@ class Files extends Model
         }
     }
 
-    protected function getPixelCount(string $file)
+    protected function getPixelCount(string $file) : int
     {
         $sizes = getimagesize($file);
 
         if (!$sizes) {
-            throw new InternalException(sprintf(_('Could not getimagesize of %s'), $file));
+            throw new FileUploadException(_('The file is not a valid image'));
         }
 
         return $sizes[0] * $sizes[1];
+    }
+
+    protected function verifyFile(string $file) : bool
+    {
+        if (!is_file($file) || filesize($file) == 0) {
+            return false;
+        }
+
+        return true;
     }
 }

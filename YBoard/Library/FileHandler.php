@@ -8,7 +8,25 @@ class FileHandler
     const PNGCRUSH_OPTIONS = '-reduce -fix -rem allb -l 9';
     const IMAGICK_FILTER = 'triangle';
 
-    public static function createImage(string $file, string $destination, int $maxWidth, int $maxHeight) : bool
+    public static function createThumbnail(
+        string $file,
+        string $destination,
+        int $maxWidth,
+        int $maxHeight,
+        string $outFormat
+    ) : bool
+    {
+        return static::createImage($file, $destination, $maxWidth, $maxHeight, $outFormat, true);
+    }
+
+    public static function createImage(
+        string $file,
+        string $destination,
+        int $maxWidth,
+        int $maxHeight,
+        string $outFormat,
+        bool $thumbnail = false
+    ) : bool
     {
         set_time_limit(60);
 
@@ -34,7 +52,8 @@ class FileHandler
         $cmd .= ' -filter ' . escapeshellarg(static::IMAGICK_FILTER);
 
         // Resize larger than maxSizes
-        $cmd .= ' -resize ' . (int)$maxWidth . 'x' . (int)$maxHeight . '\>';
+        $cmd .= !$thumbnail ? ' -resize ' : ' -thumbnail ';
+        $cmd .= (int)$maxWidth . 'x' . (int)$maxHeight . '\>';
 
         // Set quality
         $cmd .= ' -quality 80';
@@ -46,7 +65,7 @@ class FileHandler
         $cmd .= ' -flatten';
 
         // Output file
-        $cmd .= ' ' . escapeshellarg('jpg:' . $destination);
+        $cmd .= ' ' . escapeshellarg($outFormat . ':' . $destination);
 
         shell_exec($cmd);
 

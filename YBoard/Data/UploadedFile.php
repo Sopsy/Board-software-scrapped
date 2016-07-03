@@ -13,6 +13,7 @@ class UploadedFile
     public $md5 = [];
     public $thumbDestination;
     public $destination;
+    public $destinationFormat;
 
     public function __construct()
     {
