@@ -55,8 +55,8 @@ class Files extends Model
         $uploadedFile->origName = pathinfo($file['name'], PATHINFO_FILENAME);
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-
         // If the file already exists, use the old one
+        // TODO: Activate
         /*$oldId = $this->getByMd5($md5);
         if ($oldId) {
             $uploadedFile->id = $oldId;
@@ -66,10 +66,12 @@ class Files extends Model
 
         // File type conversions
         if ($uploadedFile->extension == 'jpeg') {
+            // JPEG -> JPG
             $uploadedFile->extension = 'jpg';
         }
 
         if ($uploadedFile->extension == 'gif') {
+            // GIF -> JPG or MP4
             $frames = FileHandler::getGifFrameCount($uploadedFile->tmpName);
             if ($frames === 0) {
                 throw new InternalException(_('Cannot get the number of GIF frames'));
@@ -78,10 +80,12 @@ class Files extends Model
         }
 
         if ($uploadedFile->extension == 'webm') {
+            // WEBM -> MP4
             $uploadedFile->extension = 'mp4';
         }
 
         if ($uploadedFile->extension == 'mp3') {
+            // MP3 -> MP4
             $uploadedFile->extension = 'mp4';
         }
 
@@ -90,7 +94,6 @@ class Files extends Model
         $uploadedFile->folder = Text::randomStr(2, false);
         $uploadedFile->name = Text::randomStr(8, false);
         $uploadedFile->size = filesize($uploadedFile->tmpName);
-
 
         switch ($uploadedFile->extension) {
             case 'jpg':
@@ -120,6 +123,7 @@ class Files extends Model
             }
         }
 
+        // Do whatever we do with the uploaded files here.
         switch ($uploadedFile->extension) {
             case 'jpg':
                 $this->limitPixelCount($uploadedFile->tmpName);
@@ -130,7 +134,7 @@ class Files extends Model
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
                     $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
 
-                if (!$this->verifyFile($uploadedFile->destination) || !$this->verifyFile($uploadedFile->thumbDestination)) {
+                if (!FileHandler::verifyFile($uploadedFile->destination) || !FileHandler::verifyFile($uploadedFile->thumbDestination)) {
                     $uploadedFile->destroy();
                     throw new InternalException(_('Saving the uploaded file failed'));
                 }
@@ -149,7 +153,7 @@ class Files extends Model
 
                 FileHandler::pngCrush($uploadedFile->destination);
 
-                if (!$this->verifyFile($uploadedFile->destination) || !$this->verifyFile($uploadedFile->thumbDestination)) {
+                if (!FileHandler::verifyFile($uploadedFile->destination) || !FileHandler::verifyFile($uploadedFile->thumbDestination)) {
                     $uploadedFile->destroy();
                     throw new InternalException(_('Saving the uploaded file failed'));
                 }
@@ -159,12 +163,13 @@ class Files extends Model
                 break;
             case 'mp4':
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add support
+                // TODO: Add video support
                 break;
             default:
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
         }
 
+        // Save file to database
         $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size) VALUES (:folder, :name, :extension, :size)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
@@ -174,6 +179,7 @@ class Files extends Model
 
         $uploadedFile->id = $this->db->lastInsertId();
 
+        // Save MD5
         $this->saveMd5List($uploadedFile->id, $uploadedFile->md5);
 
         return $uploadedFile;
@@ -229,14 +235,5 @@ class Files extends Model
         }
 
         return $sizes[0] * $sizes[1];
-    }
-
-    protected function verifyFile(string $file) : bool
-    {
-        if (!is_file($file) || filesize($file) == 0) {
-            return false;
-        }
-
-        return true;
     }
 }

@@ -3,6 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\FileUploadException;
+use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Posts;
 use YBoard\Model\WordBlacklist;
@@ -36,7 +37,7 @@ class Post extends ExtendedController
 
             $board = $this->boards->getByUrl($_POST['board']);
         } else { // Replying to a thread
-            $thread = $posts->getThread($_POST['thread'], true);
+            $thread = $posts->getThreadMeta($_POST['thread']);
 
             // Verify thread
             if (!$thread) {
@@ -71,7 +72,8 @@ class Post extends ExtendedController
         // Preprocess message
         $message = isset($_POST['message']) ? trim($_POST['message']) : '';
         if (!empty($message)) {
-            // TODO: Needs more
+            $message = Text::removeForbiddenUnicode($message);
+            $message = Text::limitEmptyLines($message);
         }
 
         // Check blacklist
@@ -87,7 +89,10 @@ class Post extends ExtendedController
         }
 
         // TODO: Check if username can be used at all
-        $username = $this->user->username;
+        $username = null;
+        if (!$hideName) {
+            $username = $this->user->username;
+        }
 
         // Check that we have enough free space for files
         if (disk_free_space($this->config['files']['savePath']) <= $this->config['files']['diskMinFree']) {

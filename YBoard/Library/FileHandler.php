@@ -111,6 +111,8 @@ class FileHandler
         return is_file($file) !== false;
     }
 
+    /*
+    // Might not be needed ad all.
     public static function jpegtran(string $file, bool $progressive = false) : bool
     {
         $fileSafe = escapeshellarg($file);
@@ -129,6 +131,7 @@ class FileHandler
 
         return is_file($file) !== false;
     }
+    */
 
     public static function getGifFrameCount(string $file) : int
     {
@@ -137,5 +140,14 @@ class FileHandler
         $frames = shell_exec($cmd);
 
         return (int)$frames;
+    }
+    
+    public static function verifyFile(string $file) : bool
+    {
+        if (!is_file($file) || filesize($file) == 0) {
+            return false;
+        }
+
+        return true;
     }
 }

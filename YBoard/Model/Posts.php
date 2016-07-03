@@ -1,21 +1,17 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Data\Reply;
+use YBoard\Data\Thread;
 use YBoard\Library\Text;
 use YBoard\Model;
 
 class Posts extends Model
 {
-    public function getThread(int $id, bool $metaOnly = false)
+    public function getThreadMeta(int $id) : Thread
     {
-        if (!$metaOnly) {
-            $selectFields = ', username, subject, message';
-        } else {
-            $selectFields = '';
-        }
-
-        $q = $this->db->prepare('SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
-            sticky' . $selectFields . ' FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1');
+        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
+            sticky FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
         $q->bindValue('id', (int)$id);
         $q->execute();
 
@@ -25,13 +21,8 @@ class Posts extends Model
 
         $post = $q->fetch();
 
-        if (!$metaOnly && empty($post->subject)) {
-            $post->subject = $this->createSubject($post->message);
-        }
-
         // Assign values to a class to return
-        // Maybe create a "Thread" -class instead of stdClass?
-        $thread = new \stdClass();
+        $thread = new Thread();
         $thread->id = $post->id;
         $thread->locked = (bool)$post->locked;
         $thread->boardId = $post->board_id;
@@ -39,16 +30,44 @@ class Posts extends Model
         $thread->ip = inet_ntop($post->ip);
         $thread->countryCode = $post->country_code;
         $thread->time = strtotime($post->time . ' UTC');
-        $thread->locked = $post->locked;
         $thread->sticky = $post->sticky;
         $thread->points = $post->upvote_count;
 
-        if (!$metaOnly) {
-            $thread->username = $post->username;
-            $thread->subject = $post->subject;
-            $thread->message = $post->message;
-            $thread->replies = $this->getReplies($post->id);
+        return $thread;
+    }
+
+    public function getThread(int $id) : Thread
+    {
+        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
+            sticky, username, subject, message FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
+        $q->bindValue('id', (int)$id);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
         }
+
+        $post = $q->fetch();
+
+        if (empty($post->subject)) {
+            $post->subject = $this->createSubject($post->message);
+        }
+
+        // Assign values to a class to return
+        $thread = new Thread();
+        $thread->id = $post->id;
+        $thread->locked = (bool)$post->locked;
+        $thread->boardId = $post->board_id;
+        $thread->userId = $post->user_id;
+        $thread->ip = inet_ntop($post->ip);
+        $thread->countryCode = $post->country_code;
+        $thread->time = strtotime($post->time . ' UTC');
+        $thread->sticky = $post->sticky;
+        $thread->points = $post->upvote_count;
+        $thread->username = $post->username;
+        $thread->subject = $post->subject;
+        $thread->message = $post->message;
+        $thread->replies = $this->getReplies($post->id);
 
         return $thread;
     }
@@ -73,8 +92,7 @@ class Posts extends Model
             }
 
             // Assign values to a class to return
-            // Maybe create a "Thread" -class instead of stdClass?
-            $thread = new \stdClass();
+            $thread = new Thread();
             $thread->id = $row->id;
             $thread->locked = (bool)$row->locked;
             $thread->boardId = $row->board_id;
@@ -116,9 +134,9 @@ class Posts extends Model
 
         $replies = [];
         while ($reply = $q->fetch()) {
-            // Maybe create a "Reply" -class instead of stdClass?
-            $tmp = new \stdClass();
+            $tmp = new Reply();
             $tmp->id = $reply->id;
+            $tmp->threadId = $threadId;
             $tmp->userId = $reply->user_id;
             $tmp->points = $reply->upvote_count;
             $tmp->ip = inet_ntop($reply->ip);
