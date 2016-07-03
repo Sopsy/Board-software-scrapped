@@ -102,28 +102,6 @@ class FileHandler
         return is_file($file) !== false;
     }
 
-    /*
-    // Might not be needed ad all.
-    public static function jpegtran(string $file, bool $progressive = false) : bool
-    {
-        $fileSafe = escapeshellarg($file);
-        $cmd = 'jpegtran -optimize';
-
-        if ($progressive) {
-            $cmd .= ' -progressive';
-        }
-        $cmd .= ' -maxmemory 131072 -copy none -outfile ' . $fileSafe . ' ' . $fileSafe;
-
-        shell_exec('nice --adjustment=' . (int)static::NICE_VALUE . ' ' . $cmd);
-
-        if (filesize($file) == 0) {
-            unlink($file);
-        }
-
-        return is_file($file) !== false;
-    }
-    */
-
     public static function getGifFrameCount(string $file) : int
     {
         $cmd = 'nice --adjustment=' . (int)static::NICE_VALUE . ' identify ';

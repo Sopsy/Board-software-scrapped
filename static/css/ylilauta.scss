@@ -3,6 +3,7 @@
 
 $baseColor: #333c45;
 $textColor: #3e3e3e;
+$threadTextColor: #333377;
 $titleColor: #004855;
 $nsfwColor: #c31900;
 $linkColor: #007e88;
@@ -24,7 +25,7 @@ a {
     color: $linkColor;
 }
 a:hover { color: $linkHoverColor }
-a img { vertical-align: top }
+img { vertical-align: top }
 
 .button {
     border: 0;
@@ -55,6 +56,29 @@ h1, h2, h3, h4 {
     margin: 0;
 }
 
+h1 {
+    font-size: 2.5em;
+    font-weight: 400;
+}
+h2 {
+    font-size: 1.25em;
+    font-weight: 400;
+}
+h3 {
+    font-size: 1.75em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $titleColor;
+    margin-bottom: 20px;
+}
+h4 {
+    font-size: 1.25em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $titleColor;
+    margin-bottom: 10px;
+}
+
 #content {
     overflow: hidden;
     .page-header {
@@ -70,33 +94,11 @@ h1, h2, h3, h4 {
         margin-top: 60px;
         max-width: 100%;
     }
-
-    h1 {
-        font-size: 2.5em;
-        font-weight: 400;
-    }
-    h2 {
-        font-size: 1.25em;
-        font-weight: 400;
-    }
-    h3 {
-        font-size: 1.75em;
-        font-weight: 400;
-        line-height: 1.5em;
-        color: $titleColor;
-        margin-bottom: 20px;
-    }
-    h4 {
-        font-size: 1.25em;
-        font-weight: 400;
-        line-height: 1.5em;
-        color: $titleColor;
-        margin-bottom: 10px;
-    }
 }
+
 .content-box {
     padding: 40px 60px;
-    margin-bottom: 20px;
+    margin: 10px;
     box-shadow: 0 5px 5px -5px #ddd;
     background-color: #fff;
 
@@ -109,3 +111,4 @@ h1, h2, h3, h4 {
 @import 'partials/errorpage';
 @import 'partials/frontpage';
 @import 'partials/postform';
+@import 'partials/threads';

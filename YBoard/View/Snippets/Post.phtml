@@ -1,15 +1,16 @@
 <div class="post-meta">
-    <?= $data->username ?>
-    <?= _('No.') ?> <?= $data->id ?>
-    <?= $data->time ?>
+    <div class="user-info">
+        <span class="username"><?= htmlspecialchars($data->username) ?></span>
+    </div>
+    <div class="post-info">
+        <a href="#" class="post-id"><?= _('No.') ?> <?= $data->id ?></a>
+        <span class="post-time"><?= $data->time ?></span>
+    </div>
 </div>
 <blockquote class="post">
-
     <?php if (!empty($data->file)) : ?>
-    <figure class="post-file">
-        <a href="" class="expandlink" data-imagefile="">
-            <img src="<?= $staticUrl ?>/files/<?= $data->file->folder ?>/t/<?= $data->file->name ?>.jpg" alt="">
-        </a>
+    <figure class="post-file thumbnail">
+        <img src="<?= $staticUrl ?>/files/<?= $data->file->folder ?>/t/<?= $data->file->name ?>.jpg" alt="">
         <figcaption>
             <a href="" target="_blank"><?= htmlspecialchars($data->file->displayName) ?></a>
             <span><?= htmlspecialchars($data->file->extension) ?></span>
