@@ -149,7 +149,7 @@ abstract class ExtendedController extends YBoard\Controller
     {
         $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
 
-        foreach ($this->config['app'] as $var => $val) {
+        foreach ($this->config['view'] as $var => $val) {
             $templateEngine->$var = $val;
         }
 

@@ -2,6 +2,8 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
+use YBoard\Exceptions\FileUploadException;
+use YBoard\Model\Files;
 use YBoard\Model\Posts;
 use YBoard\Model\WordBlacklist;
 
@@ -13,17 +15,13 @@ class Post extends ExtendedController
 
         // Check bans
         if ($this->user->isBanned()) {
-            $this->throwJsonError(403, _('You are banned...'));
+            $this->throwJsonError(403, _('You are banned!'));
         }
 
         $posts = new Posts($this->db);
 
         // Is this a reply or a new thread?
-        if (empty($_POST['thread'])) {
-            $isReply = false;
-        } else {
-            $isReply = true;
-        }
+        $isReply = empty($_POST['thread']) ? false : true;
 
         if (!$isReply) { // Creating a new thread
             // Verify board
@@ -59,29 +57,21 @@ class Post extends ExtendedController
         $countryCode = 'FI';
 
         // Message options
-        $sage = false;
-        $hideName = false;
-        $noCompress = false;
-        $goldHide = false;
+        $sage = empty($_POST['sage']) ? false : true;
+        $hideName = empty($_POST['hidename']) ? false : true;
 
-        if ((!empty($_POST['sage']) AND $_POST['sage'] == 'on')) {
-            $sage = true;
-        }
-        if (!empty($_POST['hidename']) AND $_POST['hidename'] == 'on') {
-            $hideName = true;
-        }
-        if (!empty($_POST['nocompress']) AND $_POST['nocompress'] == 'on' AND $this->user->hasGold) {
-            $noCompress = true;
-        }
-        if (!empty($_POST['goldhide']) AND $_POST['goldhide'] == 'on' AND $this->user->hasGold) {
-            $goldHide = true;
+        if ($this->user->goldLevel == 0) {
+            $noCompress = false;
+            $goldHide = false;
+        } else {
+            $noCompress = empty($_POST['nocompress']) ? false : true;
+            $goldHide = empty($_POST['goldhide']) ? false : true;
         }
 
         // Preprocess message
-        if (isset($_POST['message'])) {
-            $message = trim($_POST['message']);
-        } else {
-            $message = '';
+        $message = isset($_POST['message']) ? trim($_POST['message']) : '';
+        if (!empty($message)) {
+            // TODO: Needs more
         }
 
         // Check blacklist
@@ -96,13 +86,28 @@ class Post extends ExtendedController
             $subject = trim(mb_substr($_POST['subject'], 0, $this->config['posts']['subjectMaxLength']));
         }
 
-        /*
-        preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
-        $postReplies = array_unique($postReplies[1]);
-        */
-
         // TODO: Check if username can be used at all
         $username = $this->user->username;
+
+        // Check that we have enough free space for files
+        if (disk_free_space($this->config['files']['savePath']) <= $this->config['files']['diskMinFree']) {
+            $this->throwJsonError(400, _('File uploads are temporarily disabled'));
+        }
+
+        // Process file
+        $hasFile = !empty($_FILES['files']) ? true : false;
+        if ($hasFile) {
+            $files = new Files($this->db);
+            $files->setConfig($this->config['files']);
+
+            // TODO: Verify file types are allowed
+            // TODO: Limit file size
+            try {
+                $file = $files->processUpload($_FILES['files']);
+            } catch (FileUploadException $e) {
+                $this->throwJsonError(500, $e->getMessage());
+            }
+        }
 
         if (!$isReply) {
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
@@ -116,10 +121,20 @@ class Post extends ExtendedController
             }
         }
 
+        if ($hasFile) {
+            $posts->addFileToPost($postId, $file->id, $file->origName);
+        }
+
+        // TODO: Save uploaded file
         // TODO: Update thread stats
+
         // TODO: Save replies
+        /*
+        preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
+        $postReplies = array_unique($postReplies[1]);
+        */
+
         // TODO: Save tags
-        // TODO: Process uploaded file(s)
         // TODO: Add notifications
 
         $this->throwJsonError(400, $postId);

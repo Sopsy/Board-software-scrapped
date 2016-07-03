@@ -25,6 +25,7 @@ class Board extends ExtendedController
 
         $board = $this->boards->getByUrl($boardUrl);
         
+        // TODO: add pages
         $view->threads = $posts->getBoardThreads($board->id, 10, 3);
 
         $view->board = $board;

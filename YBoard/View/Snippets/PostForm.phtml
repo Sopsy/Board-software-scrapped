@@ -22,7 +22,7 @@ if (!empty($thread->id)) {
     <?php endif ?>
         <label id="label-file">
             <span><?= _('File') ?> <span><100MB</span></span>
-            <input type="file" name="files" id="post-files" multiple accept="*.*" data-maxsize="1048576">
+            <input type="file" name="files" id="post-files" multiple accept="*.*" data-maxsize="<?= $uploadMaxSize ?>">
         </label>
 
         <div id="message-input">

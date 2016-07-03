@@ -41,6 +41,6 @@ trait ErrorPages
 
     protected function imagePathToUrl($path)
     {
-        return $this->config['app']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $path);
+        return $this->config['view']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $path);
     }
 }

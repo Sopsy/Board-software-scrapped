@@ -209,4 +209,15 @@ class Posts extends Model
 
         return true;
     }
+
+    public function addFileToPost(int $postId, int $fileId, string $fileName) : bool
+    {
+        $q = $this->db->prepare("INSERT INTO posts_files (post_id, file_id, file_name) VALUES (:post_id, :file_id, :file_name)");
+        $q->bindValue('post_id', $postId);
+        $q->bindValue('file_id', $fileId);
+        $q->bindValue('file_name', $fileName);
+        $q->execute();
+
+        return true;
+    }
 }
