@@ -55,9 +55,6 @@ class Files extends Model
         $uploadedFile->origName = pathinfo($file['name'], PATHINFO_FILENAME);
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-        if ($uploadedFile->extension == 'jpeg') {
-            $uploadedFile->extension = 'jpg';
-        }
 
         // If the file already exists, use the old one
         /*$oldId = $this->getByMd5($md5);
@@ -67,18 +64,39 @@ class Files extends Model
             return $uploadedFile;
         }*/
 
+        // File type conversions
+        if ($uploadedFile->extension == 'jpeg') {
+            $uploadedFile->extension = 'jpg';
+        }
+
+        if ($uploadedFile->extension == 'gif') {
+            $frames = FileHandler::getGifFrameCount($uploadedFile->tmpName);
+            if ($frames === 0) {
+                throw new InternalException(_('Cannot get the number of GIF frames'));
+            }
+            $uploadedFile->extension = $frames == 1 ? 'jpg' : 'mp4';
+        }
+
+        if ($uploadedFile->extension == 'webm') {
+            $uploadedFile->extension = 'mp4';
+        }
+
+        if ($uploadedFile->extension == 'mp3') {
+            $uploadedFile->extension = 'mp4';
+        }
+
         $uploadedFile->md5[] = $md5;
 
         $uploadedFile->folder = Text::randomStr(2, false);
         $uploadedFile->name = Text::randomStr(8, false);
         $uploadedFile->size = filesize($uploadedFile->tmpName);
 
+
         switch ($uploadedFile->extension) {
             case 'jpg':
                 $uploadedFile->destinationFormat = 'jpg';
                 break;
             case 'png':
-            case 'gif':
                 $uploadedFile->destinationFormat = 'png';
                 break;
             default:
@@ -139,21 +157,7 @@ class Files extends Model
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
                 break;
-            case 'gif':
-                $this->limitPixelCount($uploadedFile->tmpName);
-
-                throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add support
-                break;
-            case 'mp3':
-                throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add support
-                break;
             case 'mp4':
-                throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add support
-                break;
-            case 'webm':
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
                 // TODO: Add support
                 break;

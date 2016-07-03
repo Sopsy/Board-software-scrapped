@@ -129,4 +129,13 @@ class FileHandler
 
         return is_file($file) !== false;
     }
+
+    public static function getGifFrameCount(string $file) : int
+    {
+        $cmd = 'nice --adjustment=' . (int)static::NICE_VALUE . ' identify ';
+        $cmd .= escapeshellarg($file) . ' | wc -l';
+        $frames = shell_exec($cmd);
+
+        return (int)$frames;
+    }
 }
