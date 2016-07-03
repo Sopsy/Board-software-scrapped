@@ -37,7 +37,7 @@ class WordBlacklist extends Model
 
     protected function reasonToText($reasonId)
     {
-        switch($reasonId) {
+        switch ($reasonId) {
             case 1:
                 return _('URL shortener');
             case 2:

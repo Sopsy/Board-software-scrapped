@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Library;
 
 use PDO;
@@ -30,8 +29,8 @@ class Database extends PDO
         $this->config = $config;
 
         // Connect
-        parent::__construct($this->config['pdoDsn'], $this->config['dbUsername'],
-            $this->config['dbPassword'], $this->config['pdoParams']);
+        parent::__construct($this->config['pdoDsn'], $this->config['dbUsername'], $this->config['dbPassword'],
+            $this->config['pdoParams']);
 
         if ($this->config['debug']) {
             $this->query("SET PROFILING = 1");
@@ -46,7 +45,7 @@ class Database extends PDO
         if ($this->config['debug']) {
             $q = $this->query("SHOW PROFILES");
             while ($row = $q->fetch(static::FETCH_ASSOC)) {
-                error_log('DbConnection debug:' . var_export($row, true), E_USER_NOTICE);
+                error_log(__CLASS__ . ' debug:' . var_export($row, true), E_USER_NOTICE);
             }
         }
     }

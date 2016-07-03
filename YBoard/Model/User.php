@@ -1,8 +1,8 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Model;
 use YBoard\Exceptions\DatabaseException;
+use YBoard\Model;
 
 class User extends Model
 {

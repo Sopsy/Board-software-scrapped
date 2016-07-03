@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard;
 
 use YBoard\Library\Database;

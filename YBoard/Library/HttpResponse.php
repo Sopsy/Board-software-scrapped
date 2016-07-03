@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Library;
 
 class HttpResponse
@@ -32,7 +31,7 @@ class HttpResponse
         }
 
         $fail = false;
-        switch($statusCode) {
+        switch ($statusCode) {
             case 200:
                 header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
                 break;

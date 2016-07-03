@@ -108,7 +108,8 @@ class Post extends ExtendedController
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
                 $_SERVER['REMOTE_ADDR'], $countryCode);
         } else {
-            $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'], $countryCode);
+            $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
+                $countryCode);
 
             if (!$sage) {
                 $posts->bumpThread($thread->id);

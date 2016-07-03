@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Library;
 
 class Text
@@ -48,6 +47,7 @@ class Text
             '/[\x{FFFE}-\x{FFFF}]/u',             // Invalid unicode (U+FFFE - U+FFFF)
         ];
         $text = preg_replace($unicode, ' ', $text);
+
         return $text;
     }
 

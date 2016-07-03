@@ -1,8 +1,8 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Model;
 use YBoard\Library\Text;
+use YBoard\Model;
 
 class Posts extends Model
 {
@@ -147,8 +147,15 @@ class Posts extends Model
         return $subject;
     }
 
-    public function createThread(int $userId, int $boardId, string $subject, string $message, string $username,
-        string $ip, string $countryCode) : int
+    public function createThread(
+        int $userId,
+        int $boardId,
+        string $subject,
+        string $message,
+        string $username,
+        string $ip,
+        string $countryCode
+    ) : int
     {
         $q = $this->db->prepare("INSERT INTO posts
             (user_id, board_id, ip, country_code, username, subject, message, bump_time, locked, sticky)
@@ -168,8 +175,14 @@ class Posts extends Model
         return $this->db->lastInsertId();
     }
 
-    public function addReply(int $userId, int $threadId, string $message, string $username, string $ip,
-        string $countryCode) : int
+    public function addReply(
+        int $userId,
+        int $threadId,
+        string $message,
+        string $username,
+        string $ip,
+        string $countryCode
+    ) : int
     {
         $q = $this->db->prepare("INSERT INTO posts
             (user_id, thread_id, ip, country_code, username, message)

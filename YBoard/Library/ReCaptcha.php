@@ -1,7 +1,8 @@
 <?php
 namespace YBoard\Library;
 
-class ReCaptcha {
+class ReCaptcha
+{
     public static function verify($response, $secret)
     {
         $url = 'https://www.google.com/recaptcha/api/siteverify';

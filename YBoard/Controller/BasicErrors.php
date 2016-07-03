@@ -2,12 +2,13 @@
 namespace YBoard\Controller;
 
 use YBoard\Controller;
-use YBoard\Library\TemplateEngine;
 use YBoard\Library\HttpResponse;
+use YBoard\Library\TemplateEngine;
 
 class BasicErrors extends Controller
 {
-    public function showException($title = false, $message = false, $auxMessage = false) {
+    public function showException($title = false, $message = false, $auxMessage = false)
+    {
         $view = new TemplateEngine(ROOT_PATH . '/YBoard/View/', 'BasicErrors');
 
         $msgFi = 'Sisäinen virhe: ES-norppa nukahti! Kokeilethan hetken päästä uudelleen...';

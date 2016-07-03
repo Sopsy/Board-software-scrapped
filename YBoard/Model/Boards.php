@@ -1,8 +1,8 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Model;
 use YBoard\Library\Database;
+use YBoard\Model;
 
 class Boards extends Model
 {
@@ -25,6 +25,7 @@ class Boards extends Model
         foreach ($this->boards as $board) {
             $boards[] = (object)$board;
         }
+
         return $boards;
     }
 
@@ -50,12 +51,14 @@ class Boards extends Model
     public function getByUrl(string $url)
     {
         $board = $this->boards[array_search($url, array_column($this->boards, 'url'))];
+
         return (object)$board;
     }
 
     public function getById(int $boardId)
     {
         $board = $this->boards[array_search($boardId, array_column($this->boards, 'id'))];
+
         return (object)$board;
     }
 }

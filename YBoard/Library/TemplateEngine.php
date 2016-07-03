@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Library;
 
 class TemplateEngine
@@ -81,7 +80,8 @@ class TemplateEngine
         return $title;
     }
 
-    protected function getPartial($file) {
+    protected function getPartial($file)
+    {
         // Might use quite a bit of memory if getPartial is used extensively...
         // Maybe test it out later.
         extract($this->variables, EXTR_OVERWRITE);

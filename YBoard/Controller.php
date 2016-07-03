@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard;
 
 abstract class Controller

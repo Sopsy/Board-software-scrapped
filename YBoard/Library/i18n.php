@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Library;
 
 class i18n

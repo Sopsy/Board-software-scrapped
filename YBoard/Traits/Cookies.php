@@ -3,8 +3,10 @@ namespace YBoard\Traits;
 
 use YBoard\Library\HttpResponse;
 
-trait Cookies {
-    protected function getLoginCookie() {
+trait Cookies
+{
+    protected function getLoginCookie()
+    {
         if (empty($_COOKIE['user'])) {
             return false;
         }
@@ -14,6 +16,7 @@ trait Cookies {
         }
 
         $sessionId = hex2bin($_COOKIE['user']);
+
         return $sessionId;
     }
 

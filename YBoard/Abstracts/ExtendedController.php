@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Abstracts;
 
 use YBoard;
@@ -52,7 +51,7 @@ abstract class ExtendedController extends YBoard\Controller
     public function __destruct()
     {
         $resourceUsage = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000,
-            2) . ' ms ' . round(memory_get_usage() / 1024 / 1024, 2) . ' MB';
+                2) . ' ms ' . round(memory_get_usage() / 1024 / 1024, 2) . ' MB';
         // Only for non-ajax requests
         if (!isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
             // Debug: Execution time and memory usage
@@ -114,8 +113,13 @@ abstract class ExtendedController extends YBoard\Controller
         return false;
     }
 
-    protected function dieWithMessage($errorTitle, $errorMessage, $httpStatus = false, $bodyClass = false, $image = false)
-    {
+    protected function dieWithMessage(
+        $errorTitle,
+        $errorMessage,
+        $httpStatus = false,
+        $bodyClass = false,
+        $image = false
+    ) {
         if ($httpStatus && is_int($httpStatus)) {
             HttpResponse::setStatusCode($httpStatus);
         }
@@ -227,11 +231,11 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function throwJsonError($statusCode, $message = false)
     {
-         if ($message) {
-             $this->jsonMessage($message, true);
-         }
+        if ($message) {
+            $this->jsonMessage($message, true);
+        }
 
-         HttpResponse::setStatusCode($statusCode);
-         $this->stopExecution();
+        HttpResponse::setStatusCode($statusCode);
+        $this->stopExecution();
     }
 }
