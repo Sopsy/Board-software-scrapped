@@ -30,7 +30,7 @@ class Posts extends Model
         $thread->userId = $post->user_id;
         $thread->ip = inet_ntop($post->ip);
         $thread->countryCode = $post->country_code;
-        $thread->time = strtotime($post->time . ' UTC');
+        $thread->time = $post->time . ' UTC';
         $thread->sticky = $post->sticky;
         $thread->points = $post->upvote_count;
 
@@ -61,7 +61,7 @@ class Posts extends Model
         $thread->userId = $post->user_id;
         $thread->ip = inet_ntop($post->ip);
         $thread->countryCode = $post->country_code;
-        $thread->time = strtotime($post->time . ' UTC');
+        $thread->time = $post->time . ' UTC';
         $thread->sticky = $post->sticky;
         $thread->points = $post->upvote_count;
         $thread->username = $post->username;
@@ -103,7 +103,7 @@ class Posts extends Model
             $thread->userId = $row->user_id;
             $thread->ip = inet_ntop($row->ip);
             $thread->countryCode = $row->country_code;
-            $thread->time = strtotime($row->time . ' UTC');
+            $thread->time = $row->time . ' UTC';
             $thread->locked = $row->locked;
             $thread->sticky = $row->sticky;
             $thread->points = $row->upvote_count;
@@ -150,7 +150,7 @@ class Posts extends Model
             $tmp->ip = inet_ntop($reply->ip);
             $tmp->countryCode = $reply->country_code;
             $tmp->username = $reply->username;
-            $tmp->time = strtotime($reply->time . ' UTC');
+            $tmp->time = $reply->time . ' UTC';
             $tmp->message = $reply->message;
 
             if (!empty($reply->file_id)) {

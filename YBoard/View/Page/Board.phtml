@@ -6,8 +6,19 @@
 <?php $this->getPartial('Snippets/PostForm') ?>
 
 <?php foreach($threads as $thread) : ?>
-<div class="content-box">
+<div class="content-box thread">
     <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= $thread->subject ?></a></h3>
-    <?php var_dump($thread) ?>
+    <div class="op-post">
+        <?php $this->getPartial('Snippets/Post', $thread) ?>
+    </div>
+
+    <div class="replies">
+        <?php foreach($thread->replies as $reply) : ?>
+            <div class="reply">
+                <?php $this->getPartial('Snippets/Post', $reply) ?>
+            </div>
+        <?php endforeach ?>
+    </div>
 </div>
+
 <?php endforeach ?>

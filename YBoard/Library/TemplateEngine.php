@@ -80,7 +80,7 @@ class TemplateEngine
         return $title;
     }
 
-    protected function getPartial($file)
+    protected function getPartial($file, $data = false)
     {
         // Might use quite a bit of memory if getPartial is used extensively...
         // Maybe test it out later.

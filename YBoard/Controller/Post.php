@@ -100,8 +100,9 @@ class Post extends ExtendedController
         }
 
         // Process file
-        $hasFile = !empty($_FILES['files']) ? true : false;
+        $hasFile = !empty($_FILES['files']['tmp_name']) ? true : false;
         if ($hasFile) {
+            error_log(json_encode($_FILES));
             $files = new Files($this->db);
             $files->setConfig($this->config['files']);
 

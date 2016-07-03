@@ -55,6 +55,9 @@ class FileHandler
         $cmd .= !$thumbnail ? ' -resize ' : ' -thumbnail ';
         $cmd .= (int)$maxWidth . 'x' . (int)$maxHeight . '\>';
 
+        // Rotate by EXIF rotation tag
+        $cmd .= ' -auto-orient';
+
         // Set quality
         $cmd .= ' -quality 80';
 
@@ -99,18 +102,6 @@ class FileHandler
         return is_file($file) !== false;
     }
 
-    public static function jheadAutorot(string $file) : bool
-    {
-        // Rotate jpeg by exif tag
-        shell_exec('nice --adjustment=' . (int)static::NICE_VALUE . ' jhead -autorot ' . escapeshellarg($file));
-
-        if (filesize($file) == 0) {
-            unlink($file);
-        }
-
-        return is_file($file) !== false;
-    }
-
     /*
     // Might not be needed ad all.
     public static function jpegtran(string $file, bool $progressive = false) : bool
@@ -141,7 +132,7 @@ class FileHandler
 
         return (int)$frames;
     }
-    
+
     public static function verifyFile(string $file) : bool
     {
         if (!is_file($file) || filesize($file) == 0) {

@@ -126,23 +126,6 @@ class Files extends Model
         // Do whatever we do with the uploaded files here.
         switch ($uploadedFile->extension) {
             case 'jpg':
-                $this->limitPixelCount($uploadedFile->tmpName);
-
-                FileHandler::jheadAutorot($uploadedFile->tmpName);
-                FileHandler::createImage($uploadedFile->tmpName, $uploadedFile->destination, $this->imgMaxWidth,
-                    $this->imgMaxHeight, $uploadedFile->destinationFormat);
-                FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
-                    $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
-
-                if (!FileHandler::verifyFile($uploadedFile->destination) || !FileHandler::verifyFile($uploadedFile->thumbDestination)) {
-                    $uploadedFile->destroy();
-                    throw new InternalException(_('Saving the uploaded file failed'));
-                }
-
-                $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
-                $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
-
-                break;
             case 'png':
                 $this->limitPixelCount($uploadedFile->tmpName);
 
@@ -151,7 +134,9 @@ class Files extends Model
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
                     $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
 
-                FileHandler::pngCrush($uploadedFile->destination);
+                if ($uploadedFile->extension == 'png') {
+                    FileHandler::pngCrush($uploadedFile->destination);
+                }
 
                 if (!FileHandler::verifyFile($uploadedFile->destination) || !FileHandler::verifyFile($uploadedFile->thumbDestination)) {
                     $uploadedFile->destroy();
@@ -160,6 +145,7 @@ class Files extends Model
 
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
+
                 break;
             case 'mp4':
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));

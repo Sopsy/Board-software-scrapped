@@ -25,31 +25,6 @@ class i18n
         textdomain($domain);
     }
 
-    public function setTimezone($tz)
-    {
-        date_default_timezone_set($tz);
-    }
-
-    public function getPreferredTimezone($ip = false)
-    {
-        if (!$ip) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-        if (!function_exists('geoip_region_by_name') || !function_exists('geoip_time_zone_by_country_and_region')) {
-            trigger_error('Cannot find the required PHP-GeoIP library. Using the default value for timezone.',
-                E_USER_NOTICE);
-
-            return 'UTC';
-        }
-
-        $record = geoip_record_by_name($ip);
-        if ($record) {
-            return geoip_time_zone_by_country_and_region($record['country_code'], $record['region']);
-        } else {
-            return 'UTC';
-        }
-    }
-
     public function getPreferredLocale()
     {
         // Originally from http://www.thefutureoftheweb.com/blog/use-accept-language-header
