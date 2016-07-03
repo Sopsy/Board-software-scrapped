@@ -12,4 +12,5 @@ class Reply
     public $points;
     public $username;
     public $message;
+    public $file = false;
 }

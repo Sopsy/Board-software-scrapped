@@ -1,6 +1,7 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Data\File;
 use YBoard\Data\Reply;
 use YBoard\Data\Thread;
 use YBoard\Library\Text;
@@ -10,8 +11,8 @@ class Posts extends Model
 {
     public function getThreadMeta(int $id) : Thread
     {
-        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
-            sticky FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
+        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked, sticky
+            FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
         $q->bindValue('id', (int)$id);
         $q->execute();
 
@@ -38,8 +39,7 @@ class Posts extends Model
 
     public function getThread(int $id) : Thread
     {
-        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
-            sticky, username, subject, message FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
+        $q = $this->db->prepare($this->getPostsQuery("WHERE a.id = :id AND thread_id IS NULL LIMIT 1"));
         $q->bindValue('id', (int)$id);
         $q->execute();
 
@@ -67,6 +67,11 @@ class Posts extends Model
         $thread->username = $post->username;
         $thread->subject = $post->subject;
         $thread->message = $post->message;
+
+        if (!empty($post->file_id)) {
+            $thread->file = $this->createFileClass($post);
+        }
+
         $thread->replies = $this->getReplies($post->id);
 
         return $thread;
@@ -74,9 +79,8 @@ class Posts extends Model
 
     public function getBoardThreads(int $boardId, int $count, int $replyCount) : array
     {
-        $q = $this->db->prepare('SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked,
-            sticky, username, subject, message FROM posts WHERE board_id = :board_id AND thread_id IS NULL
-            ORDER BY sticky DESC, bump_time DESC LIMIT ' . (int)$count);
+        $q = $this->db->prepare($this->getPostsQuery("WHERE board_id = :board_id AND thread_id IS NULL
+            ORDER BY sticky DESC, bump_time DESC LIMIT " . (int)$count));
         $q->bindValue('board_id', $boardId);
         $q->execute();
 
@@ -107,6 +111,11 @@ class Posts extends Model
             $thread->subject = $row->subject;
             $thread->message = $row->message;
             $thread->replies = $this->getReplies($row->id, $replyCount, true);
+
+            if (!empty($row->file_id)) {
+                $thread->file = $this->createFileClass($row);
+            }
+
             $threads[] = $thread;
         }
 
@@ -127,8 +136,7 @@ class Posts extends Model
             $limit = '';
         }
 
-        $q = $this->db->prepare('SELECT id, user_id, upvote_count, ip, country_code, username, time, message
-            FROM posts WHERE thread_id = :thread_id ORDER BY id ' . $order . $limit);
+        $q = $this->db->prepare($this->getPostsQuery('WHERE thread_id = :thread_id ORDER BY a.id ' . $order . $limit));
         $q->bindValue('thread_id', $threadId);
         $q->execute();
 
@@ -144,6 +152,10 @@ class Posts extends Model
             $tmp->username = $reply->username;
             $tmp->time = strtotime($reply->time . ' UTC');
             $tmp->message = $reply->message;
+
+            if (!empty($reply->file_id)) {
+                $tmp->file = $this->createFileClass($reply);
+            }
             $replies[] = $tmp;
         }
 
@@ -237,5 +249,29 @@ class Posts extends Model
         $q->execute();
 
         return true;
+    }
+
+    protected function getPostsQuery(string $append = '') : string
+    {
+        return "SELECT
+            a.id, board_id, upvote_count, user_id, ip, country_code, time, locked, sticky, username, subject, message,
+            b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
+            c.extension AS file_extension, c.size AS file_size
+            FROM posts a
+            LEFT JOIN posts_files b ON a.id = b.post_id
+            LEFT JOIN files c ON b.file_id = c.id " . $append;
+    }
+
+    protected function createFileClass($data) : File
+    {
+        $file = new File();
+        $file->id = $data->file_id;
+        $file->folder = $data->file_folder;
+        $file->name = $data->file_name;
+        $file->extension = $data->file_extension;
+        $file->size = $data->file_size;
+        $file->displayName = $data->file_display_name;
+
+        return $file;
     }
 }
