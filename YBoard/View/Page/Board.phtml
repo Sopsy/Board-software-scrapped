@@ -12,20 +12,20 @@
         <div class="op-post">
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
         </div>
-    <?php if (!empty($thread->replies)) : ?>
-        <div class="thread-meta">
-            1920 vastausta, 609 tiedostoa
-        </div>
-        <div class="replies">
-            <button class="button gray">Avaa lanka</button>
-            <button class="button gray">Näytä lisää vastauksia</button>
-            <?php foreach($thread->replies as $reply) : ?>
-                <div class="reply">
-                    <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
-                </div>
-            <?php endforeach ?>
-        </div>
-    <?php endif ?>
+        <?php if (!empty($thread->replies)) : ?>
+            <div class="thread-meta">
+                1920 vastausta, 609 tiedostoa
+            </div>
+            <div class="replies">
+                <button class="button gray">Avaa lanka</button>
+                <button class="button gray">Näytä lisää vastauksia</button>
+                <?php foreach($thread->replies as $reply) : ?>
+                    <div class="reply">
+                        <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        <?php endif ?>
         <div class="thread-buttons">
             <button class="button gray">Vastaa</button>
             <button class="button gray">Päivitä</button>
