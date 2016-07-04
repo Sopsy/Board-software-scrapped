@@ -93,3 +93,8 @@ function submitPost(e) {
         submitInProgress = false;
     });
 }
+
+$('.datetime').each(function() {
+    var date = new Date($(this).html());
+    $(this).html(date.toLocaleString());
+});

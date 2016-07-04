@@ -7,6 +7,7 @@ Code style is PSR-1/PSR-2, please follow that.
 * Nginx
 * PHP 7+
 * MySQL 5.6+ / MariaDB
+* ImageMagick
 * More to come
 
 For Nginx you should just forward all requests (or just for files that do not exist) to public/index.php.
