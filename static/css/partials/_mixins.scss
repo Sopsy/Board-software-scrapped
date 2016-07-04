@@ -13,17 +13,11 @@
     .nsfwboard {
         position: relative;
         padding-right: 50px;
-        .nsfwtag {
+        .text-tag.nsfw {
             position: absolute;
             right: 0;
-            font-size: 0.7rem;
-            background-color: $nsfwColor;
-            color: #fff;
-            padding: 3px 5px;
-            line-height: 1em;
             top: 50%;
             transform: translateY(-50%);
-            border-radius: 20px;
         }
     }
 }

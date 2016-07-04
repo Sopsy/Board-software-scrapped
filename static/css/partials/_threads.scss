@@ -1,15 +1,14 @@
 .thread {
-    padding: 0;
+    padding: 0 0 20px 0;
     overflow: hidden;
-    padding-bottom: 10px;
     color: $threadTextColor;
 
     h3 {
         margin-bottom: 0;
-        font-size: 1.5em;
+        font-size: 1.3em;
         font-weight: 400;
-        padding: 5px 10px;
-        background-color: #528ac9;
+        padding: 3px 10px;
+        background-color: #333c45;
         color: #fff;
         a {
             color: #fff;
@@ -17,31 +16,40 @@
         }
     }
 
+    .thread-content {
+        padding: 10px;
+    }
+
+    .thread-meta {
+        font-size: 0.85em;
+        color: #555;
+    }
+
     .replies {
-        margin: 0 10px;
+        padding: 10px;
+        border-left: 2px solid #ccc;
     }
 
     .reply {
-        background-color: #e7f3ff;
-        &:not(:first-of-type) {
-            margin-top: 10px;
-        }
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 2px solid #ccc;
     }
 
     .post {
-        padding: 10px;
-        margin: 0;
+        margin: 10px 0;
         overflow: hidden;
     }
 
     .post-meta {
-        padding: 0 10px 20px 10px;
-
         .user-info, .post-info {
             display: block;
         }
+        .post-info {
+            font-size: 0.85em;
+        }
         .username {
-            color: #117743;
+            color: $usernameColor;
             font-weight: 600;
         }
         .post-id {
@@ -62,16 +70,22 @@
         white-space: nowrap;
         overflow: hidden;
         background-color: rgba(0,0,0,0.05);
+        position: relative;
         &.thumbnail {
             max-width: 240px;
         }
         figcaption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
             padding: 3px;
-            opacity: 0.6;
+            opacity: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.8em;
             line-height: 1.3em;
+            background-color: #eee;
             span {
                 display: block
             }
@@ -79,5 +93,9 @@
         &:hover figcaption {
             opacity: 1;
         }
+    }
+
+    .thread-buttons {
+        margin: 10px 0 0 0;
     }
 }

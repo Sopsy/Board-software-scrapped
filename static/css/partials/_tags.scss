@@ -1,0 +1,16 @@
+.text-tag {
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    line-height: 1em;
+    border-radius: 20px;
+    display: inline-block;
+
+    &.nsfw {
+        background-color: $nsfwColor;
+        color: #fff;
+    }
+    &.op {
+        background-color: $usernameColor;
+        color: #fff;
+    }
+}

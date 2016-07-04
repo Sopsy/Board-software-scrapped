@@ -2,18 +2,19 @@
 @import 'lib/toastr';
 
 $baseColor: #333c45;
-$textColor: #3e3e3e;
+$textColor: #222;
 $threadTextColor: #333377;
 $titleColor: #004855;
 $nsfwColor: #c31900;
 $linkColor: #007e88;
 $linkHoverColor: $nsfwColor;
+$usernameColor: #117743;
 
 @import 'partials/mixins';
 
 body {
     background: #f3f3f5;
-    font: 16px "Lato", sans-serif;
+    font: 14px "Lato", sans-serif;
     color: $textColor;
     word-wrap: break-word;
 }
@@ -65,7 +66,7 @@ h2 {
     font-weight: 400;
 }
 h3 {
-    font-size: 1.75em;
+    font-size: 1.5em;
     font-weight: 400;
     line-height: 1.5em;
     color: $titleColor;
@@ -80,6 +81,7 @@ h4 {
 }
 
 #content {
+    margin-left: 240px;
     overflow: hidden;
     .page-header {
         background: lighten($baseColor, 5%) url('../img/header_bg.jpg') no-repeat 50% 50%;
@@ -98,8 +100,6 @@ h4 {
 
 .content-box {
     padding: 40px 60px;
-    margin: 10px;
-    box-shadow: 0 5px 5px -5px #ddd;
     background-color: #fff;
 
     p {
@@ -107,6 +107,7 @@ h4 {
     }
 }
 
+@import 'partials/tags';
 @import 'partials/sidebar';
 @import 'partials/errorpage';
 @import 'partials/frontpage';

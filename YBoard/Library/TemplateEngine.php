@@ -49,6 +49,7 @@ class TemplateEngine
 
         // Extract variables set for template
         extract($this->variables, EXTR_OVERWRITE);
+        $viewFilesPath = $this->viewFilesPath;
 
         // Needs output buffering to just get the executed content as a variable
         ob_start();
@@ -78,14 +79,5 @@ class TemplateEngine
         $title .= $this->variables['siteName'];
 
         return $title;
-    }
-
-    protected function getPartial($file, $data = false)
-    {
-        // Might use quite a bit of memory if getPartial is used extensively...
-        // Maybe test it out later.
-        extract($this->variables, EXTR_OVERWRITE);
-
-        return include($this->viewFilesPath . $file . '.phtml');
     }
 }

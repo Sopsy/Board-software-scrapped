@@ -1,22 +1,25 @@
 <div class="post-meta">
     <div class="user-info">
-        <span class="username"><?= htmlspecialchars($data->username) ?></span>
+        <span class="username"><?= htmlspecialchars($post->username) ?></span>
+        <?php if ($post->userId == $thread->userId) : ?>
+            <span class="text-tag op"><?= _('OP') ?></span>
+        <?php endif ?>
     </div>
     <div class="post-info">
-        <a href="#" class="post-id"><?= _('No.') ?> <?= $data->id ?></a>
-        <span class="post-time"><?= $data->time ?></span>
+        <a href="#" class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
+        <span class="post-time"><?= $post->time ?></span>
     </div>
 </div>
 <blockquote class="post">
-    <?php if (!empty($data->file)) : ?>
+    <?php if (!empty($post->file)) : ?>
     <figure class="post-file thumbnail">
-        <img src="<?= $staticUrl ?>/files/<?= $data->file->folder ?>/t/<?= $data->file->name ?>.jpg" alt="">
+        <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
         <figcaption>
-            <a href="" target="_blank"><?= htmlspecialchars($data->file->displayName) ?></a>
-            <span><?= htmlspecialchars($data->file->extension) ?></span>
+            <a href="" target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
+            <span><?= htmlspecialchars($post->file->extension) ?></span>
         </figcaption>
     </figure>
     <?php endif ?>
 
-    <?= htmlspecialchars($data->message) ?>
+    <?= htmlspecialchars($post->message) ?>
 </blockquote>

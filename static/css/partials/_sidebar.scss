@@ -1,10 +1,13 @@
 #sidebar {
     $bgcolor: $baseColor;
-    float: left;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
     width: 200px;
     min-height: 400px;
     padding: 10px 20px;
-    overflow: hidden;
+    overflow: auto;
     font-size: 0.9em;
     background-color: $bgcolor;
 
