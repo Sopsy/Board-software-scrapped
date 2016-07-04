@@ -9,19 +9,6 @@
     0 -1px 0 $color;
 }
 
-@mixin nsfwtag() {
-    .nsfwboard {
-        position: relative;
-        padding-right: 50px;
-        .text-tag.nsfw {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-    }
-}
-
 @mixin input-shadow($color: #ddd) {
     box-shadow: 0 1px 4px $color inset;
 }

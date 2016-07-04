@@ -32,21 +32,21 @@
 
     .reply {
         margin-top: 10px;
-        padding-top: 10px;
+        padding-top: 5px;
         border-top: 2px solid #ccc;
     }
 
     .post {
-        margin: 10px 0;
+        margin: 5px 0;
         overflow: hidden;
     }
 
     .post-meta {
         .user-info, .post-info {
-            display: block;
+            display: inline;
         }
         .post-info {
-            font-size: 0.85em;
+            margin-left: 5px;
         }
         .username {
             color: $usernameColor;
@@ -57,7 +57,8 @@
             &:hover { color: $linkHoverColor }
         }
         .post-time {
-            margin-left: 10px;
+            margin-left: 5px;
+            font-size: 0.85em;
         }
     }
 

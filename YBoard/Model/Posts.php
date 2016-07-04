@@ -182,7 +182,7 @@ class Posts extends Model
         int $boardId,
         string $subject,
         string $message,
-        string $username,
+        $username,
         string $ip,
         string $countryCode
     ) : int
@@ -209,7 +209,7 @@ class Posts extends Model
         int $userId,
         int $threadId,
         string $message,
-        string $username,
+        $username,
         string $ip,
         string $countryCode
     ) : int

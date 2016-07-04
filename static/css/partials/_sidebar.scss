@@ -58,7 +58,6 @@
             font-size: 1.25em;
             font-weight: 400;
         }
-        @include nsfwtag();
     }
     #search {
         background-color: darken($bgcolor, 10%);

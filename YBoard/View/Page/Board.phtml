@@ -1,9 +1,7 @@
-<header class="page-header">
-    <h1><?= htmlspecialchars($board->name) ?><?= ($pageNum>1?' sivu ' . $pageNum:'') ?></h1>
-    <h2><?= htmlspecialchars($board->description) ?></h2>
-</header>
-
+<?php include($viewFilesPath . '/Snippets/BoardHeader.phtml') ?>
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
+
+<?= ($pageNum>1?' sivu ' . $pageNum:'') ?>
 
 <?php foreach($threads as $thread) : ?>
 <div class="content-box thread">
@@ -27,7 +25,6 @@
             </div>
         <?php endif ?>
         <div class="thread-buttons">
-            <button class="button gray">Vastaa</button>
             <button class="button gray">Päivitä</button>
         </div>
     </div>

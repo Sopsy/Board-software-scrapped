@@ -17,8 +17,8 @@
     column-gap: 20px;
     -moz-column-gap: 20px;
     -webkit-column-gap: 20px;
-    line-height: 2.5em;
     a {
+        padding: 8px 0;
         color: $textColor;
         display: block;
         &:hover {

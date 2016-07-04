@@ -1,13 +1,14 @@
 .text-tag {
     font-size: 0.7rem;
-    padding: 2px 5px;
-    line-height: 1em;
+    padding: 0 5px;
+    line-height: 1.3em;
     border-radius: 20px;
     display: inline-block;
 
     &.nsfw {
-        background-color: $nsfwColor;
-        color: #fff;
+        color: $nsfwColor;
+        font-size: 0.6rem;
+        vertical-align: top;
     }
     &.op {
         background-color: $usernameColor;
