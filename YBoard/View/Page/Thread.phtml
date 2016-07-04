@@ -6,16 +6,16 @@
 <div class="content-box thread">
     <h3><?= htmlspecialchars($thread->subject) ?></h3>
     <div class="op-post">
-        <?php $this->getPartial('Snippets/Post', $thread) ?>
+        <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
     </div>
 
     <div class="replies">
     <?php foreach($thread->replies as $reply) : ?>
         <div class="reply">
-            <?php $this->getPartial('Snippets/Post', $reply) ?>
+            <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
         </div>
     <?php endforeach ?>
     </div>
 </div>
 
-<?php $this->getPartial('Snippets/PostForm') ?>
+<?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
