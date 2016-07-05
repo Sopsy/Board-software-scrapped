@@ -7,6 +7,7 @@ return [
         'baseUrl' => '//example.com',
         'staticUrl' => '//static.example.com',
         'uploadMaxSize' => 1048576,
+        'maxPages' => 100,
     ],
     'posts' => [
         'subjectMaxLength' => 60,

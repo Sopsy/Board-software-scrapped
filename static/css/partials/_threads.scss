@@ -1,5 +1,5 @@
 .thread {
-    padding: 0 0 20px 0;
+    padding: 0;
     overflow: hidden;
     color: $threadTextColor;
 
@@ -8,32 +8,37 @@
         font-size: 1.3em;
         font-weight: 400;
         padding: 3px 10px;
-        background-color: #333c45;
-        color: #fff;
+        background-color: #f5f5f5;
         a {
-            color: #fff;
             display: block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 
     .thread-content {
-        padding: 10px;
+        padding: 5px 10px 10px 10px;
     }
 
     .thread-meta {
         font-size: 0.85em;
         color: #555;
+        margin: 0 0 5px 0;
     }
 
     .replies {
-        padding: 10px;
+        padding: 10px 0 10px 10px;
         border-left: 2px solid #ccc;
     }
 
     .reply {
-        margin-top: 10px;
-        padding-top: 5px;
-        border-top: 2px solid #ccc;
+        &:not(:first-of-type) {
+            margin-top: 10px;
+            padding-top: 5px;
+            border-top: 2px solid #ccc;
+        }
+        overflow: hidden;
     }
 
     .post {
@@ -47,6 +52,7 @@
         }
         .post-info {
             margin-left: 5px;
+            font-size: 0.85em;
         }
         .username {
             color: $usernameColor;
@@ -58,7 +64,6 @@
         }
         .post-time {
             margin-left: 5px;
-            font-size: 0.85em;
         }
     }
 
@@ -74,6 +79,10 @@
         position: relative;
         &.thumbnail {
             max-width: 240px;
+            img {
+                min-width: 120px;
+                min-height: 60px;
+            }
         }
         figcaption {
             position: absolute;
@@ -81,7 +90,7 @@
             left: 0;
             right: 0;
             padding: 3px;
-            opacity: 0;
+            display: none;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.8em;
@@ -92,8 +101,21 @@
             }
         }
         &:hover figcaption {
-            opacity: 1;
+            display: block;
         }
+    }
+
+    .post-buttons, .thread-buttons {
+        font-size: 0.9em;
+        a {
+            opacity: 0.6;
+            &:hover { opacity: 1 }
+            &:not(:first-of-type) { margin-left: 10px }
+        }
+    }
+
+    .post-buttons {
+        float: right;
     }
 
     .thread-buttons {

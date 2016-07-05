@@ -19,14 +19,33 @@ class Board extends ExtendedController
             $this->notFound(_('Not found'), sprintf(_('There\'s no such thing as a board called "%s" here.'), $boardUrl));
         }
 
+        if ($pageNum > $this->config['view']['maxPages']) {
+            $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $this->config['view']['maxPages']));
+        }
+
         $posts = new Posts($this->db);
-        
+
         $view = $this->loadTemplateEngine();
 
         $board = $this->boards->getByUrl($boardUrl);
-        
+
+        // Calculate the end and start pages of the pagination
+        // We don't count the total number of pages to save some resources.
+        $view->paginationStartPage = $pageNum - 1;
+        if ($view->paginationStartPage < 2) {
+            $view->paginationStartPage = 2;
+        }
+
+        $view->paginationEndPage = $pageNum + 2;
+        if ($view->paginationEndPage > $this->config['view']['maxPages']) {
+            $view->paginationEndPage = $this->config['view']['maxPages'];
+        }
+        if ($view->paginationEndPage < 5) {
+            $view->paginationEndPage = 5;
+        }
+
         // TODO: add pages
-        $view->threads = $posts->getBoardThreads($board->id, 10, 3);
+        $view->threads = $posts->getBoardThreads($board->id, $pageNum, 10, 3);
 
         $view->board = $board;
         $view->pageNum = $pageNum;

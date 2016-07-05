@@ -4,16 +4,16 @@
 $baseColor: #333c45;
 $textColor: #222;
 $threadTextColor: #333377;
-$titleColor: #004855;
-$nsfwColor: #c31900;
-$linkColor: #007e88;
-$linkHoverColor: $nsfwColor;
 $usernameColor: #117743;
+$titleColor: $usernameColor;
+$nsfwColor: #c31900;
+$linkColor: #006632;
+$linkHoverColor: $nsfwColor;
 
 @import 'partials/mixins';
 
 body {
-    background: #f3f3f5;
+    background: #eaeaec;
     font: 14px "Lato", sans-serif;
     color: $textColor;
     word-wrap: break-word;
@@ -103,6 +103,8 @@ h4 {
 .content-box {
     padding: 40px 60px;
     background-color: #fff;
+    margin: 20px;
+    box-shadow: 0 0 10px 0 #ddd;
 
     p {
         line-height: 1.5em;
@@ -115,3 +117,4 @@ h4 {
 @import 'partials/frontpage';
 @import 'partials/postform';
 @import 'partials/threads';
+@import 'partials/navigation';

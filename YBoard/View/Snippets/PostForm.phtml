@@ -21,8 +21,9 @@ if (!empty($thread->id)) {
         </label>
     <?php endif ?>
         <label id="label-file">
-            <span><?= _('File') ?> <span><100MB</span></span>
-            <input type="file" name="files" id="post-files" multiple accept="*.*" data-maxsize="<?= $uploadMaxSize ?>">
+            <?php // TODO: change accept and max file size ?>
+            <span><?= _('File') ?> <span><<?= \YBoard\Library\Text::formatBytes($uploadMaxSize) ?></span></span>
+            <input type="file" name="files" id="post-files" accept="*.*" data-maxsize="<?= $uploadMaxSize ?>">
         </label>
 
         <div id="message-input">

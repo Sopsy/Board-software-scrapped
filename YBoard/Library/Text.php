@@ -21,7 +21,7 @@ class Text
     {
         $str = str_replace("\r", '', $str);
 
-        return preg_replace('/(\n){' . ($maxLines + 1) . ',}/', str_repeat("\n", $maxLines), $str);
+        return preg_replace('/(\n){' . ($maxLines+1) . ',}/', str_repeat("\n", $maxLines+1), $str);
     }
 
     public static function removeForbiddenUnicode($text)
@@ -87,5 +87,17 @@ class Text
         }
 
         return substr(str_shuffle($chars), 0, $length);
+    }
+
+    public static function formatBytes(int $bytes, int $precision = 2) : string
+    {
+        $units = [_('B'), _('KB'), _('MB')];
+
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }

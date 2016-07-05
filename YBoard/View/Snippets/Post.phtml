@@ -1,3 +1,8 @@
+<div class="post-buttons">
+    <a href="#">vastaa</a>
+    <a href="#">valinnat</a>
+</div>
+
 <div class="post-meta">
     <div class="user-info">
         <span class="username"><?= htmlspecialchars($post->username) ?></span>
@@ -21,5 +26,5 @@
     </figure>
     <?php endif ?>
 
-    <?= htmlspecialchars($post->message) ?>
+    <?= $post->messageFormatted ?>
 </blockquote>

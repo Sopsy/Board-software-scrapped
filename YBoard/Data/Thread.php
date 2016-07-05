@@ -15,6 +15,7 @@ class Thread
     public $username;
     public $subject;
     public $message;
+    public $messageFormatted;
     public $file = false;
     public $replies;
 }

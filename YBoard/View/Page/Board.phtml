@@ -1,33 +1,41 @@
 <?php include($viewFilesPath . '/Snippets/BoardHeader.phtml') ?>
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
 
-<?= ($pageNum>1?' sivu ' . $pageNum:'') ?>
+<?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
-<?php foreach($threads as $thread) : ?>
-<div class="content-box thread">
-    <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a></h3>
-    <div class="thread-content">
-        <div class="op-post">
-            <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
-        </div>
-        <?php if (!empty($thread->replies)) : ?>
+<?php if (!empty($threads)) : ?>
+
+    <?php foreach($threads as $thread) : ?>
+    <div class="content-box thread">
+        <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a></h3>
+        <div class="thread-content">
+            <div class="op-post">
+                <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
+            </div>
             <div class="thread-meta">
                 1920 vastausta, 609 tiedostoa
             </div>
+            <?php if (!empty($thread->replies)) : ?>
             <div class="replies">
-                <button class="button gray">Avaa lanka</button>
-                <button class="button gray">Näytä lisää vastauksia</button>
+                <div class="replies-buttons">
+                    <a href="#">Näytä lisää vastauksia</a>
+                </div>
                 <?php foreach($thread->replies as $reply) : ?>
                     <div class="reply">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
                 <?php endforeach ?>
             </div>
-        <?php endif ?>
-        <div class="thread-buttons">
-            <button class="button gray">Päivitä</button>
+            <?php endif ?>
+            <div class="thread-buttons">
+                <a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>
+            </div>
         </div>
     </div>
-</div>
 
-<?php endforeach ?>
+    <?php endforeach ?>
+<?php else : ?>
+    <div class="content-box">
+        <h3><?= _('There are no threads here...') ?></h3>
+    </div>
+<?php endif ?>

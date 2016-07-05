@@ -67,6 +67,7 @@ class Posts extends Model
         $thread->username = $post->username;
         $thread->subject = $post->subject;
         $thread->message = $post->message;
+        $thread->messageFormatted = $this->formatMessage($post->message);
 
         if (!empty($post->file_id)) {
             $thread->file = $this->createFileClass($post);
@@ -77,10 +78,12 @@ class Posts extends Model
         return $thread;
     }
 
-    public function getBoardThreads(int $boardId, int $count, int $replyCount) : array
+    public function getBoardThreads(int $boardId, int $page, int $count, int $replyCount) : array
     {
+        $limitStart = ($page - 1) * $count;
+
         $q = $this->db->prepare($this->getPostsQuery("WHERE board_id = :board_id AND thread_id IS NULL
-            ORDER BY sticky DESC, bump_time DESC LIMIT " . (int)$count));
+            ORDER BY sticky DESC, bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
         $q->bindValue('board_id', $boardId);
         $q->execute();
 
@@ -110,6 +113,7 @@ class Posts extends Model
             $thread->username = $row->username;
             $thread->subject = $row->subject;
             $thread->message = $row->message;
+            $thread->messageFormatted = $this->formatMessage($row->message);
             $thread->replies = $this->getReplies($row->id, $replyCount, true);
 
             if (!empty($row->file_id)) {
@@ -152,6 +156,7 @@ class Posts extends Model
             $tmp->username = $reply->username;
             $tmp->time = date('c', strtotime($reply->time));
             $tmp->message = $reply->message;
+            $tmp->messageFormatted = $this->formatMessage($reply->message);
 
             if (!empty($reply->file_id)) {
                 $tmp->file = $this->createFileClass($reply);
@@ -175,6 +180,14 @@ class Posts extends Model
         $subject = trim($subject);
 
         return $subject;
+    }
+
+    protected function formatMessage(string $message) : string
+    {
+        $message = htmlspecialchars($message);
+        $message = nl2br($message);
+
+        return $message;
     }
 
     public function createThread(

@@ -1,18 +1,27 @@
 <?php include($viewFilesPath . '/Snippets/BoardHeader.phtml') ?>
 
+<?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
+
 <div class="content-box thread">
+    <?php if (!empty($thread->subject)) : ?>
     <h3><?= htmlspecialchars($thread->subject) ?></h3>
+    <?php endif ?>
     <div class="thread-content">
-        <div class="op-post">
+        <div class="op-post" id="post-<?= $thread->id ?>">
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
         </div>
 
+        <div class="thread-meta">
+            1920 vastausta, 609 tiedostoa
+        </div>
         <div class="replies">
         <?php foreach($thread->replies as $reply) : ?>
-            <div class="reply">
+            <div class="reply" id="post-<?= $reply->id ?>">
                 <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
             </div>
         <?php endforeach ?>
+        </div>
+        <div class="thread-buttons">
         </div>
     </div>
 </div>

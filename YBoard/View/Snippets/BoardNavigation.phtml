@@ -1,0 +1,23 @@
+<div class="content-box board-navigation">
+    <div class="breadcrumb">
+        <a href="/"><?= htmlspecialchars($siteName) ?></a>
+        <div class="sep">&raquo;</div>
+        <a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a>
+        <?php if(!empty($thread->id)) : ?>
+            <div class="sep">&raquo;</div>
+            <a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a>
+        <?php endif ?>
+    </div>
+    <div class="pagination">
+        <?php if ($paginationStartPage > 1) : ?>
+            <a href="/<?= $board->url ?>/"<?= ($pageNum==1?' class="cur"':'') ?>>1</a>
+            <?php if ($paginationStartPage > 2) : ?>
+            <span class="sep">&hellip;</span>
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php for ($i = $paginationStartPage; $i <= $paginationEndPage; ++$i) : ?>
+            <a href="/<?= $board->url ?>-<?= $i ?>/"<?= ($pageNum==$i?' class="cur"':'') ?>><?= $i ?></a>
+        <?php endfor ?>
+    </div>
+</div>

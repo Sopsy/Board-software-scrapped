@@ -88,9 +88,8 @@ class Post extends ExtendedController
             $subject = trim(mb_substr($_POST['subject'], 0, $this->config['posts']['subjectMaxLength']));
         }
 
-        // TODO: Check if username can be used at all
         $username = null;
-        if (!$hideName) {
+        if (!$hideName && $this->user->goldLevel != 0) {
             $username = $this->user->username;
         }
 
@@ -105,7 +104,8 @@ class Post extends ExtendedController
             $files = new Files($this->db);
             $files->setConfig($this->config['files']);
 
-            // TODO: Verify file types are allowed
+
+
             // TODO: Limit file size
             try {
                 $file = $files->processUpload($_FILES['files']);
@@ -130,7 +130,6 @@ class Post extends ExtendedController
             $posts->addFileToPost($postId, $file->id, $file->origName);
         }
 
-        // TODO: Save uploaded file
         // TODO: Update thread stats
 
         // TODO: Save replies
