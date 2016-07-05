@@ -8,6 +8,7 @@
             <a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a>
         <?php endif ?>
     </div>
+    <?php if (empty($thread->id)) : ?>
     <div class="pagination">
         <?php if ($paginationStartPage > 1) : ?>
             <a href="/<?= $board->url ?>/"<?= ($pageNum==1?' class="cur"':'') ?>>1</a>
@@ -20,4 +21,5 @@
             <a href="/<?= $board->url ?>-<?= $i ?>/"<?= ($pageNum==$i?' class="cur"':'') ?>><?= $i ?></a>
         <?php endfor ?>
     </div>
+    <?php endif ?>
 </div>

@@ -1,6 +1,6 @@
 <div class="post-buttons">
-    <a href="#">vastaa</a>
-    <a href="#">valinnat</a>
+    <a href="#"><?= _('reply') ?></a>
+    <a href="#"><?= _('options') ?></a>
 </div>
 
 <div class="post-meta">
@@ -20,7 +20,8 @@
     <figure class="post-file thumbnail">
         <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
         <figcaption>
-            <a href="" target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
+            <a href="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/o/<?= $post->file->name ?>/<?= htmlspecialchars($post->file->displayName) ?>.<?= $post->file->extension ?>"
+                target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
             <span><?= htmlspecialchars($post->file->extension) ?></span>
         </figcaption>
     </figure>
