@@ -22,7 +22,12 @@ class Post extends ExtendedController
         $posts = new Posts($this->db);
 
         // Is this a reply or a new thread?
-        $isReply = empty($_POST['thread']) ? false : true;
+        $isReply = !empty($_POST['thread']);
+        $hasFile = !empty($_FILES['files']['tmp_name']);
+
+        // Prepare message
+        $message = isset($_POST['message']) ? trim($_POST['message']) : false;
+        $hasMessage = !empty($message) || $message === '0';
 
         if (!$isReply) { // Creating a new thread
             // Verify board
@@ -31,7 +36,7 @@ class Post extends ExtendedController
             }
 
             // Message is required for new threads
-            if (!isset($_POST['message'])) {
+            if (!$hasMessage) {
                 $this->throwJsonError(400, _('Please type a message'));
             }
 
@@ -48,14 +53,22 @@ class Post extends ExtendedController
                 $this->throwJsonError(400, _('This thread is locked'));
             }
             $board = $this->boards->getById($thread->boardId);
+
+
+            // Message OR file is required for replies
+            if (!$hasMessage && !$hasFile) {
+                $this->throwJsonError(400, _('Please type a message or choose a file'));
+            }
         }
 
-        // TODO: Verify user can post to this board (locked?, mod only?)
+        // TODO: This could be done better...
+        // TODO: Add ipv6 support
+        require_once(__DIR__ . '/../Vendor/ip2location.php');
+        $ip2location = new \IP2Location\Database(__DIR__ . '/../Vendor/IP2LOCATION-LITE-DB1.BIN');
+        $countryCode = strtoupper($ip2location->lookup($_SERVER['REMOTE_ADDR'], \IP2Location\Database::COUNTRY)['countryCode']);
+
         // TODO: Add flood prevention
         // TODO: Add CAPTCHA
-
-        // TODO: Add country detection (ip2location?)
-        $countryCode = 'FI';
 
         // Message options
         $sage = empty($_POST['sage']) ? false : true;
@@ -75,6 +88,7 @@ class Post extends ExtendedController
             $message = Text::removeForbiddenUnicode($message);
             $message = Text::limitEmptyLines($message);
         }
+
 
         // Check blacklist
         $wordBlacklist = new WordBlacklist($this->db);
@@ -99,14 +113,14 @@ class Post extends ExtendedController
         }
 
         // Process file
-        $hasFile = !empty($_FILES['files']['tmp_name']) ? true : false;
         if ($hasFile) {
             $files = new Files($this->db);
             $files->setConfig($this->config['files']);
 
+            if ($_FILES['files']['size'] >= $this->config['files']['maxSize']) {
+                $this->throwJsonError(400, _('Your files exceed the maximum upload size.'));
+            }
 
-
-            // TODO: Limit file size
             try {
                 $file = $files->processUpload($_FILES['files']);
             } catch (FileUploadException $e) {
@@ -141,6 +155,6 @@ class Post extends ExtendedController
         // TODO: Save tags
         // TODO: Add notifications
 
-        $this->throwJsonError(400, $postId);
+        //$this->throwJsonError(400, $postId);
     }
 }

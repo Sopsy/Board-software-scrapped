@@ -1,4 +1,9 @@
 <header class="page-header">
-    <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->nsfw) : ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
-    <h2><?= htmlspecialchars($board->description) ?></h2>
+    <div class="board-title">
+        <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->nsfw) : ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
+        <h2><?= htmlspecialchars($board->description) ?></h2>
+    </div>
+    <?php if (empty($thread)) : ?>
+    <button class="button green create-thread toggle-postform" onclick="togglePostForm()"><?= _('Create a thread') ?></button>
+    <?php endif ?>
 </header>

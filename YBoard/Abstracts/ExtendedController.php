@@ -32,7 +32,7 @@ abstract class ExtendedController extends YBoard\Controller
         $this->boards = new Model\Boards($this->db);
 
         // Load internalization
-        $this->i18n = new i18n(ROOT_PATH . '/YBoard/i18n');
+        $this->i18n = new i18n(ROOT_PATH . '/YBoard/Locales');
 
         // Load user
         $this->loadUser();

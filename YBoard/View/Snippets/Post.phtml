@@ -20,7 +20,7 @@
     <figure class="post-file thumbnail">
         <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
         <figcaption>
-            <a href="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/o/<?= $post->file->name ?>/<?= htmlspecialchars($post->file->displayName) ?>.<?= $post->file->extension ?>"
+            <a href="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/o/<?= $post->file->name ?>/<?= rawurlencode($post->file->displayName) ?>.<?= $post->file->extension ?>"
                 target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
             <span><?= htmlspecialchars($post->file->extension) ?></span>
         </figcaption>

@@ -1,11 +1,11 @@
 form#post {
-    width: 100%;
-    max-width: 800px;
-    margin: 10px auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 #ddd;
+    margin: 20px;
     padding: 20px;
     box-sizing: border-box;
-    background-color: #f5f5f5;
     overflow: hidden;
+    display: none;
 
     > label {
         background-color: #fff;
@@ -19,7 +19,7 @@ form#post {
             background-color: #528ac9;
             color: #fff;
             display: inline-block;
-            min-width: 80px;
+            min-width: 90px;
             overflow: hidden;
             padding: 4px 10px;
             span {
@@ -67,6 +67,13 @@ form#post {
         background-color: transparent;
         padding: 3px 5px;
         resize: vertical;
+    }
+    #postform-captcha {
+        overflow: hidden;
+        margin-bottom: 5px;
+        > div {
+            float: right;
+        }
     }
     input[type="submit"] {
         float: right;

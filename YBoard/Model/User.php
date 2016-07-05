@@ -146,7 +146,7 @@ class User extends Model
 
     public function validateLogin($username, $password)
     {
-        $q = $this->db->prepare("SELECT id, password, class FROM user_accounts WHERE username = ? LIMIT 1");
+        $q = $this->db->prepare("SELECT id, username, password, class FROM user_accounts WHERE username = ? LIMIT 1");
         $q->execute([$username]);
 
         if ($q === false) {
@@ -154,18 +154,12 @@ class User extends Model
         }
 
         if ($q->rowCount() == 0) {
-            // Prevent leaking of usernames by timing the page loads
-            password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
-
             return false;
         }
 
         $user = $q->fetch();
 
-        if (empty($user->password)) {
-            // Prevent leaking of usernames by timing the page loads
-            password_hash('xxx', static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
-
+        if (empty($user->username)) {
             return false;
         }
 
@@ -293,5 +287,10 @@ class User extends Model
         }
 
         return false;
+    }
+    
+    public function getStatistics($key)
+    {
+        
     }
 }

@@ -67,9 +67,6 @@ class LogInOut extends ExtendedController
             // TODO: write mod login to log
         }
 
-        // Update password hash on each login
-        $this->user->setPassword($_POST['password']);
-
         return true;
     }
 

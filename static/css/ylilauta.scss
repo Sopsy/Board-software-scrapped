@@ -14,7 +14,7 @@ $linkHoverColor: $nsfwColor;
 
 body {
     background: #eaeaec;
-    font: 14px "Lato", sans-serif;
+    font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
     color: $textColor;
     word-wrap: break-word;
 }
@@ -49,6 +49,7 @@ img { vertical-align: top }
         }
     }
     &.transparent {
+        color: #fff;
         padding: 5px 0;
         background-color: transparent;
     }
@@ -92,7 +93,20 @@ h4 {
         color: #fff;
         box-shadow: 100px -100px 120px -100px #000 inset;
         text-shadow: 0 0 40px #000, 0 0 10px #000;
+        overflow: hidden;
+        position: relative;
+
         a { color: #fff }
+        h1, h2 {
+            margin-right: 150px;
+        }
+        .create-thread {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            vertical-align: bottom;
+        }
     }
     .error-image {
         margin-top: 60px;
@@ -107,7 +121,7 @@ h4 {
     box-shadow: 0 0 10px 0 #ddd;
 
     p {
-        line-height: 1.5em;
+        line-height: 1.25em;
     }
 }
 
