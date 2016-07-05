@@ -6,12 +6,12 @@
     display: inline-block;
 
     &.nsfw {
-        color: $nsfwColor;
+        color: $red;
         font-size: 0.6rem;
         vertical-align: top;
     }
     &.op {
-        background-color: $usernameColor;
+        background-color: $green;
         color: #fff;
     }
 }

@@ -3,7 +3,11 @@
         <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->nsfw) : ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
         <h2><?= htmlspecialchars($board->description) ?></h2>
     </div>
-    <?php if (empty($thread)) : ?>
-    <button class="button green create-thread toggle-postform" onclick="togglePostForm()"><?= _('Create a thread') ?></button>
-    <?php endif ?>
+    <div class="buttons">
+        <?php if (empty($thread)) : ?>
+        <button class="button green create-thread toggle-postform" onclick="togglePostForm()"><?= _('Create a thread') ?></button>
+        <?php else : ?>
+        <button class="button green add-reply toggle-postform" onclick="replyToThread()"><?= _('Reply to thread') ?></button>
+        <?php endif ?>
+    </div>
 </header>

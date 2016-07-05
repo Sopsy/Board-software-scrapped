@@ -3,12 +3,10 @@
 
 $baseColor: #333c45;
 $textColor: #222;
-$threadTextColor: #333377;
-$usernameColor: #117743;
-$titleColor: $usernameColor;
-$nsfwColor: #c31900;
-$linkColor: #006632;
-$linkHoverColor: $nsfwColor;
+$green: #117743;
+$red: #ae282f;
+$linkColor: $green;
+$linkHoverColor: lighten($red, 10%);
 
 @import 'partials/mixins';
 
@@ -43,9 +41,9 @@ img { vertical-align: top }
     }
     &.green {
         color: #fff;
-        background-color: #689800;
+        background-color: $green;
         &:hover {
-            background-color: #72a500;
+            background-color: lighten($green, 10%);
         }
     }
     &.transparent {
@@ -72,14 +70,14 @@ h3 {
     font-size: 1.5em;
     font-weight: 400;
     line-height: 1.5em;
-    color: $titleColor;
+    color: $green;
     margin-bottom: 20px;
 }
 h4 {
     font-size: 1.25em;
     font-weight: 400;
     line-height: 1.5em;
-    color: $titleColor;
+    color: $green;
     margin-bottom: 10px;
 }
 
@@ -100,7 +98,7 @@ h4 {
         h1, h2 {
             margin-right: 150px;
         }
-        .create-thread {
+        .buttons {
             position: absolute;
             bottom: 20px;
             right: 20px;
@@ -118,7 +116,6 @@ h4 {
     padding: 40px 60px;
     background-color: #fff;
     margin: 20px;
-    box-shadow: 0 0 10px 0 #ddd;
 
     p {
         line-height: 1.25em;

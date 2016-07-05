@@ -20,19 +20,21 @@ function signupForm(elm, e) {
         });
     }
 
+    var signupform = $('#signupform');
+
     if (!elm.data('open')) {
 
         elm.html(messages.cancel);
 
         $('#loginbutton').attr('name', 'signup').val(messages.signUp);
-        $('#signupform').slideDown();
+        signupform.slideDown();
         elm.data('open', true);
     } else {
         elm.html(messages.signUp);
 
         $('#loginbutton').attr('name', 'login').val(messages.logIn);
-        $('#signupform').slideUp();
-        $('#signupform input').val('');
+        signupform.slideUp();
+        signupform.find('input').val('');
         elm.data('open', false);
     }
 }
@@ -120,15 +122,17 @@ function togglePostForm() {
         });
     }
 
-    $('#post').toggle();
+    var form = $('#post');
+    form.toggle();
     $('.toggle-postform').toggle();
-    if ($('#post textarea').is(':visible')) {
-        $('#post textarea').focus();
+    var textarea = form.find('textarea');
+    if (textarea.is(':visible')) {
+        textarea.focus();
     }
 }
 
 function addBbCode(code) {
-    $('#post textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
+    $('#post').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
 }
 
 $('.datetime').each(function () {
@@ -170,10 +174,16 @@ jQuery.fn.extend({
 });
 
 $(window).on('beforeunload', function(e) {
-    if (!submitInProgress && $('#post textarea').is(':visible') && $('#post textarea').val().length != 0) {
+    var textarea = $('#post').find('textarea');
+    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
         return true;
     }
     else {
         e = null;
     }
+});
+
+$('.options-menu').click(function(){
+    $('.options-menu').find('div').hide();
+    $(this).find('div').show();
 });

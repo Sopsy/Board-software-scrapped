@@ -35,6 +35,7 @@
         <?php // TODO: Move to external file? ?>
     </script>
     <?php if (!$user->loggedIn) : ?>
+    <?php // TODO: Maybe use sentPosts instead of loggedIn ?>
     <script src="//www.google.com/recaptcha/api.js?render=explicit" async defer></script>
     <?php endif ?>
 </head>
