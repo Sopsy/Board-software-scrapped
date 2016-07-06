@@ -77,6 +77,8 @@ function addBbCode(code) {
 }
 
 function replyToPost(id, newline) {
+    var selectedText = getSelectionText();
+
     if (typeof newline == 'undefined') {
         newline = true;
     }
@@ -93,10 +95,17 @@ function replyToPost(id, newline) {
     textarea.focus();
 
     var append = '';
-    if (textarea.val().length != 0 && newline) {
+    if (textarea.val().substr(-1) == '\n') {
+        append += ' ';
+    } else if (textarea.val().length != 0 && newline) {
         append += '\n\n';
     }
     append += '>>' + id + '\n';
+
+    // If any text on the page was selected, add it to post form with quotes
+    if (selectedText != '') {
+        append += '>' + selectedText.replace('\n', '\n>') + '\n';
+    }
 
     textarea.val(textarea.val().trim() + append);
 }
@@ -219,7 +228,7 @@ $(window).on('beforeunload', function (e) {
     }
 });
 
-// Jquery plugins
+// Jquery plugins etc
 jQuery.fn.extend({
     insertAtCaret: function (before, after) {
         if (typeof after == 'undefined') {
@@ -252,3 +261,13 @@ jQuery.fn.extend({
         })
     }
 });
+
+function getSelectionText() {
+    var text = '';
+    if (window.getSelection) {
+        text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+        text = document.selection.createRange().text;
+    }
+    return text;
+}

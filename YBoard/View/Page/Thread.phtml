@@ -1,7 +1,7 @@
 <?php include($viewFilesPath . '/Snippets/BoardHeader.phtml') ?>
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
-<div class="content-box thread">
+<div class="content-box thread" data-id="<?= $thread->id ?>">
     <?php if (!empty($thread->subject)) : ?>
     <h3><?= htmlspecialchars($thread->subject) ?></h3>
     <?php endif ?>
