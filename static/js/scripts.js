@@ -104,7 +104,7 @@ function replyToPost(id, newline) {
 
     // If any text on the page was selected, add it to post form with quotes
     if (selectedText != '') {
-        append += '>' + selectedText.replace('\n', '\n>') + '\n';
+        append += '>' + selectedText.replace(/(\r\n|\n|\r)/g, '$1>') + '\n';
     }
 
     textarea.val(textarea.val().trim() + append);
