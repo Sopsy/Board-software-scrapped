@@ -6,7 +6,7 @@ $textColor: #222;
 $green: #117743;
 $red: #ae282f;
 $linkColor: $green;
-$linkHoverColor: lighten($red, 10%);
+$linkHoverColor: $red;
 
 @import 'partials/mixins';
 
@@ -115,7 +115,7 @@ h4 {
 .content-box {
     padding: 40px 60px;
     background-color: #fff;
-    margin: 20px;
+    margin: 20px 10px;
 
     p {
         line-height: 1.25em;
@@ -126,6 +126,6 @@ h4 {
 @import 'partials/sidebar';
 @import 'partials/errorpage';
 @import 'partials/frontpage';
-@import 'partials/postform';
+@import 'partials/post-form';
 @import 'partials/threads';
 @import 'partials/navigation';

@@ -6,14 +6,14 @@ if (!empty($thread->id)) {
 }
 ?>
 
-<form id="post" class="<?= ($isReply?'reply':'new-thread') ?>" action="/scripts/post" method="post" onsubmit="submitPost(event)">
+<form id="post-form" class="<?= ($isReply?'reply':'new-thread') ?>" action="/scripts/post" method="post" onsubmit="submitPost(event)">
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 <?php if ($isReply) : ?>
     <h3><?= _('Submit a reply') ?></h3>
-    <input type="hidden" name="thread" value="<?= $thread->id ?>">
+    <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
 <?php else : ?>
     <h3><?= _('Create a thread') ?></h3>
-    <input type="hidden" name="board" value="<?= $board->url ?>">
+    <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
     <label id="label-subject">
         <span><?= _('Subject') ?></span>
         <input type="text" name="subject" placeholder="<?= _('Subject') ?>">
@@ -59,9 +59,10 @@ if (!empty($thread->id)) {
     </div>
 
     <?php if (!$user->loggedIn) : ?>
-    <div id="postform-captcha"></div>
+    <div id="post-form-captcha"></div>
     <?php endif ?>
     <button onclick="event.preventDefault();$('#post-options').toggle()" class="button gray"><?= _('Options') ?></button>
+    <button id="reset-button" onclick="event.preventDefault();resetPostForm()" class="button gray"><?= _('Cancel') ?></button>
     <input type="submit" class="button green" value="<?= _('Submit') ?>">
     <div id="post-options">
         <h4><?= _('Functions') ?></h4>

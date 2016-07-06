@@ -6,10 +6,10 @@
 <?php if (!empty($threads)) : ?>
 
     <?php foreach($threads as $thread) : ?>
-    <div class="content-box thread">
+    <div class="content-box thread" data-id="<?= $thread->id ?>">
         <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a></h3>
         <div class="thread-content">
-            <div class="op-post">
+            <div class="op-post" id="post-<?= $thread->id ?>">
                 <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
             </div>
             <div class="thread-meta">
@@ -21,7 +21,7 @@
                     <a href="#">Näytä lisää vastauksia</a>
                 </div>
                 <?php foreach($thread->replies as $reply) : ?>
-                    <div class="reply">
+                    <div class="reply" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
                 <?php endforeach ?>

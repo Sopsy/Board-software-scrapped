@@ -48,7 +48,7 @@ function submitPost(e) {
     }
     submitInProgress = true;
 
-    var form = $('form#post');
+    var form = $('#post-form');
     var fileInput = form.find('input:file');
 
     // Calculate upload size and check it does not exceed the set maximum
@@ -116,13 +116,13 @@ function submitPost(e) {
 }
 
 function togglePostForm() {
-    if (typeof grecaptcha != 'undefined' && $('#postform-captcha').html().length == 0) {
+    if (typeof grecaptcha != 'undefined' && $('#post-form-captcha').html().length == 0) {
         grecaptcha.render('postform-captcha', {
             'sitekey': config.reCaptchaPublicKey
         });
     }
 
-    var form = $('#post');
+    var form = $('#post-form');
     form.toggle();
     $('.toggle-postform').toggle();
     var textarea = form.find('textarea');
@@ -132,7 +132,65 @@ function togglePostForm() {
 }
 
 function addBbCode(code) {
-    $('#post').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
+    $('#post-form').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
+}
+
+function replyToPost(id, newline) {
+    if (typeof newline == 'undefined') {
+        newline = true;
+    }
+
+    var postForm = $('#post-form');
+    postForm.appendTo('#post-' + id).show();
+
+    saveOriginalPostFormDestination();
+
+    $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
+
+    var textarea = postForm.find('textarea');
+    textarea.focus();
+
+    var append = '';
+    if (textarea.val().length != 0 && newline) {
+        append += '\n\n';
+    }
+    append += '>>' + id + '\n';
+
+    textarea.val(textarea.val().trim() + append);
+}
+
+function saveOriginalPostFormDestination() {
+    var destElm = $('#post-destination');
+
+    if (typeof destElm.data('orig-name') != 'undefined') {
+        return true;
+    }
+
+    destElm.data('orig-name', destElm.attr('name'));
+    destElm.data('orig-value', destElm.val());
+
+    return true;
+}
+
+function resetOriginalPostFormDestination() {
+    var destElm = $('#post-destination');
+
+    if (typeof destElm.data('orig-name') == 'undefined') {
+        return true;
+    }
+
+    destElm.attr('name', destElm.data('orig-name'));
+    destElm.val(destElm.data('orig-value'));
+
+    return true;
+}
+
+function resetPostForm() {
+    var postForm = $('#post-form');
+    postForm.insertAfter('.board-navigation:first');
+    postForm[0].reset();
+    resetOriginalPostFormDestination();
+    postForm.hide();
 }
 
 $('.datetime').each(function () {
@@ -174,7 +232,7 @@ jQuery.fn.extend({
 });
 
 $(window).on('beforeunload', function(e) {
-    var textarea = $('#post').find('textarea');
+    var textarea = $('#post-form').find('textarea');
     if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
         return true;
     }

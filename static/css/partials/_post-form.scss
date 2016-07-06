@@ -1,4 +1,4 @@
-form#post {
+#post-form {
     background-color: #fff;
     margin: 20px;
     padding: 20px;
@@ -80,6 +80,7 @@ form#post {
     .button {
         font-size: 1rem;
     }
+    #reset-button { display: none }
 }
 
 #post-progress {

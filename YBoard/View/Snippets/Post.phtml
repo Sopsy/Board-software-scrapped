@@ -1,5 +1,5 @@
 <div class="post-buttons">
-    <a href="#"><?= _('reply') ?></a>
+    <a href="javascript:void(replyToPost(<?= $post->id ?>))"><?= _('reply') ?></a>
     <a href="#"><?= _('gold') ?></a>
     <a href="#"><?= _('hide') ?></a>
     <a href="#"><?= _('report') ?></a>
@@ -13,7 +13,8 @@
         <?php endif ?>
     </div>
     <div class="post-info">
-        <a href="#" class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
+        <a href="/<?= $board->url ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
+            onclick="event.preventDefault();replyToPost(<?= $post->id ?>)" class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
         <span class="post-time datetime"><?= $post->time ?></span>
     </div>
 </div>
@@ -24,7 +25,7 @@
         <figcaption>
             <a href="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/o/<?= $post->file->name ?>/<?= rawurlencode($post->file->displayName) ?>.<?= $post->file->extension ?>"
                 target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
-            <span><?= htmlspecialchars($post->file->extension) ?></span>
+            <span><?= \YBoard\Library\Text::formatBytes($post->file->size) ?> <?= htmlspecialchars(strtoupper($post->file->extension)) ?></span>
         </figcaption>
     </figure>
     <?php endif ?>
