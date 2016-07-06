@@ -1,9 +1,9 @@
 .board-navigation {
-    $linkSize: 30px;
+    $linkSize: 28px;
     line-height: $linkSize;
     font-size: 1rem;
     overflow: hidden;
-    margin: 20px;
+    margin: 20px 10px;
 
     .breadcrumb {
         float: left;
@@ -19,12 +19,15 @@
             height: $linkSize;
             line-height: $linkSize;
             text-align: center;
+            box-sizing: border-box;
+            vertical-align: top;
         }
         .cur {
             background-color: $linkColor;
             border-radius: $linkSize;
             color: #fff;
             font-size: 0.9em;
+            vertical-align: top;
         }
     }
 }

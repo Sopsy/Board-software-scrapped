@@ -2,9 +2,7 @@
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
 <div class="content-box thread" data-id="<?= $thread->id ?>">
-    <?php if (!empty($thread->subject)) : ?>
     <h3><?= htmlspecialchars($thread->subject) ?></h3>
-    <?php endif ?>
     <div class="thread-content">
         <div class="op-post" id="post-<?= $thread->id ?>">
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
@@ -27,3 +25,5 @@
 </div>
 
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
+
+<?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>

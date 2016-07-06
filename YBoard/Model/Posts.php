@@ -11,7 +11,7 @@ class Posts extends Model
 {
     public function getThreadMeta(int $id) : Thread
     {
-        $q = $this->db->prepare("SELECT id, board_id, upvote_count, user_id, ip, country_code, time, locked, sticky
+        $q = $this->db->prepare("SELECT id, board_id, user_id, ip, country_code, time, locked, sticky
             FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
         $q->bindValue('id', (int)$id);
         $q->execute();
@@ -32,7 +32,6 @@ class Posts extends Model
         $thread->countryCode = $post->country_code;
         $thread->time = date('c', strtotime($post->time));
         $thread->sticky = $post->sticky;
-        $thread->points = $post->upvote_count;
 
         return $thread;
     }
@@ -63,7 +62,6 @@ class Posts extends Model
         $thread->countryCode = $post->country_code;
         $thread->time = date('c', strtotime($post->time));
         $thread->sticky = $post->sticky;
-        $thread->points = $post->upvote_count;
         $thread->username = $post->username;
         $thread->subject = $post->subject;
         $thread->message = $post->message;
@@ -109,7 +107,6 @@ class Posts extends Model
             $thread->time = date('c', strtotime($row->time));
             $thread->locked = $row->locked;
             $thread->sticky = $row->sticky;
-            $thread->points = $row->upvote_count;
             $thread->username = $row->username;
             $thread->subject = $row->subject;
             $thread->message = $row->message;
@@ -267,7 +264,7 @@ class Posts extends Model
     protected function getPostsQuery(string $append = '') : string
     {
         return "SELECT
-            a.id, board_id, upvote_count, user_id, ip, country_code, time, locked, sticky, username, subject, message,
+            a.id, board_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
             c.extension AS file_extension, c.size AS file_size
             FROM posts a

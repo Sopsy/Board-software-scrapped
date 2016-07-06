@@ -1,9 +1,11 @@
 .text-tag {
     font-size: 0.7rem;
     padding: 0 5px;
-    line-height: 1.3em;
-    border-radius: 20px;
-    display: inline-block;
+    line-height: 15px;
+    height: 15px;
+    border-radius: 15px;
+    display: inline;
+    text-align: center;
 
     &.nsfw {
         color: $red;
