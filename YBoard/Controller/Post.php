@@ -12,6 +12,36 @@ use YBoard\Model\WordBlacklist;
 
 class Post extends ExtendedController
 {
+    public function get()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['postId'])) {
+            $this->throwJsonError(400);
+        }
+
+        $posts = new Posts($this->db);
+        $post = $posts->get($_POST['postId']);
+        if (!$post) {
+            $this->throwJsonError(404, _('Post does not exist'));
+        }
+
+        if (!empty($post->threadId)) {
+            $thread = $posts->getMeta($post->threadId);
+        } else {
+            $thread = $post;
+        }
+
+        $view = $this->loadTemplateEngine('Blank');
+
+        $view->tooltip = true;
+        $view->post = $post;
+        $view->thread = $thread;
+        $view->board = $this->boards->getById($thread->boardId);
+
+        $view->display('Ajax/Post');
+    }
+
     public function redirect($postId)
     {
         $posts = new Posts($this->db);
@@ -211,7 +241,7 @@ class Post extends ExtendedController
         $this->validateAjaxCsrfToken();
 
         if (empty($_POST['postId'])) {
-            $this->throwJsonError(400, json_encode($_POST));
+            $this->throwJsonError(400);
         }
 
         $posts = new Posts($this->db);

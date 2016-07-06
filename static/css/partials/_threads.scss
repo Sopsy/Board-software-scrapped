@@ -4,6 +4,10 @@
     color: $textColor;
     margin: 20px 10px 20px 10px;
 
+    .tooltipster-box {
+        background: #f5f5f5;
+    }
+
     #post-form {
         margin: 20px 0;
         padding: 10px;
@@ -81,11 +85,15 @@
         float: left;
         margin: 0 20px 0 0;
         max-width: 100%;
+        min-width: 100px;
+        min-height: 60px;
+        text-align: center;
         box-sizing: border-box;
         white-space: nowrap;
         overflow: hidden;
         background-color: rgba(0,0,0,0.05);
         position: relative;
+
 
         .overlay {
             position: absolute;
@@ -117,6 +125,7 @@
             }
         }
         figcaption {
+            text-align: left;
             padding: 3px;
             overflow: hidden;
             text-overflow: ellipsis;

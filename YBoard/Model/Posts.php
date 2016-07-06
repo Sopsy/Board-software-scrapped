@@ -301,6 +301,37 @@ class Posts extends Model
         return $post;
     }
 
+    public function get(int $postId)
+    {
+        $q = $this->db->prepare($this->getPostsQuery('WHERE a.id = :post_id LIMIT 1'));
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        $reply = $q->fetch();
+
+        $post = new Reply();
+        $post->id = $reply->id;
+        $post->boardId = $reply->board_id;
+        $post->threadId = $reply->thread_id;
+        $post->userId = $reply->user_id;
+        $post->ip = inet_ntop($reply->ip);
+        $post->countryCode = $reply->country_code;
+        $post->username = $reply->username;
+        $post->time = date('c', strtotime($reply->time));
+        $post->message = $reply->message;
+        $post->messageFormatted = $this->formatMessage($reply->message);
+
+        if (!empty($reply->file_id)) {
+            $post->file = $this->createFileClass($reply);
+        }
+
+        return $post;
+    }
+
     public function delete(int $postId) : bool
     {
         $q = $this->db->prepare("DELETE FROM posts WHERE id = :post_id LIMIT 1");
@@ -313,7 +344,7 @@ class Posts extends Model
     protected function getPostsQuery(string $append = '') : string
     {
         return "SELECT
-            a.id, board_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
+            a.id, board_id, thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
             c.extension AS file_extension, c.size AS file_size
             FROM posts a

@@ -23,14 +23,7 @@ function deletePost(id) {
         $t(id).remove();
         toastr.success(messages.postDeleted);
     }).fail(function (xhr, textStatus, errorThrown) {
-        if (xhr.responseText.length != 0) {
-            try {
-                var text = JSON.parse(xhr.responseText);
-                errorThrown = text.message;
-            } catch (e) {
-            }
-        }
-        toastr.error(errorThrown, messages.errorOccurred);
+        toastrXhrError(xhr, errorThrown);
     });
 }
 
@@ -224,14 +217,7 @@ function submitPost(e) {
         // Reset post form
         resetPostForm();
     }).fail(function (xhr, textStatus, errorThrown) {
-        if (xhr.responseText.length != 0) {
-            try {
-                var text = JSON.parse(xhr.responseText);
-                errorThrown = text.message;
-            } catch (e) {
-            }
-        }
-        toastr.error(errorThrown, messages.errorOccurred);
+        toastrXhrError(xhr, errorThrown);
     }).always(function () {
         $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
@@ -268,7 +254,7 @@ function expandImage(elm, e) {
 function changeSrc(img, src) {
     img.data('expanding', 'true');
     var loading = setTimeout(function () {
-        img.after('<img class="overlay center loading" src="' + config.staticUrl + '/img/loading.gif" alt="">');
+        img.after(loadingAnimation('overlay center'));
     }, 200);
     img.attr('src', src).on('load', function () {
         img.removeData('expanding');
@@ -279,9 +265,13 @@ function changeSrc(img, src) {
 
 // Dates in posts
 $('.datetime').each(function () {
-    var date = new Date($(this).html());
-    $(this).html(date.toLocaleString());
+    localizeTimestamp(this);
 });
+
+function localizeTimestamp(elm) {
+    var date = new Date($(elm).html());
+    $(elm).html(date.toLocaleString());
+}
 
 // Confirm page exit when there's text in the post form
 $(window).on('beforeunload', function (e) {
@@ -294,14 +284,52 @@ $(window).on('beforeunload', function (e) {
 });
 
 // Reflinks
-$('.reflink').on('click', function (e) {
+$('body').on('click', '.reflink', function (e) {
     var id = $(this).data('id');
     if ($p(id).is('*')) {
         e.preventDefault();
         window.location = window.location.href.split('#')[0] + '#post-' + id;
-    } else {
-
     }
+});
+
+$.tooltipster.setDefaults({
+    'theme': 'thread'
+})
+
+$('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
+    var elm = $(this);
+    elm.tooltipster({
+        content: loadingAnimation(),
+        side: 'bottom',
+        animationDuration: 0,
+        delay: [50, 0],
+        arrow: false,
+        contentAsHTML: true,
+    }).tooltipster('open');
+
+    $.ajax({
+        url: '/scripts/posts/get',
+        type: "POST",
+        data: {'postId': $(this).data('id')}
+    }).done(function (data, textStatus, xhr) {
+        // Update timestamps
+        data = $(data);
+        data.find('.datetime').each(function () {
+            localizeTimestamp(this);
+        });
+
+        elm.tooltipster('content', data);
+    }).fail(function (xhr, textStatus, errorThrown) {
+        if (xhr.responseText.length != 0) {
+            try {
+                var text = JSON.parse(xhr.responseText);
+                errorThrown = text.message;
+            } catch (e) {
+            }
+        }
+        toastr.info(errorThrown);
+        elm.tooltipster('disable');
+    });
 });
 
 // Jquery plugins etc
@@ -337,6 +365,25 @@ jQuery.fn.extend({
         })
     }
 });
+
+function toastrXhrError(xhr, errorThrown) {
+    if (xhr.responseText.length != 0) {
+        try {
+            var text = JSON.parse(xhr.responseText);
+            errorThrown = text.message;
+        } catch (e) {
+        }
+    }
+    toastr.error(errorThrown, messages.errorOccurred);
+}
+
+function loadingAnimation(classes) {
+    if (typeof classes == 'undefined') {
+        classes = '';
+    }
+
+    return '<img class="' + classes + 'loading" src="' + config.staticUrl + '/img/loading.gif" alt="">';
+}
 
 function getSelectionText() {
     var text = '';

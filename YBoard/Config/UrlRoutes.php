@@ -19,9 +19,10 @@ return [
     '#^/logout$#' => ['LogInOut', 'logout'],
 
     // Scripts
+    '#^/scripts/posts/get#' => ['Post', 'get'],
+    '#^/scripts/posts/redirect/([0-9]+)#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
-    '#^/scripts/posts/redirect/([0-9]+)#' => ['Post', 'redirect'],
 
     // Boards
     // Checked at the end so other rules override

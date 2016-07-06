@@ -4,7 +4,6 @@
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
 
 <?php if (!empty($threads)) : ?>
-
     <?php foreach($threads as $thread) : ?>
     <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
         <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a></h3>
@@ -32,8 +31,7 @@
             </div>
         </div>
     </div>
-
-    <?php endforeach ?>
+    <?php endforeach; unset($thread); ?>
 <?php else : ?>
     <div class="content-box">
         <h3><?= _('There are no threads here...') ?></h3>

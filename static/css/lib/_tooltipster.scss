@@ -1,0 +1,77 @@
+/* This is the core CSS of Tooltipster */
+
+/* GENERAL STRUCTURE RULES (do not edit this section) */
+
+.tooltipster-base {
+    /* this ensures that a constrained height set by functionPosition,
+    if greater that the natural height of the tooltip, will be enforced
+    in browsers that support display:flex */
+    display: flex;
+    pointer-events: none;
+    /* this may be overriden in JS for fixed position origins */
+    position: absolute;
+}
+
+.tooltipster-box {
+    /* see .tooltipster-base. flex-shrink 1 is only necessary for IE10-
+    and flex-basis auto for IE11- (at least) */
+    flex: 1 1 auto;
+}
+
+.tooltipster-content {
+    /* prevents an overflow if the user adds padding to the div */
+    box-sizing: border-box;
+    /* these make sure we'll be able to detect any overflow */
+    max-height: 100%;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.tooltipster-ruler {
+    /* these let us test the size of the tooltip without overflowing the window */
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+/**
+ * DEFAULT STYLE OF THE SIDETIP PLUGIN
+ *
+ * All styles are "namespaced" with .tooltipster-sidetip to prevent
+ * conflicts between plugins.
+ */
+
+/* .tooltipster-box */
+.tooltipster-base {
+    z-index: 1000;
+    width: auto !important;
+    height: auto !important;
+    box-shadow: 5px 5px 15px -10px #000;
+    border: 5px solid #ccc;
+}
+
+.tooltipster-sidetip.tooltipster-bottom .tooltipster-box {
+    margin-top: 8px;
+}
+
+.tooltipster-sidetip.tooltipster-left .tooltipster-box {
+    margin-right: 8px;
+}
+
+.tooltipster-sidetip.tooltipster-right .tooltipster-box {
+    margin-left: 8px;
+}
+
+.tooltipster-sidetip.tooltipster-top .tooltipster-box {
+    margin-bottom: 8px;
+}
+
+/* .tooltipster-content */
+
+.tooltipster-sidetip .tooltipster-content {
+    padding: 10px;
+}
