@@ -16,6 +16,8 @@ class User extends Model
     public $class;
     public $goldLevel;
     public $loggedIn;
+    public $isMod = false;
+    public $isAdmin = false;
 
     public function load($sessionId)
     {
@@ -41,6 +43,13 @@ class User extends Model
         $this->class = $user->class;
         $this->goldLevel = $user->gold_level;
         $this->loggedIn = empty($user->username) ? false : true;
+
+        if ($this->class == 1) {
+            $this->isMod = true;
+            $this->isAdmin = true;
+        } elseif ($this->class == 2) {
+            $this->isMod = true;
+        }
 
         // Update last active -timestamp and IP-address
         $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = :ip
@@ -288,9 +297,9 @@ class User extends Model
 
         return false;
     }
-    
+
     public function getStatistics($key)
     {
-        
+
     }
 }

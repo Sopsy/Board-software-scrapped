@@ -1,8 +1,13 @@
 <div class="post-buttons">
     <a href="javascript:void(replyToPost(<?= $post->id ?>))"><?= _('reply') ?></a>
+    <!--
     <a href="#"><?= _('gold') ?></a>
     <a href="#"><?= _('hide') ?></a>
     <a href="#"><?= _('report') ?></a>
+    -->
+    <?php if ($post->userId == $user->id || $user->isMod) : ?>
+    <a href="javascript:void(deletePost(<?= $post->id ?>))"><?= _('delete') ?></a>
+    <?php endif ?>
 </div>
 
 <div class="post-meta">

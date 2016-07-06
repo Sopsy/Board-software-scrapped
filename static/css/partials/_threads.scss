@@ -105,14 +105,19 @@
 
         &.thumbnail {
             max-width: 240px;
+            figcaption {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: none;
+            }
+            &:hover figcaption {
+                display: block;
+            }
         }
         figcaption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
             padding: 3px;
-            display: none;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.8em;
@@ -121,9 +126,6 @@
             span {
                 display: block
             }
-        }
-        &:hover figcaption {
-            display: block;
         }
     }
 

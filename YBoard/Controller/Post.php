@@ -157,4 +157,11 @@ class Post extends ExtendedController
 
         //$this->throwJsonError(400, $postId);
     }
+    
+    public function delete()
+    {
+        $this->validateAjaxCsrfToken();
+
+        $posts = new Posts($this->db);
+    }
 }

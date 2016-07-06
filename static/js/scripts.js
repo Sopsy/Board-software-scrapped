@@ -8,6 +8,30 @@ $.ajaxSetup({
     }
 });
 
+// Post deletion
+function deletePost(id) {
+    $.ajax({
+        url: '/scripts/posts/delete',
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: {'postId': id}
+    }).done(function (data, textStatus, xhr) {
+        $$(id).remove();
+        toastr.success(messages.postDeleted);
+    }).fail(function (xhr, textStatus, errorThrown) {
+        if (xhr.responseText.length != 0) {
+            try {
+                var text = JSON.parse(xhr.responseText);
+                errorThrown = text.message;
+            } catch (e) {
+            }
+        }
+        toastr.error(errorThrown, messages.errorOccurred);
+    });
+}
+
+// Signup form in sidebar
 function signupForm(elm, e) {
     e.preventDefault();
     elm = $(elm);
@@ -40,7 +64,6 @@ function signupForm(elm, e) {
 }
 
 // Functions related to post form
-
 var postformLocation = $('#post-form').prev();
 function showPostForm() {
     // Load captcha
@@ -169,7 +192,6 @@ function submitPost(e) {
         type: "POST",
         processData: false,
         contentType: false,
-        cache: false,
         data: fd,
         xhr: function () {
             var xhr = $.ajaxSettings.xhr();
@@ -185,7 +207,7 @@ function submitPost(e) {
             return xhr;
         }
     }).done(function (data, textStatus, xhr) {
-        toastr.success(messages.messageSent);
+        toastr.success(messages.postSent);
 
         // TODO: replace with ajax load of new messages
         // TODO: If new thread, go to thread instead
@@ -243,7 +265,7 @@ function expandImage(elm, e) {
 function changeSrc(img, src) {
     img.data('expanding', 'true');
     var loading = setTimeout(function () {
-        img.after('<img class="overlay center loading" src="//static.ylilauta.org/img/loading.gif" alt="">');
+        img.after('<img class="overlay center loading" src="' + config.staticUrl + '/img/loading.gif" alt="">');
     }, 200);
     img.attr('src', src).on('load', function () {
         img.removeData('expanding');
@@ -310,4 +332,8 @@ function getSelectionText() {
         text = document.selection.createRange().text;
     }
     return text;
+}
+
+function $$(id) {
+    return $('#post-' + id);
 }

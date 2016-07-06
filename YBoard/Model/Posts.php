@@ -260,6 +260,11 @@ class Posts extends Model
 
         return true;
     }
+    
+    public function getPostMeta(int $postId) : object
+    {
+        
+    }
 
     protected function getPostsQuery(string $append = '') : string
     {
