@@ -306,30 +306,35 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
         arrow: false,
         contentAsHTML: true,
     }).tooltipster('open');
+    var id = elm.data('id');
 
-    $.ajax({
-        url: '/scripts/posts/get',
-        type: "POST",
-        data: {'postId': $(this).data('id')}
-    }).done(function (data, textStatus, xhr) {
-        // Update timestamps
-        data = $(data);
-        data.find('.datetime').each(function () {
-            localizeTimestamp(this);
-        });
+    if ($p(id).is('*')) {
+        elm.tooltipster('content', $p(id).html());
+    } else {
+        $.ajax({
+            url: '/scripts/posts/get',
+            type: "POST",
+            data: {'postId': id}
+        }).done(function (data, textStatus, xhr) {
+            // Update timestamps
+            data = $(data);
+            data.find('.datetime').each(function () {
+                localizeTimestamp(this);
+            });
 
-        elm.tooltipster('content', data);
-    }).fail(function (xhr, textStatus, errorThrown) {
-        if (xhr.responseText.length != 0) {
-            try {
-                var text = JSON.parse(xhr.responseText);
-                errorThrown = text.message;
-            } catch (e) {
+            elm.tooltipster('content', data);
+        }).fail(function (xhr, textStatus, errorThrown) {
+            if (xhr.responseText.length != 0) {
+                try {
+                    var text = JSON.parse(xhr.responseText);
+                    errorThrown = text.message;
+                } catch (e) {
+                }
             }
-        }
-        toastr.info(errorThrown);
-        elm.tooltipster('disable');
-    });
+            toastr.info(errorThrown);
+            elm.tooltipster('disable');
+        });
+    }
 });
 
 // Jquery plugins etc

@@ -6,6 +6,9 @@
 
     .tooltipster-box {
         background: #f5f5f5;
+        .post-buttons {
+            display: none;
+        }
     }
 
     #post-form {

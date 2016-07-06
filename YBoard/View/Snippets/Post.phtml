@@ -1,4 +1,3 @@
-<?php if (empty($tooltip)) : ?>
 <div class="post-buttons">
     <a href="javascript:void(replyToPost(<?= $post->id ?>))"><?= _('reply') ?></a>
     <!--
@@ -10,7 +9,6 @@
     <a href="javascript:void(deletePost(<?= $post->id ?>))"><?= _('delete') ?></a>
     <?php endif ?>
 </div>
-<?php endif ?>
 
 <div class="post-meta">
     <div class="user-info">
