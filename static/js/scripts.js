@@ -19,7 +19,8 @@ function deletePost(id) {
         type: "POST",
         data: {'postId': id}
     }).done(function (data, textStatus, xhr) {
-        $$(id).remove();
+        $p(id).remove();
+        $t(id).remove();
         toastr.success(messages.postDeleted);
     }).fail(function (xhr, textStatus, errorThrown) {
         if (xhr.responseText.length != 0) {
@@ -336,6 +337,10 @@ function getSelectionText() {
     return text;
 }
 
-function $$(id) {
+function $t(id) {
+    return $('#thread-' + id);
+}
+
+function $p(id) {
     return $('#post-' + id);
 }

@@ -172,7 +172,7 @@ class Post extends ExtendedController
             $this->throwJsonError(404, _('This post does not exist.'));
         }
 
-        if ($post->userId != $this->user->id) {
+        if ($post->userId != $this->user->id && !$this->user->isMod) {
             $this->throwJsonError(403, _('This isn\'t your post!'));
         }
 

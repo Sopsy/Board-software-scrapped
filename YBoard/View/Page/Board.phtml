@@ -6,7 +6,7 @@
 <?php if (!empty($threads)) : ?>
 
     <?php foreach($threads as $thread) : ?>
-    <div class="content-box thread" data-id="<?= $thread->id ?>">
+    <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
         <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>"><?= htmlspecialchars($thread->subject) ?></a></h3>
         <div class="thread-content">
             <div class="op-post" id="post-<?= $thread->id ?>">
