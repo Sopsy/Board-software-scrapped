@@ -71,7 +71,7 @@ var postformLocation = $('#post-form').prev();
 function showPostForm() {
     // Load captcha
     if (typeof grecaptcha != 'undefined' && $('#post-form-captcha').html().length == 0) {
-        grecaptcha.render('postform-captcha', {
+        grecaptcha.render('post-form-captcha', {
             'sitekey': config.reCaptchaPublicKey
         });
     }

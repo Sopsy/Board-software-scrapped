@@ -3,6 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\FileUploadException;
+use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Posts;
@@ -61,14 +62,25 @@ class Post extends ExtendedController
             }
         }
 
+        // TODO: Add flood prevention
+        // TODO: Maybe use sentPosts instead of loggedIn
+        if (!$this->user->loggedIn) {
+            if (empty($_POST["g-recaptcha-response"])) {
+                $this->throwJsonError(400, _('Please fill the CAPTCHA.'));
+            }
+
+            $captchaOk = ReCaptcha::verify($_POST["g-recaptcha-response"], $this->config['reCaptcha']['privateKey']);
+            if (!$captchaOk) {
+                $this->throwJsonError(403, _('Invalid CAPTCHA response. Please try again.'));
+            }
+        }
+
         // TODO: This could be done better...
         // TODO: Add ipv6 support
         require_once(__DIR__ . '/../Vendor/ip2location.php');
         $ip2location = new \IP2Location\Database(__DIR__ . '/../Vendor/IP2LOCATION-LITE-DB1.BIN');
         $countryCode = strtoupper($ip2location->lookup($_SERVER['REMOTE_ADDR'], \IP2Location\Database::COUNTRY)['countryCode']);
 
-        // TODO: Add flood prevention
-        // TODO: Add CAPTCHA
 
         // Message options
         $sage = empty($_POST['sage']) ? false : true;
@@ -145,7 +157,6 @@ class Post extends ExtendedController
         }
 
         // TODO: Update thread stats
-
         // TODO: Save replies
         /*
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
