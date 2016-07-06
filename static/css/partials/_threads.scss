@@ -175,6 +175,11 @@
 
     .thread-buttons {
         margin: 10px 0 0 0;
+        > a {
+            &:not(:first-of-type) {
+                margin-left: 10px
+            }
+        }
     }
 
     .quote {

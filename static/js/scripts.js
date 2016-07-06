@@ -95,6 +95,17 @@ function addBbCode(code) {
     $('#post-form').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
 }
 
+function replyToThread(id) {
+    var postForm = $('#post-form');
+    postForm.insertAfter('#thread-' + id + ' .replies');
+    showPostForm();
+
+    saveOriginalPostFormDestination();
+    $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
+
+    postForm.find('textarea').focus();
+}
+
 function replyToPost(id, newline) {
     var selectedText = getSelectionText();
 

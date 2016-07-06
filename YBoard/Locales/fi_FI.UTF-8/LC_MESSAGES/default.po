@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-06 23:11+0300\n"
-"PO-Revision-Date: 2016-07-06 23:11+0300\n"
+"POT-Creation-Date: 2016-07-07 01:32+0300\n"
+"PO-Revision-Date: 2016-07-07 01:32+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -23,7 +23,7 @@ msgstr "Virheellinen pyyntö"
 msgid "Your session has expired. Please refresh this page and try again."
 msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 
-#: Controller/Board.php:19 Controller/Board.php:23 Controller/Post.php:21
+#: Controller/Board.php:19 Controller/Board.php:23 Controller/Post.php:51
 #: Controller/Thread.php:17
 msgid "Not found"
 msgstr "Ei löydy"
@@ -84,11 +84,11 @@ msgstr "Käyttäjätunnus tai salasana puuttuu."
 msgid "The two passwords do not match."
 msgstr "Antamasi salasanat eivät täsmää."
 
-#: Controller/LogInOut.php:88 Controller/Post.php:106
+#: Controller/LogInOut.php:88 Controller/Post.php:136
 msgid "Please fill the CAPTCHA."
 msgstr "Täytä CAPTCHA."
 
-#: Controller/LogInOut.php:93 Controller/Post.php:111
+#: Controller/LogInOut.php:93 Controller/Post.php:141
 msgid "Invalid CAPTCHA response. Please try again."
 msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 
@@ -96,48 +96,48 @@ msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 msgid "This username is already taken. Please choose another one."
 msgstr "Tämä käyttäjänimi on jo käytössä. Valitse toinen."
 
-#: Controller/Post.php:21 Controller/Post.php:220
+#: Controller/Post.php:26 Controller/Post.php:51 Controller/Post.php:250
 msgid "Post does not exist"
 msgstr "Viestiä ei ole olemassa"
 
-#: Controller/Post.php:58
+#: Controller/Post.php:88
 msgid "You are banned!"
 msgstr "Olet bannattu!"
 
-#: Controller/Post.php:74
+#: Controller/Post.php:104
 msgid "Invalid board"
 msgstr "Virheellinen lauta"
 
-#: Controller/Post.php:79
+#: Controller/Post.php:109
 msgid "Please type a message"
 msgstr "Kirjoita viesti"
 
-#: Controller/Post.php:88
+#: Controller/Post.php:118
 msgid "Invalid thread"
 msgstr "Virheellinen lanka"
 
-#: Controller/Post.php:92
+#: Controller/Post.php:122
 msgid "This thread is locked"
 msgstr "Tämä lanka on lukittu"
 
-#: Controller/Post.php:98
+#: Controller/Post.php:128
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:146
+#: Controller/Post.php:176
 #, php-format
 msgid "Your message contained a blacklisted word: %s"
 msgstr "Viestisi sisälsi mustalistatun sanan: %s"
 
-#: Controller/Post.php:161
+#: Controller/Post.php:191
 msgid "File uploads are temporarily disabled"
 msgstr "Tiedostojen lähettäminen on väliaikaisesti poissa käytöstä"
 
-#: Controller/Post.php:170 View/Template/Default.phtml:34
+#: Controller/Post.php:200 View/Template/Default.phtml:34
 msgid "Your files exceed the maximum upload size."
 msgstr "Tiedostosi ylittää suurimman sallitun koon."
 
-#: Controller/Post.php:224
+#: Controller/Post.php:254
 msgid "This isn't your post!"
 msgstr "Tämä ei ole sinun viesti!"
 
@@ -287,7 +287,11 @@ msgstr ""
 "Olemme kovin pahoillamme. Tapahtui sisäinen virhe kun yritimme käsitellä "
 "pyyntöäsi."
 
-#: View/Page/Board.phtml:39
+#: View/Page/Board.phtml:31 View/Page/Thread.phtml:22
+msgid "reply to thread"
+msgstr "vastaa lankaan"
+
+#: View/Page/Board.phtml:38
 msgid "There are no threads here..."
 msgstr "Täällä ei ole lankoja..."
 
@@ -304,13 +308,13 @@ msgstr "Keskustelulaudat"
 msgid "NSFW"
 msgstr "NSFW"
 
-#: View/Page/Thread.phtml:22 View/Snippets/BoardHeader.phtml:10
-msgid "Reply to thread"
-msgstr "Vastaa lankaan"
-
 #: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:7
 msgid "Create a thread"
 msgstr "Luo lanka"
+
+#: View/Snippets/BoardHeader.phtml:10
+msgid "Reply to thread"
+msgstr "Vastaa lankaan"
 
 #: View/Snippets/Post.phtml:2
 msgid "reply"

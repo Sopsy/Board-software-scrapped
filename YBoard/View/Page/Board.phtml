@@ -28,6 +28,7 @@
             <?php endif ?>
             <div class="thread-buttons">
                 <a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>
+                <a class="add-reply" href="javascript:void(replyToThread(<?= $thread->id ?>))"><?= _('reply to thread') ?></a>
             </div>
         </div>
     </div>
