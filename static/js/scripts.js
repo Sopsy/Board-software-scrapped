@@ -188,6 +188,7 @@ function submitPost(e) {
         toastr.success(messages.messageSent);
 
         // TODO: replace with ajax load of new messages
+        // TODO: If new thread, go to thread instead
         window.location = window.location;
 
         // Reset captcha if present
@@ -209,6 +210,45 @@ function submitPost(e) {
     }).always(function () {
         $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
+    });
+}
+
+// Expand images
+function expandImage(elm, e) {
+    e.preventDefault();
+    var container = $(elm).parent();
+    var img = $(elm).find('img');
+
+    if (typeof img.data('expanding') != 'undefined') {
+        return true;
+    }
+
+    if (typeof img.data('orig-src') == 'undefined') {
+        img.data('orig-src', img.attr('src'));
+        changeSrc(img, container.find('figcaption a').attr('href'));
+        container.removeClass('thumbnail');
+    } else {
+        changeSrc(img, img.data('orig-src'));
+        img.removeData('orig-src');
+        container.addClass('thumbnail');
+    }
+
+    // Scroll to top of image
+    var elmTop = container.offset().top;
+    if ($(document).scrollTop() > elmTop) {
+        $(document).scrollTop(elmTop);
+    }
+}
+
+function changeSrc(img, src) {
+    img.data('expanding', 'true');
+    var loading = setTimeout(function () {
+        img.after('<img class="overlay center loading" src="//static.ylilauta.org/img/loading.gif" alt="">');
+    }, 200);
+    img.attr('src', src).on('load', function () {
+        img.removeData('expanding');
+        clearTimeout(loading);
+        img.parent().find('.loading').remove();
     });
 }
 
