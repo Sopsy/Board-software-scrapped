@@ -51,7 +51,7 @@
     }
 
     .post {
-        margin: 5px 0 0 0;
+        margin: 5px 0 10px 0;
         overflow: hidden;
     }
 
@@ -163,5 +163,12 @@
 
     .thread-buttons {
         margin: 10px 0 0 0;
+    }
+
+    .quote {
+        color: #789922;
+        &.blue {
+            color: #226199;
+        }
     }
 }

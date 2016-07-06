@@ -3,6 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\FileUploadException;
+use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
@@ -11,6 +12,43 @@ use YBoard\Model\WordBlacklist;
 
 class Post extends ExtendedController
 {
+    public function redirect($postId)
+    {
+        $posts = new Posts($this->db);
+        $post = $posts->getMeta($postId);
+
+        if (!$post) {
+            $this->notFound(_('Not found'), _('Post does not exist'));
+        }
+
+        if (!$post->boardId) {
+            $thread = $posts->getMeta($post->threadId);
+
+            if (!$thread) {
+                $this->internalError();
+            }
+
+            $boardId = $thread->boardId;
+        } else {
+            $boardId = $post->boardId;
+        }
+
+        $board = $this->boards->getById($boardId);
+        if (!$board) {
+            $this->internalError();
+        }
+
+        if (empty($post->threadId)) {
+            $thread = $post->id;
+            $hash = '';
+        } else {
+            $thread = $post->threadId;
+            $hash = '#post-' . $post->id;
+        }
+
+        HttpResponse::redirectExit('/' . $board->url . '/' . $thread . $hash, 302);
+    }
+
     public function submit()
     {
         $this->validateAjaxCsrfToken();
@@ -54,7 +92,6 @@ class Post extends ExtendedController
                 $this->throwJsonError(400, _('This thread is locked'));
             }
             $board = $this->boards->getById($thread->boardId);
-
 
             // Message OR file is required for replies
             if (!$hasMessage && !$hasFile) {
@@ -180,7 +217,7 @@ class Post extends ExtendedController
         $posts = new Posts($this->db);
         $post = $posts->getMeta($_POST['postId']);
         if (!$post) {
-            $this->throwJsonError(404, _('This post does not exist.'));
+            $this->throwJsonError(404, _('Post does not exist'));
         }
 
         if ($post->userId != $this->user->id && !$this->user->isMod) {

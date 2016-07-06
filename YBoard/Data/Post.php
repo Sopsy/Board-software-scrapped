@@ -7,6 +7,8 @@ class Post
     public $userId;
     public $ip;
     public $countryCode;
+    public $boardId;
+    public $threadId;
     public $time;
     public $username;
     public $message;

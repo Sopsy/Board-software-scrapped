@@ -184,7 +184,22 @@ class Posts extends Model
         $message = htmlspecialchars($message);
         $message = nl2br($message);
 
-        return $message;
+        if (strpos($message, '&gt;') === false && strpos($message, '&lt;') === false) {
+            return $message;
+        }
+
+        $search = [
+            '/(^|[\n\]])(&gt;)(?!&gt;[0-9]+)([^\n]+)/is',
+            '/(^|[\n\]])(&lt;)([^\n]+)/is',
+            '/(&gt;&gt;)([0-9]+)/is',
+        ];
+        $replace = [
+            '$1<span class="quote">$2$3</span>',
+            '$1<span class="quote blue">$2$3</span>',
+            '<a href="/scripts/posts/redirect/$2" data-id="$2" class="reflink">$1$2</a>',
+        ];
+
+        return preg_replace($search, $replace, $message);
     }
 
     public function createThread(
@@ -263,7 +278,8 @@ class Posts extends Model
 
     public function getMeta(int $postId)
     {
-        $q = $this->db->prepare("SELECT id, user_id, ip, country_code, time, username FROM posts WHERE id = :post_id LIMIT 1");
+        $q = $this->db->prepare("SELECT id, board_id, thread_id, user_id, ip, country_code, time, username
+            FROM posts WHERE id = :post_id LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->execute();
 
@@ -274,6 +290,8 @@ class Posts extends Model
         $row = $q->fetch();
         $post = new Post();
         $post->id = $row->id;
+        $post->boardId = $row->board_id;
+        $post->threadId = $row->thread_id;
         $post->userId = $row->user_id;
         $post->ip = inet_ntop($row->ip);
         $post->countryCode = $row->country_code;

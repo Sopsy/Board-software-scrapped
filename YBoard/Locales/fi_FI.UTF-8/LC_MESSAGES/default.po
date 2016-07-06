@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-05 20:45+0300\n"
-"PO-Revision-Date: 2016-07-05 20:57+0300\n"
+"POT-Creation-Date: 2016-07-06 23:11+0300\n"
+"PO-Revision-Date: 2016-07-06 23:11+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -23,7 +23,8 @@ msgstr "Virheellinen pyyntö"
 msgid "Your session has expired. Please refresh this page and try again."
 msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 
-#: Controller/Board.php:19 Controller/Board.php:23 Controller/Thread.php:17
+#: Controller/Board.php:19 Controller/Board.php:23 Controller/Post.php:21
+#: Controller/Thread.php:17
 msgid "Not found"
 msgstr "Ei löydy"
 
@@ -37,19 +38,19 @@ msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 msgid "Please don't. %s pages is enough."
 msgstr "Älähän nyt. %s sivua on tarpeeksi."
 
-#: Controller/InfoPages.php:13 View/Template/Default.phtml:44
+#: Controller/InfoPages.php:13 View/Template/Default.phtml:50
 msgid "FAQ"
 msgstr "UKK"
 
-#: Controller/InfoPages.php:22 View/Template/Default.phtml:45
+#: Controller/InfoPages.php:22 View/Template/Default.phtml:51
 msgid "Rules"
 msgstr "Säännöt"
 
-#: Controller/InfoPages.php:31 View/Template/Default.phtml:46
+#: Controller/InfoPages.php:31 View/Template/Default.phtml:52
 msgid "About"
 msgstr "Tietoa"
 
-#: Controller/InfoPages.php:40 View/Template/Default.phtml:47
+#: Controller/InfoPages.php:40 View/Template/Default.phtml:53
 msgid "Advertising"
 msgstr "Mainostaminen"
 
@@ -65,72 +66,80 @@ msgstr "Kirjautuminen epäonnistui"
 msgid "Invalid username or password."
 msgstr "Virheellinen käyttäjätunnus tai salasana."
 
-#: Controller/LogInOut.php:79 Controller/LogInOut.php:83
-#: Controller/LogInOut.php:87 Controller/LogInOut.php:91
-#: Controller/LogInOut.php:96 Controller/LogInOut.php:100
+#: Controller/LogInOut.php:76 Controller/LogInOut.php:80
+#: Controller/LogInOut.php:84 Controller/LogInOut.php:88
+#: Controller/LogInOut.php:93 Controller/LogInOut.php:97
 msgid "Signup failed"
 msgstr "Rekisteröityminen epäonnistui"
 
-#: Controller/LogInOut.php:79
+#: Controller/LogInOut.php:76
 msgid "You are already logged in."
 msgstr "Olet jo kirjautuneena."
 
-#: Controller/LogInOut.php:83
+#: Controller/LogInOut.php:80
 msgid "Missing username or password."
 msgstr "Käyttäjätunnus tai salasana puuttuu."
 
-#: Controller/LogInOut.php:87
+#: Controller/LogInOut.php:84
 msgid "The two passwords do not match."
 msgstr "Antamasi salasanat eivät täsmää."
 
-#: Controller/LogInOut.php:91
+#: Controller/LogInOut.php:88 Controller/Post.php:106
 msgid "Please fill the CAPTCHA."
 msgstr "Täytä CAPTCHA."
 
-#: Controller/LogInOut.php:96
+#: Controller/LogInOut.php:93 Controller/Post.php:111
 msgid "Invalid CAPTCHA response. Please try again."
 msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 
-#: Controller/LogInOut.php:100
+#: Controller/LogInOut.php:97
 msgid "This username is already taken. Please choose another one."
 msgstr "Tämä käyttäjänimi on jo käytössä. Valitse toinen."
 
-#: Controller/Post.php:19
+#: Controller/Post.php:21 Controller/Post.php:220
+msgid "Post does not exist"
+msgstr "Viestiä ei ole olemassa"
+
+#: Controller/Post.php:58
 msgid "You are banned!"
 msgstr "Olet bannattu!"
 
-#: Controller/Post.php:35
+#: Controller/Post.php:74
 msgid "Invalid board"
 msgstr "Virheellinen lauta"
 
-#: Controller/Post.php:40
+#: Controller/Post.php:79
 msgid "Please type a message"
 msgstr "Kirjoita viesti"
 
-#: Controller/Post.php:49
+#: Controller/Post.php:88
 msgid "Invalid thread"
 msgstr "Virheellinen lanka"
 
-#: Controller/Post.php:53
+#: Controller/Post.php:92
 msgid "This thread is locked"
 msgstr "Tämä lanka on lukittu"
 
-#: Controller/Post.php:60
+#: Controller/Post.php:98
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:97
+#: Controller/Post.php:146
 #, php-format
 msgid "Your message contained a blacklisted word: %s"
 msgstr "Viestisi sisälsi mustalistatun sanan: %s"
 
-#: Controller/Post.php:112
+#: Controller/Post.php:161
 msgid "File uploads are temporarily disabled"
 msgstr "Tiedostojen lähettäminen on väliaikaisesti poissa käytöstä"
 
-#: Controller/Post.php:121 View/Template/Default.phtml:32
+#: Controller/Post.php:170 View/Template/Default.phtml:34
 msgid "Your files exceed the maximum upload size."
 msgstr "Tiedostosi ylittää suurimman sallitun koon."
+
+#: Controller/Post.php:224
+msgid "This isn't your post!"
+msgstr "Tämä ei ole sinun viesti!"
 
 #: Controller/Thread.php:17
 msgid "The thread you are looking for does not exist."
@@ -182,47 +191,47 @@ msgstr "Lähetetty tiedosto ylittää suurimman sallitun pikselimäärän (%s MP
 msgid "The file is not a valid image"
 msgstr "Tiedosto ei ole validi kuva"
 
-#: Model/User.php:29
+#: Model/User.php:31
 msgid "Could not load your user account..."
 msgstr "Käyttäjätunnuksen lataaminen epäonnistui..."
 
-#: Model/User.php:54
+#: Model/User.php:63
 msgid "Could not refresh your user account..."
 msgstr "Käyttäjätunnuksen päivittäminen epäonnistui..."
 
-#: Model/User.php:113
+#: Model/User.php:122
 msgid "Could not update the user account..."
 msgstr "Käyttäjätunnuksen päivittäminen epäonnistui..."
 
-#: Model/User.php:124
+#: Model/User.php:133
 msgid "Could not create an user account..."
 msgstr "Käyttäjätunnuksen luominen epäonnistui..."
 
-#: Model/User.php:141
+#: Model/User.php:150
 msgid "Could not delete the user account..."
 msgstr "Käyttäjätunnuksen poistaminen epäonnistui..."
 
-#: Model/User.php:153
+#: Model/User.php:162
 msgid "Could not validate login info..."
 msgstr "Kirjautumistietojen vahvistaminen epäonnistui..."
 
-#: Model/User.php:197
+#: Model/User.php:200
 msgid "Could not set password for the user account..."
 msgstr "Salasanan asettaminen käyttäjätunnukselle epäonnistui..."
 
-#: Model/User.php:215
+#: Model/User.php:218
 msgid "Could not set username for the user account..."
 msgstr "Käyttäjänimen asettaminen käyttäjätunnukselle epäonnistui..."
 
-#: Model/User.php:234
+#: Model/User.php:237
 msgid "Could not create session for the user account.."
 msgstr "Istunnon luominen käyttäjätunnukselle epäonnistui..."
 
-#: Model/User.php:254
+#: Model/User.php:257
 msgid "Could not destroy the login session..."
 msgstr "Istunnon tuhoaminen epäonnistui..."
 
-#: Model/User.php:267
+#: Model/User.php:270
 msgid "Could not check if the username is free..."
 msgstr "Käyttäjätunnuksen tarkistaminen epäonnistui..."
 
@@ -286,16 +295,20 @@ msgstr "Täällä ei ole lankoja..."
 msgid "Welcome to Ylilauta, the biggest discussion board in Finland!"
 msgstr "Tervetuloa Ylilaudalle, Suomen suurimmalle keskustelufoorumille!"
 
-#: View/Page/Index.phtml:19 View/Template/Default.phtml:82
+#: View/Page/Index.phtml:19 View/Template/Default.phtml:88
 msgid "Discussion boards"
 msgstr "Keskustelulaudat"
 
 #: View/Page/Index.phtml:24 View/Snippets/BoardHeader.phtml:3
-#: View/Template/Default.phtml:86
+#: View/Template/Default.phtml:92
 msgid "NSFW"
 msgstr "NSFW"
 
-#: View/Snippets/BoardHeader.phtml:7 View/Snippets/PostForm.phtml:15
+#: View/Page/Thread.phtml:22 View/Snippets/BoardHeader.phtml:10
+msgid "Reply to thread"
+msgstr "Vastaa lankaan"
+
+#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:7
 msgid "Create a thread"
 msgstr "Luo lanka"
 
@@ -303,117 +316,146 @@ msgstr "Luo lanka"
 msgid "reply"
 msgstr "vastaa"
 
-#: View/Snippets/Post.phtml:3
-msgid "options"
-msgstr "valinnat"
+#: View/Snippets/Post.phtml:4
+msgid "gold"
+msgstr "kulta"
 
-#: View/Snippets/Post.phtml:10
+#: View/Snippets/Post.phtml:5
+msgid "hide"
+msgstr "piilota"
+
+#: View/Snippets/Post.phtml:6
+msgid "report"
+msgstr "ilmianna"
+
+#: View/Snippets/Post.phtml:9
+msgid "delete"
+msgstr "poista"
+
+#: View/Snippets/Post.phtml:17
 msgid "OP"
 msgstr "AP"
 
-#: View/Snippets/Post.phtml:14
+#: View/Snippets/Post.phtml:22
 msgid "No."
 msgstr "Nro."
 
-#: View/Snippets/PostForm.phtml:12
+#: View/Snippets/PostForm.phtml:4
 msgid "Submit a reply"
 msgstr "Lähetä vastaus"
 
-#: View/Snippets/PostForm.phtml:18 View/Snippets/PostForm.phtml:19
+#: View/Snippets/PostForm.phtml:10 View/Snippets/PostForm.phtml:11
 msgid "Subject"
 msgstr "Aihe"
 
-#: View/Snippets/PostForm.phtml:24
+#: View/Snippets/PostForm.phtml:16
 msgid "File"
 msgstr "Tiedosto"
 
-#: View/Snippets/PostForm.phtml:57
+#: View/Snippets/PostForm.phtml:49
 msgid "Message"
 msgstr "Viesti"
 
-#: View/Snippets/PostForm.phtml:60
+#: View/Snippets/PostForm.phtml:56
 msgid "Options"
 msgstr "Valinnat"
 
-#: View/Snippets/PostForm.phtml:61
-msgid "Submit"
-msgstr "Lähetä"
-
-#: View/Snippets/PostForm.phtml:63
-msgid "Functions"
-msgstr "Toiminnot"
-
-#: View/Snippets/PostForm.phtml:66
-msgid "Don't bump the thread"
-msgstr "Älä nosta lankaa"
-
-#: View/Snippets/PostForm.phtml:70
-msgid "Hide your name"
-msgstr "Piilota nimesi"
-
-#: View/Snippets/PostForm.phtml:72
-msgid "Gold account functions"
-msgstr "Kultatilitoiminnot"
-
-#: View/Snippets/PostForm.phtml:75
-msgid "Keep original file dimensions"
-msgstr ""
-
-#: View/Snippets/PostForm.phtml:79
-msgid "Hide message from non-golds"
-msgstr "Piilota viesti kultatilittömiltä"
-
-#: View/Template/Default.phtml:28
-msgid "An error occurred"
-msgstr "Tapahtui virhe"
-
-#: View/Template/Default.phtml:29 View/Template/Default.phtml:70
-msgid "Sign up"
-msgstr "Luo tunnus"
-
-#: View/Template/Default.phtml:30
+#: View/Snippets/PostForm.phtml:57 View/Template/Default.phtml:32
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: View/Template/Default.phtml:31 View/Template/Default.phtml:69
+#: View/Snippets/PostForm.phtml:58
+msgid "Submit"
+msgstr "Lähetä"
+
+#: View/Snippets/PostForm.phtml:60
+msgid "Functions"
+msgstr "Toiminnot"
+
+#: View/Snippets/PostForm.phtml:63
+msgid "Don't bump the thread"
+msgstr "Älä nosta lankaa"
+
+#: View/Snippets/PostForm.phtml:67
+msgid "Hide your name"
+msgstr "Piilota nimesi"
+
+#: View/Snippets/PostForm.phtml:69
+msgid "Gold account functions"
+msgstr "Kultatilitoiminnot"
+
+#: View/Snippets/PostForm.phtml:72
+msgid "Keep original file dimensions"
+msgstr ""
+
+#: View/Snippets/PostForm.phtml:76
+msgid "Hide message from non-golds"
+msgstr "Piilota viesti kultatilittömiltä"
+
+#: View/Template/Default.phtml:30
+msgid "An error occurred"
+msgstr "Tapahtui virhe"
+
+#: View/Template/Default.phtml:31 View/Template/Default.phtml:76
+msgid "Sign up"
+msgstr "Luo tunnus"
+
+#: View/Template/Default.phtml:33 View/Template/Default.phtml:75
 msgid "Log_in"
 msgstr "Kirjaudu"
 
-#: View/Template/Default.phtml:33
-msgid "Message sent"
+#: View/Template/Default.phtml:35
+msgid "Confirm post deletion"
+msgstr "Vahvista viestin poisto"
+
+#: View/Template/Default.phtml:36
+msgid "Post sent"
 msgstr "Viesti lähetetty"
 
-#: View/Template/Default.phtml:43
+#: View/Template/Default.phtml:37
+msgid "Post deleted"
+msgstr "Viesti poistettu"
+
+#: View/Template/Default.phtml:49
 msgid "Gold account"
 msgstr "Kultatili"
 
-#: View/Template/Default.phtml:53
+#: View/Template/Default.phtml:59
 msgid "Search Ylilauta..."
 msgstr "Hae Ylilaudalta..."
 
-#: View/Template/Default.phtml:59
+#: View/Template/Default.phtml:65
 msgid "Log in"
 msgstr "Kirjaudu sisään"
 
-#: View/Template/Default.phtml:63
+#: View/Template/Default.phtml:69
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: View/Template/Default.phtml:64
+#: View/Template/Default.phtml:70
 msgid "Password"
 msgstr "Salasana"
 
-#: View/Template/Default.phtml:66
+#: View/Template/Default.phtml:72
 msgid "Password again"
 msgstr "Salasana uudelleen"
 
-#: View/Template/Default.phtml:74
+#: View/Template/Default.phtml:80
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: View/Template/Default.phtml:77
+#: View/Template/Default.phtml:83
 msgid "Log out"
 msgstr "Kirjaudu ulos"
+
+#~ msgid "Message does not exist"
+#~ msgstr "Viestiä ei ole olemassa"
+
+#~ msgid "options"
+#~ msgstr "valinnat"
+
+#~ msgid "Message sent"
+#~ msgstr "Viesti lähetetty"
 
 #~ msgid "This thread has been removed or maybe it never even existed at all."
 #~ msgstr "Tämä lanka on poistettu tai sitä ei ehkä ole koskaan ollutkaan."
