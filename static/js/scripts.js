@@ -10,11 +10,13 @@ $.ajaxSetup({
 
 // Post deletion
 function deletePost(id) {
+    if (!confirm(messages.confirmDelete)) {
+        return false;
+    }
+
     $.ajax({
         url: '/scripts/posts/delete',
         type: "POST",
-        processData: false,
-        contentType: false,
         data: {'postId': id}
     }).done(function (data, textStatus, xhr) {
         $$(id).remove();

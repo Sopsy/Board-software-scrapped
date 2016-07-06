@@ -1,4 +1,4 @@
-<form id="post-form" action="/scripts/post" method="post" onsubmit="submitPost(event)">
+<form id="post-form" action="/scripts/posts/submit" method="post" onsubmit="submitPost(event)">
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 <?php if (!empty($thread->id)) : ?>
     <h3><?= _('Submit a reply') ?></h3>

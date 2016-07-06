@@ -19,7 +19,8 @@ return [
     '#^/logout$#' => ['LogInOut', 'logout'],
 
     // Scripts
-    '#^/scripts/post$#' => ['Post', 'submit'],
+    '#^/scripts/posts/submit$#' => ['Post', 'submit'],
+    '#^/scripts/posts/delete$#' => ['Post', 'delete'],
 
     // Boards
     // Checked at the end so other rules override

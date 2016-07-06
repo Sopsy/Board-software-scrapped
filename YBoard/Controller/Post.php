@@ -141,7 +141,7 @@ class Post extends ExtendedController
         }
 
         if ($hasFile) {
-            $posts->addFileToPost($postId, $file->id, $file->origName);
+            $posts->addFile($postId, $file->id, $file->origName);
         }
 
         // TODO: Update thread stats
@@ -157,11 +157,25 @@ class Post extends ExtendedController
 
         //$this->throwJsonError(400, $postId);
     }
-    
+
     public function delete()
     {
         $this->validateAjaxCsrfToken();
 
+        if (empty($_POST['postId'])) {
+            $this->throwJsonError(400, json_encode($_POST));
+        }
+
         $posts = new Posts($this->db);
+        $post = $posts->getMeta($_POST['postId']);
+        if (!$post) {
+            $this->throwJsonError(404, _('This post does not exist.'));
+        }
+
+        if ($post->userId != $this->user->id) {
+            $this->throwJsonError(403, _('This isn\'t your post!'));
+        }
+
+        $posts->delete($_POST['postId']);
     }
 }

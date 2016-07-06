@@ -2,6 +2,7 @@
 namespace YBoard\Model;
 
 use YBoard\Data\File;
+use YBoard\Data\Post;
 use YBoard\Data\Reply;
 use YBoard\Data\Thread;
 use YBoard\Library\Text;
@@ -147,7 +148,6 @@ class Posts extends Model
             $tmp->id = $reply->id;
             $tmp->threadId = $threadId;
             $tmp->userId = $reply->user_id;
-            $tmp->points = $reply->upvote_count;
             $tmp->ip = inet_ntop($reply->ip);
             $tmp->countryCode = $reply->country_code;
             $tmp->username = $reply->username;
@@ -250,7 +250,7 @@ class Posts extends Model
         return true;
     }
 
-    public function addFileToPost(int $postId, int $fileId, string $fileName) : bool
+    public function addFile(int $postId, int $fileId, string $fileName) : bool
     {
         $q = $this->db->prepare("INSERT INTO posts_files (post_id, file_id, file_name) VALUES (:post_id, :file_id, :file_name)");
         $q->bindValue('post_id', $postId);
@@ -260,10 +260,36 @@ class Posts extends Model
 
         return true;
     }
-    
-    public function getPostMeta(int $postId) : object
+
+    public function getMeta(int $postId)
     {
-        
+        $q = $this->db->prepare("SELECT id, user_id, ip, country_code, time, username FROM posts WHERE id = :post_id LIMIT 1");
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        $row = $q->fetch();
+        $post = new Post();
+        $post->id = $row->id;
+        $post->userId = $row->user_id;
+        $post->ip = inet_ntop($row->ip);
+        $post->countryCode = $row->country_code;
+        $post->time = $row->time;
+        $post->username = $row->username;
+
+        return $post;
+    }
+
+    public function delete(int $postId) : bool
+    {
+        $q = $this->db->prepare("DELETE FROM posts WHERE id = :post_id LIMIT 1");
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        return $q->rowCount() != 0;
     }
 
     protected function getPostsQuery(string $append = '') : string
