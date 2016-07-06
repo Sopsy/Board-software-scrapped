@@ -1,14 +1,6 @@
-<?php
-if (!empty($thread->id)) {
-    $isReply = true;
-} else {
-    $isReply = false;
-}
-?>
-
-<form id="post-form" class="<?= ($isReply?'reply':'new-thread') ?>" action="/scripts/post" method="post" onsubmit="submitPost(event)">
+<form id="post-form" action="/scripts/post" method="post" onsubmit="submitPost(event)">
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-<?php if ($isReply) : ?>
+<?php if (!empty($thread->id)) : ?>
     <h3><?= _('Submit a reply') ?></h3>
     <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
 <?php else : ?>

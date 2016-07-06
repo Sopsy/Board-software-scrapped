@@ -1,5 +1,4 @@
 <?php include($viewFilesPath . '/Snippets/BoardHeader.phtml') ?>
-
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
 <div class="content-box thread">
@@ -22,7 +21,7 @@
         <?php endforeach ?>
         </div>
         <div class="thread-buttons">
-            <a class="add-reply toggle-postform" href="javascript:void(replyToThread())"><?= _('Reply to thread') ?></a>
+            <a class="add-reply toggle-postform" href="javascript:void(showPostForm())"><?= _('Reply to thread') ?></a>
         </div>
     </div>
 </div>
