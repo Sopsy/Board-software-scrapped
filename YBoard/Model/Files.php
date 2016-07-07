@@ -180,7 +180,7 @@ class Files extends Model
         }
         $values = substr($values, 0, -1);
 
-        $q = $this->db->prepare("INSERT INTO files_md5 (file_id, md5) VALUES " . $values);
+        $q = $this->db->prepare("INSERT IGNORE INTO files_md5 (file_id, md5) VALUES " . $values);
         $q->execute($md5List);
 
         return $q !== false;
