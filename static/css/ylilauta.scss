@@ -8,6 +8,7 @@ $green: #117743;
 $red: #ba1f27;
 $linkColor: $green;
 $linkHoverColor: $red;
+$lightGray: #f1f1f1;
 
 @import 'partials/mixins';
 
@@ -84,7 +85,7 @@ h4 {
 }
 
 #content {
-    margin-left: 240px;
+    margin-left: 220px;
     overflow: hidden;
     .page-header {
         background: lighten($baseColor, 5%) url('../img/header_bg.jpg') no-repeat 50% 50%;
