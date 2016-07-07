@@ -6,6 +6,7 @@ use YBoard\Data\Post;
 use YBoard\Data\Reply;
 use YBoard\Data\Thread;
 use YBoard\Data\ThreadStatistics;
+use YBoard\Library\BbCode;
 use YBoard\Library\Text;
 use YBoard\Model;
 
@@ -181,7 +182,7 @@ class Posts extends Model
     protected function createSubject(string $message) : string
     {
         $subject = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
-        $subject = Text::stripBbCode($subject);
+        $subject = BbCode::strip($subject);
         $subject = Text::removeForbiddenUnicode($subject);
         $subject = Text::truncate($subject, 40);
         $subject = trim($subject);

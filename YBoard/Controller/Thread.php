@@ -2,6 +2,7 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
+use YBoard\Library\Cache;
 use YBoard\Library\HttpResponse;
 use YBoard\Model\Posts;
 
@@ -23,6 +24,12 @@ class Thread extends ExtendedController
             // Invalid board for current thread, redirect
             HttpResponse::redirectExit('/' . $board->url . '/' . $thread->id);
             // TODO: Maybe change to 301
+        }
+
+        $viewCacheKey = 'thread-view-' . $thread->id . '-' . $_SERVER['REMOTE_ADDR'];
+        if (!Cache::exists($viewCacheKey)) {
+            Cache::add($viewCacheKey, 1, 300);
+            $posts->updateThreadStats($thread->id, 'readCount');
         }
 
         $view = $this->loadTemplateEngine();

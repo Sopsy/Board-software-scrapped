@@ -51,16 +51,6 @@ class Text
         return $text;
     }
 
-    public static function stripBbCode($str)
-    {
-        // For performance
-        if (strpos($str, '[') === false || strpos($str, ']') === false || strpos($str, '/') === false) {
-            return $str;
-        }
-
-        return preg_replace('#\[[a-z/]+\]+#si', '$1', $str);
-    }
-
     public static function strToUrlSafe($str)
     {
         $urlSafeStr = mb_strtolower($str);
