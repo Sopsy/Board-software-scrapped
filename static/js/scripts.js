@@ -278,11 +278,14 @@ function submitPost(e) {
 function expandImage(elm, e) {
     e.preventDefault();
     var container = $(elm).parent();
+    var post = container.parent('.post');
     var img = $(elm).find('img');
 
     if (typeof img.data('expanding') != 'undefined') {
         return true;
     }
+
+    post.addClass('full');
 
     if (typeof img.data('orig-src') == 'undefined') {
         img.data('orig-src', img.attr('src'));

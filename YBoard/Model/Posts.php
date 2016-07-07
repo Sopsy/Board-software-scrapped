@@ -51,7 +51,7 @@ class Posts extends Model
 
         $post = $q->fetch();
 
-        if (empty($post->subject)) {
+        if (empty($post->subject) && $post->subject != 0) {
             $post->subject = $this->createSubject($post->message);
         }
 
@@ -99,7 +99,7 @@ class Posts extends Model
         $threads = [];
 
         while ($row = $q->fetch()) {
-            if (empty($row->subject)) {
+            if (empty($row->subject) && $row->subject != 0) {
                 $row->subject = $this->createSubject($row->message);
             }
 
@@ -362,6 +362,8 @@ class Posts extends Model
 
     public function delete(int $postId) : bool
     {
+        // TODO: INSERT INTO post_deleted
+        //$q = $this->db->prepare("INSERT INTO posts_deleted ")
         $q = $this->db->prepare("DELETE FROM posts WHERE id = :post_id LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->execute();

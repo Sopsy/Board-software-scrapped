@@ -70,33 +70,33 @@
         margin: 0 0 5px 0;
     }
     .replies {
-        padding: 10px 0 0 10px;
+        padding: 0 0 0 10px;
         border-left: 1px solid #ccc;
     }
-    /*
-        .reply {
-            &:not(:first-of-type) {
-                margin-top: 10px;
-                padding-top: 5px;
-                border-top: 1px solid #ccc;
-            }
-            overflow: hidden;
-        }
-    */
+
+    .replies-buttons {
+        line-height: 3em;
+    }
+
     &:not(.tooltipster-base) .reply {
         padding: 5px;
     }
     .reply {
         background-color: #f5f5f5;
-        margin-top: 10px;
         overflow: hidden;
+
+        &:not(:last-of-type) {
+            margin-bottom: 10px;
+        }
     }
 
     .post {
         margin: 5px 0 10px 0;
         overflow: hidden;
         word-wrap: break-word;
-        max-height: 500px;
+        &:not(.full) {
+            max-height: 500px;
+        }
     }
 
     .post-meta {
@@ -183,9 +183,8 @@
     .post-buttons {
         font-size: 0.9em;
         > a {
-            color: $linkColor;
             cursor: pointer;
-            opacity: 0.5;
+            opacity: 0.7;
             &:not(:first-of-type) { margin-left: 10px }
             &:hover { opacity: 1 }
         }
