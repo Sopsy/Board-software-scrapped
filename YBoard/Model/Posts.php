@@ -183,6 +183,7 @@ class Posts extends Model
     {
         $message = htmlspecialchars($message);
         $message = nl2br($message);
+        $message = Text::clickableLinks($message);
 
         if (strpos($message, '&gt;') === false && strpos($message, '&lt;') === false) {
             return $message;

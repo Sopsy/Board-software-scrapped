@@ -6,33 +6,40 @@
     overflow: hidden;
     display: none;
 
-    > label {
-        background-color: #fff;
-        border: 1px solid #ccc;
-        overflow: hidden;
-        box-sizing: border-box;
-        width: 100%;
-        display: flex;
-        margin-bottom: 5px;
-        > span {
-            background-color: #528ac9;
-            color: #fff;
-            display: inline-block;
-            min-width: 90px;
+    fieldset {
+        max-width: 1000px;
+        margin: auto;
+        border: 0;
+        padding: 0;
+
+        > label {
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
             overflow: hidden;
-            padding: 4px 10px;
-            span {
-                font-size: 0.65em;
-            }
-        }
-        input {
-            color: $textColor;
-            flex-grow: 1;
-            border: 0;
-            padding-left: 5px;
             box-sizing: border-box;
-            background-color: transparent;
-            @include input-shadow();
+            width: 100%;
+            display: flex;
+            margin-bottom: 5px;
+            > span {
+                background-color: #528ac9;
+                color: #ffffff;
+                display: inline-block;
+                min-width: 90px;
+                overflow: hidden;
+                padding: 4px 10px;
+                span {
+                    font-size: 0.65em;
+                }
+            }
+            input {
+                color: $textColor;
+                flex-grow: 1;
+                border: 0;
+                padding-left: 5px;
+                box-sizing: border-box;
+                background-color: transparent;
+                @include input-shadow();
+            }
         }
     }
     #message-input {

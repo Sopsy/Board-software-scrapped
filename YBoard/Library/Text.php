@@ -100,4 +100,15 @@ class Text
 
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
+
+    public static function clickableLinks(string $message) : string
+    {
+        if (strpos($message, '://') === false) {
+            return $message;
+        }
+
+        $message = preg_replace('#(^|\s|\n|>)(https?://[^\s<>"]+)#i', '$1<a href="$2" target="_blank" rel="nofollow">$2</a>', $message);
+
+        return $message;
+    }
 }

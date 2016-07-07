@@ -1,4 +1,5 @@
 <form id="post-form" action="/scripts/posts/submit" method="post" onsubmit="submitPost(event)">
+    <fieldset>
     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 <?php if (!empty($thread->id)) : ?>
     <h3><?= _('Submit a reply') ?></h3>
@@ -76,4 +77,5 @@
             <?= _('Hide message from non-golds') ?>
         </label>
     </div>
+    </fieldset>
 </form>
