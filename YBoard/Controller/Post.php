@@ -168,7 +168,6 @@ class Post extends ExtendedController
             $message = Text::limitEmptyLines($message);
         }
 
-
         // Check blacklist
         $wordBlacklist = new WordBlacklist($this->db);
         $blacklistReason = $wordBlacklist->match($message);
@@ -213,6 +212,7 @@ class Post extends ExtendedController
         } else {
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
                 $countryCode);
+            $posts->updateThreadStats($thread->id, 'replyCount');
 
             if (!$sage) {
                 $posts->bumpThread($thread->id);
@@ -252,6 +252,10 @@ class Post extends ExtendedController
 
         if ($post->userId != $this->user->id && !$this->user->isMod) {
             $this->throwJsonError(403, _('This isn\'t your post!'));
+        }
+
+        if (!empty($post->threadId)) {
+            $posts->updateThreadStats($post->threadId, 'replyCount', -1);
         }
 
         $posts->delete($_POST['postId']);

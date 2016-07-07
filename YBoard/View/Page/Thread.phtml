@@ -2,14 +2,22 @@
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
 <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
-    <h3><?= htmlspecialchars($thread->subject) ?></h3>
+    <h3>
+        <?php if ($thread->sticky) : ?>
+            <span class="icon pushpin">S</span>
+        <?php endif ?>
+        <?php if ($thread->locked) : ?>
+            <span class="icon lock">L</span>
+        <?php endif ?>
+        <?= htmlspecialchars($thread->subject) ?>
+    </h3>
     <div class="thread-content">
         <div class="op-post" id="post-<?= $thread->id ?>">
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
         </div>
 
         <div class="thread-meta">
-            1920 vastausta, 609 tiedostoa
+            <?= $thread->statistics->replyCount ?> vastausta, luettu <?= $thread->statistics->readCount ?> kertaa
         </div>
         <div class="replies">
         <?php foreach($thread->replies as $reply) : ?>
@@ -19,7 +27,9 @@
         <?php endforeach ?>
         </div>
         <div class="thread-buttons">
+            <?php if (!$thread->locked) : ?>
             <a class="add-reply toggle-postform" href="javascript:void(showPostForm())"><?= _('reply to thread') ?></a>
+            <?php endif ?>
         </div>
     </div>
 </div>

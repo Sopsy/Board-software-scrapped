@@ -5,6 +5,7 @@ use YBoard\Data\File;
 use YBoard\Data\Post;
 use YBoard\Data\Reply;
 use YBoard\Data\Thread;
+use YBoard\Data\ThreadStatistics;
 use YBoard\Library\Text;
 use YBoard\Model;
 
@@ -39,7 +40,7 @@ class Posts extends Model
 
     public function getThread(int $id) : Thread
     {
-        $q = $this->db->prepare($this->getPostsQuery("WHERE a.id = :id AND thread_id IS NULL LIMIT 1"));
+        $q = $this->db->prepare($this->getPostsQuery("WHERE a.id = :id AND a.thread_id IS NULL LIMIT 1"));
         $q->bindValue('id', (int)$id);
         $q->execute();
 
@@ -67,12 +68,16 @@ class Posts extends Model
         $thread->subject = $post->subject;
         $thread->message = $post->message;
         $thread->messageFormatted = $this->formatMessage($post->message);
+        $thread->replies = $this->getReplies($post->id);
+
+        $thread->statistics = new ThreadStatistics();
+        $thread->statistics->readCount = $post->read_count;
+        $thread->statistics->replyCount = $post->reply_count;
+        $thread->statistics->distinctReplyCount = $post->distinct_reply_count;
 
         if (!empty($post->file_id)) {
             $thread->file = $this->createFileClass($post);
         }
-
-        $thread->replies = $this->getReplies($post->id);
 
         return $thread;
     }
@@ -81,7 +86,7 @@ class Posts extends Model
     {
         $limitStart = ($page - 1) * $count;
 
-        $q = $this->db->prepare($this->getPostsQuery("WHERE board_id = :board_id AND thread_id IS NULL
+        $q = $this->db->prepare($this->getPostsQuery("WHERE a.board_id = :board_id AND a.thread_id IS NULL
             ORDER BY sticky DESC, bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
         $q->bindValue('board_id', $boardId);
         $q->execute();
@@ -114,6 +119,11 @@ class Posts extends Model
             $thread->messageFormatted = $this->formatMessage($row->message);
             $thread->replies = $this->getReplies($row->id, $replyCount, true);
 
+            $thread->statistics = new ThreadStatistics();
+            $thread->statistics->readCount = $row->read_count;
+            $thread->statistics->replyCount = $row->reply_count;
+            $thread->statistics->distinctReplyCount = $row->distinct_reply_count;
+
             if (!empty($row->file_id)) {
                 $thread->file = $this->createFileClass($row);
             }
@@ -138,7 +148,7 @@ class Posts extends Model
             $limit = '';
         }
 
-        $q = $this->db->prepare($this->getPostsQuery('WHERE thread_id = :thread_id ORDER BY a.id ' . $order . $limit));
+        $q = $this->db->prepare($this->getPostsQuery('WHERE a.thread_id = :thread_id ORDER BY a.id ' . $order . $limit));
         $q->bindValue('thread_id', $threadId);
         $q->execute();
 
@@ -342,15 +352,40 @@ class Posts extends Model
         return $q->rowCount() != 0;
     }
 
+    public function updateThreadStats(int $threadId, string $key, int $val = 1) : bool
+    {
+        switch ($key) {
+            case "replyCount":
+                $column = 'reply_count';
+                break;
+            case "readCount":
+                $column = 'read_count';
+                break;
+            default:
+                return false;
+        }
+
+        $q = $this->db->prepare("INSERT INTO thread_statistics (thread_id, " . $column . ") VALUES (:thread_id, :val)
+            ON DUPLICATE KEY UPDATE " . $column . " =  " . $column . "+:val_2");
+
+        $q->bindValue('thread_id', $threadId);
+        $q->bindValue('val', $val);
+        $q->bindValue('val_2', $val);
+        $q->execute();
+
+        return true;
+    }
+
     protected function getPostsQuery(string $append = '') : string
     {
         return "SELECT
-            a.id, board_id, thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
+            a.id, a.board_id, a.thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
-            c.extension AS file_extension, c.size AS file_size
+            c.extension AS file_extension, c.size AS file_size, d.read_count, d.reply_count, d.distinct_reply_count
             FROM posts a
             LEFT JOIN posts_files b ON a.id = b.post_id
-            LEFT JOIN files c ON b.file_id = c.id " . $append;
+            LEFT JOIN files c ON b.file_id = c.id
+            LEFT JOIN thread_statistics d ON a.id = d.thread_id " . $append;
     }
 
     protected function createFileClass($data) : File

@@ -7,4 +7,5 @@ class Thread extends Post
     public $sticky;
     public $subject;
     public $replies;
+    public $statistics;
 }
