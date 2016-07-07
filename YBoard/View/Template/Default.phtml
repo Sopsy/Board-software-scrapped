@@ -41,6 +41,13 @@
     <?php if (!$user->loggedIn) : ?>
     <?php // TODO: Maybe use sentPosts instead of loggedIn ?>
     <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=renderCaptcha" async defer></script>
+    <script>
+        function renderCaptcha() {
+            grecaptcha.render('post-form-captcha', {
+                'sitekey': config.reCaptchaPublicKey
+            });
+        }
+    </script>
     <?php endif ?>
 </head>
 <body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>

@@ -97,13 +97,6 @@ function getMoreReplies(threadId) {
 // Too long posts
 //$('#your_div')[0].scrollHeight
 
-// Load captcha
-function renderCaptcha() {
-    grecaptcha.render('post-form-captcha', {
-        'sitekey': config.reCaptchaPublicKey
-    });
-}
-
 // Functions related to post form
 var postformLocation = $('#post-form').prev();
 function showPostForm() {
