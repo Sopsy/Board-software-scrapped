@@ -23,6 +23,7 @@ return [
     '#^/scripts/posts/redirect/([0-9]+)#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
+    '#^/scripts/threads/getreplies#' => ['Thread', 'getReplies'],
 
     // Boards
     // Checked at the end so other rules override

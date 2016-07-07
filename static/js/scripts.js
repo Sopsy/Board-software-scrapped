@@ -59,6 +59,33 @@ function signupForm(elm, e) {
     }
 }
 
+// Thread inline expansion
+function getMoreReplies(threadId) {
+    $.ajax({
+        url: '/scripts/threads/getreplies',
+        type: "POST",
+        data: {'threadId': threadId}
+    }).done(function (data, textStatus, xhr) {
+        // Update timestamps
+        data = $(data);
+        data.find('.datetime').each(function () {
+            localizeTimestamp(this);
+        });
+
+        $t(threadId).find('.more-replies-container').html(data);
+    }).fail(function (xhr, textStatus, errorThrown) {
+        if (xhr.responseText.length != 0) {
+            try {
+                var text = JSON.parse(xhr.responseText);
+                errorThrown = text.message;
+            } catch (e) {
+            }
+        }
+        toastr.info(errorThrown);
+        elm.tooltipster('disable');
+    });
+}
+
 // Functions related to post form
 var postformLocation = $('#post-form').prev();
 function showPostForm() {

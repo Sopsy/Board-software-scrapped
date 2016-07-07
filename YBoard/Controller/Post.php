@@ -27,7 +27,7 @@ class Post extends ExtendedController
         }
 
         if (!empty($post->threadId)) {
-            $thread = $posts->getMeta($post->threadId);
+            $thread = $posts->getThreadMeta($post->threadId);
         } else {
             $thread = $post;
         }

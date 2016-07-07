@@ -65,7 +65,7 @@ class Posts extends Model
         $thread->countryCode = $post->country_code;
         $thread->time = date('c', strtotime($post->time));
         $thread->sticky = $post->sticky;
-        $thread->username = $post->username;
+        $thread->username = $this->setUsername($post->username);
         $thread->subject = $post->subject;
         $thread->message = $post->message;
         $thread->messageFormatted = $this->formatMessage($post->message);
@@ -114,7 +114,7 @@ class Posts extends Model
             $thread->time = date('c', strtotime($row->time));
             $thread->locked = $row->locked;
             $thread->sticky = $row->sticky;
-            $thread->username = $row->username;
+            $thread->username = $this->setUsername($row->username);
             $thread->subject = $row->subject;
             $thread->message = $row->message;
             $thread->messageFormatted = $this->formatMessage($row->message);
@@ -135,12 +135,15 @@ class Posts extends Model
         return $threads;
     }
 
-    protected function getReplies(int $threadId, int $count = null, bool $newest = false) : array
+    public function getReplies(int $threadId, int $count = null, bool $newest = false, int $from = null) : array
     {
         if ($newest) {
             $order = 'DESC';
         } else {
             $order = 'ASC';
+            if ($from) {
+                $from = 'AND a.id < :from';
+            }
         }
 
         if ($count) {
@@ -149,8 +152,11 @@ class Posts extends Model
             $limit = '';
         }
 
-        $q = $this->db->prepare($this->getPostsQuery('WHERE a.thread_id = :thread_id ORDER BY a.id ' . $order . $limit));
+        $q = $this->db->prepare($this->getPostsQuery('WHERE a.thread_id = :thread_id' . $from . ' ORDER BY a.id ' . $order . $limit));
         $q->bindValue('thread_id', $threadId);
+        if ($from) {
+            $q->bindValue('from', $from);
+        }
         $q->execute();
 
         $replies = [];
@@ -161,7 +167,7 @@ class Posts extends Model
             $tmp->userId = $reply->user_id;
             $tmp->ip = inet_ntop($reply->ip);
             $tmp->countryCode = $reply->country_code;
-            $tmp->username = $reply->username;
+            $tmp->username = $this->setUsername($reply->username);
             $tmp->time = date('c', strtotime($reply->time));
             $tmp->message = $reply->message;
             $tmp->messageFormatted = $this->formatMessage($reply->message);
@@ -188,6 +194,15 @@ class Posts extends Model
         $subject = trim($subject);
 
         return $subject;
+    }
+
+    protected function setUsername($username) : string
+    {
+        if (empty($username)) {
+            return _('Anonymous');
+        }
+
+        return $username;
     }
 
     protected function formatMessage(string $message) : string

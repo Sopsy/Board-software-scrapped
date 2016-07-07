@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-07 01:32+0300\n"
-"PO-Revision-Date: 2016-07-07 01:32+0300\n"
+"POT-Creation-Date: 2016-07-07 12:59+0300\n"
+"PO-Revision-Date: 2016-07-07 12:59+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -24,7 +24,7 @@ msgid "Your session has expired. Please refresh this page and try again."
 msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 
 #: Controller/Board.php:19 Controller/Board.php:23 Controller/Post.php:51
-#: Controller/Thread.php:17
+#: Controller/Thread.php:18
 msgid "Not found"
 msgstr "Ei löydy"
 
@@ -124,16 +124,16 @@ msgstr "Tämä lanka on lukittu"
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:176
+#: Controller/Post.php:175
 #, php-format
 msgid "Your message contained a blacklisted word: %s"
 msgstr "Viestisi sisälsi mustalistatun sanan: %s"
 
-#: Controller/Post.php:191
+#: Controller/Post.php:190
 msgid "File uploads are temporarily disabled"
 msgstr "Tiedostojen lähettäminen on väliaikaisesti poissa käytöstä"
 
-#: Controller/Post.php:200 View/Template/Default.phtml:34
+#: Controller/Post.php:199 View/Template/Default.phtml:34
 msgid "Your files exceed the maximum upload size."
 msgstr "Tiedostosi ylittää suurimman sallitun koon."
 
@@ -141,19 +141,19 @@ msgstr "Tiedostosi ylittää suurimman sallitun koon."
 msgid "This isn't your post!"
 msgstr "Tämä ei ole sinun viesti!"
 
-#: Controller/Thread.php:17
+#: Controller/Thread.php:18
 msgid "The thread you are looking for does not exist."
 msgstr "Etsimääsi lankaa ei ole olemassa."
 
-#: Library/Text.php:94
+#: Library/Text.php:84
 msgid "B"
 msgstr "t"
 
-#: Library/Text.php:94
+#: Library/Text.php:84
 msgid "KB"
 msgstr "Kt"
 
-#: Library/Text.php:94
+#: Library/Text.php:84
 msgid "MB"
 msgstr "Mt"
 
@@ -287,11 +287,11 @@ msgstr ""
 "Olemme kovin pahoillamme. Tapahtui sisäinen virhe kun yritimme käsitellä "
 "pyyntöäsi."
 
-#: View/Page/Board.phtml:31 View/Page/Thread.phtml:22
+#: View/Page/Board.phtml:40 View/Page/Thread.phtml:29
 msgid "reply to thread"
 msgstr "vastaa lankaan"
 
-#: View/Page/Board.phtml:38
+#: View/Page/Board.phtml:48
 msgid "There are no threads here..."
 msgstr "Täällä ei ole lankoja..."
 
@@ -308,7 +308,7 @@ msgstr "Keskustelulaudat"
 msgid "NSFW"
 msgstr "NSFW"
 
-#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:7
+#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:8
 msgid "Create a thread"
 msgstr "Luo lanka"
 
@@ -316,85 +316,103 @@ msgstr "Luo lanka"
 msgid "Reply to thread"
 msgstr "Vastaa lankaan"
 
-#: View/Snippets/Post.phtml:2
+#: View/Snippets/Post.phtml:3
 msgid "reply"
 msgstr "vastaa"
 
-#: View/Snippets/Post.phtml:4
+#: View/Snippets/Post.phtml:6
 msgid "gold"
 msgstr "kulta"
 
-#: View/Snippets/Post.phtml:5
+#: View/Snippets/Post.phtml:7
 msgid "hide"
 msgstr "piilota"
 
-#: View/Snippets/Post.phtml:6
+#: View/Snippets/Post.phtml:8
 msgid "report"
 msgstr "ilmianna"
 
-#: View/Snippets/Post.phtml:9
+#: View/Snippets/Post.phtml:11
 msgid "delete"
 msgstr "poista"
 
-#: View/Snippets/Post.phtml:17
+#: View/Snippets/Post.phtml:19
 msgid "OP"
 msgstr "AP"
 
-#: View/Snippets/Post.phtml:22
+#: View/Snippets/Post.phtml:25
 msgid "No."
 msgstr "Nro."
 
-#: View/Snippets/PostForm.phtml:4
+#: View/Snippets/PostForm.phtml:5
 msgid "Submit a reply"
 msgstr "Lähetä vastaus"
 
-#: View/Snippets/PostForm.phtml:10 View/Snippets/PostForm.phtml:11
+#: View/Snippets/PostForm.phtml:11 View/Snippets/PostForm.phtml:12
 msgid "Subject"
 msgstr "Aihe"
 
-#: View/Snippets/PostForm.phtml:16
+#: View/Snippets/PostForm.phtml:17
 msgid "File"
 msgstr "Tiedosto"
 
-#: View/Snippets/PostForm.phtml:49
+#: View/Snippets/PostForm.phtml:50
 msgid "Message"
 msgstr "Viesti"
 
-#: View/Snippets/PostForm.phtml:56
+#: View/Snippets/PostForm.phtml:57
 msgid "Options"
 msgstr "Valinnat"
 
-#: View/Snippets/PostForm.phtml:57 View/Template/Default.phtml:32
+#: View/Snippets/PostForm.phtml:58 View/Template/Default.phtml:32
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: View/Snippets/PostForm.phtml:58
+#: View/Snippets/PostForm.phtml:59
 msgid "Submit"
 msgstr "Lähetä"
 
-#: View/Snippets/PostForm.phtml:60
+#: View/Snippets/PostForm.phtml:61
 msgid "Functions"
 msgstr "Toiminnot"
 
-#: View/Snippets/PostForm.phtml:63
+#: View/Snippets/PostForm.phtml:64
 msgid "Don't bump the thread"
 msgstr "Älä nosta lankaa"
 
-#: View/Snippets/PostForm.phtml:67
+#: View/Snippets/PostForm.phtml:68
 msgid "Hide your name"
 msgstr "Piilota nimesi"
 
-#: View/Snippets/PostForm.phtml:69
+#: View/Snippets/PostForm.phtml:70
 msgid "Gold account functions"
 msgstr "Kultatilitoiminnot"
 
-#: View/Snippets/PostForm.phtml:72
+#: View/Snippets/PostForm.phtml:73
 msgid "Keep original file dimensions"
 msgstr ""
 
-#: View/Snippets/PostForm.phtml:76
+#: View/Snippets/PostForm.phtml:77
 msgid "Hide message from non-golds"
 msgstr "Piilota viesti kultatilittömiltä"
+
+#: View/Snippets/ThreadMeta.phtml:2
+msgid "one reply"
+msgstr "yksi vastaus"
+
+#: View/Snippets/ThreadMeta.phtml:2
+#, php-format
+msgid "%d replies"
+msgstr "%d vastausta"
+
+#: View/Snippets/ThreadMeta.phtml:3
+msgid "read once"
+msgstr "luettu kerran"
+
+#: View/Snippets/ThreadMeta.phtml:3
+#, php-format
+msgid "read %d times"
+msgstr "luettu %d kertaa"
 
 #: View/Template/Default.phtml:30
 msgid "An error occurred"

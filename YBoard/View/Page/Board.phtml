@@ -20,14 +20,14 @@
             <div class="op-post" id="post-<?= $thread->id ?>">
                 <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
             </div>
-            <div class="thread-meta">
-                <?= $thread->statistics->replyCount ?> vastausta, luettu <?= $thread->statistics->readCount ?> kertaa
-            </div>
+
+            <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
             <?php if (!empty($thread->replies)) : ?>
             <div class="replies">
                 <div class="replies-buttons">
-                    <a href="#">Näytä lisää vastauksia</a>
+                    <a href="javascript:void(getMoreReplies(<?= $thread->id ?>))">Näytä lisää vastauksia</a>
                 </div>
+                <div class="more-replies-container"></div>
                 <?php foreach($thread->replies as $reply) : ?>
                     <div class="reply" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>

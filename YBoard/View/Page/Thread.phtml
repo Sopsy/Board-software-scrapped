@@ -16,9 +16,7 @@
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
         </div>
 
-        <div class="thread-meta">
-            <?= $thread->statistics->replyCount ?> vastausta, luettu <?= $thread->statistics->readCount ?> kertaa
-        </div>
+        <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
         <div class="replies">
         <?php foreach($thread->replies as $reply) : ?>
             <div class="reply" id="post-<?= $reply->id ?>">

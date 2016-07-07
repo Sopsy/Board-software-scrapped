@@ -39,4 +39,26 @@ class Thread extends ExtendedController
 
         $view->display('Thread');
     }
+
+    public function getReplies()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['threadId'])) {
+            $this->throwJsonError(400);
+        }
+
+        $posts = new Posts($this->db);
+        $replies = $posts->getReplies($_POST['threadId']);
+
+        $view = $this->loadTemplateEngine('Blank');
+
+        $view->thread = $posts->getThreadMeta($_POST['threadId']);
+        $view->board = $this->boards->getById($view->thread->boardId);
+
+        foreach ($replies as $post) {
+            $view->post = $post;
+            $view->display('Ajax/Post');
+        }
+    }
 }
