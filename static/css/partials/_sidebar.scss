@@ -105,10 +105,10 @@
                 margin-bottom: 5px;
                 overflow: hidden;
                 > div {
-                    height: 136px;
+                    height: 136px !important;
+                    width: 155px !important;
                     margin: -2px auto 5px -2px;
                     overflow: hidden;
-                    width: 155px;
                 }
             }
         }

@@ -51,7 +51,7 @@ class Posts extends Model
 
         $post = $q->fetch();
 
-        if (empty($post->subject) && $post->subject != 0) {
+        if (empty($post->subject) && $post->subject != '0') {
             $post->subject = $this->createSubject($post->message);
         }
 
@@ -99,7 +99,7 @@ class Posts extends Model
         $threads = [];
 
         while ($row = $q->fetch()) {
-            if (empty($row->subject) && $row->subject != 0) {
+            if (empty($row->subject) && $row->subject != '0') {
                 $row->subject = $this->createSubject($row->message);
             }
 

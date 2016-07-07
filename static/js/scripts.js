@@ -97,16 +97,16 @@ function getMoreReplies(threadId) {
 // Too long posts
 //$('#your_div')[0].scrollHeight
 
+// Load captcha
+function renderCaptcha() {
+    grecaptcha.render('post-form-captcha', {
+        'sitekey': config.reCaptchaPublicKey
+    });
+}
+
 // Functions related to post form
 var postformLocation = $('#post-form').prev();
 function showPostForm() {
-    // Load captcha
-    if (typeof grecaptcha != 'undefined' && $('#post-form-captcha').html().length == 0) {
-        grecaptcha.render('post-form-captcha', {
-            'sitekey': config.reCaptchaPublicKey
-        });
-    }
-
     var form = $('#post-form');
     form.addClass('visible');
     var textarea = form.find('textarea');

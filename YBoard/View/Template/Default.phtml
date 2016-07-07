@@ -40,7 +40,7 @@
     </script>
     <?php if (!$user->loggedIn) : ?>
     <?php // TODO: Maybe use sentPosts instead of loggedIn ?>
-    <script src="//www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+    <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=renderCaptcha" async defer></script>
     <?php endif ?>
 </head>
 <body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>
