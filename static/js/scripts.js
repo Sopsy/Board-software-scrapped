@@ -23,7 +23,8 @@ function deletePost(id) {
         $t(id).remove();
         toastr.success(messages.postDeleted);
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastrXhrError(xhr, errorThrown);
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
     });
 }
 
@@ -61,29 +62,36 @@ function signupForm(elm, e) {
 
 // Thread inline expansion
 function getMoreReplies(threadId) {
-    $.ajax({
-        url: '/scripts/threads/getreplies',
-        type: "POST",
-        data: {'threadId': threadId}
-    }).done(function (data, textStatus, xhr) {
-        // Update timestamps
-        data = $(data);
-        data.find('.datetime').each(function () {
-            localizeTimestamp(this);
-        });
+    var thread = $t(threadId);
+    if (!thread.hasClass('expanded')) {
+        // Expand
+        thread.addClass('expanded', true);
 
-        $t(threadId).find('.more-replies-container').html(data);
-    }).fail(function (xhr, textStatus, errorThrown) {
-        if (xhr.responseText.length != 0) {
-            try {
-                var text = JSON.parse(xhr.responseText);
-                errorThrown = text.message;
-            } catch (e) {
+        var fromId = thread.find('.reply:first').attr('id').replace('post-', '');
+
+        $.ajax({
+            url: '/scripts/threads/getreplies',
+            type: "POST",
+            data: {
+                'threadId': threadId,
+                'fromId': fromId
             }
-        }
-        toastr.info(errorThrown);
-        elm.tooltipster('disable');
-    });
+        }).done(function (data, textStatus, xhr) {
+            // Update timestamps
+            data = $(data);
+            data.find('.datetime').each(function () {
+                localizeTimestamp(this);
+            });
+
+            $t(threadId).find('.more-replies-container').html(data);
+        }).fail(function (xhr, textStatus, errorThrown) {
+            var errorMessage = getErrorMessage(xhr, errorThrown);
+            toastr.error(errorMessage);
+        });
+    } else {
+        // Contract
+        $t(threadId).removeClass('expanded').find('.more-replies-container').html('');
+    }
 }
 
 // Functions related to post form
@@ -255,7 +263,8 @@ function submitPost(e) {
         // Reset post form
         resetPostForm();
     }).fail(function (xhr, textStatus, errorThrown) {
-        toastrXhrError(xhr, errorThrown);
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
     }).always(function () {
         $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
@@ -362,14 +371,8 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
 
             elm.tooltipster('content', data);
         }).fail(function (xhr, textStatus, errorThrown) {
-            if (xhr.responseText.length != 0) {
-                try {
-                    var text = JSON.parse(xhr.responseText);
-                    errorThrown = text.message;
-                } catch (e) {
-                }
-            }
-            toastr.info(errorThrown);
+            var errorMessage = getErrorMessage(xhr, errorThrown);
+            toastr.warn(errorMessage, messages.errorOccurred);
             elm.tooltipster('disable');
         });
     }
@@ -409,7 +412,7 @@ jQuery.fn.extend({
     }
 });
 
-function toastrXhrError(xhr, errorThrown) {
+function getErrorMessage(xhr, errorThrown) {
     if (xhr.responseText.length != 0) {
         try {
             var text = JSON.parse(xhr.responseText);
@@ -417,7 +420,7 @@ function toastrXhrError(xhr, errorThrown) {
         } catch (e) {
         }
     }
-    toastr.error(errorThrown, messages.errorOccurred);
+    return errorThrown;
 }
 
 function loadingAnimation(classes) {

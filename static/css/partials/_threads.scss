@@ -4,6 +4,15 @@
     color: $textColor;
     margin: 20px 10px 20px 10px;
 
+    &:not(.expanded) {
+        .less-replies {
+            display: none;
+        }
+    }
+    &.expanded {
+        .more-replies { display: none }
+    }
+
     .tooltipster-box {
         padding: 0;
         background-color: #f5f5f5;
@@ -77,9 +86,7 @@
     }
     .reply {
         background-color: #f5f5f5;
-        &:not(:first-of-type) {
-            margin-top: 10px;
-        }
+        margin-top: 10px;
         overflow: hidden;
     }
 

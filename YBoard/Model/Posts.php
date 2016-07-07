@@ -135,14 +135,15 @@ class Posts extends Model
         return $threads;
     }
 
-    public function getReplies(int $threadId, int $count = null, bool $newest = false, int $from = null) : array
+    public function getReplies(int $threadId, int $count = null, bool $newest = false, int $fromId = null) : array
     {
+        $from = '';
         if ($newest) {
             $order = 'DESC';
         } else {
             $order = 'ASC';
-            if ($from) {
-                $from = 'AND a.id < :from';
+            if ($fromId) {
+                $from = ' AND a.id < :from';
             }
         }
 
@@ -155,7 +156,7 @@ class Posts extends Model
         $q = $this->db->prepare($this->getPostsQuery('WHERE a.thread_id = :thread_id' . $from . ' ORDER BY a.id ' . $order . $limit));
         $q->bindValue('thread_id', $threadId);
         if ($from) {
-            $q->bindValue('from', $from);
+            $q->bindValue('from', $fromId);
         }
         $q->execute();
 

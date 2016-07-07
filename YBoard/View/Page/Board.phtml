@@ -25,7 +25,8 @@
             <?php if (!empty($thread->replies)) : ?>
             <div class="replies">
                 <div class="replies-buttons">
-                    <a href="javascript:void(getMoreReplies(<?= $thread->id ?>))">Näytä lisää vastauksia</a>
+                    <a class="more-replies" href="javascript:void(getMoreReplies(<?= $thread->id ?>))"><?= _('show more replies') ?></a>
+                    <a class="less-replies" href="javascript:void(getMoreReplies(<?= $thread->id ?>))"><?= _('show less replies') ?></a>
                 </div>
                 <div class="more-replies-container"></div>
                 <?php foreach($thread->replies as $reply) : ?>

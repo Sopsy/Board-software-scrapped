@@ -44,12 +44,13 @@ class Thread extends ExtendedController
     {
         $this->validateAjaxCsrfToken();
 
-        if (empty($_POST['threadId'])) {
+        if (empty($_POST['threadId']) || !isset($_POST['fromId'])) {
             $this->throwJsonError(400);
         }
 
         $posts = new Posts($this->db);
-        $replies = $posts->getReplies($_POST['threadId']);
+        $replies = $posts->getReplies($_POST['threadId'], null, false, $_POST['fromId']);
+        error_log($_POST['fromId']);
 
         $view = $this->loadTemplateEngine('Blank');
 
