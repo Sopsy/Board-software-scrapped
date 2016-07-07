@@ -12,7 +12,7 @@ use YBoard\Model;
 
 class Posts extends Model
 {
-    public function getThreadMeta(int $id) : Thread
+    public function getThreadMeta(int $id)
     {
         $q = $this->db->prepare("SELECT id, board_id, user_id, ip, country_code, time, locked, sticky
             FROM posts WHERE id = :id AND thread_id IS NULL LIMIT 1");
@@ -39,7 +39,7 @@ class Posts extends Model
         return $thread;
     }
 
-    public function getThread(int $id) : Thread
+    public function getThread(int $id)
     {
         $q = $this->db->prepare($this->getPostsQuery("WHERE a.id = :id AND a.thread_id IS NULL LIMIT 1"));
         $q->bindValue('id', (int)$id);

@@ -26,6 +26,7 @@ class Board extends ExtendedController
         $posts = new Posts($this->db);
 
         $view = $this->loadTemplateEngine();
+        // TODO: Set page title
 
         $board = $this->boards->getByUrl($boardUrl);
 

@@ -33,6 +33,7 @@ class Thread extends ExtendedController
         }
 
         $view = $this->loadTemplateEngine();
+        // TODO: Set page title
 
         $view->board = $board;
         $view->thread = $thread;

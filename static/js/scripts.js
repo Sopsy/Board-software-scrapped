@@ -132,7 +132,7 @@ function addBbCode(code) {
 
 function replyToThread(id) {
     var postForm = $('#post-form');
-    postForm.insertAfter('#thread-' + id + ' .replies');
+    postForm.appendTo('#thread-' + id + ' .thread-content');
     showPostForm();
 
     saveOriginalPostFormDestination();
@@ -255,10 +255,6 @@ function submitPost(e) {
         // TODO: If new thread, go to thread instead
         window.location = window.location;
 
-        // Reset captcha if present
-        if (typeof grecaptcha != 'undefined') {
-            grecaptcha.reset();
-        }
 
         // Reset post form
         resetPostForm();
@@ -268,6 +264,11 @@ function submitPost(e) {
     }).always(function () {
         $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
+        
+        // Reset captcha if present
+        if (typeof grecaptcha != 'undefined') {
+            grecaptcha.reset();
+        }
     });
 }
 
@@ -372,7 +373,7 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
             elm.tooltipster('content', data);
         }).fail(function (xhr, textStatus, errorThrown) {
             var errorMessage = getErrorMessage(xhr, errorThrown);
-            toastr.warn(errorMessage, messages.errorOccurred);
+            toastr.warning(errorMessage);
             elm.tooltipster('disable');
         });
     }
