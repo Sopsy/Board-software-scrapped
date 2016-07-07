@@ -20,10 +20,10 @@
         <?php endif ?>
     </div>
     <div class="post-info">
+        <span class="post-time datetime"><?= $post->time ?></span>
         <a href="/<?= $board->url ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
             onclick="event.preventDefault();<?php if (!$thread->locked) : ?>replyToPost(<?= $post->id ?>)<?php endif ?>"
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
-        <span class="post-time datetime"><?= $post->time ?></span>
     </div>
 </div>
 <blockquote class="post">

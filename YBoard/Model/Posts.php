@@ -348,7 +348,7 @@ class Posts extends Model
         $post->userId = $reply->user_id;
         $post->ip = inet_ntop($reply->ip);
         $post->countryCode = $reply->country_code;
-        $post->username = $reply->username;
+        $post->username = $this->setUsername($reply->username);
         $post->time = date('c', strtotime($reply->time));
         $post->message = $reply->message;
         $post->messageFormatted = $this->formatMessage($reply->message);

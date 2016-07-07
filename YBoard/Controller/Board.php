@@ -52,4 +52,21 @@ class Board extends ExtendedController
         $view->pageNum = $pageNum;
         $view->display('Board');
     }
+
+    public function redirect($boardUrl)
+    {
+        // Verify board exists
+        $redirTo = false;
+        if ($this->boards->exists($boardUrl)) {
+            $redirTo = $this->boards->getByUrl($boardUrl)->url;
+        } elseif ($this->boards->isAltUrl($boardUrl)) {
+            $redirTo = $this->boards->getUrlByAltUrl($boardUrl);
+        }
+
+        if ($redirTo) {
+            HttpResponse::redirectExit('/' . $redirTo . '/', 302);
+        }
+
+        $this->notFound(_('Not found'), sprintf(_('There\'s no such thing as a board called "%s" here.'), $boardUrl));
+    }
 }
