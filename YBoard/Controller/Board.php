@@ -67,6 +67,6 @@ class Board extends ExtendedController
             HttpResponse::redirectExit('/' . $redirTo . '/', 302);
         }
 
-        $this->notFound(_('Not found'), sprintf(_('There\'s no such thing as a board called "%s" here.'), $boardUrl));
+        $this->notFound();
     }
 }

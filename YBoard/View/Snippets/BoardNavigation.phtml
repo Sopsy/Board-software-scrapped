@@ -10,6 +10,11 @@
     </div>
     <?php if (empty($thread->id)) : ?>
     <div class="pagination">
+        <?php if ($pageNum == 2) : ?>
+            <a href="/<?= $board->url ?>/">&lt;</a>
+        <?php elseif ($pageNum > 2) : ?>
+            <a href="/<?= $board->url ?>-<?= $pageNum-1 ?>/">&lt;</a>
+        <?php endif ?>
         <?php if ($paginationStartPage > 1) : ?>
             <a href="/<?= $board->url ?>/"<?= ($pageNum==1?' class="cur"':'') ?>>1</a>
             <?php if ($paginationStartPage > 2) : ?>
@@ -20,6 +25,9 @@
         <?php for ($i = $paginationStartPage; $i <= $paginationEndPage; ++$i) : ?>
             <a href="/<?= $board->url ?>-<?= $i ?>/"<?= ($pageNum==$i?' class="cur"':'') ?>><?= $i ?></a>
         <?php endfor ?>
+        <?php if ($pageNum < 100) : ?>
+            <a href="/<?= $board->url ?>-<?= $pageNum+1 ?>/">&gt;</a>
+        <?php endif ?>
     </div>
     <?php endif ?>
 </div>

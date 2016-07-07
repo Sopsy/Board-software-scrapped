@@ -94,6 +94,9 @@ function getMoreReplies(threadId) {
     }
 }
 
+// Too long posts
+//$('#your_div')[0].scrollHeight
+
 // Functions related to post form
 var postformLocation = $('#post-form').prev();
 function showPostForm() {
@@ -105,8 +108,7 @@ function showPostForm() {
     }
 
     var form = $('#post-form');
-    form.show();
-    $('.toggle-postform').hide();
+    form.addClass('visible');
     var textarea = form.find('textarea');
     if (textarea.is(':visible')) {
         textarea.focus();
@@ -114,8 +116,7 @@ function showPostForm() {
 }
 
 function hidePostForm() {
-    $('#post-form').hide();
-    $('.toggle-postform').show();
+    $('#post-form').removeClass('visible');
 }
 
 function resetPostForm() {
@@ -249,11 +250,12 @@ function submitPost(e) {
             return xhr;
         }
     }).done(function (data, textStatus, xhr) {
+        location.reload();
         toastr.success(messages.postSent);
 
         // TODO: replace with ajax load of new messages
         // TODO: If new thread, go to thread instead
-        window.location = window.location;
+        //window.location = window.location;
 
 
         // Reset post form
@@ -264,7 +266,7 @@ function submitPost(e) {
     }).always(function () {
         $('#post-progress').find('div').css('width', '');
         submitInProgress = false;
-        
+
         // Reset captcha if present
         if (typeof grecaptcha != 'undefined') {
             grecaptcha.reset();
@@ -340,10 +342,6 @@ $('body').on('click', '.reflink', function (e) {
     }
 });
 
-$.tooltipster.setDefaults({
-    'theme': 'thread'
-})
-
 $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
     var elm = $(this);
     elm.tooltipster({
@@ -353,6 +351,7 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
         delay: [50, 0],
         arrow: false,
         contentAsHTML: true,
+        theme: 'thread'
     }).tooltipster('open');
     var id = elm.data('id');
 
@@ -373,8 +372,7 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
             elm.tooltipster('content', data);
         }).fail(function (xhr, textStatus, errorThrown) {
             var errorMessage = getErrorMessage(xhr, errorThrown);
-            toastr.warning(errorMessage);
-            elm.tooltipster('disable');
+            elm.tooltipster('content', errorMessage);
         });
     }
 });

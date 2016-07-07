@@ -39,9 +39,9 @@
             </div>
             <?php endif ?>
             <div class="thread-buttons">
-                <a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>
+                <!--<a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>-->
                 <?php if (!$thread->locked) : ?>
-                <a class="add-reply" href="javascript:void(replyToThread(<?= $thread->id ?>))"><?= _('reply to thread') ?></a>
+                <a class="add-reply" href="javascript:void(replyToThread(<?= $thread->id ?>))"><?= _('reply') ?></a>
                 <?php endif ?>
             </div>
         </div>

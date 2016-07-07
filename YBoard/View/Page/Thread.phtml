@@ -24,14 +24,13 @@
             </div>
         <?php endforeach ?>
         </div>
-        <div class="thread-buttons">
-            <?php if (!$thread->locked) : ?>
-            <a class="add-reply toggle-postform" href="javascript:void(showPostForm())"><?= _('reply to thread') ?></a>
-            <?php endif ?>
-        </div>
+        <div class="thread-buttons"></div>
     </div>
+
+    <?php if (!$thread->locked) : ?>
+        <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
+    <?php endif ?>
 </div>
 
-<?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
 
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>

@@ -3,6 +3,7 @@ namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\FileUploadException;
+use YBoard\Library\Cache;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
@@ -129,7 +130,6 @@ class Post extends ExtendedController
             }
         }
 
-        // TODO: Add flood prevention
         // TODO: Maybe use sentPosts instead of loggedIn
         if (!$this->user->loggedIn) {
             if (empty($_POST["g-recaptcha-response"])) {
@@ -207,11 +207,23 @@ class Post extends ExtendedController
         }
 
         if (!$isReply) {
+            if (Cache::exists('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'])) {
+                $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
+            }
+
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
                 $_SERVER['REMOTE_ADDR'], $countryCode);
+
+            Cache::add('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'], 1, 30);
         } else {
+            if (Cache::exists('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'])) {
+                $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
+            }
+
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
                 $countryCode);
+
+            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, 5);
             $posts->updateThreadStats($thread->id, 'replyCount');
 
             if (!$sage) {

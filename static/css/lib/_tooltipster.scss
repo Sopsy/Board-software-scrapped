@@ -10,12 +10,14 @@
     pointer-events: none;
     /* this may be overriden in JS for fixed position origins */
     position: absolute;
+    box-sizing: border-box;
 }
 
 .tooltipster-box {
     /* see .tooltipster-base. flex-shrink 1 is only necessary for IE10-
     and flex-basis auto for IE11- (at least) */
     flex: 1 1 auto;
+    max-width: 100%;
 }
 
 .tooltipster-content {
@@ -50,6 +52,7 @@
     z-index: 1000;
     width: auto !important;
     height: auto !important;
+    max-width: 100%;
     box-shadow: 5px 5px 15px -10px #000;
     border: 5px solid #ccc;
 }

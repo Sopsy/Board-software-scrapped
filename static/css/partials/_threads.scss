@@ -2,7 +2,9 @@
     padding: 0;
     overflow: hidden;
     color: $textColor;
-    margin: 20px 10px 20px 10px;
+    &:not(.tooltipster-base) {
+        margin: 20px 10px 20px 10px;
+    }
 
     &:not(.expanded) {
         .less-replies {
@@ -22,13 +24,11 @@
     }
 
     #post-form {
-        margin: 20px 0;
         padding: 10px;
         background-color: #f5f5f5;
-        #label-subject, h3 { display: none }
     }
 
-    h3 {
+    > h3 {
         $height: 35px;
         margin-bottom: 0;
         font-size: 1.3em;
@@ -59,6 +59,9 @@
 
     .thread-content {
         padding: 5px 10px 10px 10px;
+        #post-form {
+            #label-subject, h3 { display: none }
+        }
     }
 
     .thread-meta {
@@ -92,6 +95,8 @@
     .post {
         margin: 5px 0 10px 0;
         overflow: hidden;
+        word-wrap: break-word;
+        max-height: 500px;
     }
 
     .post-meta {
