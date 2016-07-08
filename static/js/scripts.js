@@ -96,13 +96,15 @@ function getMoreReplies(threadId) {
 
 // Too long posts
 $('.post').each(function() {
-    if (this.scrollHeight > this.clientHeight) {
+    if (this.scrollHeight > this.offsetHeight + 100) {
         $(this).after('<button class="link post-truncated" onclick="showFullPost(this)">näytä koko viesti</button>');
+    } else if (this.scrollHeight > this.offsetHeight) {
+        showFullPost(this);
     }
 });
 
 function showFullPost(elm) {
-    $(elm).parent('.op-post, .repliy').find('.post').addClass('full');
+    $(elm).parent('.op-post, .reply').find('.post').addClass('full');
 }
 
 // Functions related to post form

@@ -53,8 +53,13 @@
     width: auto !important;
     height: auto !important;
     max-width: 100%;
+
+    $borderColor: #ccc;
+    @if (lightness($contentBgColor) < 50) {
+        $borderColor: #444;
+    }
+    border: 5px solid $borderColor;
     box-shadow: 5px 5px 15px -10px #000;
-    border: 5px solid #ccc;
 }
 
 .tooltipster-sidetip.tooltipster-bottom .tooltipster-box {

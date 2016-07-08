@@ -1,0 +1,146 @@
+@import '../lib/normalize';
+@import '../partials/mixins';
+
+body {
+
+    background: $bgColor;
+    font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
+    color: $textColor;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+
+    img { max-width: 100% }
+
+    a {
+        text-decoration: none;
+        color: $linkColor;
+    }
+    a:hover { color: $linkHoverColor }
+    img { vertical-align: top }
+
+    .button {
+        border: 0;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 0.85rem;
+
+        &.gray {
+            $color: #000;
+            $bg: #ccc;
+            @if (lightness($bgColor) < 50) {
+                $bg: #444;
+                $color: #eee
+            }
+
+            color: $color;
+            background-color: $bg;
+            &:hover {
+                background-color: lighten($bg, 10%);
+            }
+        }
+        &.green {
+            color: #fff;
+            background-color: $highlightColor;
+            &:hover {
+                background-color: lighten($highlightColor, 10%);
+            }
+        }
+        &.transparent {
+            color: #fff;
+            padding: 5px 0;
+            background-color: transparent;
+        }
+    }
+
+
+    h1, h2, h3, h4 {
+        margin: 0;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        font-weight: 400;
+    }
+    h2 {
+        font-size: 1.25em;
+        font-weight: 400;
+    }
+    h3 {
+        font-size: 1.5em;
+        font-weight: 400;
+        line-height: 1.5em;
+        color: $highlightColor;
+        margin-bottom: 20px;
+    }
+    h4 {
+        font-size: 1.25em;
+        font-weight: 400;
+        line-height: 1.5em;
+        color: $highlightColor;
+        margin-bottom: 10px;
+    }
+
+    #content {
+        margin-left: 220px;
+        overflow: hidden;
+        .page-header {
+            background: #333 url('../img/front_bg.jpg') no-repeat 50% 50%;
+            background-size: cover;
+            padding: 80px 20px 20px 20px;
+            color: #fff;
+            box-shadow: 100px -100px 120px -100px #000 inset;
+            text-shadow: 0 0 40px #000, 0 0 10px #000;
+            overflow: hidden;
+            position: relative;
+
+            a { color: #fff }
+            h1, h2 {
+                margin-right: 150px;
+            }
+            .buttons {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                font-size: 1rem;
+                vertical-align: bottom;
+            }
+        }
+        .error-image {
+            margin-top: 60px;
+            max-width: 100%;
+        }
+    }
+
+    button.link {
+        color: $linkColor;
+        padding: 0;
+        border: 0;
+        background-color: transparent;
+        cursor: pointer;
+
+        &:hover {
+            color: $linkHoverColor;
+        }
+    }
+
+    .content-box {
+        padding: 40px 60px;
+        background-color: $contentBgColor;
+        margin: 20px 10px;
+
+        p {
+            line-height: 1.25em;
+        }
+    }
+
+    @import '../lib/toastr';
+    @import '../lib/tooltipster';
+
+    @import '../partials/tags';
+    @import '../partials/sidebar';
+    @import '../partials/errorpage';
+    @import '../partials/frontpage';
+    @import '../partials/post-form';
+    @import '../partials/threads';
+    @import '../partials/navigation';
+}

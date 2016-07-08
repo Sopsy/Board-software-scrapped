@@ -1,5 +1,5 @@
 #sidebar {
-    $bgcolor: $baseColor;
+    $bgcolor: $sidebarColor;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -18,14 +18,22 @@
         cursor: pointer;
         color: #eee;
         &:hover {
-            color: lighten($bgcolor, 40%);
+            @if (lightness($bgcolor) > 50) {
+                color: darken($bgcolor, 40%);
+            } @else {
+                color: lighten($bgcolor, 40%);
+            }
         }
     }
     a {
         color: #eee;
         font-weight: normal;
         &:hover {
-            color: lighten($bgcolor, 40%);
+            @if (lightness($bgcolor) > 50) {
+                color: darken($bgcolor, 40%);
+            } @else {
+                color: lighten($bgcolor, 40%);
+            }
         }
     }
 
@@ -49,18 +57,31 @@
         &:not(:first-of-type) {
             padding-top: 20px;
             margin-top: 20px;
-            border-top: 1px solid lighten($bgcolor, 15%);
+            $borderColor: darken($bgcolor, 15%);
+            @if (lightness($bgcolor) > 50) {
+            } @else {
+                border-top: 1px solid lighten($bgcolor, 15%);
+            }
+            border-top: 1px solid darken($bgcolor, 15%);
         }
         a { display: block }
         h3 {
-            color: lighten($bgcolor, 40%);
+            @if (lightness($bgcolor) > 50) {
+                color: darken($bgcolor, 40%);
+            } @else {
+                color: lighten($bgcolor, 40%);
+            }
             margin: 0 0 10px 0;
             font-size: 1.25em;
             font-weight: 400;
         }
     }
     #search {
-        background-color: darken($bgcolor, 10%);
+        @if (lightness($bgcolor) > 50) {
+            background-color: lighten($bgcolor, 10%);
+        } @else {
+            background-color: darken($bgcolor, 10%);
+        }
         overflow: hidden;
         margin-top: 10px;
         input {
@@ -79,16 +100,25 @@
             width: 35px;
             height: 35px;
             cursor: pointer;
-            background-color: darken($bgcolor, 5%);
+            @if (lightness($bgcolor) > 50) {
+                background-color: lighten($bgcolor, 5%);
+            } @else {
+                background-color: darken($bgcolor, 5%);
+            }
         }
     }
     #user form {
         overflow: hidden;
 
         input[type="text"], input[type="password"] {
-            background-color: darken($bgcolor, 10%);
+            @if (lightness($bgcolor) > 50) {
+                background-color: lighten($bgcolor, 10%);
+                color: #000;
+            } @else {
+                background-color: darken($bgcolor, 10%);
+                color: #fff;
+            }
             border: 0;
-            color: #fff;
             margin-bottom: 5px;
             display: block;
             padding: 5px 10px;

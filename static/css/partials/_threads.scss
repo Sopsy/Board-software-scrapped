@@ -19,7 +19,11 @@
 
     .tooltipster-box {
         padding: 0;
-        background-color: $lightGray;
+        @if (lightness($contentBgColor) > 50) {
+            background-color: darken($contentBgColor, 5%);
+        } @else {
+            background-color: lighten($contentBgColor, 5%);
+        }
         .post-buttons {
             display: none;
         }
@@ -27,7 +31,11 @@
 
     #post-form {
         padding: 10px;
-        background-color: $lightGray;
+        $postFormBgColor: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $postFormBgColor: lighten($contentBgColor, 5%);
+        }
+        background-color: $postFormBgColor;
     }
 
     > h3 {
@@ -38,16 +46,25 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        background-color: #f6f7f9;
 
+        $subjectBgColor: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $subjectBgColor: lighten($contentBgColor, 5%);
+        }
+        background-color: $subjectBgColor;
 
         .icon {
             display: inline-block;
             width: $height;
             height: $height;
             line-height: $height;
-            background-color: $baseColor;
-            color: #fff;
+            @if (lightness($subjectBgColor) > 50) {
+                background-color: darken($subjectBgColor, 10%);
+                color: #111;
+            } @else {
+                background-color: lighten($subjectBgColor, 10%);
+                color: #eee;
+            }
             text-align: center;
         }
 
@@ -74,12 +91,20 @@
 
     .thread-meta {
         font-size: 0.85em;
-        color: #555555;
+        @if (lightness($textColor) > 50) {
+            color: darken($textColor, 40%);
+        } @else {
+            color: lighten($textColor, 40%);
+        }
         margin: 0 0 5px 0;
     }
     .replies {
         padding: 0 0 0 10px;
-        border-left: 3px solid $lightGray;
+        @if (lightness($contentBgColor) > 50) {
+            border-left: 3px solid darken($contentBgColor, 10%);
+        } @else {
+            border-left: 3px solid lighten($contentBgColor, 10%);
+        }
     }
 
     .replies-buttons {
@@ -88,11 +113,15 @@
 
     &:not(.tooltipster-base) .reply {
         padding: 5px 0;
+        @if (lightness($contentBgColor) > 50) {
+            border-top: 3px solid darken($contentBgColor, 10%);
+        } @else {
+            border-top: 3px solid lighten($contentBgColor, 10%);
+        }
+        margin-bottom: 10px;
     }
     .reply {
-        border-top: 3px solid $lightGray;
         overflow: hidden;
-        margin-bottom: 10px;
     }
 
     .post {
@@ -104,7 +133,11 @@
         }
     }
     .post-truncated {
-        border-top: 3px solid $lightGray;
+        @if (lightness($contentBgColor) > 50) {
+            border-top: 3px solid darken($contentBgColor, 10%);
+        } @else {
+            border-top: 3px solid lighten($contentBgColor, 10%);
+        }
         margin-top: -10px;
         text-align: center;
         display: block;
@@ -116,7 +149,11 @@
     }
 
     .post-meta {
-        color: lighten($textColor, 40%);
+        @if (lightness($textColor) > 50) {
+            color: darken($textColor, 40%);
+        } @else {
+            color: lighten($textColor, 40%);
+        }
         .user-info {
         }
         .user-info, .post-info {
@@ -130,11 +167,15 @@
             }
         }
         .username {
-            color: $green;
+            color: $highlightColor;
             font-weight: 600;
         }
         .post-id {
-            color: lighten($textColor, 40%);
+            @if (lightness($textColor) > 50) {
+                color: darken($textColor, 40%);
+            } @else {
+                color: lighten($textColor, 40%);
+            }
             &:hover {
                 color: $linkHoverColor
             }
@@ -151,7 +192,11 @@
         box-sizing: border-box;
         white-space: nowrap;
         overflow: hidden;
-        background-color: rgba(0, 0, 0, 0.04);
+        @if (lightness($contentBgColor) > 50) {
+            background-color: rgba(0, 0, 0, 0.04);
+        } @else {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
         position: relative;
 
         .overlay {
@@ -190,12 +235,8 @@
         font-size: 0.9em;
         > * {
             cursor: pointer;
-            opacity: 0.7;
             &:not(:first-of-type) {
                 margin-left: 10px
-            }
-            &:hover {
-                opacity: 1
             }
         }
     }
@@ -215,9 +256,9 @@
     }
 
     .quote {
-        color: #789922;
+        color: $quoteColor;
         &.blue {
-            color: #226199;
+            color: $blueQuoteColor;
         }
     }
 }

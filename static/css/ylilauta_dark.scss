@@ -1,10 +1,10 @@
-// Ylilauta 2016 light style
-$bgColor: #e2e2e2;
-$sidebarColor: #333c45;
-$contentBgColor: #fff;
-$textColor: #222;
+// Ylilauta 2016 dark style
+$bgColor: #111;
+$sidebarColor: #292929;
+$contentBgColor: #222;
+$textColor: #eee;
 
-$highlightColor: #117743;
+$highlightColor: lighten(#117743, 15%);
 $red: #ba1f27;
 
 $linkColor: $highlightColor;
