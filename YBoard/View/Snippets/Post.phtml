@@ -39,7 +39,11 @@
         </a>
         <figcaption>
             <a href="<?= $fileUrl ?>" target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
-            <span><?= \YBoard\Library\Text::formatBytes($post->file->size) ?> <?= htmlspecialchars(strtoupper($post->file->extension)) ?></span>
+            <span>
+                <?= $post->file->width ?>&times;<?= $post->file->height ?>
+                <?= \YBoard\Library\Text::formatBytes($post->file->size) ?>
+                <?= htmlspecialchars(strtoupper($post->file->extension)) ?>
+            </span>
         </figcaption>
     </figure>
     <?php endif ?>

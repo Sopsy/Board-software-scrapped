@@ -145,6 +145,9 @@ class Files extends Model
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
 
+                // Get size of the final image
+                list($uploadedFile->width, $uploadedFile->height) = getimagesize($uploadedFile->destination);
+
                 break;
             case 'mp4':
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
@@ -155,11 +158,14 @@ class Files extends Model
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size) VALUES (:folder, :name, :extension, :size)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height)
+            VALUES (:folder, :name, :extension, :size, :width, :height)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
+        $q->bindValue('width', $uploadedFile->width);
+        $q->bindValue('height', $uploadedFile->height);
         $q->execute();
 
         $uploadedFile->id = $this->db->lastInsertId();

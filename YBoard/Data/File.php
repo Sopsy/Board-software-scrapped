@@ -9,4 +9,6 @@ class File
     public $name;
     public $extension;
     public $size;
+    public $width;
+    public $height;
 }

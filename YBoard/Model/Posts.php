@@ -369,7 +369,8 @@ class Posts extends Model
         return "SELECT
             a.id, a.board_id, a.thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
-            c.extension AS file_extension, c.size AS file_size, d.read_count, d.reply_count, d.distinct_reply_count
+            c.extension AS file_extension, c.size AS file_size, c.width AS file_width, c.height AS file_height,
+            d.read_count, d.reply_count, d.distinct_reply_count
             FROM posts a
             LEFT JOIN posts_files b ON a.id = b.post_id
             LEFT JOIN files c ON b.file_id = c.id
@@ -384,6 +385,8 @@ class Posts extends Model
         $file->name = $data->file_name;
         $file->extension = $data->file_extension;
         $file->size = $data->file_size;
+        $file->width = $data->file_width;
+        $file->height = $data->file_height;
         $file->displayName = $data->file_display_name;
 
         return $file;

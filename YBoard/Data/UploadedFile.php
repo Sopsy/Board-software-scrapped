@@ -10,6 +10,8 @@ class UploadedFile
     public $extension;
     public $origName;
     public $size;
+    public $width = null;
+    public $height = null;
     public $md5 = [];
     public $thumbDestination;
     public $destination;
