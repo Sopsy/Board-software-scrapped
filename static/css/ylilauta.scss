@@ -2,6 +2,7 @@
 @import 'lib/toastr';
 @import 'lib/tooltipster';
 
+$bgColor: #e2e2e2;
 $baseColor: #333c45;
 $textColor: #222;
 $green: #117743;
@@ -13,7 +14,7 @@ $lightGray: #eee;
 @import 'partials/mixins';
 
 body {
-    background: $lightGray;
+    background: $bgColor;
     font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
     color: $textColor;
     word-wrap: break-word;
@@ -88,7 +89,7 @@ h4 {
     margin-left: 220px;
     overflow: hidden;
     .page-header {
-        background: lighten($baseColor, 5%) url('../img/header_bg.jpg') no-repeat 50% 50%;
+        background: lighten($baseColor, 5%) url('../img/front_bg.jpg') no-repeat 50% 50%;
         background-size: cover;
         padding: 80px 20px 20px 20px;
         color: #fff;
@@ -115,6 +116,18 @@ h4 {
     }
 }
 
+button.link {
+    color: $linkColor;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        color: $linkHoverColor;
+    }
+}
+
 .content-box {
     padding: 40px 60px;
     background-color: #fff;
@@ -132,3 +145,4 @@ h4 {
 @import 'partials/post-form';
 @import 'partials/threads';
 @import 'partials/navigation';
+

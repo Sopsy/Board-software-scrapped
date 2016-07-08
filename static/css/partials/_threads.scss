@@ -38,6 +38,8 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
+        background-color: #f6f7f9;
+
 
         .icon {
             display: inline-block;
@@ -85,10 +87,9 @@
     }
 
     &:not(.tooltipster-base) .reply {
-        padding: 5px 10px;
+        padding: 5px 0;
     }
     .reply {
-        //background-color: $lightGray;
         border-top: 3px solid $lightGray;
         overflow: hidden;
         margin-bottom: 10px;
@@ -101,6 +102,17 @@
         &:not(.full) {
             max-height: 500px;
         }
+    }
+    .post-truncated {
+        border-top: 3px solid $lightGray;
+        margin-top: -10px;
+        text-align: center;
+        display: block;
+        width: 100%;
+    }
+
+    .post.full + .post-truncated {
+        display: none;
     }
 
     .post-meta {
@@ -176,7 +188,7 @@
 
     .post-buttons {
         font-size: 0.9em;
-        > a {
+        > * {
             cursor: pointer;
             opacity: 0.7;
             &:not(:first-of-type) {
@@ -191,27 +203,11 @@
     .post-buttons {
         float: right;
         text-align: right;
-        a, nav {
-            display: inline;
-        }
-        .options-menu {
-            white-space: nowrap;
-            div {
-                text-align: left;
-                display: none;
-                background-color: #f1f1f1;
-
-                a {
-                    display: block;
-                    padding: 5px 10px;
-                }
-            }
-        }
     }
 
     .thread-buttons {
         margin: 10px 0 0 0;
-        > a {
+        > * {
             &:not(:first-of-type) {
                 margin-left: 10px
             }

@@ -17,8 +17,8 @@
             <div class="replies">
                 <div class="replies-buttons">
                     <?php if ($thread->statistics->replyCount > $previewPosts) : ?>
-                    <a class="more-replies" href="javascript:void(getMoreReplies(<?= $thread->id ?>))"><?= _('show more replies') ?></a>
-                    <a class="less-replies" href="javascript:void(getMoreReplies(<?= $thread->id ?>))"><?= _('show less replies') ?></a>
+                    <button class="link more-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show more replies') ?></button>
+                    <button class="link less-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show less replies') ?></button>
                     <?php endif ?>
                 </div>
                 <div class="more-replies-container"></div>
@@ -32,7 +32,7 @@
             <div class="thread-buttons">
                 <!--<a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>-->
                 <?php if (!$thread->locked) : ?>
-                <a class="add-reply" href="javascript:void(replyToThread(<?= $thread->id ?>))"><?= _('reply') ?></a>
+                <button class="link add-reply" onclick="replyToThread(<?= $thread->id ?>)"><?= _('reply') ?></button>
                 <?php endif ?>
             </div>
         </div>

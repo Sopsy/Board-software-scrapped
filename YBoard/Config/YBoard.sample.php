@@ -6,8 +6,10 @@ return [
         'siteMotto' => 'Suomalaisen internetkulttuurin sanansaattaja',
         'baseUrl' => '//example.com',
         'staticUrl' => '//static.example.com',
-        'uploadMaxSize' => 1048576,
+        'uploadMaxSize' => 10485760,
         'maxPages' => 100,
+        'previewPosts' => 3,
+        'acceptedFileTypes' => '.jpg,.png,.gif,.mp3,.mp4,.webm',
     ],
     'posts' => [
         'subjectMaxLength' => 60,
@@ -16,7 +18,7 @@ return [
     'files' => [
         'savePath' => ROOT_PATH . '/static/files',
         'diskMinFree' => 1073741824,
-        'maxSize' => 1048576,
+        'maxSize' => 10485760,
         'maxPixelCount' => 50000000,
         'imgMaxWidth' => 1920,
         'imgMaxHeight' => 1920,

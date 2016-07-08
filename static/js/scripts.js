@@ -95,7 +95,15 @@ function getMoreReplies(threadId) {
 }
 
 // Too long posts
-//$('#your_div')[0].scrollHeight
+$('.post').each(function() {
+    if (this.scrollHeight > this.clientHeight) {
+        $(this).after('<button class="link post-truncated" onclick="showFullPost(this)">näytä koko viesti</button>');
+    }
+});
+
+function showFullPost(elm) {
+    $(elm).parent('.op-post, .repliy').find('.post').addClass('full');
+}
 
 // Functions related to post form
 var postformLocation = $('#post-form').prev();
@@ -319,16 +327,6 @@ function localizeTimestamp(elm) {
     $(elm).html(date.toLocaleString());
 }
 
-// Confirm page exit when there's text in the post form
-$(window).on('beforeunload', function (e) {
-    var textarea = $('#post-form').find('textarea');
-    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
-        return true;
-    } else {
-        e = null;
-    }
-});
-
 // Reflinks
 $('body').on('click', '.reflink', function (e) {
     var id = $(this).data('id');
@@ -443,3 +441,13 @@ function $t(id) {
 function $p(id) {
     return $('#post-' + id);
 }
+
+// Confirm page exit when there's text in the post form
+$(window).on('beforeunload', function (e) {
+    var textarea = $('#post-form').find('textarea');
+    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
+        return messages.confirmUnload;
+    } else {
+        e = null;
+    }
+});

@@ -130,8 +130,7 @@ class Post extends ExtendedController
             }
         }
 
-        // TODO: Maybe use sentPosts instead of loggedIn
-        if (!$this->user->loggedIn) {
+        if ($this->user->requireCapthca) {
             if (empty($_POST["g-recaptcha-response"])) {
                 $this->throwJsonError(400, _('Please fill the CAPTCHA.'));
             }
@@ -147,7 +146,6 @@ class Post extends ExtendedController
         require_once(__DIR__ . '/../Vendor/ip2location.php');
         $ip2location = new \IP2Location\Database(__DIR__ . '/../Vendor/IP2LOCATION-LITE-DB1.BIN');
         $countryCode = strtoupper($ip2location->lookup($_SERVER['REMOTE_ADDR'], \IP2Location\Database::COUNTRY)['countryCode']);
-
 
         // Message options
         $sage = empty($_POST['sage']) ? false : true;
@@ -166,6 +164,7 @@ class Post extends ExtendedController
         if (!empty($message)) {
             $message = Text::removeForbiddenUnicode($message);
             $message = Text::limitEmptyLines($message);
+            $message = mb_substr($message, 0, $this->config['posts']['messageMaxLength']);
         }
 
         // Check blacklist
@@ -234,7 +233,7 @@ class Post extends ExtendedController
         if ($hasFile) {
             $posts->addFile($postId, $file->id, $file->origName);
         }
-        
+
         // TODO: Save replies
         /*
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);

@@ -149,6 +149,10 @@ abstract class ExtendedController extends YBoard\Controller
     {
         $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
 
+        if ($this->user->isAdmin) {
+            $templateEngine->bodyClass = 'dark';
+        }
+
         foreach ($this->config['view'] as $var => $val) {
             $templateEngine->$var = $val;
         }

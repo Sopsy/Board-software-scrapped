@@ -21,7 +21,7 @@
 
     <script src="<?= $staticUrl ?>/js/scripts.js" defer></script>
     <script>
-        <?php // TODO: Move to external file? ?>
+        <?php // TODO: Move to external file? (Pros: can cache, Cons: requires loading everything twice) ?>
         var config = {
             staticUrl: '<?= $staticUrl ?>',
             csrfToken: '<?= $csrfToken ?>',
@@ -36,11 +36,11 @@
             confirmDelete: '<?= _('Confirm post deletion') ?>',
             postSent: '<?= _('Post sent') ?>',
             postDeleted: '<?= _('Post deleted') ?>',
+            confirmUnload: '<?= _('Your message will be lost.') ?>',
         };
     </script>
-    <?php if (!$user->loggedIn) : ?>
-    <?php // TODO: Maybe use sentPosts instead of loggedIn ?>
-    <script src="//www.google.com/recaptcha/api.js?render=explicit&onload=renderCaptcha" async defer></script>
+    <?php if ($user->requireCaptcha) : ?>
+    <script src="//www.google.com/recaptcha/api.js?render=explicit&amp;onload=renderCaptcha" async defer></script>
     <script>
         function renderCaptcha() {
             grecaptcha.render('post-form-captcha', {

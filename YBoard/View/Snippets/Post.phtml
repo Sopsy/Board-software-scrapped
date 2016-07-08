@@ -1,14 +1,14 @@
 <div class="post-buttons">
     <?php if (!$thread->locked) : ?>
-    <a href="javascript:void(replyToPost(<?= $post->id ?>))"><?= _('reply') ?></a>
+    <button class="link" onclick="replyToPost(<?= $post->id ?>)"><?= _('reply') ?></button>
     <?php endif ?>
     <!--
     <a href="#"><?= _('gold') ?></a>
-    <a href="#"><?= _('hide') ?></a>
-    <a href="#"><?= _('report') ?></a>
     -->
+    <button class="link" onclick=""><?= _('hide') ?></button>
+    <button class="link" onclick=""><?= _('report') ?></button>
     <?php if ($post->userId == $user->id || $user->isMod) : ?>
-    <a href="javascript:void(deletePost(<?= $post->id ?>))"><?= _('delete') ?></a>
+    <button class="link" onclick="deletePost(<?= $post->id ?>)"><?= _('delete') ?></button>
     <?php endif ?>
 </div>
 
@@ -22,7 +22,7 @@
     <div class="post-info">
         <span class="post-time datetime"><?= $post->time ?></span>
         <a href="/<?= $board->url ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
-            onclick="event.preventDefault();<?php if (!$thread->locked) : ?>replyToPost(<?= $post->id ?>)<?php endif ?>"
+            onclick="<?php if (!$thread->locked) : ?>replyToPost(<?= $post->id ?>);<?php endif ?>return false"
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
     </div>
 </div>
@@ -30,7 +30,7 @@
     <?php if (!empty($post->file)) : ?>
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
     <figure class="post-file thumbnail">
-        <a href="<?= $fileUrl ?>" onclick="javascript:void(expandImage(this, event))">
+        <a href="<?= $fileUrl ?>" onclick="expandImage(this, event)">
             <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
         </a>
         <figcaption>
@@ -39,6 +39,5 @@
         </figcaption>
     </figure>
     <?php endif ?>
-
     <?= $post->messageFormatted ?>
 </blockquote>

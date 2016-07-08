@@ -13,9 +13,8 @@
     </label>
 <?php endif ?>
     <label id="label-file">
-        <?php // TODO: change accept and max file size ?>
         <span><?= _('File') ?> <span><<?= \YBoard\Library\Text::formatBytes($uploadMaxSize) ?></span></span>
-        <input type="file" name="files" id="post-files" accept="*.*" data-maxsize="<?= $uploadMaxSize ?>">
+        <input type="file" name="files" id="post-files" accept="<?= $acceptedFileTypes ?>" data-maxsize="<?= $uploadMaxSize ?>">
     </label>
 
     <div id="message-input">
@@ -47,15 +46,15 @@
                 <a class="icon-palette pink" onclick="addBbCode('pink')"></a>
             </div>
         </div>
-        <textarea name="message" placeholder="<?= _('Message') ?>"></textarea>
+        <textarea name="message" placeholder="<?= _('Message') ?>" maxlength="<?= $messageMaxLength ?>"></textarea>
         <div id="post-progress"><div></div></div>
     </div>
 
-    <?php if (!$user->loggedIn) : ?>
+    <?php if ($user->requireCaptcha) : ?>
     <div id="post-form-captcha"></div>
     <?php endif ?>
-    <button onclick="event.preventDefault();$('#post-options').toggle()" class="button gray"><?= _('Options') ?></button>
-    <button id="reset-button" onclick="event.preventDefault();resetPostForm()" class="button gray"><?= _('Cancel') ?></button>
+    <button onclick="$('#post-options').toggle();return false" class="button gray"><?= _('Options') ?></button>
+    <button id="reset-button" onclick="resetPostForm();return false" class="button gray"><?= _('Cancel') ?></button>
     <input type="submit" class="button green" value="<?= _('Submit') ?>">
     <div id="post-options">
         <h4><?= _('Functions') ?></h4>
