@@ -65,10 +65,10 @@ class Posts extends Model
         $thread->countryCode = $post->country_code;
         $thread->time = date('c', strtotime($post->time));
         $thread->sticky = $post->sticky;
-        $thread->username = $this->setUsername($post->username);
+        $thread->username = Text::formatUsername($post->username);
         $thread->subject = $post->subject;
         $thread->message = $post->message;
-        $thread->messageFormatted = $this->formatMessage($post->message);
+        $thread->messageFormatted = Text::formatMessage($post->message);
         $thread->replies = $this->getReplies($post->id);
 
         $thread->statistics = new ThreadStatistics();
@@ -114,10 +114,10 @@ class Posts extends Model
             $thread->time = date('c', strtotime($row->time));
             $thread->locked = $row->locked;
             $thread->sticky = $row->sticky;
-            $thread->username = $this->setUsername($row->username);
+            $thread->username = Text::formatUsername($row->username);
             $thread->subject = $row->subject;
             $thread->message = $row->message;
-            $thread->messageFormatted = $this->formatMessage($row->message);
+            $thread->messageFormatted = Text::formatMessage($row->message);
             $thread->replies = $this->getReplies($row->id, $replyCount, true);
 
             $thread->statistics = new ThreadStatistics();
@@ -168,10 +168,10 @@ class Posts extends Model
             $tmp->userId = $reply->user_id;
             $tmp->ip = inet_ntop($reply->ip);
             $tmp->countryCode = $reply->country_code;
-            $tmp->username = $this->setUsername($reply->username);
+            $tmp->username = Text::formatUsername($reply->username);
             $tmp->time = date('c', strtotime($reply->time));
             $tmp->message = $reply->message;
-            $tmp->messageFormatted = $this->formatMessage($reply->message);
+            $tmp->messageFormatted = Text::formatMessage($reply->message);
 
             if (!empty($reply->file_id)) {
                 $tmp->file = $this->createFileClass($reply);
@@ -195,39 +195,6 @@ class Posts extends Model
         $subject = trim($subject);
 
         return $subject;
-    }
-
-    protected function setUsername($username) : string
-    {
-        if (empty($username)) {
-            return _('Anonymous');
-        }
-
-        return $username;
-    }
-
-    protected function formatMessage(string $message) : string
-    {
-        $message = htmlspecialchars($message);
-        $message = nl2br($message);
-        $message = Text::clickableLinks($message);
-
-        if (strpos($message, '&gt;') === false && strpos($message, '&lt;') === false) {
-            return $message;
-        }
-
-        $search = [
-            '/(^|[\n\]])(&gt;)(?!&gt;[0-9]+)([^\n]+)/is',
-            '/(^|[\n\]])(&lt;)([^\n]+)/is',
-            '/(&gt;&gt;)([0-9]+)/is',
-        ];
-        $replace = [
-            '$1<span class="quote">$2$3</span>',
-            '$1<span class="quote blue">$2$3</span>',
-            '<a href="/scripts/posts/redirect/$2" data-id="$2" class="reflink">$1$2</a>',
-        ];
-
-        return preg_replace($search, $replace, $message);
     }
 
     public function createThread(
@@ -324,7 +291,6 @@ class Posts extends Model
         $post->ip = inet_ntop($row->ip);
         $post->countryCode = $row->country_code;
         $post->time = $row->time;
-        $post->username = $row->username;
 
         return $post;
     }
@@ -348,10 +314,10 @@ class Posts extends Model
         $post->userId = $reply->user_id;
         $post->ip = inet_ntop($reply->ip);
         $post->countryCode = $reply->country_code;
-        $post->username = $this->setUsername($reply->username);
+        $post->username = Text::formatUsername($reply->username);
         $post->time = date('c', strtotime($reply->time));
         $post->message = $reply->message;
-        $post->messageFormatted = $this->formatMessage($reply->message);
+        $post->messageFormatted = Text::formatMessage($reply->message);
 
         if (!empty($reply->file_id)) {
             $post->file = $this->createFileClass($reply);

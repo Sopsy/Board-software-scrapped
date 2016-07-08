@@ -101,4 +101,55 @@ class Text
 
         return $message;
     }
+
+    public static function formatMessage(string $message) : string
+    {
+        $message = htmlspecialchars($message);
+        $message = nl2br($message);
+        $message = static::clickableLinks($message);
+        $message = static::addQuotes($message);
+        $message = static::addReflinks($message);
+        $message = BbCode::format($message);
+
+        return $message;
+    }
+
+    public static function addQuotes(string $message) : string
+    {
+        if (strpos($message, '&gt;') === false && strpos($message, '&lt;') === false) {
+            return $message;
+        }
+
+        $search = [
+            '/(^|[\n\]])(&gt;)(?!&gt;[0-9]+)([^\n]+)/is',
+            '/(^|[\n\]])(&lt;)([^\n]+)/is',
+        ];
+        $replace = [
+            '$1<span class="quote">$2$3</span>',
+            '$1<span class="quote blue">$2$3</span>',
+        ];
+
+        return preg_replace($search, $replace, $message);
+    }
+
+    public static function addReflinks(string $message) : string
+    {
+        if (strpos($message, '&gt;&gt;') === false) {
+            return $message;
+        }
+
+        $search = '/(&gt;&gt;)([0-9]+)/is';
+        $replace = '<a href="/scripts/posts/redirect/$2" data-id="$2" class="reflink">$1$2</a>';
+
+        return preg_replace($search, $replace, $message);
+    }
+
+    public static function formatUsername($username) : string
+    {
+        if (empty($username)) {
+            return _('Anonymous');
+        }
+
+        return $username;
+    }
 }

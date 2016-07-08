@@ -130,7 +130,7 @@ class Post extends ExtendedController
             }
         }
 
-        if ($this->user->requireCapthca) {
+        if ($this->user->requireCaptcha) {
             if (empty($_POST["g-recaptcha-response"])) {
                 $this->throwJsonError(400, _('Please fill the CAPTCHA.'));
             }
@@ -235,10 +235,9 @@ class Post extends ExtendedController
         }
 
         // TODO: Save replies
-        /*
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
         $postReplies = array_unique($postReplies[1]);
-        */
+        //$posts->setReplies($postId, $postReplies);
 
         // TODO: Save tags
         // TODO: Add notifications

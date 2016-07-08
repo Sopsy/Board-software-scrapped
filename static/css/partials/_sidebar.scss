@@ -77,10 +77,10 @@
         }
     }
     #search {
-        @if (lightness($bgcolor) > 50) {
-            background-color: lighten($bgcolor, 10%);
+        @if (lightness($sidebarColor) > 50) {
+            background-color: lighten($sidebarColor, 10%);
         } @else {
-            background-color: darken($bgcolor, 10%);
+            background-color: darken($sidebarColor, 10%);
         }
         overflow: hidden;
         margin-top: 10px;
@@ -100,11 +100,16 @@
             width: 35px;
             height: 35px;
             cursor: pointer;
-            @if (lightness($bgcolor) > 50) {
-                background-color: lighten($bgcolor, 5%);
-            } @else {
-                background-color: darken($bgcolor, 5%);
+            border: 0;
+            font-size: 16px;
+            $bg: darken($sidebarColor, 5%);
+            $color: #111;
+            @if (lightness($sidebarColor) < 50) {
+                $bg: lighten($sidebarColor, 5%);
+                $color: #eee;
             }
+            background-color: $bg;
+            color: $color;
         }
     }
     #user form {

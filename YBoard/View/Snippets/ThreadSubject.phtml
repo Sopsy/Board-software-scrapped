@@ -1,5 +1,5 @@
 <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>">
-    <?php if ($thread->sticky) : ?><span class="icon pushpin">S</span><?php endif
-    ?><?php if ($thread->locked) : ?><span class="icon lock">L</span><?php endif
+    <?php if ($thread->sticky) : ?><span class="icon-pushpin icon"></span><?php endif
+    ?><?php if ($thread->locked) : ?><span class="icon-lock icon"></span><?php endif
     ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span>
 </a></h3>

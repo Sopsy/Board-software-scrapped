@@ -234,14 +234,15 @@
     .post-buttons {
         font-size: 0.9em;
         button {
-            $size: 16px;
+            $size: 20px;
             cursor: pointer;
             line-height: $size;
             font-size: $size;
             padding: 2px;
-            border-radius: 3px;
-
+            border-radius: 2px;
+            vertical-align: middle;
             background-color: $highlightColor;
+
             $color: #fff;
             @if (lightness($highlightColor) > 50) {
                 $color: #000;
