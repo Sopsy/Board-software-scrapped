@@ -250,7 +250,7 @@ class Posts extends Model
         $q->bindValue('ip', inet_pton($ip));
         $q->bindValue('country_code', $countryCode);
         $q->bindValue('username', $username);
-        $q->bindValue('subject', $subject);
+        $q->bindValue('subject', empty($subject) ? null : $subject);
         $q->bindValue('message', $message);
 
         $q->execute();
