@@ -152,4 +152,14 @@ class Text
 
         return $username;
     }
+
+    public static function stripFormatting(string $message) : string
+    {
+        $message = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
+        $message = BbCode::strip($message);
+        $message = static::removeForbiddenUnicode($message);
+        $message = trim($message);
+
+        return $message;
+    }
 }

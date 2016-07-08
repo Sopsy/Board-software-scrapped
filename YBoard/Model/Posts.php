@@ -188,9 +188,7 @@ class Posts extends Model
 
     protected function createSubject(string $message) : string
     {
-        $subject = preg_replace('/\s\s+/', ' ', str_replace(["\n", "\r"], ' ', $message));
-        $subject = BbCode::strip($subject);
-        $subject = Text::removeForbiddenUnicode($subject);
+        $subject = Text::stripFormatting($message);
         $subject = Text::truncate($subject, 40);
         $subject = trim($subject);
 

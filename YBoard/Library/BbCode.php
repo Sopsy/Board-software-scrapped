@@ -10,7 +10,7 @@ class BbCode
             return $message;
         }
 
-        return preg_replace('#\[[a-z/]+\]+#si', '$1', $message);
+        return preg_replace('#\[[a-z/]+\]#si', '$1', $message);
     }
 
     public static function format(string $message) : string
