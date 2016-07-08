@@ -233,10 +233,22 @@
 
     .post-buttons {
         font-size: 0.9em;
-        > * {
+        button {
+            $size: 16px;
             cursor: pointer;
-            &:not(:first-of-type) {
-                margin-left: 10px
+            line-height: $size;
+            font-size: $size;
+            padding: 2px;
+            border-radius: 3px;
+
+            background-color: $highlightColor;
+            $color: #fff;
+            @if (lightness($highlightColor) > 50) {
+                $color: #000;
+            }
+            color: $color;
+            &:hover {
+                background-color: lighten($highlightColor, 5%);
             }
         }
     }
@@ -248,7 +260,7 @@
 
     .thread-buttons {
         margin: 10px 0 0 0;
-        > * {
+        button {
             &:not(:first-of-type) {
                 margin-left: 10px
             }

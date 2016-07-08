@@ -29,5 +29,9 @@
             font-size: 0.9em;
             vertical-align: top;
         }
+        .chevron {
+            font-size: 20px;
+            line-height: $linkSize;
+        }
     }
 }

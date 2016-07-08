@@ -1,8 +1,10 @@
 @import '../lib/normalize';
+@import '../lib/toastr';
+@import '../lib/tooltipster';
+@import '../lib/icomoon';
 @import '../partials/mixins';
 
 body {
-
     background: $bgColor;
     font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
     color: $textColor;
@@ -133,9 +135,6 @@ body {
         }
     }
 
-    @import '../lib/toastr';
-    @import '../lib/tooltipster';
-
     @import '../partials/tags';
     @import '../partials/sidebar';
     @import '../partials/errorpage';
@@ -143,4 +142,5 @@ body {
     @import '../partials/post-form';
     @import '../partials/threads';
     @import '../partials/navigation';
+    @import '../partials/colors';
 }

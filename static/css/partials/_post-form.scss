@@ -95,9 +95,13 @@
             a:hover { background-color: #222 }
         }
         a {
+            $size: 32px;
             display: inline-block;
-            height: 32px;
-            width: 32px;
+            height: $size;
+            width: $size;
+            line-height: $size;
+            font-size: 20px;
+            text-align: center;
             vertical-align: top;
             cursor: pointer;
         }

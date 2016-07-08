@@ -1,14 +1,18 @@
 <div class="post-buttons">
     <?php if (!$thread->locked) : ?>
-    <button class="link" onclick="replyToPost(<?= $post->id ?>)"><?= _('reply') ?></button>
+    <button class="icon-bubble-quote link" onclick="replyToPost(<?= $post->id ?>)" title="<?= _('reply') ?>"></button>
     <?php endif ?>
     <!--
     <a href="#"><?= _('gold') ?></a>
     -->
-    <button class="link" onclick=""><?= _('hide') ?></button>
-    <button class="link" onclick=""><?= _('report') ?></button>
+    <?php if (!$post->threadId) : ?>
+    <button class="icon-minus link" onclick="" title="<?= _('hide') ?>"></button>
+    <?php endif ?>
+    <?php if ($post->userId != $user->id) : ?>
+    <button class="icon-flag2 link" onclick="" title="<?= _('report') ?>"></button>
+    <?php endif ?>
     <?php if ($post->userId == $user->id || $user->isMod) : ?>
-    <button class="link" onclick="deletePost(<?= $post->id ?>)"><?= _('delete') ?></button>
+    <button class="icon-trash2 link" onclick="deletePost(<?= $post->id ?>)" title="<?= _('delete') ?>"></button>
     <?php endif ?>
 </div>
 
