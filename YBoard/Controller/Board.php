@@ -26,11 +26,11 @@ class Board extends ExtendedController
         $posts = new Posts($this->db);
 
         $view = $this->loadTemplateEngine();
-        // TODO: Set page title
-
         $board = $this->boards->getByUrl($boardUrl);
 
-        // Calculate the end and start pages of the pagination
+        $view->pageTitle = $board->name;
+
+            // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
         $view->paginationStartPage = $pageNum - 1;
         if ($view->paginationStartPage < 2) {
@@ -45,8 +45,7 @@ class Board extends ExtendedController
             $view->paginationEndPage = 5;
         }
 
-        // TODO: add pages
-        $view->threads = $posts->getBoardThreads($board->id, $pageNum, 10, 3);
+        $view->threads = $posts->getBoardThreads($board->id, $pageNum, 15, 3);
 
         $view->board = $board;
         $view->pageNum = $pageNum;

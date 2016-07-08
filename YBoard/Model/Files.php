@@ -56,13 +56,12 @@ class Files extends Model
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
         // If the file already exists, use the old one
-        // TODO: Activate
-        /*$oldId = $this->getByMd5($md5);
+        $oldId = $this->getByMd5($md5);
         if ($oldId) {
             $uploadedFile->id = $oldId;
 
             return $uploadedFile;
-        }*/
+        }
 
         // File type conversions
         if ($uploadedFile->extension == 'jpeg') {

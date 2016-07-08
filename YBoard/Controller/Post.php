@@ -234,8 +234,7 @@ class Post extends ExtendedController
         if ($hasFile) {
             $posts->addFile($postId, $file->id, $file->origName);
         }
-
-        // TODO: Update thread stats
+        
         // TODO: Save replies
         /*
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);

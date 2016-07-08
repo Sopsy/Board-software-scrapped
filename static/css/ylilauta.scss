@@ -8,16 +8,16 @@ $green: #117743;
 $red: #ba1f27;
 $linkColor: $green;
 $linkHoverColor: $red;
-$lightGray: #e9e9e9;
+$lightGray: #eee;
 
 @import 'partials/mixins';
 
 body {
-    background: #eaeaec;
+    background: $lightGray;
     font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
     color: $textColor;
     word-wrap: break-word;
-    margin-bottom: 60px;
+    margin-bottom: 10px;
 }
 
 img { max-width: 100% }

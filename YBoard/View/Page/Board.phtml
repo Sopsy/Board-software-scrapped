@@ -6,16 +6,7 @@
 <?php if (!empty($threads)) : ?>
     <?php foreach($threads as $thread) : ?>
     <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
-        <h3><a href="/<?= $board->url ?>/<?= $thread->id ?>">
-                <?php if ($thread->sticky) : ?>
-                    <span class="icon pushpin">S</span>
-                <?php endif ?>
-                <?php if ($thread->locked) : ?>
-                    <span class="icon lock">L</span>
-                <?php endif ?>
-
-                <?= htmlspecialchars($thread->subject) ?>
-        </a></h3>
+        <?php include($viewFilesPath . '/Snippets/ThreadSubject.phtml') ?>
         <div class="thread-content">
             <div class="op-post" id="post-<?= $thread->id ?>">
                 <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>

@@ -2,15 +2,7 @@
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>
 
 <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
-    <h3>
-        <?php if ($thread->sticky) : ?>
-            <span class="icon pushpin">S</span>
-        <?php endif ?>
-        <?php if ($thread->locked) : ?>
-            <span class="icon lock">L</span>
-        <?php endif ?>
-        <?= htmlspecialchars($thread->subject) ?>
-    </h3>
+    <?php include($viewFilesPath . '/Snippets/ThreadSubject.phtml') ?>
     <div class="thread-content">
         <div class="op-post" id="post-<?= $thread->id ?>">
             <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>

@@ -362,8 +362,13 @@ class Posts extends Model
 
     public function delete(int $postId) : bool
     {
-        // TODO: INSERT INTO post_deleted
-        //$q = $this->db->prepare("INSERT INTO posts_deleted ")
+        $q = $this->db->prepare("INSERT INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
+            SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts
+            WHERE id = :post_id OR thread_id = :post_id_2");
+        $q->bindValue('post_id', $postId);
+        $q->bindValue('post_id_2', $postId);
+        $q->execute();
+
         $q = $this->db->prepare("DELETE FROM posts WHERE id = :post_id LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->execute();
