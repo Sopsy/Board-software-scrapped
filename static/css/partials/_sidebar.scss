@@ -58,11 +58,10 @@
             padding-top: 20px;
             margin-top: 20px;
             $borderColor: darken($bgcolor, 15%);
-            @if (lightness($bgcolor) > 50) {
-            } @else {
-                border-top: 1px solid lighten($bgcolor, 15%);
+            @if (lightness($bgcolor) < 50) {
+                $borderColor: lighten($bgcolor, 15%);
             }
-            border-top: 1px solid darken($bgcolor, 15%);
+            border-top: 1px solid $borderColor;
         }
         a { display: block }
         h3 {

@@ -42,6 +42,7 @@
         $height: 35px;
         margin-bottom: 0;
         font-weight: 400;
+        height: $height;
         line-height: $height;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -58,13 +59,8 @@
             width: $height;
             height: $height;
             line-height: $height;
-            @if (lightness($subjectBgColor) > 50) {
-                background-color: darken($subjectBgColor, 10%);
-                color: #111;
-            } @else {
-                background-color: lighten($subjectBgColor, 10%);
-                color: #eee;
-            }
+            background-color: $contentBgColor;
+            color: $textColor;
             text-align: center;
         }
 
@@ -100,11 +96,11 @@
     }
     .replies {
         padding: 0 0 0 10px;
-        @if (lightness($contentBgColor) > 50) {
-            border-left: 3px solid darken($contentBgColor, 10%);
-        } @else {
+        $borderColor: darken($contentBgColor, 10%);
+        @if (lightness($contentBgColor) < 50) {
             border-left: 3px solid lighten($contentBgColor, 10%);
         }
+        border-left: 3px solid $borderColor;
     }
 
     .replies-buttons {
@@ -113,11 +109,11 @@
 
     &:not(.tooltipster-base) .reply {
         padding: 5px 0;
-        @if (lightness($contentBgColor) > 50) {
-            border-top: 3px solid darken($contentBgColor, 10%);
-        } @else {
-            border-top: 3px solid lighten($contentBgColor, 10%);
+        $borderColor: darken($contentBgColor, 10%);
+        @if (lightness($contentBgColor) < 50) {
+            $borderColor: lighten($contentBgColor, 10%);
         }
+        border-top: 3px solid $borderColor;
         margin-bottom: 10px;
     }
     .reply {
@@ -133,12 +129,14 @@
         }
     }
     .post-truncated {
-        @if (lightness($contentBgColor) > 50) {
-            border-top: 3px solid darken($contentBgColor, 10%);
-        } @else {
-            border-top: 3px solid lighten($contentBgColor, 10%);
+        $height: 15px;
+        $color: darken($contentBgColor, 20%);
+        @if (lightness($contentBgColor) < 50) {
+            $color: lighten($contentBgColor, 20%);
         }
-        margin-top: -10px;
+        background: linear-gradient(to bottom, transparent 0, $color $height, transparent $height);
+        margin-top: -($height + 10px);
+        padding-top: $height;
         text-align: center;
         display: block;
         width: 100%;

@@ -1,3 +1,7 @@
+@mixin input-shadow($color: #ddd) {
+    box-shadow: 0 1px 4px $color inset;
+}
+
 #content > #post-form:not(.visible) {
     display: none;
 }
@@ -60,7 +64,7 @@
                 background-color: transparent;
                 height: 100%;
 
-                $shadowColor: '';
+                $shadowColor: #ccc;
                 @if (lightness($postFormBgColor) < 50) {
                     $shadowColor: #333;
                 }
@@ -73,27 +77,30 @@
         }
     }
     #message-input {
-        @if (lightness($postFormBgColor) > 50) {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            @include input-shadow();
-        } @else {
-            background-color: #000;
-            border: 1px solid #333;
-            @include input-shadow(#333);
+        $bg: #fff;
+        $border: #ccc;
+        @if (lightness($postFormBgColor) < 50) {
+            $bg: #000;
+            $border: #333;
         }
+        background-color: $bg;
+        border: 1px solid $border;
+        @include input-shadow($border);
         margin-bottom: 5px;
     }
     #format-toolbar {
-        @if (lightness($postFormBgColor) > 50) {
-            background-color: #f5f5f5;
-            @include input-shadow();
-            a:hover { background-color: #ddd }
-        } @else {
-            background-color: #111;
-            @include input-shadow(#333);
-            a:hover { background-color: #222 }
+        $bg: #f5f5f5;
+        $border: #ccc;
+        $hover: #ddd;
+        @if (lightness($postFormBgColor) < 50) {
+            $bg: #111;
+            $border: #333;
+            $hover: #222;
         }
+        background-color: $bg;
+        @include input-shadow($border);
+        a:hover { background-color: $hover }
+
         a {
             $size: 32px;
             display: inline-block;

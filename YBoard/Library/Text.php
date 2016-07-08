@@ -97,7 +97,7 @@ class Text
             return $message;
         }
 
-        $message = preg_replace('#(https?://[^\s<>"]+)#i', '<a href="$1" target="_blank" rel="nofollow">$1</a>', $message);
+        $message = preg_replace('#(https?://[^\s<>\[\]"]+)#i', '<a href="$1" target="_blank" rel="nofollow">$1</a>', $message);
 
         return $message;
     }

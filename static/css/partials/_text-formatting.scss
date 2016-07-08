@@ -1,25 +1,42 @@
-.underline {
-    text-decoration: underline;
-}
-.line-through {
-    text-decoration: line-through;
-}
-.spoiler {
-    $color: #000;
-    @if (lightness($contentBgColor) < 20) {
-        $color: #ccc;
+.thread {
+    .underline {
+        text-decoration: underline;
     }
-    background-color: $color;
-    color: $color;
-    &:hover {
-        color: invert($color);
+    .line-through {
+        text-decoration: line-through;
+    }
+    .spoiler {
+        $color: #000000;
+        @if (lightness($contentBgColor) < 20) {
+            $color: #cccccc;
+        }
+        background-color: $color;
+        color: $color;
+        padding: 0 5px;
+        border-radius: 2px;
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        .quote, a {
+            color: $color;
+        }
+        &:hover {
+            color: invert($color);
+            .quote, a {
+                color: invert($color);
+            }
+        }
+    }
+    .big {
+        font-size: 1.5rem;
+    }
+    .small {
+        font-size: 0.65rem;
     }
 }
-.big {
-    font-size: 1.5rem;
-}
-.small {
-    font-size: 0.65rem;
+
+pre br {
+    display: none;
 }
 
 .black {
