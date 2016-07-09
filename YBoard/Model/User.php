@@ -140,7 +140,8 @@ class User extends Model
         }
 
         $this->id = $this->db->lastInsertId();
-
+        $this->preferences = new UserPreferences($this->db, $this->id, true);
+        
         return true;
     }
 

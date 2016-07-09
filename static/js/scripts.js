@@ -139,6 +139,7 @@ function getMoreReplies(threadId) {
 // -------------------------------------------
 // Thread ajax reply update
 // -------------------------------------------
+// FIXME: PLEASE do this better. This sucks ass.
 var newReplies = 0;
 var lastUpdateNewReplies = 0;
 var updateCount = 0;

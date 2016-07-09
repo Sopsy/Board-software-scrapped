@@ -67,7 +67,6 @@ abstract class ExtendedController extends YBoard\Controller
 
         $sessionId = $this->getLoginCookie();
         if ($sessionId !== false) {
-
             $load = $this->user->load($sessionId);
             if (!$load) {
                 $this->deleteLoginCookie(true);

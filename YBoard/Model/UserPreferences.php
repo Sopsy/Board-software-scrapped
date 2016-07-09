@@ -13,11 +13,14 @@ class UserPreferences extends Model
     protected $preferences;
     protected $toUpdate = [];
 
-    public function __construct(Database $db, int $userId)
+    public function __construct(Database $db, int $userId, bool $skipLoad = false)
     {
         parent::__construct($db);
         $this->userId = $userId;
-        $this->load();
+
+        if (!$skipLoad) {
+            $this->load();
+        }
     }
 
     public function __destruct()
