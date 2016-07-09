@@ -2,6 +2,12 @@
     padding: 0;
     overflow: hidden;
     color: $textColor;
+
+    $borderColor: darken($contentBgColor, 10%);
+    @if (lightness($contentBgColor) < 50) {
+        $borderColor: lighten($contentBgColor, 10%);
+    }
+
     &:not(.tooltipster-base) {
         margin: 20px 10px 20px 10px;
     }
@@ -97,10 +103,6 @@
 
     .replies {
         padding: 0 10px;
-        $borderColor: darken($contentBgColor, 10%);
-        @if (lightness($contentBgColor) < 50) {
-            $borderColor: lighten($contentBgColor, 10%);
-        }
         //border-left: 2px solid $borderColor;
 
         $bg: darken($contentBgColor, 2%);
@@ -257,7 +259,7 @@
         }
         figcaption {
             text-align: left;
-            padding: 0 3px 3px 3px;
+            padding: 3px;
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.8em;
@@ -266,6 +268,18 @@
                 display: block
             }
         }
+    }
+
+    .post-replies {
+        font-size: 0.8em;
+        $color: #777;
+        margin: 20px 0 0 0;
+        padding-top: 3px;
+        border-top: 1px solid $borderColor;
+        @if (lightness($contentBgColor) < 50) {
+            $color: #999;
+        }
+        color: $color;
     }
 
     .thread-buttons {

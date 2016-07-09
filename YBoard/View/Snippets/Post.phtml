@@ -26,7 +26,7 @@
     <div class="post-info">
         <span class="post-time datetime"><?= $post->time ?></span>
         <a href="/<?= $board->url ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
-            onclick="<?php if (!$thread->locked) : ?>replyToPost(<?= $post->id ?>);<?php endif ?>return false"
+            onclick="<?php if (!$thread->locked || $user->isMod) : ?>replyToPost(<?= $post->id ?>);<?php endif ?>return false"
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
     </div>
 </div>
@@ -48,4 +48,12 @@
     </figure>
     <?php endif ?>
     <?= $post->messageFormatted ?>
+    <?php if ($post->postReplies) : ?>
+    <div class="post-replies">
+        <span><?= _('Replies') ?>:</span>
+        <?php foreach ($post->postReplies as $postReply) : ?>
+            <a href="/scripts/posts/redirect/<?= $postReply ?>" data-id="<?= $postReply ?>" class="reflink">&gt;&gt;<?= $postReply ?></a>
+        <?php endforeach ?>
+    </div>
+    <?php endif ?>
 </blockquote>

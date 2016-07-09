@@ -8,4 +8,5 @@ class Thread extends Post
     public $subject;
     public $replies;
     public $statistics;
+    public $threadReplies;
 }

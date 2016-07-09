@@ -23,18 +23,18 @@ class Posts extends Model
             return false;
         }
 
-        $post = $q->fetch();
+        $row = $q->fetch();
 
         // Assign values to a class to return
         $thread = new Thread();
-        $thread->id = $post->id;
-        $thread->locked = (bool)$post->locked;
-        $thread->boardId = $post->board_id;
-        $thread->userId = $post->user_id;
-        $thread->ip = inet_ntop($post->ip);
-        $thread->countryCode = $post->country_code;
-        $thread->time = date('c', strtotime($post->time));
-        $thread->sticky = $post->sticky;
+        $thread->id = $row->id;
+        $thread->locked = (bool)$row->locked;
+        $thread->boardId = $row->board_id;
+        $thread->userId = $row->user_id;
+        $thread->ip = inet_ntop($row->ip);
+        $thread->countryCode = $row->country_code;
+        $thread->time = date('c', strtotime($row->time));
+        $thread->sticky = $row->sticky;
 
         return $thread;
     }
@@ -49,35 +49,36 @@ class Posts extends Model
             return false;
         }
 
-        $post = $q->fetch();
+        $row = $q->fetch();
 
-        if (empty($post->subject) && $post->subject != '0') {
-            $post->subject = $this->createSubject($post->message);
+        if (empty($row->subject) && $row->subject != '0') {
+            $row->subject = $this->createSubject($row->message);
         }
 
         // Assign values to a class to return
         $thread = new Thread();
-        $thread->id = $post->id;
-        $thread->locked = (bool)$post->locked;
-        $thread->boardId = $post->board_id;
-        $thread->userId = $post->user_id;
-        $thread->ip = inet_ntop($post->ip);
-        $thread->countryCode = $post->country_code;
-        $thread->time = date('c', strtotime($post->time));
-        $thread->sticky = $post->sticky;
-        $thread->username = Text::formatUsername($post->username);
-        $thread->subject = $post->subject;
-        $thread->message = $post->message;
-        $thread->messageFormatted = Text::formatMessage($post->message);
-        $thread->replies = $this->getReplies($post->id);
+        $thread->id = $row->id;
+        $thread->locked = (bool)$row->locked;
+        $thread->boardId = $row->board_id;
+        $thread->userId = $row->user_id;
+        $thread->ip = inet_ntop($row->ip);
+        $thread->countryCode = $row->country_code;
+        $thread->time = date('c', strtotime($row->time));
+        $thread->sticky = $row->sticky;
+        $thread->username = Text::formatUsername($row->username);
+        $thread->subject = $row->subject;
+        $thread->message = $row->message;
+        $thread->messageFormatted = Text::formatMessage($row->message);
+        $thread->threadReplies = $this->getReplies($row->id);
+        $thread->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
 
         $thread->statistics = new ThreadStatistics();
-        $thread->statistics->readCount = $post->read_count;
-        $thread->statistics->replyCount = $post->reply_count;
-        $thread->statistics->distinctReplyCount = $post->distinct_reply_count;
+        $thread->statistics->readCount = $row->read_count;
+        $thread->statistics->replyCount = $row->reply_count;
+        $thread->statistics->distinctReplyCount = $row->distinct_reply_count;
 
-        if (!empty($post->file_id)) {
-            $thread->file = $this->createFileClass($post);
+        if (!empty($row->file_id)) {
+            $thread->file = $this->createFileClass($row);
         }
 
         return $thread;
@@ -118,7 +119,8 @@ class Posts extends Model
             $thread->subject = $row->subject;
             $thread->message = $row->message;
             $thread->messageFormatted = Text::formatMessage($row->message);
-            $thread->replies = $this->getReplies($row->id, $replyCount, true);
+            $thread->threadReplies = $this->getReplies($row->id, $replyCount, true);
+            $thread->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
 
             $thread->statistics = new ThreadStatistics();
             $thread->statistics->readCount = $row->read_count;
@@ -164,20 +166,21 @@ class Posts extends Model
         $q->execute();
 
         $replies = [];
-        while ($reply = $q->fetch()) {
+        while ($row = $q->fetch()) {
             $tmp = new Reply();
-            $tmp->id = $reply->id;
+            $tmp->id = $row->id;
             $tmp->threadId = $threadId;
-            $tmp->userId = $reply->user_id;
-            $tmp->ip = inet_ntop($reply->ip);
-            $tmp->countryCode = $reply->country_code;
-            $tmp->username = Text::formatUsername($reply->username);
-            $tmp->time = date('c', strtotime($reply->time));
-            $tmp->message = $reply->message;
-            $tmp->messageFormatted = Text::formatMessage($reply->message);
+            $tmp->userId = $row->user_id;
+            $tmp->ip = inet_ntop($row->ip);
+            $tmp->countryCode = $row->country_code;
+            $tmp->username = Text::formatUsername($row->username);
+            $tmp->time = date('c', strtotime($row->time));
+            $tmp->message = $row->message;
+            $tmp->messageFormatted = Text::formatMessage($row->message);
+            $tmp->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
 
-            if (!empty($reply->file_id)) {
-                $tmp->file = $this->createFileClass($reply);
+            if (!empty($row->file_id)) {
+                $tmp->file = $this->createFileClass($row);
             }
             $replies[] = $tmp;
         }
@@ -306,22 +309,23 @@ class Posts extends Model
             return false;
         }
 
-        $reply = $q->fetch();
+        $row = $q->fetch();
 
         $post = new Reply();
-        $post->id = $reply->id;
-        $post->boardId = $reply->board_id;
-        $post->threadId = $reply->thread_id;
-        $post->userId = $reply->user_id;
-        $post->ip = inet_ntop($reply->ip);
-        $post->countryCode = $reply->country_code;
-        $post->username = Text::formatUsername($reply->username);
-        $post->time = date('c', strtotime($reply->time));
-        $post->message = $reply->message;
-        $post->messageFormatted = Text::formatMessage($reply->message);
+        $post->id = $row->id;
+        $post->boardId = $row->board_id;
+        $post->threadId = $row->thread_id;
+        $post->userId = $row->user_id;
+        $post->ip = inet_ntop($row->ip);
+        $post->countryCode = $row->country_code;
+        $post->username = Text::formatUsername($row->username);
+        $post->time = date('c', strtotime($row->time));
+        $post->message = $row->message;
+        $post->messageFormatted = Text::formatMessage($row->message);
+        $post->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
 
-        if (!empty($reply->file_id)) {
-            $post->file = $this->createFileClass($reply);
+        if (!empty($row->file_id)) {
+            $post->file = $this->createFileClass($row);
         }
 
         return $post;
@@ -367,13 +371,41 @@ class Posts extends Model
         return true;
     }
 
+    public function setPostReplies(int $postId, array $replies, bool $clearOld = false) : bool
+    {
+        if (count($replies) == 0) {
+            return true;
+        }
+
+        $query = str_repeat('(?,?),', count($replies));
+        $query = substr($query, 0, -1);
+
+        $queryVars = [];
+        foreach ($replies as $repliedId) {
+            $queryVars[] = $postId;
+            $queryVars[] = $repliedId;
+        }
+
+        if ($clearOld) {
+            $q = $this->db->prepare("DELETE FROM posts_replies WHERE post_id = :post_id");
+            $q->bindValue('post_id', $postId);
+            $q->execute($queryVars);
+        }
+
+        $q = $this->db->prepare("INSERT IGNORE INTO posts_replies (post_id, post_id_replied) VALUES " . $query);
+        $q->execute($queryVars);
+
+        return true;
+    }
+
     protected function getPostsQuery(string $append = '') : string
     {
         return "SELECT
             a.id, a.board_id, a.thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
             c.extension AS file_extension, c.size AS file_size, c.width AS file_width, c.height AS file_height,
-            d.read_count, d.reply_count, d.distinct_reply_count
+            d.read_count, d.reply_count, d.distinct_reply_count,
+            (SELECT GROUP_CONCAT(post_id) FROM posts_replies WHERE post_id_replied = a.id) AS post_replies
             FROM posts a
             LEFT JOIN posts_files b ON a.id = b.post_id
             LEFT JOIN files c ON b.file_id = c.id

@@ -252,7 +252,7 @@ class Post extends ExtendedController
         // TODO: Save replies
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
         $postReplies = array_unique($postReplies[1]);
-        //$posts->setReplies($postId, $postReplies);
+        $posts->setPostReplies($postId, $postReplies);
 
         // TODO: Save tags
         // TODO: Add notifications

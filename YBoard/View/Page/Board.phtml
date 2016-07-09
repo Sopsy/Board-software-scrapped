@@ -14,7 +14,7 @@
 
             <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
             <div class="replies">
-            <?php if (!empty($thread->replies)) : ?>
+            <?php if (!empty($thread->threadReplies)) : ?>
                 <div class="replies-buttons">
                     <?php if ($thread->statistics->replyCount > $previewPosts) : ?>
                     <button class="link more-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show more replies') ?></button>
@@ -22,7 +22,7 @@
                     <?php endif ?>
                 </div>
                 <div class="more-replies-container"></div>
-                <?php foreach($thread->replies as $reply) : ?>
+                <?php foreach($thread->threadReplies as $reply) : ?>
                     <div class="reply" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>

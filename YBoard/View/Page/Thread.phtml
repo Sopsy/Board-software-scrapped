@@ -10,7 +10,7 @@
 
         <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
         <div class="replies">
-        <?php foreach($thread->replies as $reply) : ?>
+        <?php foreach($thread->threadReplies as $reply) : ?>
             <div class="reply" id="post-<?= $reply->id ?>">
                 <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
             </div>
