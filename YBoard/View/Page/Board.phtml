@@ -31,7 +31,7 @@
             <?php endif ?>
             <div class="thread-buttons">
                 <!--<a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>-->
-                <?php if (!$thread->locked) : ?>
+                <?php if (!$thread->locked || $user->isMod) : ?>
                 <button class="link add-reply" onclick="replyToThread(<?= $thread->id ?>)"><?= _('reply') ?></button>
                 <?php endif ?>
             </div>

@@ -10,6 +10,8 @@ return [
         'maxPages' => 100,
         'previewPosts' => 3,
         'acceptedFileTypes' => '.jpg,.png,.gif,.mp3,.mp4,.webm',
+        'messageMaxLength' => 12000,
+        'gCsePartnerPub' => 'partner-pub-1234567890:1234567890', // Google CSE
     ],
     'posts' => [
         'subjectMaxLength' => 60,

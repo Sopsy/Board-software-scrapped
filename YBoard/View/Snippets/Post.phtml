@@ -1,5 +1,5 @@
 <div class="post-buttons">
-    <?php if (!$thread->locked) : ?>
+    <?php if (!$thread->locked || $user->isMod) : ?>
     <button class="icon-bubbles link" onclick="replyToPost(<?= $post->id ?>)" title="<?= _('reply') ?>"></button>
     <?php endif ?>
     <!--

@@ -119,7 +119,7 @@ class Post extends ExtendedController
                 $this->throwJsonError(400, _('Invalid thread'));
             }
 
-            if ($thread->locked) {
+            if ($thread->locked && !$this->user->isMod) {
                 $this->throwJsonError(400, _('This thread is locked'));
             }
             $board = $this->boards->getById($thread->boardId);

@@ -13,6 +13,7 @@ return [
     '#^/rules#' => ['InfoPages', 'rules'],
     '#^/about#' => ['InfoPages', 'about'],
     '#^/advertising#' => ['InfoPages', 'advertising'],
+    '#^/search#' => ['Search', 'index'],
 
     // Preferences
     '#^/preferences#' => ['Preferences', 'index'],

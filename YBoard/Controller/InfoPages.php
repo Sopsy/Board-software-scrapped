@@ -1,5 +1,4 @@
 <?php
-
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;

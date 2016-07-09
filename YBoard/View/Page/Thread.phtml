@@ -19,7 +19,7 @@
         <div class="thread-buttons"></div>
     </div>
 
-    <?php if (!$thread->locked) : ?>
+    <?php if (!$thread->locked || $user->isMod) : ?>
         <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
     <?php endif ?>
 </div>
