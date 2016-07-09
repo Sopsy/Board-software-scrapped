@@ -373,12 +373,21 @@ function toggleDarkTheme() {
 
     var css = $('#css');
     var newHref = css.data('alt');
-    css.data('alt', css.attr('href'));
-    css.attr('href', newHref);
+    //css.data('alt', css.attr('href'));
 
-    css.on('load', function() {
-        $('#css-loading').fadeOut('100', function(){this.remove()});
-    });
+    $('<link>').attr({
+            'rel': 'stylesheet',
+            'id': 'css',
+            'href': newHref,
+            'data-alt': css.attr('href'),
+        })
+        .on('load', function() {
+            $('#css').remove();
+            $('#css-loading').html('').fadeOut(200, function() {
+                this.remove();
+            });
+        })
+        .appendTo('head');
 
     $.ajax({
         url: '/scripts/preferences/toggledarktheme',
