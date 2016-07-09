@@ -213,7 +213,7 @@ class Post extends ExtendedController
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
                 $_SERVER['REMOTE_ADDR'], $countryCode);
 
-            Cache::add('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'], 1, 30);
+            Cache::add('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
         } else {
             if (Cache::exists('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
@@ -222,7 +222,7 @@ class Post extends ExtendedController
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
                 $countryCode);
 
-            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, 1);
+            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
             $posts->updateThreadStats($thread->id, 'replyCount');
 
             if (!$sage) {

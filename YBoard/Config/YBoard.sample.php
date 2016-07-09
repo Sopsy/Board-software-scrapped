@@ -16,6 +16,8 @@ return [
     'posts' => [
         'subjectMaxLength' => 60,
         'messageMaxLength' => 12000,
+        'replyIntervalLimit' => 5,
+        'threadIntervalLimit' => 30,
     ],
     'files' => [
         'savePath' => ROOT_PATH . '/static/files',
