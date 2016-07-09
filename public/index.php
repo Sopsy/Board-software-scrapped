@@ -1,4 +1,8 @@
-<?php /*
+<?php
+
+//die('<style>body,html{margin:0;padding:0;width:100%;height:100%;overflow:hidden}</style><iframe style="width:100%;height:100%" src="https://www.youtube.com/embed/kL5DDSglM_s?autoplay=1" frameborder="0" allowfullscreen></iframe>');
+
+/*
 
 <style>body{overflow:hidden;margin-top:-30px;}</style>
 <h1>Oh noes! What happened!?</h1>

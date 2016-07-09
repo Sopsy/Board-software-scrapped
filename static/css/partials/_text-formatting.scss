@@ -11,16 +11,16 @@
             $color: #cccccc;
         }
         background-color: $color;
-        color: $color;
         padding: 0 5px;
         border-radius: 2px;
         display: inline-block;
         vertical-align: top;
         overflow: hidden;
+        color: $color;
         .quote, a {
             color: $color;
         }
-        &:hover {
+        &:hover, &.spoiled {
             color: invert($color);
             .quote, a {
                 color: invert($color);

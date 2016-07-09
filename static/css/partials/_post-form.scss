@@ -6,6 +6,10 @@
     display: none;
 }
 
+.thread-content + #post-form #reset-button {
+    display: none;
+}
+
 #post-form {
     $postFormBgColor: lighten($bgColor, 5%);
     background-color: $postFormBgColor;

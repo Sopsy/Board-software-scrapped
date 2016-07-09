@@ -98,9 +98,16 @@
         padding: 0 0 0 10px;
         $borderColor: darken($contentBgColor, 10%);
         @if (lightness($contentBgColor) < 50) {
-            border-left: 3px solid lighten($contentBgColor, 10%);
+            $borderColor: lighten($contentBgColor, 10%);
         }
         border-left: 3px solid $borderColor;
+
+        $bg: darken($contentBgColor, 2%);
+        @if (lightness($contentBgColor) < 50) {
+            $bg: lighten($contentBgColor, 2%);
+        }
+        background-color: $bg;
+
     }
 
     .replies-buttons {

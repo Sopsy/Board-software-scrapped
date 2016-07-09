@@ -8,6 +8,46 @@ $.ajaxSetup({
     }
 });
 
+// jQuery plugins
+jQuery.fn.extend({
+    insertAtCaret: function (before, after) {
+        if (typeof after == 'undefined') {
+            after = '';
+        }
+
+        return this.each(function () {
+            if (document.selection) {
+                // IE
+                var sel = document.selection.createRange();
+                sel.text = before + sel.text + after;
+                this.focus();
+            } else if (this.selectionStart || this.selectionStart == '0') {
+                // FF & Chrome
+                var selectedText = this.value.substr(this.selectionStart, (this.selectionEnd - this.selectionStart));
+                var startPos = this.selectionStart;
+                var endPos = this.selectionEnd;
+                this.value = this.value.substr(0, startPos) + before + selectedText + after + this.value.substr(endPos, this.value.length);
+
+                // Move selection to end of "before" -tag
+                this.selectionStart = startPos + before.length;
+                this.selectionEnd = startPos + before.length;
+
+                this.focus();
+            } else {
+                // Nothing selected, append
+                this.value += before + after;
+                this.focus();
+            }
+        });
+    },
+    localizeTimestamp: function () {
+        return this.each(function () {
+            var date = new Date(this.innerHTML);
+            this.innerHTML = date.toLocaleString();
+        });
+    }
+});
+
 // Post deletion
 function deletePost(id) {
     if (!confirm(messages.confirmDelete)) {
@@ -79,9 +119,7 @@ function getMoreReplies(threadId) {
         }).done(function (data, textStatus, xhr) {
             // Update timestamps
             data = $(data);
-            data.find('.datetime').each(function () {
-                localizeTimestamp(this);
-            });
+            data.find('.datetime').localizeTimestamp(this);
 
             $t(threadId).find('.more-replies-container').html(data);
         }).fail(function (xhr, textStatus, errorThrown) {
@@ -165,7 +203,7 @@ function replyToPost(id, newline) {
 
     var append = '';
     if (textarea.val().substr(-1) == '\n') {
-        append += ' ';
+        append += '\n';
     } else if (textarea.val().length != 0 && newline) {
         append += '\n\n';
     }
@@ -320,16 +358,34 @@ function changeSrc(img, src) {
 }
 
 // Dates in posts
-$('.datetime').each(function () {
-    localizeTimestamp(this);
+$('.datetime').localizeTimestamp();
+
+$('body').on('click', '.spoiler:not(.spoiled)', function(e) {
+    e.preventDefault();
+    $(this).addClass('spoiled');
 });
 
-function localizeTimestamp(elm) {
-    var date = new Date($(elm).html());
-    $(elm).html(date.toLocaleString());
-}
-
 // Reflinks
+var reflinkTooltipTimeout;
+$('body').on('contextmenu', '.reflink', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+});
+$('body').on('touchstart mouseenter', '.reflink', function (e) {
+    var elm = this;
+    reflinkTooltipTimeout = setTimeout(function() {
+        addReflinkTooltip(elm);
+        $(elm).tooltipster('open');
+    }, 100);
+});
+$('body').on('click touchend mouseleave', '.reflink', function (e) {
+    clearTimeout(reflinkTooltipTimeout);
+    if($(this).hasClass('tooltipstered')) {
+        $(this).tooltipster('close');
+    }
+});
+
 $('body').on('click', '.reflink', function (e) {
     var id = $(this).data('id');
     if ($p(id).is('*')) {
@@ -338,16 +394,23 @@ $('body').on('click', '.reflink', function (e) {
     }
 });
 
-$('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
-    var elm = $(this);
+function addReflinkTooltip(elm) {
+    var elm = $(elm);
+    // Don't double initialize
+    if(elm.hasClass('tooltipstered')) {
+        return true;
+    }
+
     elm.tooltipster({
         content: loadingAnimation(),
         side: 'bottom',
         animationDuration: 0,
-        delay: [50, 0],
+        updateAnimation: null,
+        delay: 0,
         arrow: false,
         contentAsHTML: true,
-        theme: 'thread'
+        theme: 'thread',
+        trigger: 'custom'
     }).tooltipster('open');
     var id = elm.data('id');
 
@@ -361,9 +424,7 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
         }).done(function (data, textStatus, xhr) {
             // Update timestamps
             data = $(data);
-            data.find('.datetime').each(function () {
-                localizeTimestamp(this);
-            });
+            data.find('.datetime').localizeTimestamp(this);
 
             elm.tooltipster('content', data);
         }).fail(function (xhr, textStatus, errorThrown) {
@@ -371,42 +432,9 @@ $('body').on('mouseenter', '.reflink:not(.tooltipstered)', function () {
             elm.tooltipster('content', errorMessage);
         });
     }
-});
+}
 
-// Jquery plugins etc
-jQuery.fn.extend({
-    insertAtCaret: function (before, after) {
-        if (typeof after == 'undefined') {
-            after = '';
-        }
-
-        return this.each(function () {
-            if (document.selection) {
-                // IE
-                var sel = document.selection.createRange();
-                sel.text = before + sel.text + after;
-                this.focus();
-            } else if (this.selectionStart || this.selectionStart == '0') {
-                // FF & Chrome
-                var selectedText = this.value.substr(this.selectionStart, (this.selectionEnd - this.selectionStart));
-                var startPos = this.selectionStart;
-                var endPos = this.selectionEnd;
-                this.value = this.value.substr(0, startPos) + before + selectedText + after + this.value.substr(endPos, this.value.length);
-
-                // Move selection to end of "before" -tag
-                this.selectionStart = startPos + before.length;
-                this.selectionEnd = startPos + before.length;
-
-                this.focus();
-            } else {
-                // Nothing selected, append
-                this.value += before + after;
-                this.focus();
-            }
-        })
-    }
-});
-
+// "Private" functions
 function getErrorMessage(xhr, errorThrown) {
     if (xhr.responseText.length != 0) {
         try {

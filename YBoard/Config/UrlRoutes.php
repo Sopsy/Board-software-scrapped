@@ -14,11 +14,15 @@ return [
     '#^/about#' => ['InfoPages', 'about'],
     '#^/advertising#' => ['InfoPages', 'advertising'],
 
+    // Preferences
+    '#^/preferences#' => ['Preferences', 'index'],
+    '#^/scripts/preferences/save#' => ['Preferences', 'save'],
+
     // Log in/-out
     '#^/login$#' => ['LogInOut', 'login'],
     '#^/logout$#' => ['LogInOut', 'logout'],
 
-    // Scripts
+    // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],
     '#^/scripts/posts/redirect/([0-9]+)#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
