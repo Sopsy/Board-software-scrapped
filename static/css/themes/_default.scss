@@ -19,6 +19,10 @@ a {
 a:hover { color: $linkHoverColor }
 img { vertical-align: top }
 
+button, a, input, textarea, select {
+    outline: none !important;
+}
+
 button.link {
     color: $linkColor;
     padding: 0;
