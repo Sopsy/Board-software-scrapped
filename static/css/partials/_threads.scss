@@ -94,13 +94,14 @@
         }
         margin: 0 0 5px 0;
     }
+
     .replies {
-        padding: 0 0 0 10px;
+        padding: 0 10px;
         $borderColor: darken($contentBgColor, 10%);
         @if (lightness($contentBgColor) < 50) {
             $borderColor: lighten($contentBgColor, 10%);
         }
-        border-left: 3px solid $borderColor;
+        //border-left: 2px solid $borderColor;
 
         $bg: darken($contentBgColor, 2%);
         @if (lightness($contentBgColor) < 50) {
@@ -120,7 +121,7 @@
         @if (lightness($contentBgColor) < 50) {
             $borderColor: lighten($contentBgColor, 10%);
         }
-        border-top: 3px solid $borderColor;
+        border-top: 2px solid $borderColor;
         margin-bottom: 10px;
     }
     .reply {

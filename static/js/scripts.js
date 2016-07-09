@@ -357,6 +357,22 @@ function changeSrc(img, src) {
     });
 }
 
+// Theme switcher
+function toggleDarkTheme() {
+    var css = $('#css');
+    var newHref = css.data('alt');
+    css.data('alt', css.attr('href'));
+    css.attr('href', newHref);
+
+    $.ajax({
+        url: '/scripts/preferences/toggledarktheme',
+        type: "POST",
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+
 // Dates in posts
 $('.datetime').localizeTimestamp();
 

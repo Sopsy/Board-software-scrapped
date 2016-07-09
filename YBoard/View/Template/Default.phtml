@@ -12,7 +12,8 @@
 
     <base href="<?= $baseUrl ?>">
 
-    <link rel="stylesheet" href="<?= $staticUrl ?>/css/ylilauta.css">
+    <link rel="stylesheet" id="css" href="<?= $staticUrl ?>/css/<?= $stylesheet ?>.css?<?=time()?>"
+        data-alt="<?= $staticUrl ?>/css/<?= $altStylesheet ?>.css?<?=time()?>">
     <link rel="icon" sizes="192x192" href="<?= $staticUrl ?>/img/norppa_icon.png">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
@@ -71,7 +72,7 @@
     <nav id="user">
     <?php if (!$user->loggedIn) : ?>
         <h3><?= _('Log in') ?></h3>
-        <form id="login" action="/login" method="post">
+        <form id="login" action="/scripts/user/login" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="hidden" name="redirto" value="<?= htmlspecialchars(empty($redirTo)?$_SERVER['REQUEST_URI']:$redirTo) ?>">
             <input type="text" name="username" placeholder="<?= _('Username') ?>" required>
@@ -86,7 +87,7 @@
     <?php else : ?>
         <h3><a href="/profile"><?= htmlspecialchars($user->username) ?></a></h3>
         <a href="/preferences"><?= _('Preferences') ?></a>
-        <form id="logout" action="/logout" method="post">
+        <form id="logout" action="/scripts/user/logout" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="submit" class="link" value="<?= _('Log out') ?>">
         </form>

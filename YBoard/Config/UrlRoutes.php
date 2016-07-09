@@ -17,10 +17,11 @@ return [
     // Preferences
     '#^/preferences#' => ['Preferences', 'index'],
     '#^/scripts/preferences/save#' => ['Preferences', 'save'],
+    '#^/scripts/preferences/toggledarktheme#' => ['Preferences', 'toggleDarkTheme'],
 
     // Log in/-out
-    '#^/login$#' => ['LogInOut', 'login'],
-    '#^/logout$#' => ['LogInOut', 'logout'],
+    '#^/scripts/user/login$#' => ['LogInOut', 'login'],
+    '#^/scripts/user/logout$#' => ['LogInOut', 'logout'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],

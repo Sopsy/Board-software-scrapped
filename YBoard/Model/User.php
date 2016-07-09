@@ -19,6 +19,7 @@ class User extends Model
     public $isMod = false;
     public $isAdmin = false;
     public $requireCaptcha = true;
+    public $preferences;
 
     public function load($sessionId)
     {
@@ -44,6 +45,7 @@ class User extends Model
         $this->class = $user->class;
         $this->goldLevel = $user->gold_level;
         $this->loggedIn = empty($user->username) ? false : true;
+        $this->preferences = new UserPreferences($this->db, $this->id);
 
         // TODO: Maybe change to sentPosts > n instead
         $this->requireCaptcha = !$this->loggedIn;

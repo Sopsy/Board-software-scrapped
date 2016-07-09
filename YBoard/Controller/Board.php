@@ -13,7 +13,6 @@ class Board extends ExtendedController
         if (!$this->boards->exists($boardUrl)) {
             if ($this->boards->isAltUrl($boardUrl)) {
                 HttpResponse::redirectExit('/' . $this->boards->getUrlByAltUrl($boardUrl) . '/', 302);
-                // TODO: Change to 301 after everything works
             }
             // Board does not exist and no alt_url match
             $this->notFound(_('Not found'), sprintf(_('There\'s no such thing as a board called "%s" here.'), $boardUrl));

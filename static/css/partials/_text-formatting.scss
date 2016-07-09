@@ -35,8 +35,12 @@
     }
 }
 
-pre br {
-    display: none;
+pre {
+    overflow-x: auto;
+    margin: 0;
+    br {
+        display: none;
+    }
 }
 
 .black {

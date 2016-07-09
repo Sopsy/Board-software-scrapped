@@ -20,11 +20,24 @@ a {
 a:hover { color: $linkHoverColor }
 img { vertical-align: top }
 
+button.link {
+    color: $linkColor;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        color: $linkHoverColor;
+    }
+}
+
 .button {
     border: 0;
     padding: 5px 10px;
     cursor: pointer;
     font-size: 0.85rem;
+    line-height: 1.5em;
 
     &.gray {
         $color: #000;
@@ -110,18 +123,6 @@ h4 {
     .error-image {
         margin-top: 60px;
         max-width: 100%;
-    }
-}
-
-button.link {
-    color: $linkColor;
-    padding: 0;
-    border: 0;
-    background-color: transparent;
-    cursor: pointer;
-
-    &:hover {
-        color: $linkHoverColor;
     }
 }
 

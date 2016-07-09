@@ -149,13 +149,18 @@ abstract class ExtendedController extends YBoard\Controller
     {
         $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
 
-        if ($this->user->isAdmin) {
-            $templateEngine->bodyClass = 'dark';
-        }
-
         foreach ($this->config['view'] as $var => $val) {
             $templateEngine->$var = $val;
         }
+
+        $stylesheet = 'ylilauta';
+        $altStylesheet = 'ylilauta_dark';
+        if ($this->user->preferences->darkTheme) {
+            $stylesheet = 'ylilauta_dark';
+            $altStylesheet = 'ylilauta';
+        }
+        $templateEngine->stylesheet = $stylesheet;
+        $templateEngine->altStylesheet = $altStylesheet;
 
         $templateEngine->csrfToken = $this->user->csrfToken;
         $templateEngine->reCaptchaPublicKey = $this->config['reCaptcha']['publicKey'];
