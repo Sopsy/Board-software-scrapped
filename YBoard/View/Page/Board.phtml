@@ -13,8 +13,8 @@
             </div>
 
             <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
-            <?php if (!empty($thread->replies)) : ?>
             <div class="replies">
+            <?php if (!empty($thread->replies)) : ?>
                 <div class="replies-buttons">
                     <?php if ($thread->statistics->replyCount > $previewPosts) : ?>
                     <button class="link more-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show more replies') ?></button>
@@ -27,12 +27,13 @@
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
                 <?php endforeach ?>
-            </div>
             <?php endif ?>
+            </div>
             <div class="thread-buttons">
                 <!--<a href="/<?= $board->url ?>/<?= $thread->id ?>">avaa lanka</a>-->
                 <?php if (!$thread->locked || $user->isMod) : ?>
                 <button class="link add-reply" onclick="replyToThread(<?= $thread->id ?>)"><?= _('reply') ?></button>
+                <button class="link" onclick="getNewReplies(<?= $thread->id ?>, true)"><?= _('update') ?></button>
                 <?php endif ?>
             </div>
         </div>

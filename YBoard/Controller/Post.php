@@ -242,6 +242,9 @@ class Post extends ExtendedController
         // TODO: Save tags
         // TODO: Add notifications
 
+        if (!$isReply) {
+            $this->jsonMessage($postId);
+        }
         //$this->throwJsonError(400, $postId);
     }
 

@@ -140,6 +140,9 @@ class Posts extends Model
         $from = '';
         if ($newest) {
             $order = 'DESC';
+            if ($fromId) {
+                $from = ' AND a.id > :from';
+            }
         } else {
             $order = 'ASC';
             if ($fromId) {

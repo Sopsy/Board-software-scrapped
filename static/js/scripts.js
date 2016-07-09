@@ -130,6 +130,42 @@ function getMoreReplies(threadId) {
     }
 }
 
+function getNewReplies(threadId, manual) {
+    if (typeof manual == 'undefined') {
+        manual = false;
+    }
+
+    var thread = $t(threadId);
+    var fromId = thread.find('.reply:last').attr('id');
+    if (typeof fromId == 'undefined') {
+        fromId = 0;
+    } else {
+        fromId = fromId.replace('post-', '');
+    }
+
+    $.ajax({
+        url: '/scripts/threads/getreplies',
+        type: "POST",
+        data: {
+            'threadId': threadId,
+            'fromId': fromId,
+            'newest': true,
+        }
+    }).done(function (data, textStatus, xhr) {
+        if (manual && data.length == 0) {
+            toastr.info(messages.noNewReplies);
+        }
+        // Update timestamps
+        data = $(data);
+        data.find('.datetime').localizeTimestamp(this);
+
+        data.appendTo(thread.find('.replies'));
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+
 // Too long posts
 $('.post').each(function() {
     if (this.scrollHeight > this.offsetHeight + 100) {
@@ -289,13 +325,20 @@ function submitPost(e) {
             return xhr;
         }
     }).done(function (data, textStatus, xhr) {
-        location.reload();
-        toastr.success(messages.postSent);
-
-        // TODO: replace with ajax load of new messages
-        // TODO: If new thread, go to thread instead
-        //window.location = window.location;
-
+        var thread = fd.get('thread');
+        if (thread != null) {
+            toastr.success(messages.postSent);
+            getNewReplies(thread);
+        } else if (data.length == 0) {
+            window.location = window.location;
+        } else {
+            data = JSON.parse(data);
+            if (typeof data.message == 'undefined') {
+                toastr.error(messages.errorOccurred);
+            } else {
+                window.location = '/' + fd.get('board') + '/' + data.message;
+            }
+        }
 
         // Reset post form
         resetPostForm();
@@ -399,9 +442,13 @@ function toggleDarkTheme() {
 // Dates in posts
 $('.datetime').localizeTimestamp();
 
-$('body').on('click', '.spoiler:not(.spoiled)', function(e) {
+// Spoilers
+$('body').on('touchstart', '.spoiler:not(.spoiled)', function(e) {
     e.preventDefault();
     $(this).addClass('spoiled');
+});
+$('body').on('click', function(e) {
+    $('.spoiler.spoiled').removeClass('spoiled');
 });
 
 // Reflinks

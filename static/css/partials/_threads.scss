@@ -154,7 +154,9 @@
         display: none;
     }
 
+    $postMetaHeight: 30px;
     .post-meta {
+        min-height: $postMetaHeight;
         @if (lightness($textColor) > 50) {
             color: darken($textColor, 40%);
         } @else {
@@ -184,6 +186,35 @@
             }
             &:hover {
                 color: $linkHoverColor
+            }
+        }
+    }
+
+    .post-buttons {
+        float: right;
+        text-align: right;
+        font-size: 0.9em;
+        button {
+            height: $postMetaHeight;
+            width: $postMetaHeight;
+            line-height: $postMetaHeight;
+            cursor: pointer;
+            font-size: 20px;
+            vertical-align: middle;
+
+            $bg: darken($contentBgColor, 5%);
+            $hoverBg: darken($contentBgColor, 10%);
+            $color: #111;
+            @if (lightness($contentBgColor) < 50) {
+                $bg: lighten($contentBgColor, 5%);
+                $hoverBg: lighten($contentBgColor, 10%);
+                $color: #eee;
+            }
+
+            background-color: $bg;
+            color: $color;
+            &:hover {
+                background-color: $hoverBg;
             }
         }
     }
@@ -235,34 +266,6 @@
                 display: block
             }
         }
-    }
-
-    .post-buttons {
-        font-size: 0.9em;
-        button {
-            $size: 20px;
-            cursor: pointer;
-            line-height: $size;
-            font-size: $size;
-            padding: 2px;
-            border-radius: 2px;
-            vertical-align: middle;
-            background-color: $highlightColor;
-
-            $color: #fff;
-            @if (lightness($highlightColor) > 50) {
-                $color: #000;
-            }
-            color: $color;
-            &:hover {
-                background-color: lighten($highlightColor, 5%);
-            }
-        }
-    }
-
-    .post-buttons {
-        float: right;
-        text-align: right;
     }
 
     .thread-buttons {

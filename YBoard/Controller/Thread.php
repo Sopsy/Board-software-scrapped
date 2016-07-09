@@ -49,14 +49,16 @@ class Thread extends ExtendedController
             $this->throwJsonError(400);
         }
 
+        $newest = empty($_POST['newest']) ? false : true;
+
         $posts = new Posts($this->db);
-        $replies = $posts->getReplies($_POST['threadId'], null, false, $_POST['fromId']);
-        error_log($_POST['fromId']);
+        $replies = $posts->getReplies($_POST['threadId'], null, $newest, $_POST['fromId']);
 
         $view = $this->loadTemplateEngine('Blank');
 
         $view->thread = $posts->getThreadMeta($_POST['threadId']);
         $view->board = $this->boards->getById($view->thread->boardId);
+        $view->tooltip = false;
 
         foreach ($replies as $post) {
             $view->post = $post;

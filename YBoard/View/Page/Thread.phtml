@@ -16,7 +16,9 @@
             </div>
         <?php endforeach ?>
         </div>
-        <div class="thread-buttons"></div>
+        <div class="thread-buttons">
+            <button class="link" onclick="getNewReplies(<?= $thread->id ?>, true)"><?= _('update') ?></button>
+        </div>
     </div>
 
     <?php if (!$thread->locked || $user->isMod) : ?>

@@ -77,9 +77,11 @@
         }
     }
     $buttonBg: darken($sidebarColor, 5%);
+    $buttonHoverBg: darken($sidebarColor, 10%);
     $buttonColor: #111;
     @if (lightness($sidebarColor) < 50) {
         $buttonBg: lighten($sidebarColor, 5%);
+        $buttonHoverBg: lighten($sidebarColor, 10%);
         $buttonColor: #eee;
     }
     #search {
@@ -107,9 +109,12 @@
             height: 35px;
             cursor: pointer;
             border: 0;
-            font-size: 16px;
+            font-size: 20px;
             background-color: $buttonBg;
             color: $buttonColor;
+            &:hover {
+                background-color: $buttonHoverBg;
+            }
         }
     }
     .buttons {
@@ -119,6 +124,9 @@
         button, a {
             background-color: $buttonBg;
             color: $buttonColor;
+            &:hover {
+                background-color: $buttonHoverBg;
+            }
         }
     }
     #user form {
