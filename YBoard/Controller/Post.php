@@ -206,6 +206,7 @@ class Post extends ExtendedController
         }
 
         if (!$isReply) {
+            // Check flood limit
             if (Cache::exists('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
@@ -213,8 +214,13 @@ class Post extends ExtendedController
             $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
                 $_SERVER['REMOTE_ADDR'], $countryCode);
 
+            // Increment stats
+            $this->user->statistics->increment('createdThreads');
+
+            // Enable flood limit
             Cache::add('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
         } else {
+            // Check flood limit
             if (Cache::exists('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
@@ -222,16 +228,25 @@ class Post extends ExtendedController
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
                 $countryCode);
 
-            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
+            // Update stats
+            $this->user->statistics->increment('sentReplies');
             $posts->updateThreadStats($thread->id, 'replyCount');
+
+            // Enable flood limit
+            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
 
             if (!$sage) {
                 $posts->bumpThread($thread->id);
             }
         }
 
+        // Increment Total message characters -stats
+        $this->user->statistics->increment('messageTotalCharacters', mb_strlen($message));
+
         if ($hasFile) {
             $posts->addFile($postId, $file->id, $file->origName);
+            $this->user->statistics->increment('uploadedFiles');
+            $this->user->statistics->increment('uploadedFilesTotalSize', $_FILES['files']['size']);
         }
 
         // TODO: Save replies

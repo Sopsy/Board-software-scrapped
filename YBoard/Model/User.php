@@ -49,9 +49,6 @@ class User extends Model
         $this->preferences = new UserPreferences($this->db, $this->id);
         $this->statistics = new UserStatistics($this->db, $this->id);
 
-        error_log($this->statistics->pageLoads);
-        $this->statistics->increment('pageLoads');
-
         // TODO: Maybe change to sentPosts > n instead
         $this->requireCaptcha = !$this->loggedIn;
 

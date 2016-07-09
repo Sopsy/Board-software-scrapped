@@ -151,6 +151,11 @@ abstract class ExtendedController extends YBoard\Controller
         foreach ($this->config['view'] as $var => $val) {
             $templateEngine->$var = $val;
         }
+        
+        // Increment user page loads only when using the "Default" -template
+        if ($templateFile == 'Default') {
+            $this->user->statistics->increment('pageLoads');
+        }
 
         $stylesheet = 'ylilauta';
         $altStylesheet = 'ylilauta_dark';

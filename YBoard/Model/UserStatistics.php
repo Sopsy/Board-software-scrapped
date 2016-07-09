@@ -7,11 +7,11 @@ use YBoard\Model;
 class UserStatistics extends Model
 {
     public $pageLoads = 1;
-    public $sentPosts = 0;
+    public $sentReplies = 0;
     public $createdThreads = 0;
-    public $totalUploadedFiles = 0;
-    public $totalUploadedFileSize = 0;
-    public $totalPostCharacters = 0;
+    public $uploadedFiles = 0;
+    public $uploadedFilesTotalSize = 0;
+    public $messageTotalCharacters = 0;
     public $epicThreads = 0;
     public $purchasesTotalPrice = 0;
     public $goldAccountsDonated = 0;
@@ -26,11 +26,11 @@ class UserStatistics extends Model
     protected $toUpdate = [];
     protected $keyNames = [
         1 => 'pageLoads',
-        2 => 'sentPosts',
+        2 => 'sentReplies',
         3 => 'createdThreads',
-        4 => 'totalUploadedFiles',
-        5 => 'totalUploadedFileSize',
-        6 => 'totalPostCharacters',
+        4 => 'uploadedFiles',
+        5 => 'uploadedFilesTotalSize',
+        6 => 'messageTotalCharacters',
         7 => 'epicThreads',
         8 => 'purchasesTotalPrice',
         9 => 'goldAccountsDonated',
