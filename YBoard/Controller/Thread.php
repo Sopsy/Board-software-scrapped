@@ -34,6 +34,7 @@ class Thread extends ExtendedController
 
         $view = $this->loadTemplateEngine();
         $view->pageTitle = $thread->subject . ' - ' . $board->name;
+        $view->bodyClass = 'thread-page';
 
         $view->board = $board;
         $view->thread = $thread;

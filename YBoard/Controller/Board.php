@@ -28,8 +28,9 @@ class Board extends ExtendedController
         $board = $this->boards->getByUrl($boardUrl);
 
         $view->pageTitle = $board->name;
+        $view->bodyClass = 'board-page';
 
-            // Calculate the end and start pages of the pagination
+        // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
         $view->paginationStartPage = $pageNum - 1;
         if ($view->paginationStartPage < 2) {

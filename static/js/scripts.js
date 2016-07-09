@@ -1,5 +1,3 @@
-var submitInProgress;
-
 // CSRF token to each request and disable caching
 $.ajaxSetup({
     cache: false,
@@ -8,7 +6,9 @@ $.ajaxSetup({
     }
 });
 
+// -------------------------------------------
 // jQuery plugins
+// -------------------------------------------
 jQuery.fn.extend({
     insertAtCaret: function (before, after) {
         if (typeof after == 'undefined') {
@@ -48,7 +48,9 @@ jQuery.fn.extend({
     }
 });
 
+// -------------------------------------------
 // Post deletion
+// -------------------------------------------
 function deletePost(id) {
     if (!confirm(messages.confirmDelete)) {
         return false;
@@ -68,7 +70,9 @@ function deletePost(id) {
     });
 }
 
+// -------------------------------------------
 // Signup form in sidebar
+// -------------------------------------------
 function signupForm(elm, e) {
     e.preventDefault();
     elm = $(elm);
@@ -98,7 +102,9 @@ function signupForm(elm, e) {
     }
 }
 
+// -------------------------------------------
 // Thread inline expansion
+// -------------------------------------------
 function getMoreReplies(threadId) {
     var thread = $t(threadId);
     if (!thread.hasClass('expanded')) {
@@ -130,9 +136,31 @@ function getMoreReplies(threadId) {
     }
 }
 
+// -------------------------------------------
+// Thread ajax reply update
+// -------------------------------------------
+var newReplies = 0;
+var lastUpdateNewReplies = 0;
+var updateCount = 0;
+var loadingReplies = false;
+var updateRunning = false;
+var nextUpdateTimeout = false;
+var documentTitle = document.title;
 function getNewReplies(threadId, manual) {
+    if (loadingReplies) {
+        return false;
+    }
+
+    loadingReplies = true;
     if (typeof manual == 'undefined') {
         manual = false;
+    }
+    if (manual) {
+        updateCount = 0;
+        if (updateRunning) {
+            stopAutoUpdate();
+            startAutoUpdate();
+        }
     }
 
     var thread = $t(threadId);
@@ -159,15 +187,98 @@ function getNewReplies(threadId, manual) {
         data = $(data);
         data.find('.datetime').localizeTimestamp(this);
 
+        lastUpdateNewReplies = data.find('.post').length;
+        newReplies += lastUpdateNewReplies;
+
         data.appendTo(thread.find('.replies'));
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
+    }).always(function () {
+        setTimeout('loadingReplies = false', 100);
+        updateAutoUpdateVars();
     });
 }
 
-// Too long posts
-$('.post').each(function() {
+if ($('body').hasClass('thread-page')) {
+    var thread = $('.thread:first').data('id');
+    $(window)
+        .on('scroll', function () {
+            var windowBottom = $(window).height() + $(window).scrollTop();
+            var repliesBottom = $('.replies').offset().top + $('.replies').height();
+            if (windowBottom > repliesBottom) {
+                if (!updateRunning) {
+                    updateRunning = true;
+                    startAutoUpdate();
+                }
+            } else {
+                if (updateRunning) {
+                    stopAutoUpdate();
+                    updateRunning = false;
+                }
+            }
+        })
+        .on('focus', function () {
+            newReplies = 0;
+            updateCount = 0;
+            if (document.title != documentTitle) {
+                document.title = documentTitle;
+            }
+        });
+    var startTimeout;
+    $('#message-input')
+        .on('focus', function () {
+            clearTimeout(startTimeout);
+            stopAutoUpdate();
+        })
+        .on('blur', function () {
+            startTimeout = setTimeout('startAutoUpdate()', 500);
+        });
+}
+
+function updateAutoUpdateVars() {
+    if (lastUpdateNewReplies == 0) {
+        ++updateCount;
+    } else {
+        updateCount = 0;
+    }
+
+    // Notify about new posts on title
+    if (!document.hasFocus() && newReplies > 0) {
+        document.title = '(' + newReplies + ') ' + documentTitle;
+    } else if (newReplies != 0) {
+        newReplies = 0;
+    }
+}
+
+function startAutoUpdate() {
+    getNewReplies(thread);
+
+    var timeout = 2000;
+    timeout = timeout * (updateCount == 0 ? 1 : updateCount);
+    if (timeout > 30000) {
+        timeout = 30000;
+    }
+
+    // Limit
+    if (updateCount > 40) {
+        return false;
+    }
+
+    // Run again
+    nextUpdateTimeout = setTimeout(function () {
+        startAutoUpdate();
+    }, timeout);
+}
+
+function stopAutoUpdate() {
+    clearTimeout(nextUpdateTimeout);
+}
+
+// -------------------------------------------
+// Truncated long posts
+// -------------------------------------------
+$('.post').each(function () {
     if (this.scrollHeight > this.offsetHeight + 100) {
         $(this).after('<button class="link post-truncated" onclick="showFullPost(this)">näytä koko viesti</button>');
     } else if (this.scrollHeight > this.offsetHeight) {
@@ -179,7 +290,9 @@ function showFullPost(elm) {
     $(elm).parent('.op-post, .reply').find('.post').addClass('full');
 }
 
+// -------------------------------------------
 // Functions related to post form
+// -------------------------------------------
 var postformLocation = $('#post-form').prev();
 function showPostForm() {
     var form = $('#post-form');
@@ -277,6 +390,7 @@ function resetOriginalPostFormDestination() {
     return true;
 }
 
+var submitInProgress;
 function submitPost(e) {
     e.preventDefault();
 
@@ -356,7 +470,9 @@ function submitPost(e) {
     });
 }
 
+// -------------------------------------------
 // Expand images
+// -------------------------------------------
 function expandImage(elm, e) {
     e.preventDefault();
     var container = $(elm).parent();
@@ -398,7 +514,9 @@ function changeSrc(img, src) {
     });
 }
 
+// -------------------------------------------
 // Theme switcher
+// -------------------------------------------
 function toggleDarkTheme() {
     $('<div id="css-loading">' + messages.loading + '</div>').appendTo('body')
         .css({
@@ -417,14 +535,14 @@ function toggleDarkTheme() {
     //css.data('alt', css.attr('href'));
 
     $('<link>').attr({
-            'rel': 'stylesheet',
-            'id': 'css',
-            'href': newHref,
-            'data-alt': css.attr('href'),
-        })
-        .on('load', function() {
+        'rel': 'stylesheet',
+        'id': 'css',
+        'href': newHref,
+        'data-alt': css.attr('href'),
+    })
+        .on('load', function () {
             $('#css').remove();
-            $('#css-loading').html('').fadeOut(200, function() {
+            $('#css-loading').html('').fadeOut(200, function () {
                 this.remove();
             });
         })
@@ -439,51 +557,53 @@ function toggleDarkTheme() {
     });
 }
 
-// Dates in posts
+// -------------------------------------------
+// Localize dates in posts
+// -------------------------------------------
 $('.datetime').localizeTimestamp();
 
-// Spoilers
-$('body').on('touchstart', '.spoiler:not(.spoiled)', function(e) {
-    e.preventDefault();
-    $(this).addClass('spoiled');
-});
-$('body').on('click', function(e) {
-    $('.spoiler.spoiled').removeClass('spoiled');
-});
-
-// Reflinks
+// -------------------------------------------
+// Spoilers & reflinks
+// -------------------------------------------
 var reflinkTooltipTimeout;
-$('body').on('contextmenu', '.reflink', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-});
-$('body').on('touchstart mouseenter', '.reflink', function (e) {
-    var elm = this;
-    reflinkTooltipTimeout = setTimeout(function() {
-        addReflinkTooltip(elm);
-        $(elm).tooltipster('open');
-    }, 100);
-});
-$('body').on('click touchend mouseleave', '.reflink', function (e) {
-    clearTimeout(reflinkTooltipTimeout);
-    if($(this).hasClass('tooltipstered')) {
-        $(this).tooltipster('close');
-    }
-});
-
-$('body').on('click', '.reflink', function (e) {
-    var id = $(this).data('id');
-    if ($p(id).is('*')) {
+$('body')
+    .on('touchstart', '.spoiler:not(.spoiled)', function (e) {
         e.preventDefault();
-        window.location = window.location.href.split('#')[0] + '#post-' + id;
-    }
-});
+        $(this).addClass('spoiled');
+    })
+    .on('click', function (e) {
+        $('.spoiler.spoiled').removeClass('spoiled');
+    })
+    .on('contextmenu', '.reflink', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    })
+    .on('touchstart mouseenter', '.reflink', function (e) {
+        var elm = this;
+        reflinkTooltipTimeout = setTimeout(function () {
+            addReflinkTooltip(elm);
+            $(elm).tooltipster('open');
+        }, 100);
+    })
+    .on('click touchend mouseleave', '.reflink', function (e) {
+        clearTimeout(reflinkTooltipTimeout);
+        if ($(this).hasClass('tooltipstered')) {
+            $(this).tooltipster('close');
+        }
+    })
+    .on('click', '.reflink', function (e) {
+        var id = $(this).data('id');
+        if ($p(id).is('*')) {
+            e.preventDefault();
+            window.location = window.location.href.split('#')[0] + '#post-' + id;
+        }
+    });
 
 function addReflinkTooltip(elm) {
     var elm = $(elm);
     // Don't double initialize
-    if(elm.hasClass('tooltipstered')) {
+    if (elm.hasClass('tooltipstered')) {
         return true;
     }
 
@@ -520,7 +640,21 @@ function addReflinkTooltip(elm) {
     }
 }
 
-// "Private" functions
+// -------------------------------------------
+// Confirm page exit when there's text in the post form
+// -------------------------------------------
+$(window).on('beforeunload', function (e) {
+    var textarea = $('#post-form').find('textarea');
+    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
+        return messages.confirmUnload;
+    } else {
+        e = null;
+    }
+});
+
+// -------------------------------------------
+// "Private" functions used by other functions
+// -------------------------------------------
 function getErrorMessage(xhr, errorThrown) {
     if (xhr.responseText.length != 0) {
         try {
@@ -559,13 +693,3 @@ function $t(id) {
 function $p(id) {
     return $('#post-' + id);
 }
-
-// Confirm page exit when there's text in the post form
-$(window).on('beforeunload', function (e) {
-    var textarea = $('#post-form').find('textarea');
-    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
-        return messages.confirmUnload;
-    } else {
-        e = null;
-    }
-});

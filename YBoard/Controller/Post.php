@@ -222,7 +222,7 @@ class Post extends ExtendedController
             $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
                 $countryCode);
 
-            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, 5);
+            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, 1);
             $posts->updateThreadStats($thread->id, 'replyCount');
 
             if (!$sage) {
