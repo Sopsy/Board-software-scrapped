@@ -15,11 +15,12 @@ class User extends Model
     public $username;
     public $class;
     public $goldLevel;
-    public $loggedIn;
+    public $preferences;
+    public $statistics;
+    public $loggedIn = false;
     public $isMod = false;
     public $isAdmin = false;
     public $requireCaptcha = true;
-    public $preferences;
 
     public function load($sessionId)
     {
@@ -46,6 +47,10 @@ class User extends Model
         $this->goldLevel = $user->gold_level;
         $this->loggedIn = empty($user->username) ? false : true;
         $this->preferences = new UserPreferences($this->db, $this->id);
+        $this->statistics = new UserStatistics($this->db, $this->id);
+
+        error_log($this->statistics->pageLoads);
+        $this->statistics->increment('pageLoads');
 
         // TODO: Maybe change to sentPosts > n instead
         $this->requireCaptcha = !$this->loggedIn;
@@ -141,7 +146,8 @@ class User extends Model
 
         $this->id = $this->db->lastInsertId();
         $this->preferences = new UserPreferences($this->db, $this->id, true);
-        
+        $this->statistics = new UserStatistics($this->db, $this->id, true);
+
         return true;
     }
 
@@ -303,10 +309,5 @@ class User extends Model
         }
 
         return false;
-    }
-
-    public function getStatistics($key)
-    {
-
     }
 }
