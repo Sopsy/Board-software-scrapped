@@ -14,13 +14,15 @@ class Preferences extends ExtendedController
 
     public function save()
     {
-        /*$this->validateAjaxCsrfToken();
+        $this->validateAjaxCsrfToken();
 
         if (empty($_POST['set']) || !is_array($_POST['set'])) {
             $this->throwJsonError(400);
-        }*/
+        }
 
-        $this->user->preferences->set('darkTheme', !$this->user->preferences->darkTheme);
+        foreach ($_POST['set'] as $key => $val) {
+            $this->user->preferences->set($key, $val);
+        }
     }
 
     public function toggleDarkTheme()

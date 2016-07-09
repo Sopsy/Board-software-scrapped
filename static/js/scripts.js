@@ -359,10 +359,26 @@ function changeSrc(img, src) {
 
 // Theme switcher
 function toggleDarkTheme() {
+    $('<div id="css-loading">' + messages.loading + '</div>').appendTo('body')
+        .css({
+            'position': 'fixed',
+            'top': 0,
+            'right': 0,
+            'bottom': 0,
+            'left': 0,
+            'background-color': '#eee',
+            'text-align': 'center',
+            'padding-top': '20%',
+        });
+
     var css = $('#css');
     var newHref = css.data('alt');
     css.data('alt', css.attr('href'));
     css.attr('href', newHref);
+
+    css.on('load', function() {
+        $('#css-loading').fadeOut('100', function(){this.remove()});
+    });
 
     $.ajax({
         url: '/scripts/preferences/toggledarktheme',
@@ -465,6 +481,8 @@ function getErrorMessage(xhr, errorThrown) {
 function loadingAnimation(classes) {
     if (typeof classes == 'undefined') {
         classes = '';
+    } else {
+        classes += ' ';
     }
 
     return '<img class="' + classes + 'loading" src="' + config.staticUrl + '/img/loading.gif" alt="">';
