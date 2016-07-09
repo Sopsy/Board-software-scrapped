@@ -30,6 +30,7 @@
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
     </div>
 </div>
+
 <blockquote class="post">
     <?php if (!empty($post->file)) : ?>
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
@@ -48,12 +49,13 @@
     </figure>
     <?php endif ?>
     <?= $post->messageFormatted ?>
-    <?php if ($post->postReplies) : ?>
-    <div class="post-replies">
-        <span><?= _('Replies') ?>:</span>
-        <?php foreach ($post->postReplies as $postReply) : ?>
-            <a href="/scripts/posts/redirect/<?= $postReply ?>" data-id="<?= $postReply ?>" class="reflink">&gt;&gt;<?= $postReply ?></a>
-        <?php endforeach ?>
-    </div>
-    <?php endif ?>
 </blockquote>
+
+<?php if ($post->postReplies) : ?>
+<div class="post-replies">
+    <span><?= _('Replies') ?>:</span>
+    <?php foreach ($post->postReplies as $postReply) : ?>
+        <a href="/scripts/posts/redirect/<?= $postReply ?>" data-id="<?= $postReply ?>" class="reflink">&gt;&gt;<?= $postReply ?></a>
+    <?php endforeach ?>
+</div>
+<?php endif ?>
