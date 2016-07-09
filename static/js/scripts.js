@@ -84,14 +84,12 @@ function signupForm(elm, e) {
     var signupForm = $('#signup-form');
 
     if (!elm.data('open')) {
-
-        elm.html(messages.cancel);
-
+        elm.attr('title', messages.cancel).removeClass('icon-user-plus').addClass('icon-cross2');
         $('#loginbutton').attr('name', 'signup').val(messages.signUp);
         signupForm.slideDown();
         elm.data('open', true);
     } else {
-        elm.html(messages.signUp);
+        elm.attr('title', messages.signUp).removeClass('icon-cross2').addClass('icon-user-plus');
 
         $('#loginbutton').attr('name', 'login').val(messages.logIn);
         signupForm.slideUp();

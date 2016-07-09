@@ -10,6 +10,7 @@
     overflow: auto;
     font-size: 0.9em;
     background-color: $bgcolor;
+    overflow-y: scroll;
 
     button.link, input.link {
         border: 0;
@@ -75,6 +76,12 @@
             font-weight: 400;
         }
     }
+    $buttonBg: darken($sidebarColor, 5%);
+    $buttonColor: #111;
+    @if (lightness($sidebarColor) < 50) {
+        $buttonBg: lighten($sidebarColor, 5%);
+        $buttonColor: #eee;
+    }
     #search {
         @if (lightness($sidebarColor) > 50) {
             background-color: lighten($sidebarColor, 10%);
@@ -101,14 +108,17 @@
             cursor: pointer;
             border: 0;
             font-size: 16px;
-            $bg: darken($sidebarColor, 5%);
-            $color: #111;
-            @if (lightness($sidebarColor) < 50) {
-                $bg: lighten($sidebarColor, 5%);
-                $color: #eee;
-            }
-            background-color: $bg;
-            color: $color;
+            background-color: $buttonBg;
+            color: $buttonColor;
+        }
+    }
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        button, a {
+            background-color: $buttonBg;
+            color: $buttonColor;
         }
     }
     #user form {
@@ -127,9 +137,6 @@
             display: block;
             padding: 5px 10px;
             width: calc(100% - 20px);
-        }
-        button.transparent {
-            float: right;
         }
         #signup-form {
             display: none;

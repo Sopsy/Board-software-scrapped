@@ -4,7 +4,6 @@
         <h2><?= htmlspecialchars($board->description) ?></h2>
     </div>
     <div class="buttons">
-        <button class="button gray icon-lamp" onclick="toggleDarkTheme()"></button>
         <?php if (empty($thread)) : ?>
         <button class="button green create-thread toggle-postform" onclick="showPostForm()"><?= _('Create a thread') ?></button>
         <?php elseif (!$thread->locked) : ?>

@@ -31,6 +31,7 @@
         var messages = {
             loading: '<?= _('Loading...') ?>',
             errorOccurred: '<?= _('An error occurred') ?>',
+            logOutConfirm: '<?= _('Log out?') ?>',
             signUp: '<?= _('Sign up') ?>',
             cancel: '<?= _('Cancel') ?>',
             logIn: '<?= _('Log_in') ?>',
@@ -83,16 +84,25 @@
                 <div id="signup-captcha"></div>
             </div>
             <input type="submit" class="button green" name="login" id="loginbutton" value="<?= _('Log_in') ?>">
-            <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
         </form>
     <?php else : ?>
         <h3><a href="/profile"><?= htmlspecialchars($user->username) ?></a></h3>
-        <a href="/preferences"><?= _('Preferences') ?></a>
-        <form id="logout" action="/scripts/user/logout" method="post">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-            <input type="submit" class="link" value="<?= _('Log out') ?>">
-        </form>
     <?php endif ?>
+        <div class="buttons">
+            <a class="button square icon-user" href="/profile" title="<?= _('Profile') ?>"></a>
+            <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
+            <button class="button square icon-lamp" onclick="toggleDarkTheme()" title="<?= _('Toggle dark theme') ?>"></button>
+            <?php if (!$user->loggedIn) : ?>
+                <button onclick="signupForm(this, event)" class="button square icon-user-plus" data-open="false"
+                    title="<?= _('Sign up') ?>"></button>
+            <?php else : ?>
+                <form id="logout" action="/scripts/user/logout" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                    <button type="submit" class="button square icon-exit" title="<?= _('Log out') ?>"
+                        onclick="if(!confirm(messages.logOutConfirm)){return false}"></button>
+                </form>
+            <?php endif ?>
+        </div>
     </nav>
     <nav id="boards">
         <h3><?= _('Discussion boards') ?></h3>
