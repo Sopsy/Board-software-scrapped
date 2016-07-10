@@ -7,8 +7,7 @@
     <meta charset="UTF-8">
 
     <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=700px, initial-scale=1.0">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <base href="<?= $baseUrl ?>">
 
@@ -56,15 +55,31 @@
     <?php endif ?>
 </head>
 <body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>
+
+<div id="mobile-menu">
+    <button class="sidebar-toggle" onclick="toggleSidebar()"><span class="icon-menu"></span>Valikko</button>
+    <div class="buttons"
+        ><button id="notifications-button" onclick="getNotifications()" class="icon-alarm" title="Ilmoitukset"></button
+        ><button onclick="$(document).scrollTop($('body').height())" class="icon-enter-down2" title="Siirry alareunaan"></button
+        ><button onclick="$(document).scrollTop(0)" class="icon-enter-up2" title="Takaisin ylös"></button
+        ><a href="/preferences" class="icon-cog" title="Asetukset ja profiili"></a
+        ><button onclick="pageReload()" class="icon-sync" title="Päivitä sivu"></button
+    ></div>
+</div>
+
 <div id="sidebar">
     <nav id="main">
-        <a href="/" id="logo"><img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>"><?= htmlspecialchars($siteName) ?></a>
-        <a href="/gold"><?= _('Gold account') ?></a>
-        <a href="/faq"><?= _('FAQ') ?></a>
-        <a href="/rules"><?= _('Rules') ?></a>
-        <a href="/about"><?= _('About') ?></a>
-        <a href="/advertising"><?= _('Advertising') ?></a>
-
+        <a href="/" id="logo">
+            <img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>">
+            <span><?= htmlspecialchars($siteName) ?></span>
+        </a>
+        <div class="columns">
+            <a href="/gold"><?= _('Gold account') ?></a>
+            <a href="/faq"><?= _('FAQ') ?></a>
+            <a href="/rules"><?= _('Rules') ?></a>
+            <a href="/about"><?= _('About') ?></a>
+            <a href="/advertising"><?= _('Advertising') ?></a>
+        </div>
         <form id="search" type="post" action="/search" id="cse-search-box2">
             <input name="cx" value="<?= $gCsePartnerPub ?>" type="hidden">
             <input name="cof" value="FORID:10" type="hidden">
@@ -108,11 +123,13 @@
     </nav>
     <nav id="boards">
         <h3><?= _('Discussion boards') ?></h3>
+        <div class="columns">
     <?php foreach($boardList as $board) : ?>
         <a href="/<?= htmlspecialchars($board->url) ?>/"
             <?= ($board->nsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->nsfw) :
             ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></a>
     <?php endforeach ?>
+        </div>
     </nav>
 </div>
 <div id="content">

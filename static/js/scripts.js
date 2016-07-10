@@ -46,7 +46,7 @@ jQuery.fn.extend({
             this.innerHTML = date.toLocaleString();
         });
     },
-    addShowFullPostButtons: function() {
+    addShowFullPostButtons: function () {
         return this.each(function () {
             var self = $(this);
             if (self.hasClass('buttoned')) {
@@ -456,7 +456,7 @@ function submitPost(e) {
             toastr.success(messages.postSent);
             getNewReplies(thread);
         } else if (data.length == 0) {
-            window.location = window.location;
+            pageReload();
         } else {
             data = JSON.parse(data);
             if (typeof data.message == 'undefined') {
@@ -653,6 +653,18 @@ function addReflinkTooltip(elm) {
 }
 
 // -------------------------------------------
+// Mobile
+// -------------------------------------------
+function toggleSidebar() {
+    $('#sidebar').toggleClass('visible');
+}
+$('#sidebar').click(function (e) {
+    if (e.offsetX > $('#sidebar').innerWidth()) {
+        toggleSidebar();
+    }
+});
+
+// -------------------------------------------
 // Confirm page exit when there's text in the post form
 // -------------------------------------------
 $(window).on('beforeunload', function (e) {
@@ -663,6 +675,10 @@ $(window).on('beforeunload', function (e) {
         e = null;
     }
 });
+
+function pageReload() {
+    window.location = window.location.href.split('#')[0];
+}
 
 // -------------------------------------------
 // "Private" functions used by other functions

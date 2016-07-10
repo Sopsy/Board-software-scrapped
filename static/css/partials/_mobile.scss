@@ -1,0 +1,187 @@
+@media (max-width: 800px) {
+    $topMenuHeight: 35px;
+    body {
+        font-size: 12px;
+        margin-top: $topMenuHeight;
+    }
+
+    .content-box {
+        padding: 20px;
+    }
+
+    #mobile-menu {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: $topMenuHeight;
+        line-height: $topMenuHeight;
+        overflow: hidden;
+        z-index: 1000;
+        background-color: $sidebarColor;
+        box-shadow: 0 0 10px 0 darken($sidebarColor, 10%);
+
+        button, a {
+            cursor: pointer;
+            color: $sidebarLinkColor;
+            border: 0;
+            padding: 0;
+            background-color: transparent;
+            display: inline-block;
+            height: $topMenuHeight;
+            line-height: $topMenuHeight;
+        }
+
+        .sidebar-toggle {
+            float: left;
+            text-align: center;
+            color: $sidebarLinkColor;
+            padding-right: 10px;
+            span {
+                font-size: 20px;
+                width: $topMenuHeight;
+                line-height: $topMenuHeight;
+                display: inline-block;
+                vertical-align: top;
+            }
+            &:hover {
+                background-color: lighten($sidebarColor, 10%);
+            }
+        }
+
+        .buttons {
+            float: right;
+            font-size: 20px;
+            > * {
+                border-left: 1px solid lighten($sidebarColor, 10%);
+                text-align: center;
+                width: $topMenuHeight;
+                &:hover {
+                    background-color: lighten($sidebarColor, 10%);
+                }
+            }
+        }
+    }
+
+    #sidebar {
+        padding: ($topMenuHeight + 10px) 10px 10px 10px;
+        display: none;
+        z-index: 999;
+        width: 80%;
+        border-right: 250px solid darken($sidebarColor, 10%);
+
+        &.visible {
+            display: block;
+        }
+        #logo {
+            float: left;
+            height: 165px;
+            margin-right: 20px;
+            img {
+                height: 165px;
+            }
+            span {
+                display: none;
+            }
+        }
+        .columns {
+            @include columns(120px, 10px);
+            a {
+                line-height: 3em;
+            }
+        }
+        #search {
+            clear: both;
+        }
+    }
+
+    #content {
+        margin-left: 0;
+
+        .page-header {
+            padding: 20px 20px 60px 20px;
+            h1, h2 { margin: 0 }
+        }
+
+        .content-box {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
+    #post-form {
+        margin: 2px;
+        padding: 0;
+        h3 {
+            margin: 5px;
+        }
+        fieldset {
+            label > span {
+                display: none;
+            }
+        }
+    }
+
+    .board-navigation {
+        text-align: center;
+
+        .breadcrumb, .pagination {
+            float: none;
+            display: block;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+    }
+
+    .thread {
+        padding: 0;
+        .thread-content,
+        .post-meta {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .op-post,
+        .thread-meta,
+        .replies,
+        .thread-buttons {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .post-meta {
+            .post-info {
+                font-size: 0.7em;
+                display: block;
+                .post-time {
+                    margin-left: 0;
+                }
+                .post-id {
+                    white-space: nowrap;
+                }
+            }
+        }
+
+        .post-file {
+            &.thumbnail {
+                @media (max-width:339px) {
+                    max-width: 80px;
+                    figcaption { font-size: 0.8em }
+                }
+                @media (min-width:340px) and (max-width:499px) {
+                    max-width: 120px;
+                    figcaption { font-size: 0.75em }
+                }
+                @media (min-width:500px) and (max-width:599px) {
+                    max-width: 160px;
+                }
+                @media (min-width:600px) {
+                    max-width: 200px;
+                }
+            }
+        }
+    }
+}

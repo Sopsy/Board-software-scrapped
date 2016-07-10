@@ -7,12 +7,7 @@
 }
 
 #front-boards {
-    columns: 250px;
-    -moz-columns: 250px;
-    -webkit-columns: 280px;
-    column-gap: 20px;
-    -moz-column-gap: 20px;
-    -webkit-column-gap: 20px;
+    @include columns(150px, 20px);
     a {
         padding: 8px 0;
         color: $textColor;

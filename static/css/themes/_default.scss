@@ -3,6 +3,26 @@
 @import '../lib/tooltipster';
 @import '../lib/icomoon';
 
+
+$sidebarBorderColor: darken($sidebarColor, 15%);
+@if (lightness($sidebarColor) < 50) {
+    $sidebarBorderColor: lighten($sidebarColor, 15%);
+}
+
+$sidebarLinkColor: #eee;
+@if (lightness($sidebarColor) > 50) {
+    $sidebarLinkColor: #111;
+}
+
+@mixin columns($width, $gap) {
+    columns: $width;
+    -moz-columns: $width;
+    -webkit-columns: $width;
+    column-gap: $gap;
+    -moz-column-gap: $gap;
+    -webkit-column-gap: $gap;
+}
+
 body {
     background: $bgColor;
     font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
@@ -116,8 +136,7 @@ h4 {
         background-size: cover;
         padding: 80px 20px 20px 20px;
         color: #fff;
-        box-shadow: 100px -100px 120px -100px #000 inset;
-        text-shadow: 0 0 40px #000, 0 0 10px #000;
+        text-shadow: 2px 2px 2px #000, 0 0 40px #000, 0 0 10px #000;
         overflow: hidden;
         position: relative;
 
@@ -152,6 +171,10 @@ h4 {
     p {
         line-height: 1.25em;
     }
+}
+
+#mobile-menu {
+    display: none;
 }
 
 @import '../partials/tags';
