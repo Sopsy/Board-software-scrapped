@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-10 20:12+0300\n"
-"PO-Revision-Date: 2016-07-10 20:25+0300\n"
+"POT-Creation-Date: 2016-07-10 22:58+0300\n"
+"PO-Revision-Date: 2016-07-10 23:00+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "Invalid request"
 msgstr "Virheellinen pyyntö"
 
-#: Abstracts/ExtendedController.php:237
+#: Abstracts/ExtendedController.php:244
 msgid "Your session has expired. Please refresh this page and try again."
 msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 
@@ -37,6 +37,10 @@ msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 #, php-format
 msgid "Please don't. %s pages is enough."
 msgstr "Älähän nyt. %s sivua on tarpeeksi."
+
+#: Controller/GoldAccount.php:11 View/Template/Default.phtml:77
+msgid "Gold account"
+msgstr "Kultatili"
 
 #: Controller/InfoPages.php:12 View/Template/Default.phtml:78
 msgid "FAQ"
@@ -82,11 +86,11 @@ msgstr "Tämä lanka on lukittu"
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:134 Controller/User.php:119
+#: Controller/Post.php:134
 msgid "Please fill the CAPTCHA."
 msgstr "Täytä CAPTCHA."
 
-#: Controller/Post.php:139 Controller/User.php:124
+#: Controller/Post.php:139
 msgid "Invalid CAPTCHA response. Please try again."
 msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 
@@ -123,42 +127,63 @@ msgstr "Etsimääsi lankaa ei ole olemassa."
 msgid "Your profile"
 msgstr "Profiilisi"
 
-#: Controller/User.php:51
+#: Controller/User.php:31 Controller/User.php:159
+msgid "Username is too long"
+msgstr "Käyttäjänimi on liian pitkä"
+
+#: Controller/User.php:35
+msgid "This is your current username"
+msgstr "Tämä on nykyinen käyttäjänimesi"
+
+#: Controller/User.php:39 Controller/User.php:163
+msgid "This username is already taken, please choose another one"
+msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
+
+#: Controller/User.php:43 Model/User.php:165
+msgid "Invalid password"
+msgstr "Virheellinen salasana"
+
+#: Controller/User.php:87
 msgid "What the!? Can't logout!?"
 msgstr "Mitä ihmettä!? Ei voi uloskirjautua!?"
 
-#: Controller/User.php:72
+#: Controller/User.php:106
 msgid "User account not deleted"
 msgstr "Käyttäjätunnusta ei poistettu"
 
-#: Controller/User.php:83 Controller/User.php:89
+#: Controller/User.php:116 Controller/User.php:120
 msgid "Login failed"
 msgstr "Kirjautuminen epäonnistui"
 
-#: Controller/User.php:83 Controller/User.php:89
-msgid "Invalid username or password."
-msgstr "Virheellinen käyttäjätunnus tai salasana."
+#: Controller/User.php:116 Controller/User.php:120
+msgid "Invalid username or password"
+msgstr "Virheellinen käyttäjätunnus tai salasana"
 
-#: Controller/User.php:107 Controller/User.php:111 Controller/User.php:115
-#: Controller/User.php:119 Controller/User.php:124 Controller/User.php:128
+#: Controller/User.php:138 Controller/User.php:142 Controller/User.php:146
+#: Controller/User.php:150 Controller/User.php:155 Controller/User.php:159
+#: Controller/User.php:163
 msgid "Signup failed"
 msgstr "Rekisteröityminen epäonnistui"
 
-#: Controller/User.php:107
-msgid "You are already logged in."
-msgstr "Olet jo kirjautuneena."
+#: Controller/User.php:138
+msgid "You are already logged in"
+msgstr "Olet jo kirjautuneena"
 
-#: Controller/User.php:111
-msgid "Missing username or password."
-msgstr "Käyttäjätunnus tai salasana puuttuu."
+#: Controller/User.php:142
+msgid "Missing username or password"
+msgstr "Käyttäjätunnus tai salasana puuttuu"
 
-#: Controller/User.php:115
-msgid "The two passwords do not match."
-msgstr "Antamasi salasanat eivät täsmää."
+#: Controller/User.php:146
+msgid "The two passwords do not match"
+msgstr "Salasanat eivät täsmää"
 
-#: Controller/User.php:128
-msgid "This username is already taken. Please choose another one."
-msgstr "Tämä käyttäjänimi on jo käytössä. Valitse toinen."
+#: Controller/User.php:150
+msgid "Please fill the CAPTCHA"
+msgstr "Täytä CAPTCHA"
+
+#: Controller/User.php:155
+msgid "Invalid CAPTCHA response, please try again"
+msgstr "Virheellinen CAPTCHA, yritä uudelleen"
 
 #: Library/Text.php:84
 msgid "B"
@@ -213,10 +238,6 @@ msgstr "Tiedosto ei ole validi kuva"
 #: Model/User.php:159
 msgid "Invalid user"
 msgstr "Virheellinen käyttäjä"
-
-#: Model/User.php:165
-msgid "Invalid password"
-msgstr "Virheellinen salasana"
 
 #: Model/WordBlacklist.php:42
 msgid "URL shortener"
@@ -278,7 +299,7 @@ msgstr "näytä lisää vastauksia"
 msgid "show less replies"
 msgstr "näytä vähemmän vastauksia"
 
-#: View/Page/Board.phtml:35 View/Snippets/Post.phtml:3
+#: View/Page/Board.phtml:35
 msgid "reply"
 msgstr "vastaa"
 
@@ -294,12 +315,12 @@ msgstr "Täällä ei ole lankoja..."
 msgid "Welcome to Ylilauta, the biggest discussion board in Finland!"
 msgstr "Tervetuloa Ylilaudalle, Suomen suurimmalle keskustelufoorumille!"
 
-#: View/Page/Index.phtml:19 View/Template/Default.phtml:125
+#: View/Page/Index.phtml:19 View/Template/Default.phtml:123
 msgid "Discussion boards"
 msgstr "Keskustelulaudat"
 
 #: View/Page/Index.phtml:24 View/Snippets/BoardHeader.phtml:3
-#: View/Template/Default.phtml:130
+#: View/Template/Default.phtml:128
 msgid "NSFW"
 msgstr "NSFW"
 
@@ -363,18 +384,78 @@ msgstr "Kultatilejä vastaanotettu"
 msgid "Total purchases"
 msgstr "Ostot yhteensä"
 
-#: View/Page/Profile.phtml:25 View/Page/Profile.phtml:45
+#: View/Page/Profile.phtml:24
+msgid "Tags"
+msgstr "Tagit"
+
+#: View/Page/Profile.phtml:31
+msgid "User account"
+msgstr "Käyttäjätunnus"
+
+#: View/Page/Profile.phtml:34 View/Page/Profile.phtml:40
+msgid "Change username"
+msgstr "Vaihda käyttäjätunnus"
+
+#: View/Page/Profile.phtml:35
+msgid "Current username"
+msgstr "Nykyinen käyttäjätunnus"
+
+#: View/Page/Profile.phtml:37
+msgid "New name"
+msgstr "Uusi käyttäjätunnus"
+
+#: View/Page/Profile.phtml:39 View/Page/Profile.phtml:48
+msgid "Current password"
+msgstr "Nykyinen salasana"
+
+#: View/Page/Profile.phtml:44 View/Page/Profile.phtml:49
+msgid "Change password"
+msgstr "Vaihda salasana"
+
+#: View/Page/Profile.phtml:46
+msgid "New password"
+msgstr "Uusi salasana"
+
+#: View/Page/Profile.phtml:47
+msgid "New password again"
+msgstr "Salasana uudelleen"
+
+#: View/Page/Profile.phtml:57
+msgid "Active logins"
+msgstr "Aktiiviset kirjautumiset"
+
+#: View/Page/Profile.phtml:61
+msgid "IP-address"
+msgstr "IP-osoite"
+
+#: View/Page/Profile.phtml:62
+msgid "Login time"
+msgstr "Kirjautumisaika"
+
+#: View/Page/Profile.phtml:63
+msgid "Last active"
+msgstr "Viimeksi aktiivisena"
+
+#: View/Page/Profile.phtml:66
+msgid "Current session"
+msgstr "Nykyinen istunto"
+
+#: View/Page/Profile.phtml:68 View/Template/Default.phtml:116
+msgid "Log out"
+msgstr "Kirjaudu ulos"
+
+#: View/Page/Profile.phtml:77 View/Page/Profile.phtml:97
 msgid "Delete account"
 msgstr "Poista tunnus"
 
-#: View/Page/Profile.phtml:27
+#: View/Page/Profile.phtml:79
 msgid ""
 "When deleting your account, all information associated with it are "
 "permanently deleted."
 msgstr ""
 "Poistaessasi tunnuksen kaikki siihen liittyvät tiedot poistetaan pysyvästi."
 
-#: View/Page/Profile.phtml:28
+#: View/Page/Profile.phtml:80
 msgid ""
 "If you want to, you can also delete all threads you have created and replies "
 "you have sent."
@@ -382,7 +463,7 @@ msgstr ""
 "Jos haluat, voit samalla poistaa myös kaikki aloittamasi langat ja "
 "lähettämäsi vastaukset."
 
-#: View/Page/Profile.phtml:29
+#: View/Page/Profile.phtml:81
 msgid ""
 "After deletion, your username will be freed and a new account can be created "
 "with it."
@@ -390,7 +471,7 @@ msgstr ""
 "Poistamisen jälkeen käyttäjätunnuksesi nimi vapautuu ja sillä voi luoda "
 "uuden tunnuksen."
 
-#: View/Page/Profile.phtml:30
+#: View/Page/Profile.phtml:82
 msgid ""
 "If you have a gold account, you will lose all the remaining time it has and "
 "you will not be given any compensation or a refund for it."
@@ -398,7 +479,7 @@ msgstr ""
 "Jos sinulla on kultatili, menetät kaiken jäljellä olevan ajan ja sinulle ei "
 "anneta tästä mitään hyvitystä tai korvausta."
 
-#: View/Page/Profile.phtml:32
+#: View/Page/Profile.phtml:84
 msgid ""
 "Please note that the deletion is permanent &mdash; all data associated with "
 "your account will be permanently lost and cannot be restored!"
@@ -406,15 +487,15 @@ msgstr ""
 "Huomaathan, että poistaminen on pysyvää &mdash; kaikki tunnukseesi liittyvä "
 "data poistetaan ja niitä ei voi palauttaa!"
 
-#: View/Page/Profile.phtml:34
+#: View/Page/Profile.phtml:86
 msgid "Are you sure? You will lose everything. Everything!"
 msgstr "Oletko varma? Menetät kaiken. Kaiken!"
 
-#: View/Page/Profile.phtml:36
+#: View/Page/Profile.phtml:88
 msgid "Type your current password..."
 msgstr "Kirjoita nykyinen salasanasi..."
 
-#: View/Page/Profile.phtml:39
+#: View/Page/Profile.phtml:91
 msgid ""
 "Yes, I want to permanently delete my user account and all data associated "
 "with it."
@@ -422,11 +503,11 @@ msgstr ""
 "Kyllä, haluan pysyvästi poistaa käyttäjätunnukseni ja kaiken siihen "
 "liittyvän datan."
 
-#: View/Page/Profile.phtml:43
+#: View/Page/Profile.phtml:95
 msgid "Also delete all posts I have sent."
 msgstr "Poista myös kaikki lähettämäni viestit."
 
-#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:8
+#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:7
 msgid "Create a thread"
 msgstr "Luo lanka"
 
@@ -434,21 +515,25 @@ msgstr "Luo lanka"
 msgid "Reply to thread"
 msgstr "Vastaa lankaan"
 
+#: View/Snippets/Post.phtml:3
+msgid "Reply"
+msgstr "Vastaa"
+
 #: View/Snippets/Post.phtml:6
-msgid "gold"
-msgstr "kulta"
+msgid "Donate gold"
+msgstr "Lahjoita kultatili"
 
 #: View/Snippets/Post.phtml:9
-msgid "hide"
-msgstr "piilota"
+msgid "Hide"
+msgstr "Piilota"
 
 #: View/Snippets/Post.phtml:12
-msgid "report"
-msgstr "ilmianna"
+msgid "Report"
+msgstr "Ilmianna"
 
 #: View/Snippets/Post.phtml:15
-msgid "delete"
-msgstr "poista"
+msgid "Delete"
+msgstr "Poista"
 
 #: View/Snippets/Post.phtml:23
 msgid "OP"
@@ -462,55 +547,55 @@ msgstr "Nro."
 msgid "Replies"
 msgstr "Vastaukset"
 
-#: View/Snippets/PostForm.phtml:5
+#: View/Snippets/PostForm.phtml:4
 msgid "Submit a reply"
 msgstr "Lähetä vastaus"
 
-#: View/Snippets/PostForm.phtml:11 View/Snippets/PostForm.phtml:12
+#: View/Snippets/PostForm.phtml:10 View/Snippets/PostForm.phtml:11
 msgid "Subject"
 msgstr "Aihe"
 
-#: View/Snippets/PostForm.phtml:16
+#: View/Snippets/PostForm.phtml:15
 msgid "File"
 msgstr "Tiedosto"
 
-#: View/Snippets/PostForm.phtml:49
+#: View/Snippets/PostForm.phtml:48
 msgid "Message"
 msgstr "Viesti"
 
-#: View/Snippets/PostForm.phtml:56
+#: View/Snippets/PostForm.phtml:55
 msgid "Options"
 msgstr "Valinnat"
 
-#: View/Snippets/PostForm.phtml:57 View/Template/Default.phtml:35
+#: View/Snippets/PostForm.phtml:56 View/Template/Default.phtml:35
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: View/Snippets/PostForm.phtml:58
+#: View/Snippets/PostForm.phtml:57
 msgid "Submit"
 msgstr "Lähetä"
 
-#: View/Snippets/PostForm.phtml:60
+#: View/Snippets/PostForm.phtml:59
 msgid "Functions"
 msgstr "Toiminnot"
 
-#: View/Snippets/PostForm.phtml:63
+#: View/Snippets/PostForm.phtml:62
 msgid "Don't bump the thread"
 msgstr "Älä nosta lankaa"
 
-#: View/Snippets/PostForm.phtml:67
+#: View/Snippets/PostForm.phtml:66
 msgid "Hide your name"
 msgstr "Piilota nimesi"
 
-#: View/Snippets/PostForm.phtml:69
+#: View/Snippets/PostForm.phtml:68
 msgid "Gold account functions"
 msgstr "Kultatilitoiminnot"
 
-#: View/Snippets/PostForm.phtml:72
+#: View/Snippets/PostForm.phtml:71
 msgid "Keep original file dimensions"
 msgstr ""
 
-#: View/Snippets/PostForm.phtml:76
+#: View/Snippets/PostForm.phtml:75
 msgid "Hide message from non-golds"
 msgstr "Piilota viesti kultatilittömiltä"
 
@@ -544,7 +629,7 @@ msgstr "Tapahtui virhe"
 msgid "Log out?"
 msgstr "Kirjaudu ulos?"
 
-#: View/Template/Default.phtml:34 View/Template/Default.phtml:114
+#: View/Template/Default.phtml:34 View/Template/Default.phtml:104
 msgid "Sign up"
 msgstr "Luo tunnus"
 
@@ -576,10 +661,6 @@ msgstr "Ei uusia vastauksia"
 msgid "show full message"
 msgstr "näytä koko viesti"
 
-#: View/Template/Default.phtml:77
-msgid "Gold account"
-msgstr "Kultatili"
-
 #: View/Template/Default.phtml:87
 msgid "Search Ylilauta..."
 msgstr "Hae Ylilaudalta..."
@@ -600,21 +681,44 @@ msgstr "Salasana"
 msgid "Password again"
 msgstr "Salasana uudelleen"
 
-#: View/Template/Default.phtml:109
+#: View/Template/Default.phtml:110
 msgid "Profile"
 msgstr "Profiili"
 
-#: View/Template/Default.phtml:110
+#: View/Template/Default.phtml:111
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: View/Template/Default.phtml:111
+#: View/Template/Default.phtml:112
 msgid "Toggle dark theme"
 msgstr "Vaihda tumma teema"
 
-#: View/Template/Default.phtml:118
-msgid "Log out"
-msgstr "Kirjaudu ulos"
+#~ msgid "Invalid username or password."
+#~ msgstr "Virheellinen käyttäjätunnus tai salasana."
+
+#~ msgid "You are already logged in."
+#~ msgstr "Olet jo kirjautuneena."
+
+#~ msgid "Missing username or password."
+#~ msgstr "Käyttäjätunnus tai salasana puuttuu."
+
+#~ msgid "The two passwords do not match."
+#~ msgstr "Antamasi salasanat eivät täsmää."
+
+#~ msgid "This username is already taken. Please choose another one."
+#~ msgstr "Tämä käyttäjänimi on jo käytössä. Valitse toinen."
+
+#~ msgid "gold"
+#~ msgstr "kulta"
+
+#~ msgid "hide"
+#~ msgstr "piilota"
+
+#~ msgid "report"
+#~ msgstr "ilmianna"
+
+#~ msgid "delete"
+#~ msgstr "poista"
 
 #~ msgid "Could not load your user account..."
 #~ msgstr "Käyttäjätunnuksen lataaminen epäonnistui..."

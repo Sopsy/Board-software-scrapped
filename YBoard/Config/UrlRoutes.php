@@ -26,6 +26,8 @@ return [
     '#^/scripts/user/logout$#' => ['User', 'logout'],
     '#^/scripts/user/delete#' => ['User', 'delete'],
     '#^/scripts/user/destroysession#' => ['User', 'destroySession'],
+    '#^/scripts/user/changename#' => ['User', 'changeName'],
+    '#^/scripts/user/changepassword#' => ['User', 'changePassword'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],

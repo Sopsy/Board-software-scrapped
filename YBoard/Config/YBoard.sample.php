@@ -9,13 +9,13 @@ return [
         'uploadMaxSize' => 10485760,
         'maxPages' => 100,
         'previewPosts' => 3,
-        'acceptedFileTypes' => '.jpg,.png,.gif,.mp3,.mp4,.webm',
-        'messageMaxLength' => 12000,
-        'gCsePartnerPub' => 'partner-pub-1234567890:1234567890', // Google CSE
-    ],
-    'posts' => [
         'subjectMaxLength' => 60,
         'messageMaxLength' => 12000,
+        'acceptedFileTypes' => '.jpg,.png,.gif,.mp3,.mp4,.webm',
+        'gCsePartnerPub' => 'partner-pub-1234567890:1234567890', // Google CSE
+        'usernameMaxLength' => 30,
+    ],
+    'posts' => [
         'replyIntervalLimit' => 5,
         'threadIntervalLimit' => 30,
     ],

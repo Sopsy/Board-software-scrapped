@@ -422,7 +422,7 @@ function submitPost(e) {
     }
     submitInProgress = true;
 
-    var form = $('#post-form');
+    var form = $(e.target);
     var fileInput = form.find('input:file');
 
     // Calculate upload size and check it does not exceed the set maximum
@@ -546,6 +546,57 @@ function destroySession(sessionId) {
         data: {'session_id': sessionId}
     }).done(function (xhr, textStatus, errorThrown) {
         $('#' + sessionId).fadeOut();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+
+function changeUsername(e) {
+    e.preventDefault();
+
+    var form = $(e.target);
+    var newName = form.find('input[name="newname"]').val();
+    var password = form.find('input[name="password"]').val();
+
+    $.ajax({
+        url: form.attr('action'),
+        type: "POST",
+        data: {
+            'new_name': newName,
+            'password': password
+        }
+    }).done(function (xhr, textStatus, errorThrown) {
+        pageReload();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+
+function changePassword(e) {
+    e.preventDefault();
+
+    var form = $(e.target);
+    var newPassword = form.find('input[name="newpass"]').val();
+    var newPasswordRe = form.find('input[name="newpassre"]').val();
+    var password = form.find('input[name="password"]').val();
+
+    if (newPassword != newPasswordRe) {
+        toastr.error(messages.passwordsDoNotMatch);
+        return false;
+    }
+
+    $.ajax({
+        url: form.attr('action'),
+        type: "POST",
+        data: {
+            'new_password': newPassword,
+            'password': password
+        }
+    }).done(function (xhr, textStatus, errorThrown) {
+        toastr.success(messages.passwordChanged);
+        e.target.reset();
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);

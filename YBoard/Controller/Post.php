@@ -163,7 +163,7 @@ class Post extends ExtendedController
         if (!empty($message)) {
             $message = Text::removeForbiddenUnicode($message);
             $message = Text::limitEmptyLines($message);
-            $message = mb_substr($message, 0, $this->config['posts']['messageMaxLength']);
+            $message = mb_substr($message, 0, $this->config['view']['messageMaxLength']);
         }
 
         // Check blacklist
@@ -175,7 +175,7 @@ class Post extends ExtendedController
 
         $subject = null;
         if (!$isReply && isset($_POST['subject'])) {
-            $subject = trim(mb_substr($_POST['subject'], 0, $this->config['posts']['subjectMaxLength']));
+            $subject = trim(mb_substr($_POST['subject'], 0, $this->config['view']['subjectMaxLength']));
         }
 
         $username = null;

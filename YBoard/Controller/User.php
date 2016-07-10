@@ -19,6 +19,48 @@ class User extends ExtendedController
         $view->display('Profile');
     }
 
+    public function changeName()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['new_name']) || empty($_POST['password'])) {
+            $this->throwJsonError(400);
+        }
+
+        if (mb_strlen($_POST['new_name']) > $this->config['view']['usernameMaxLength']) {
+            $this->throwJsonError(400, _('Username is too long'));
+        }
+
+        if ($this->user->username == $_POST['new_name']) {
+            $this->throwJsonError(400, _('This is your current username'));
+        }
+
+        if (!$this->user->usernameIsFree($_POST['new_name'])) {
+            $this->throwJsonError(400, _('This username is already taken, please choose another one'));
+        }
+
+        if (!$this->user->validateLogin($this->user->username, $_POST['password'])) {
+            $this->throwJsonError(401, _('Invalid password'));
+        }
+
+        $this->user->setUsername($_POST['new_name']);
+    }
+
+    public function changePassword()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['new_password']) || empty($_POST['password'])) {
+            $this->throwJsonError(400);
+        }
+
+        if (!$this->user->validateLogin($this->user->username, $_POST['password'])) {
+            $this->throwJsonError(401, _('Invalid password'));
+        }
+
+        $this->user->setPassword($_POST['new_password']);
+    }
+
     public function login()
     {
         $this->validatePostCsrfToken();
@@ -86,13 +128,11 @@ class User extends ExtendedController
     protected function doLogin()
     {
         if (empty($_POST['username']) || empty($_POST['password'])) {
-            $this->badRequest(_('Login failed'), _('Invalid username or password.'));
+            $this->badRequest(_('Login failed'), _('Invalid username or password'));
         }
 
-        $login = $this->user->validateLogin($_POST['username'], $_POST['password']);
-
-        if (!$login) {
-            $this->blockAccess(_('Login failed'), _('Invalid username or password.'));
+        if (!$this->user->validateLogin($_POST['username'], $_POST['password'])) {
+            $this->blockAccess(_('Login failed'), _('Invalid username or password'));
         }
 
         $this->user->destroySession();
@@ -110,28 +150,32 @@ class User extends ExtendedController
     protected function doSignup()
     {
         if ($this->user->loggedIn) {
-            $this->badRequest(_('Signup failed'), _('You are already logged in.'));
+            $this->badRequest(_('Signup failed'), _('You are already logged in'));
         }
 
         if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['repassword'])) {
-            $this->badRequest(_('Signup failed'), _('Missing username or password.'));
+            $this->badRequest(_('Signup failed'), _('Missing username or password'));
         }
 
         if ($_POST['password'] !== $_POST['repassword']) {
-            $this->badRequest(_('Signup failed'), _('The two passwords do not match.'));
+            $this->badRequest(_('Signup failed'), _('The two passwords do not match'));
         }
 
         if (empty($_POST["g-recaptcha-response"])) {
-            $this->badRequest(_('Signup failed'), _('Please fill the CAPTCHA.'));
+            $this->badRequest(_('Signup failed'), _('Please fill the CAPTCHA'));
         }
 
         $captchaOk = ReCaptcha::verify($_POST["g-recaptcha-response"], $this->config['reCaptcha']['privateKey']);
         if (!$captchaOk) {
-            $this->badRequest(_('Signup failed'), _('Invalid CAPTCHA response. Please try again.'));
+            $this->badRequest(_('Signup failed'), _('Invalid CAPTCHA response, please try again'));
+        }
+
+        if (mb_strlen($_POST['username']) > $this->config['view']['usernameMaxLength']) {
+            $this->badRequest(_('Signup failed'), _('Username is too long'));
         }
 
         if (!$this->user->usernameIsFree($_POST['username'])) {
-            $this->badRequest(_('Signup failed'), _('This username is already taken. Please choose another one.'));
+            $this->badRequest(_('Signup failed'), _('This username is already taken, please choose another one'));
         }
 
         $this->user->setUsername($_POST['username']);

@@ -20,10 +20,42 @@
     </div>
 </div>
 
+<div class="content-box settings-profile">
+    <h3><?= _('Tags') ?></h3>
+    <div class="flex">
+        TODO
+    </div>
+</div>
+
+<div class="content-box settings-profile">
+    <h3><?= _('User account') ?></h3>
+    <div class="flex">
+        <div>
+            <h4><?= _('Change username') ?></h4>
+            <p><?= _('Current username') ?>: <?= htmlspecialchars($user->username) ?></p>
+            <form action="/scripts/user/changename" method="post" onsubmit="changeUsername(event)">
+                <input type="text" name="newname" placeholder="<?= _('New name') ?>" maxlength="<?= $usernameMaxLength ?>" required>
+                <input type="text" name="preventautocomplete" style="display:none">
+                <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
+                <input type="submit" class="button green" value="<?= _('Change username') ?>">
+            </form>
+        </div>
+        <div>
+            <h4><?= _('Change password') ?></h4>
+            <form action="/scripts/user/changepassword" method="post" onsubmit="changePassword(event)">
+                <input type="password" name="newpass" placeholder="<?= _('New password') ?>" required>
+                <input type="password" name="newpassre" placeholder="<?= _('New password again') ?>" required>
+                <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
+                <input type="submit" class="button green" value="<?= _('Change password') ?>">
+            </form>
+        </div>
+    </div>
+</div>
+
 <?php if ($user->loggedIn) : ?>
 <div class="content-box settings-profile">
     <h3><?= _('Active logins') ?></h3>
-    <div class="columns">
+    <div class="flex center">
     <?php foreach ($loginSessions as $session) : ?>
         <div class="session" id="<?= bin2hex($session->id) ?>">
             <div><h5><?= _('IP-address') ?></h5><span><?= $session->ip ?></span></div>

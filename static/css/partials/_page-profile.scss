@@ -1,19 +1,36 @@
 .content-box.settings-profile {
-    .columns {
-        @include columns(220px, 40px);
-        div {
-            width: 100%;
-            margin-bottom: 20px;
-            display: inline-block;
-            text-align: center;
-        }
+    .columns, .flex {
         h5 {
             font-size: 1em;
             font-weight: 400;
             margin: 0;
         }
+
         span {
             font-size: 1.5em;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+    }
+
+    .columns {
+        @include columns(220px, 40px);
+        text-align: center;
+
+        div {
+            width: 100%;
+            display: inline-block;
+        }
+    }
+
+    .flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        &.center {
+            text-align: center;
         }
     }
 
@@ -36,6 +53,7 @@
             @include input-shadow($borderColor);
             margin-bottom: 10px;
         }
+
         label {
             display: block;
             margin-bottom: 10px;

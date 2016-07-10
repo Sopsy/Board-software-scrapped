@@ -1,6 +1,5 @@
 <form id="post-form" action="/scripts/posts/submit" method="post" onsubmit="submitPost(event)">
     <fieldset>
-    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 <?php if (!empty($thread->id)) : ?>
     <h3><?= _('Submit a reply') ?></h3>
     <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
@@ -9,7 +8,7 @@
     <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
     <label id="label-subject">
         <span><?= _('Subject') ?></span>
-        <input type="text" name="subject" placeholder="<?= _('Subject') ?>">
+        <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $subjectMaxLength ?>">
     </label>
 <?php endif ?>
     <label id="label-file">

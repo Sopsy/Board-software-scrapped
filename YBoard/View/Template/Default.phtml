@@ -41,6 +41,8 @@
             confirmUnload: '<?= _('Your message will be lost.') ?>',
             noNewReplies: '<?= _('No new replies') ?>',
             showFullMessage: '<?= _('show full message') ?>',
+            passwordsDoNotMatch: '<?= _('The two passwords do not match') ?>',
+            passwordChanged: '<?= _('Password changed') ?>',
         };
     </script>
     <?php if ($user->requireCaptcha) : ?>
@@ -94,7 +96,7 @@
         <form id="login" action="/scripts/user/login" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="hidden" name="redirto" value="<?= htmlspecialchars(empty($redirTo)?$_SERVER['REQUEST_URI']:$redirTo) ?>">
-            <input type="text" name="username" placeholder="<?= _('Username') ?>" required>
+            <input type="text" name="username" placeholder="<?= _('Username') ?>" maxlength="<?= $usernameMaxLength ?>" required>
             <input type="password" name="password" placeholder="<?= _('Password') ?>" required>
             <div id="signup-form">
                 <input type="password" name="repassword" placeholder="<?= _('Password again') ?>">

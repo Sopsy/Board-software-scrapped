@@ -15,3 +15,9 @@ $quoteColor: #789922;
 $blueQuoteColor: #226199;
 
 @import 'themes/default';
+
+#user .button.icon-lamp {
+    color: #ffd700;
+    text-shadow: 0 0 5px #ffd700;
+}
+
