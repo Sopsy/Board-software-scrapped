@@ -1,7 +1,3 @@
-@mixin input-shadow($color: #ddd) {
-    box-shadow: 0 1px 4px $color inset;
-}
-
 #content > #post-form:not(.visible) {
     display: none;
 }

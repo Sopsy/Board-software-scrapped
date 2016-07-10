@@ -1,0 +1,132 @@
+body {
+    background: $bgColor;
+    font: 14px "Segoe UI", "Roboto", "Helvetica", sans-serif;
+    color: $textColor;
+    word-wrap: break-word;
+}
+
+img { max-width: 100% }
+
+a {
+    text-decoration: none;
+    color: $linkColor;
+}
+a:hover { color: $linkHoverColor }
+img { vertical-align: top }
+
+button, a, input, textarea, select {
+    outline: none !important;
+}
+
+button.link {
+    color: $linkColor;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        color: $linkHoverColor;
+    }
+}
+
+.button {
+    border: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1.5em;
+
+    &.gray {
+        $color: #000;
+        $bg: #ccc;
+        @if (lightness($bgColor) < 50) {
+            $bg: #444;
+            $color: #eee
+        }
+
+        color: $color;
+        background-color: $bg;
+        &:hover {
+            background-color: lighten($bg, 10%);
+        }
+    }
+    &.green {
+        color: #fff;
+        background-color: $highlightColor;
+        &:hover {
+            background-color: lighten($highlightColor, 10%);
+        }
+    }
+    &.transparent {
+        color: #fff;
+        padding: 5px 0;
+        background-color: transparent;
+    }
+
+    &.square {
+        box-sizing: border-box;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        padding: 0;
+        text-align: center;
+        font-size: 20px;
+    }
+}
+
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: 400;
+}
+h2 {
+    font-size: 1.25em;
+    font-weight: 400;
+}
+h3 {
+    font-size: 1.5em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $highlightColor;
+    margin-bottom: 20px;
+}
+h4 {
+    font-size: 1.25em;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: $highlightColor;
+    margin-bottom: 10px;
+}
+
+#content {
+    margin-left: 220px;
+    overflow: hidden;
+    .error-image {
+        margin-top: 60px;
+        max-width: 100%;
+    }
+}
+
+.content-box {
+    padding: 40px 60px;
+    background-color: $contentBgColor;
+    margin: 20px 10px;
+    $shadowColor: darken($bgColor, 5%);
+    @if (lightness($bgColor) < 10) {
+        $shadowColor: lighten($bgColor, 5%);
+    }
+    box-shadow: 0 0 10px 0 $shadowColor;
+
+    p {
+        line-height: 1.25em;
+    }
+
+    h3 {
+        text-align: center;
+    }
+}

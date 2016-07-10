@@ -1,4 +1,6 @@
 <?php
 namespace YBoard\Exceptions;
 
-class InternalException extends \Exception {}
+class InternalException extends \Exception
+{
+}

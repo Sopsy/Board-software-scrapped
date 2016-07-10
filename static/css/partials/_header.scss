@@ -1,0 +1,22 @@
+.page-header {
+    background: #333 url('/img/front_bg.jpg') no-repeat 50% 90%;
+    background-size: cover;
+    padding: 80px 20px 20px 20px;
+    color: #fff;
+    text-shadow: 2px 2px 2px #000, 0 0 40px #000, 0 0 10px #000;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 -10px 10px -10px #777 inset;
+
+    a { color: #fff }
+    h1, h2 {
+        margin-right: 150px;
+    }
+    .buttons {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1rem;
+        vertical-align: bottom;
+    }
+}

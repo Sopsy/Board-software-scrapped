@@ -1,0 +1,40 @@
+.content-box.settings-profile {
+    .columns {
+        @include columns(200px, 40px);
+        div {
+            width: 100%;
+            margin-bottom: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+        h5 {
+            font-size: 1em;
+            font-weight: 400;
+            margin: 0;
+        }
+        span {
+            font-size: 1.5em;
+        }
+    }
+
+    form {
+        input[type="password"] {
+            min-width: 200px;
+            padding: 3px 5px;
+            width: 50%;
+            display: block;
+            background-color: transparent;
+            $border: #ccc;
+            @if (lightness($contentBgColor) < 50) {
+                $border: #333;
+            }
+            border: 1px solid $border;
+            @include input-shadow($border);
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+}

@@ -9,9 +9,11 @@ class UserStatistics extends Model
     public $pageLoads = 1;
     public $sentReplies = 0;
     public $createdThreads = 0;
+    public $totalPosts = 0;
     public $uploadedFiles = 0;
     public $uploadedFilesTotalSize = 0;
     public $messageTotalCharacters = 0;
+    public $messageAverageLength = 0;
     public $epicThreads = 0;
     public $purchasesTotalPrice = 0;
     public $goldAccountsDonated = 0;
@@ -97,6 +99,13 @@ class UserStatistics extends Model
             }
 
             $this->{$this->keyNames[$row->statistics_key]} = $row->statistics_value;
+        }
+
+        $this->totalPosts = $this->createdThreads + $this->sentReplies;
+        $this->purchasesTotalPrice = str_replace(',', '.', $this->purchasesTotalPrice / 100);
+
+        if ($this->totalPosts != 0) {
+            $this->messageAverageLength = round($this->messageTotalCharacters / $this->totalPosts);
         }
 
         return true;

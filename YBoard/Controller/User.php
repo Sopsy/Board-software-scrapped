@@ -3,11 +3,21 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
+use YBoard\Exceptions\UserException;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
+use YBoard\Model\Posts;
 
-class LogInOut extends ExtendedController
+class User extends ExtendedController
 {
+    public function index()
+    {
+        $view = $this->loadTemplateEngine();
+        $view->pageTitle = _('Your profile');
+
+        $view->display('Profile');
+    }
+
     public function login()
     {
         if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
@@ -39,6 +49,25 @@ class LogInOut extends ExtendedController
         $destroySession = $this->user->destroySession();
         if (!$destroySession) {
             $this->dieWithError(_('What the!? Can\'t logout!?'));
+        }
+
+        $this->deleteLoginCookie(false);
+        HttpResponse::redirectExit('/');
+    }
+
+    public function delete()
+    {
+        if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
+            $this->badRequest();
+        }
+
+        $posts = new Posts($this->db);
+        $posts->deleteByUser($this->user->id);
+
+        try {
+            $this->user->delete($this->user->id, $_POST['password']);
+        } catch (UserException $e) {
+            $this->badRequest(_('User account not deleted'), $e->getMessage());
         }
 
         $this->deleteLoginCookie(false);

@@ -46,6 +46,16 @@ jQuery.fn.extend({
             this.innerHTML = date.toLocaleString();
         });
     },
+    localizeNumber: function () {
+        return this.each(function () {
+            this.innerHTML = parseFloat(this.innerHTML).toLocaleString();
+        });
+    },
+    localizeCurrency: function () {
+        return this.each(function () {
+            this.innerHTML = parseFloat(this.innerHTML).toLocaleString(true, {'style': 'currency', 'currency': 'eur'});
+        });
+    },
     addShowFullPostButtons: function () {
         return this.each(function () {
             var self = $(this);
@@ -570,9 +580,11 @@ function toggleDarkTheme() {
 }
 
 // -------------------------------------------
-// Localize dates in posts
+// Localize dates and numbers
 // -------------------------------------------
 $('.datetime').localizeTimestamp();
+$('.number').localizeNumber();
+$('.currency').localizeCurrency();
 
 // -------------------------------------------
 // Spoilers & reflinks
@@ -628,7 +640,7 @@ function addReflinkTooltip(elm) {
         arrow: false,
         contentAsHTML: true,
         theme: 'thread',
-        trigger: 'custom'
+        trigger: 'custom',
     }).tooltipster('open');
     var id = elm.data('id');
 

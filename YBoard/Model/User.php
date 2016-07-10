@@ -2,6 +2,7 @@
 namespace YBoard\Model;
 
 use YBoard\Exceptions\DatabaseException;
+use YBoard\Exceptions\UserException;
 use YBoard\Model;
 
 class User extends Model
@@ -11,6 +12,7 @@ class User extends Model
 
     public $id;
     public $sessionId;
+    public $accountCreated;
     public $csrfToken;
     public $username;
     public $class;
@@ -24,15 +26,12 @@ class User extends Model
 
     public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class, gold_level FROM user_sessions
+        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class, gold_level, account_created
+            FROM user_sessions
             LEFT JOIN user_accounts ON id = user_id
             WHERE session_id = :sessionId LIMIT 1");
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not load your user account...'));
-        }
 
         if ($q->rowCount() == 0) {
             return false;
@@ -40,6 +39,7 @@ class User extends Model
 
         $user = $q->fetch();
         $this->id = $user->id;
+        $this->accountCreated = date('c', strtotime($user->account_created));
         $this->sessionId = $user->session_id;
         $this->csrfToken = bin2hex($user->csrf_token);
         $this->username = $user->username;
@@ -66,10 +66,6 @@ class User extends Model
         $q->bindValue('sessionId', $this->sessionId);
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not refresh your user account...'));
-        }
 
         return true;
     }
@@ -126,10 +122,6 @@ class User extends Model
 
         $q->execute();
 
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not update the user account...'));
-        }
-
         return true;
     }
 
@@ -142,10 +134,6 @@ class User extends Model
     public function create()
     {
         $q = $this->db->query("INSERT INTO user_accounts VALUES ()");
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not create an user account...'));
-        }
 
         $this->id = $this->db->lastInsertId();
         $this->loadSubclasses(true);
@@ -161,29 +149,37 @@ class User extends Model
         return true;
     }
 
-    public function delete($userId)
+    public function delete(int $userId, string $password, bool $skipPasswordCheck = false) : bool
     {
-        $q = $this->db->prepare("DELETE FROM user_accounts WHERE id = :userId LIMIT 1");
-        $q->bindValue('userId', $userId);
+        $q = $this->db->prepare("SELECT password FROM user_accounts WHERE id = :user_id LIMIT 1");
+        $q->bindValue('user_id', $userId);
         $q->execute();
+
+        if ($q->rowCount() == 0) {
+            throw new UserException(_('Invalid user'));
+        }
+
+        if (!$skipPasswordCheck) {
+            $user = $q->fetch();
+            if (!password_verify($password, $user->password)) {
+                throw new UserException(_('Invalid password'));
+            }
+        }
+
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not delete the user account...'));
-        }
+        $q = $this->db->prepare("DELETE FROM user_accounts WHERE id = :user_id LIMIT 1");
+        $q->bindValue('user_id', $userId);
+        $q->execute();
 
         return true;
     }
 
     public function validateLogin($username, $password)
     {
-        $q = $this->db->prepare("SELECT id, username, password, class FROM user_accounts WHERE username = ? LIMIT 1");
-        $q->execute([$username]);
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not validate login info...'));
-        }
+        $q = $this->db->prepare("SELECT id, username, password, class FROM user_accounts WHERE username = :username LIMIT 1");
+        $q->bindValue('username', $username);
+        $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
@@ -219,10 +215,6 @@ class User extends Model
         $q->bindValue('userId', $userId);
         $q->execute();
 
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not set password for the user account...'));
-        }
-
         return true;
     }
 
@@ -236,10 +228,6 @@ class User extends Model
         $q->bindValue('newUsername', $newUsername);
         $q->bindValue('userId', $userId);
         $q->execute();
-
-        if ($q === false) {
-            Throw new DatabaseException(_('Could not set username for the user account...'));
-        }
 
         return true;
     }
@@ -255,10 +243,6 @@ class User extends Model
         $q->bindValue('csrfToken', $csrfToken);
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
-
-        if ($q === false) {
-            throw new DatabaseException(_('Could not create session for the user account..'));
-        }
 
         $this->sessionId = $sessionId;
         $this->csrfToken = bin2hex($csrfToken);
@@ -276,10 +260,6 @@ class User extends Model
         $q->bindValue('sessionId', $sessionId);
         $q->execute();
 
-        if ($q === false) {
-            throw new DatabaseException(_('Could not destroy the login session...'));
-        }
-
         return true;
     }
 
@@ -288,10 +268,6 @@ class User extends Model
         $q = $this->db->prepare("SELECT id FROM user_accounts WHERE username LIKE :username LIMIT 1");
         $q->bindValue('username', $username);
         $q->execute();
-
-        if ($q === false) {
-            throw new DatabaseException(_('Could not check if the username is free...'));
-        }
 
         if ($q->rowCount() == 0) {
             return true;

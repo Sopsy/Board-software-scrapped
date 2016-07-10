@@ -1,0 +1,43 @@
+<?php include($viewFilesPath . '/Snippets/PageHeader.phtml'); ?>
+
+<div class="content-box settings-profile">
+    <h3><?= _('Trivia') ?></h3>
+    <div class="columns">
+        <div><h5><?= _('Account created') ?></h5><span class="datetime"><?= $user->accountCreated ?></span></div>
+        <div><h5><?= _('User ID') ?></h5><span class="number"><?= $user->id ?></span></div>
+        <div><h5><?= _('Gold level') ?></h5><span class="number"><?= $user->goldLevel ?></span></div>
+        <div><h5><?= _('Page loads') ?></h5><span class="number"><?= $user->statistics->pageLoads ?></span></div>
+        <div><h5><?= _('Created threads') ?></h5><span class="number"><?= $user->statistics->createdThreads ?></span></div>
+        <div><h5><?= _('Sent replies') ?></h5><span class="number"><?= $user->statistics->sentReplies ?></span></div>
+        <div><h5><?= _('Uploaded files') ?></h5><span class="number"><?= $user->statistics->uploadedFiles ?></span></div>
+        <div><h5><?= _('Total size of uploaded files') ?></h5><span><?= \YBoard\Library\Text::formatBytes($user->statistics->uploadedFilesTotalSize) ?></span></div>
+        <div><h5><?= _('Total characters in messages') ?></h5><span class="number"><?= $user->statistics->messageTotalCharacters ?></span></div>
+        <div><h5><?= _('Average message length') ?></h5><span class="number"><?= $user->statistics->messageAverageLength ?></span></div>
+        <div><h5><?= _('Epic threads') ?></h5><span class="number"><?= $user->statistics->epicThreads ?></span></div>
+        <div><h5><?= _('Gold accounts donated') ?></h5><span class="number"><?= $user->statistics->goldAccountsDonated ?></span></div>
+        <div><h5><?= _('Gold accounts received') ?></h5><span class="number"><?= $user->statistics->goldAccountsReceived ?></span></div>
+        <div><h5><?= _('Total purchases') ?></h5><span class="currency"><?= $user->statistics->purchasesTotalPrice ?></span></div>
+    </div>
+</div>
+
+<?php if ($user->loggedIn) : ?>
+<div class="content-box settings-profile">
+    <h3><?= _('Delete account') ?></h3>
+    <p>
+        <?= _('When deleting your account, all your statistics, threads you have created and replies you have sent are deleted along with it.') ?>
+        <?= _('Your username will be freed and a new account can be created with it.') ?>
+        <?= _('If you have a gold account, you will lose all the remaining time it has and you will not be given any compensation or a refund for it.') ?>
+    </p>
+    <p><strong><?= _('Please note that the deletion is permanent &mdash; all data associated with your account will be permanently lost and cannot be restored!') ?></strong></p>
+
+    <form action="/scripts/user/delete" method="post" onsubmit="if(!window.confirm('<?= _('Are you sure? You will lose everything. Everything!') ?>')){return false}">
+        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+        <input type="password" name="password" placeholder="<?= _('Type your current password...') ?>" required>
+        <label>
+            <input type="checkbox" name="confirm" required>
+            <?= _('Yes, I want to permanently delete my user account and all data associated with it.') ?>
+        </label>
+        <input class="button green" type="submit" value="<?= _('Delete account') ?>">
+    </form>
+</div>
+<?php endif ?>

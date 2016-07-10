@@ -20,9 +20,11 @@ return [
     '#^/scripts/preferences/save#' => ['Preferences', 'save'],
     '#^/scripts/preferences/toggledarktheme#' => ['Preferences', 'toggleDarkTheme'],
 
-    // Log in/-out
-    '#^/scripts/user/login$#' => ['LogInOut', 'login'],
-    '#^/scripts/user/logout$#' => ['LogInOut', 'logout'],
+    // User account related
+    '#^/profile#' => ['User', 'index'],
+    '#^/scripts/user/login$#' => ['User', 'login'],
+    '#^/scripts/user/logout$#' => ['User', 'logout'],
+    '#^/scripts/user/delete#' => ['User', 'delete'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],

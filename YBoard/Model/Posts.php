@@ -347,6 +347,24 @@ class Posts extends Model
         return $q->rowCount() != 0;
     }
 
+    public function deleteByUser(int $userId, int $intervalHours = 1000000) : bool
+    {
+        $q = $this->db->prepare("INSERT INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
+            SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts
+            WHERE user_id = :user_id AND time >= DATE_SUB(NOW(), INTERVAL :interval_hours HOUR)");
+        $q->bindValue('user_id', $userId);
+        $q->bindValue('interval_hours', $intervalHours);
+        $q->execute();
+
+        $q = $this->db->prepare("DELETE FROM posts
+            WHERE user_id = :user_id AND time >= DATE_SUB(NOW(), INTERVAL :interval_hours HOUR)");
+        $q->bindValue('user_id', $userId);
+        $q->bindValue('interval_hours', $intervalHours);
+        $q->execute();
+
+        return true;
+    }
+
     public function updateThreadStats(int $threadId, string $key, int $val = 1) : bool
     {
         switch ($key) {
