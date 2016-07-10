@@ -26,6 +26,7 @@ class Board extends ExtendedController
         // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
         $view->paginationBase = '';
+        $view->maxPages = $this->config['view']['maxPages'];
         $view->paginationStartPage = $pageNum - 1;
         if ($view->paginationStartPage < 2) {
             $view->paginationStartPage = 2;
@@ -65,6 +66,7 @@ class Board extends ExtendedController
         // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
         $view->paginationBase = '/catalog';
+        $view->maxPages = $this->config['view']['maxCatalogPages'];
         $view->paginationStartPage = $pageNum - 1;
         if ($view->paginationStartPage < 2) {
             $view->paginationStartPage = 2;

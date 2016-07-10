@@ -25,7 +25,7 @@
         <?php for ($i = $paginationStartPage; $i <= $paginationEndPage; ++$i) : ?>
             <a href="/<?= $board->url . $paginationBase ?>-<?= $i ?>/"<?= ($pageNum==$i?' class="cur"':'') ?>><?= $i ?></a>
         <?php endfor ?>
-        <?php if ($pageNum < 100) : ?>
+        <?php if ($pageNum < $maxPages) : ?>
             <a href="/<?= $board->url . $paginationBase ?>-<?= $pageNum+1 ?>/" class="icon icon-chevron-right chevron"></a>
         <?php endif ?>
         <div class="display-styles">

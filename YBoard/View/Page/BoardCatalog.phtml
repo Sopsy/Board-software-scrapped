@@ -3,8 +3,8 @@
 
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
 
-<div class="catalog">
 <?php if (!empty($threads)) : ?>
+<div class="catalog">
     <?php foreach($threads as $thread) : ?>
         <div class="thread-box" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
             <?php include($viewFilesPath . '/Snippets/ThreadSubject.phtml') ?>
@@ -12,12 +12,6 @@
                 <div class="op-post" id="post-<?= $thread->id ?>">
                     <?php $post = $thread ?>
                     <div class="post-buttons">
-                        <?php if (!$thread->locked || $user->isMod) : ?>
-                            <button class="button square icon-bubbles" onclick="replyToPost(<?= $post->id ?>)" title="<?= _('Reply') ?>"></button>
-                        <?php endif ?>
-                        <!--
-                            <a href="#"><?= _('Donate gold') ?></a>
-                        -->
                         <?php if (!$post->threadId) : ?>
                             <button class="button square icon-minus" onclick="" title="<?= _('Hide') ?>"></button>
                         <?php endif ?>
@@ -30,13 +24,16 @@
                     </div>
 
                     <blockquote class="post">
-                        <?php if (!empty($post->file)) : ?>
                             <figure class="post-file thumbnail">
-                                <a href=/<?= $board->url ?>/<?= $thread->id ?>">
-                                    <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                                <a href="/<?= $board->url ?>/<?= $thread->id ?>">
+                                    <?php if (!empty($post->file)) : ?>
+                                        <?php $src = $staticUrl . '/files/' . $post->file->folder . '/t/' . $post->file->name . '.jpg' ?>
+                                    <?php else : ?>
+                                        <?php $src = $staticUrl . '/img/norppa_ylilauta.svg' ?>
+                                    <?php endif ?>
+                                    <img src="<?= $src ?>" alt="">
                                 </a>
                             </figure>
-                        <?php endif ?>
                         <?= $post->messageFormatted ?>
                     </blockquote>
                 </div>
@@ -44,9 +41,11 @@
             </div>
         </div>
     <?php endforeach; unset($thread); ?>
-<?php else : ?>
-    <h3><?= _('There are no threads here...') ?></h3>
-<?php endif ?>
 </div>
+<?php else : ?>
+<div class="content-box">
+    <h3><?= _('There are no threads here...') ?></h3>
+</div>
+<?php endif ?>
 
 <?php include($viewFilesPath . '/Snippets/BoardNavigation.phtml') ?>

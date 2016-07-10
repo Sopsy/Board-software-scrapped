@@ -84,11 +84,11 @@
         }
 
         .post {
-            margin: 5px;
+            margin: 0 5px;
             font-size: 0.9em;
 
             .post-file {
-                margin: -5px -5px 0 -5px;
+                margin: 0 -5px 5px -5px;
                 text-align: center;
                 $bg: darken($contentBgColor, 5%);
                 @if (lightness($contentBgColor) < 50) {
@@ -99,6 +99,10 @@
                 img {
                     max-height: 100px;
                 }
+            }
+
+            pre {
+                overflow: hidden;
             }
         }
 
