@@ -61,8 +61,10 @@ class User extends ExtendedController
             $this->badRequest();
         }
 
-        $posts = new Posts($this->db);
-        $posts->deleteByUser($this->user->id);
+        if (!empty($_POST['delete_posts'])) {
+            $posts = new Posts($this->db);
+            $posts->deleteByUser($this->user->id);
+        }
 
         try {
             $this->user->delete($this->user->id, $_POST['password']);

@@ -24,8 +24,9 @@
 <div class="content-box settings-profile">
     <h3><?= _('Delete account') ?></h3>
     <p>
-        <?= _('When deleting your account, all your statistics, threads you have created and replies you have sent are deleted along with it.') ?>
-        <?= _('Your username will be freed and a new account can be created with it.') ?>
+        <?= _('When deleting your account, all information associated with it are permanently deleted.') ?>
+        <?= _('If you want to, you can also delete all threads you have created and replies you have sent.') ?>
+        <?= _('After deletion, your username will be freed and a new account can be created with it.') ?>
         <?= _('If you have a gold account, you will lose all the remaining time it has and you will not be given any compensation or a refund for it.') ?>
     </p>
     <p><strong><?= _('Please note that the deletion is permanent &mdash; all data associated with your account will be permanently lost and cannot be restored!') ?></strong></p>
@@ -36,6 +37,10 @@
         <label>
             <input type="checkbox" name="confirm" required>
             <?= _('Yes, I want to permanently delete my user account and all data associated with it.') ?>
+        </label>
+        <label>
+            <input type="checkbox" name="delete_posts">
+            <?= _('Also delete all posts I have sent.') ?>
         </label>
         <input class="button green" type="submit" value="<?= _('Delete account') ?>">
     </form>
