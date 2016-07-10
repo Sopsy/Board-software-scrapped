@@ -41,12 +41,12 @@ class UserStatistics extends Model
         1001 => 'niilo22Donations',
     ];
 
-    public function __construct(Database $db, int $userId, bool $skipLoad = false)
+    public function __construct(Database $db, $userId, bool $skipLoad = false)
     {
         parent::__construct($db);
         $this->userId = $userId;
 
-        if (!$skipLoad) {
+        if ($this->userId !== false && !$skipLoad) {
             $this->load();
         }
     }
@@ -54,7 +54,7 @@ class UserStatistics extends Model
     public function __destruct()
     {
         // Delayed update to prevent unnecessary database queries
-        if (empty($this->toUpdate)) {
+        if ($this->userId === false || empty($this->toUpdate)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class UserStatistics extends Model
         return true;
     }
 
-    public function increment($keyName, int $incrementBy = 1) : bool
+    public function increment(string $keyName, int $incrementBy = 1) : bool
     {
         $key = array_search($keyName, $this->keyNames);
 

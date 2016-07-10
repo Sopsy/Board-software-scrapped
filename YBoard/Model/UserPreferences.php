@@ -13,12 +13,12 @@ class UserPreferences extends Model
     protected $preferences;
     protected $toUpdate = [];
 
-    public function __construct(Database $db, int $userId, bool $skipLoad = false)
+    public function __construct(Database $db, $userId, bool $skipLoad = false)
     {
         parent::__construct($db);
         $this->userId = $userId;
 
-        if (!$skipLoad) {
+        if ($userId !== false && !$skipLoad) {
             $this->load();
         }
     }
@@ -26,7 +26,7 @@ class UserPreferences extends Model
     public function __destruct()
     {
         // Delayed update to prevent unnecessary database queries
-        if (empty($this->toUpdate)) {
+        if ($this->userId === false || empty($this->toUpdate)) {
             return true;
         }
 

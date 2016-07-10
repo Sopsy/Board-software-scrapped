@@ -27,11 +27,10 @@ class Post extends ExtendedController
             $this->throwJsonError(404, _('Post does not exist'));
         }
 
-        if (!empty($post->threadId)) {
-            $thread = $posts->getThreadMeta($post->threadId);
-        } else {
-            $thread = $post;
+        if (empty($post->threadId)) {
+            $post->threadId = $post->id;
         }
+        $thread = $posts->getThreadMeta($post->threadId);
 
         $view = $this->loadTemplateEngine('Blank');
 

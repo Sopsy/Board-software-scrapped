@@ -74,6 +74,7 @@ abstract class ExtendedController extends YBoard\Controller
         } else {
             // Session does not exist
             if ($this->userMaybeBot()) {
+                $this->user->createTemporary();
                 return false;
             }
 

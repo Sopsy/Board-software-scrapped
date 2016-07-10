@@ -46,8 +46,8 @@ class User extends Model
         $this->class = $user->class;
         $this->goldLevel = $user->gold_level;
         $this->loggedIn = empty($user->username) ? false : true;
-        $this->preferences = new UserPreferences($this->db, $this->id);
-        $this->statistics = new UserStatistics($this->db, $this->id);
+
+        $this->loadSubclasses();
 
         // TODO: Maybe change to sentPosts > n instead
         $this->requireCaptcha = !$this->loggedIn;
@@ -133,6 +133,12 @@ class User extends Model
         return true;
     }
 
+    public function createTemporary()
+    {
+        $this->id = false;
+        $this->loadSubclasses(true);
+    }
+
     public function create()
     {
         $q = $this->db->query("INSERT INTO user_accounts VALUES ()");
@@ -142,8 +148,15 @@ class User extends Model
         }
 
         $this->id = $this->db->lastInsertId();
-        $this->preferences = new UserPreferences($this->db, $this->id, true);
-        $this->statistics = new UserStatistics($this->db, $this->id, true);
+        $this->loadSubclasses(true);
+
+        return true;
+    }
+
+    protected function loadSubclasses(bool $skipDbLoad = false) : bool
+    {
+        $this->preferences = new UserPreferences($this->db, $this->id, $skipDbLoad);
+        $this->statistics = new UserStatistics($this->db, $this->id, $skipDbLoad);
 
         return true;
     }
