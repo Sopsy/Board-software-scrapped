@@ -7,8 +7,8 @@
     }
     .spoiler {
         $color: #000000;
-        @if (lightness($contentBgColor) < 20) {
-            $color: #cccccc;
+        @if (lightness($contentBgColor) < 5) {
+            $color: #333;
         }
         background-color: $color;
         padding: 0 5px;

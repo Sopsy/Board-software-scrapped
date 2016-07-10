@@ -45,6 +45,21 @@ jQuery.fn.extend({
             var date = new Date(this.innerHTML);
             this.innerHTML = date.toLocaleString();
         });
+    },
+    addShowFullPostButtons: function() {
+        return this.each(function () {
+            var self = $(this);
+            if (self.hasClass('buttoned')) {
+                return true;
+            }
+
+            self.addClass('buttoned');
+            if (this.scrollHeight > this.offsetHeight + 100) {
+                self.after('<button class="link post-truncated" onclick="showFullPost(this)">' + messages.showFullMessage + '</button>');
+            } else if (this.scrollHeight > this.offsetHeight) {
+                showFullPost(this);
+            }
+        })
     }
 });
 
@@ -126,6 +141,7 @@ function getMoreReplies(threadId) {
             data.find('.datetime').localizeTimestamp(this);
 
             $t(threadId).find('.more-replies-container').html(data);
+            $t(threadId).find('.post:not(.buttoned)').addShowFullPostButtons();
         }).fail(function (xhr, textStatus, errorThrown) {
             var errorMessage = getErrorMessage(xhr, errorThrown);
             toastr.error(errorMessage);
@@ -192,6 +208,7 @@ function getNewReplies(threadId, manual) {
         newReplies += lastUpdateNewReplies;
 
         data.appendTo(thread.find('.replies'));
+        thread.find('.post:not(.buttoned)').addShowFullPostButtons();
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
@@ -208,7 +225,7 @@ if ($('body').hasClass('thread-page')) {
             var windowBottom = $(window).height() + $(window).scrollTop();
             var repliesBottom = $('.replies').offset().top + $('.replies').height();
             if (windowBottom > repliesBottom) {
-                if (!updateRunning) {
+                if (!updateRunning && !$('#message-input').find('textarea').is(':focus')) {
                     updateRunning = true;
                     startAutoUpdate();
                 }
@@ -227,7 +244,7 @@ if ($('body').hasClass('thread-page')) {
             }
         });
     var startTimeout;
-    $('#message-input')
+    $('#message-input').find('textarea')
         .on('focus', function () {
             clearTimeout(startTimeout);
             stopAutoUpdate();
@@ -279,13 +296,7 @@ function stopAutoUpdate() {
 // -------------------------------------------
 // Truncated long posts
 // -------------------------------------------
-$('.post').each(function () {
-    if (this.scrollHeight > this.offsetHeight + 100) {
-        $(this).after('<button class="link post-truncated" onclick="showFullPost(this)">näytä koko viesti</button>');
-    } else if (this.scrollHeight > this.offsetHeight) {
-        showFullPost(this);
-    }
-});
+$('.post:not(.buttoned)').addShowFullPostButtons();
 
 function showFullPost(elm) {
     $(elm).parent('.op-post, .reply').find('.post').addClass('full');
