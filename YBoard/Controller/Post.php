@@ -17,12 +17,12 @@ class Post extends ExtendedController
     {
         $this->validateAjaxCsrfToken();
 
-        if (empty($_POST['postId'])) {
+        if (empty($_POST['post_id'])) {
             $this->throwJsonError(400);
         }
 
         $posts = new Posts($this->db);
-        $post = $posts->get($_POST['postId']);
+        $post = $posts->get($_POST['post_id']);
         if (!$post) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
@@ -248,7 +248,7 @@ class Post extends ExtendedController
             $this->user->statistics->increment('uploadedFilesTotalSize', $_FILES['files']['size']);
         }
 
-        // TODO: Save replies
+        // Save replies
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
         $postReplies = array_unique($postReplies[1]);
         $posts->setPostReplies($postId, $postReplies);
@@ -259,19 +259,18 @@ class Post extends ExtendedController
         if (!$isReply) {
             $this->jsonMessage($postId);
         }
-        //$this->throwJsonError(400, $postId);
     }
 
     public function delete()
     {
         $this->validateAjaxCsrfToken();
 
-        if (empty($_POST['postId'])) {
+        if (empty($_POST['post_id'])) {
             $this->throwJsonError(400);
         }
 
         $posts = new Posts($this->db);
-        $post = $posts->getMeta($_POST['postId']);
+        $post = $posts->getMeta($_POST['post_id']);
         if (!$post) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
@@ -284,6 +283,6 @@ class Post extends ExtendedController
             $posts->updateThreadStats($post->threadId, 'replyCount', -1);
         }
 
-        $posts->delete($_POST['postId']);
+        $posts->delete($_POST['post_id']);
     }
 }

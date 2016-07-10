@@ -8,6 +8,7 @@ return [
         'staticUrl' => '//static.example.com',
         'uploadMaxSize' => 10485760,
         'maxPages' => 100,
+        'maxCatalogPages' => 5,
         'previewPosts' => 3,
         'subjectMaxLength' => 60,
         'messageMaxLength' => 12000,

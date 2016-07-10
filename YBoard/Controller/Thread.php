@@ -46,18 +46,22 @@ class Thread extends ExtendedController
     {
         $this->validateAjaxCsrfToken();
 
-        if (empty($_POST['threadId']) || !isset($_POST['fromId'])) {
+        if (empty($_POST['thread_id']) || !isset($_POST['from_id'])) {
             $this->throwJsonError(400);
         }
 
         $newest = empty($_POST['newest']) ? false : true;
 
         $posts = new Posts($this->db);
-        $replies = $posts->getReplies($_POST['threadId'], null, $newest, $_POST['fromId']);
+        if ($posts->getThreadMeta($_POST['thread_id']) === false) {
+            $this->throwJsonError(404, _('Thread does not exist'));
+        }
+
+        $replies = $posts->getReplies($_POST['thread_id'], null, $newest, $_POST['from_id']);
 
         $view = $this->loadTemplateEngine('Blank');
 
-        $view->thread = $posts->getThreadMeta($_POST['threadId']);
+        $view->thread = $posts->getThreadMeta($_POST['thread_id']);
         $view->board = $this->boards->getById($view->thread->boardId);
         $view->tooltip = false;
 

@@ -119,7 +119,11 @@ class Posts extends Model
             $thread->subject = $row->subject;
             $thread->message = $row->message;
             $thread->messageFormatted = Text::formatMessage($row->message);
-            $thread->threadReplies = $this->getReplies($row->id, $replyCount, true);
+            if ($replyCount != 0) {
+                $thread->threadReplies = $this->getReplies($row->id, $replyCount, true);
+            } else {
+                $thread->threadReplies = false;
+            }
             $thread->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
 
             $thread->statistics = new ThreadStatistics();
@@ -164,7 +168,7 @@ class Posts extends Model
             $q->bindValue('from', $fromId);
         }
         $q->execute();
-
+        
         $replies = [];
         while ($row = $q->fetch()) {
             $tmp = new Reply();

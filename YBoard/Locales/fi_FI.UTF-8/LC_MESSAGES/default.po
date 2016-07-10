@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-10 22:58+0300\n"
-"PO-Revision-Date: 2016-07-10 23:00+0300\n"
+"POT-Creation-Date: 2016-07-10 23:09+0300\n"
+"PO-Revision-Date: 2016-07-10 23:09+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -38,23 +38,23 @@ msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 msgid "Please don't. %s pages is enough."
 msgstr "Älähän nyt. %s sivua on tarpeeksi."
 
-#: Controller/GoldAccount.php:11 View/Template/Default.phtml:77
+#: Controller/GoldAccount.php:11 View/Template/Default.phtml:79
 msgid "Gold account"
 msgstr "Kultatili"
 
-#: Controller/InfoPages.php:12 View/Template/Default.phtml:78
+#: Controller/InfoPages.php:12 View/Template/Default.phtml:80
 msgid "FAQ"
 msgstr "UKK"
 
-#: Controller/InfoPages.php:21 View/Template/Default.phtml:79
+#: Controller/InfoPages.php:21 View/Template/Default.phtml:81
 msgid "Rules"
 msgstr "Säännöt"
 
-#: Controller/InfoPages.php:30 View/Template/Default.phtml:80
+#: Controller/InfoPages.php:30 View/Template/Default.phtml:82
 msgid "About"
 msgstr "Tietoa"
 
-#: Controller/InfoPages.php:39 View/Template/Default.phtml:81
+#: Controller/InfoPages.php:39 View/Template/Default.phtml:83
 msgid "Advertising"
 msgstr "Mainostaminen"
 
@@ -123,11 +123,11 @@ msgstr "Haku"
 msgid "The thread you are looking for does not exist."
 msgstr "Etsimääsi lankaa ei ole olemassa."
 
-#: Controller/User.php:16
-msgid "Your profile"
-msgstr "Profiilisi"
+#: Controller/User.php:16 View/Page/Profile.phtml:31
+msgid "User account"
+msgstr "Käyttäjätunnus"
 
-#: Controller/User.php:31 Controller/User.php:159
+#: Controller/User.php:31 Controller/User.php:174
 msgid "Username is too long"
 msgstr "Käyttäjänimi on liian pitkä"
 
@@ -135,53 +135,53 @@ msgstr "Käyttäjänimi on liian pitkä"
 msgid "This is your current username"
 msgstr "Tämä on nykyinen käyttäjänimesi"
 
-#: Controller/User.php:39 Controller/User.php:163
+#: Controller/User.php:39 Controller/User.php:178
 msgid "This username is already taken, please choose another one"
 msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
 
-#: Controller/User.php:43 Model/User.php:165
+#: Controller/User.php:43 Controller/User.php:58 Model/User.php:165
 msgid "Invalid password"
 msgstr "Virheellinen salasana"
 
-#: Controller/User.php:87
+#: Controller/User.php:102
 msgid "What the!? Can't logout!?"
 msgstr "Mitä ihmettä!? Ei voi uloskirjautua!?"
 
-#: Controller/User.php:106
+#: Controller/User.php:121
 msgid "User account not deleted"
 msgstr "Käyttäjätunnusta ei poistettu"
 
-#: Controller/User.php:116 Controller/User.php:120
+#: Controller/User.php:131 Controller/User.php:135
 msgid "Login failed"
 msgstr "Kirjautuminen epäonnistui"
 
-#: Controller/User.php:116 Controller/User.php:120
+#: Controller/User.php:131 Controller/User.php:135
 msgid "Invalid username or password"
 msgstr "Virheellinen käyttäjätunnus tai salasana"
 
-#: Controller/User.php:138 Controller/User.php:142 Controller/User.php:146
-#: Controller/User.php:150 Controller/User.php:155 Controller/User.php:159
-#: Controller/User.php:163
+#: Controller/User.php:153 Controller/User.php:157 Controller/User.php:161
+#: Controller/User.php:165 Controller/User.php:170 Controller/User.php:174
+#: Controller/User.php:178
 msgid "Signup failed"
 msgstr "Rekisteröityminen epäonnistui"
 
-#: Controller/User.php:138
+#: Controller/User.php:153
 msgid "You are already logged in"
 msgstr "Olet jo kirjautuneena"
 
-#: Controller/User.php:142
+#: Controller/User.php:157
 msgid "Missing username or password"
 msgstr "Käyttäjätunnus tai salasana puuttuu"
 
-#: Controller/User.php:146
+#: Controller/User.php:161 View/Template/Default.phtml:44
 msgid "The two passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
-#: Controller/User.php:150
+#: Controller/User.php:165
 msgid "Please fill the CAPTCHA"
 msgstr "Täytä CAPTCHA"
 
-#: Controller/User.php:155
+#: Controller/User.php:170
 msgid "Invalid CAPTCHA response, please try again"
 msgstr "Virheellinen CAPTCHA, yritä uudelleen"
 
@@ -315,12 +315,12 @@ msgstr "Täällä ei ole lankoja..."
 msgid "Welcome to Ylilauta, the biggest discussion board in Finland!"
 msgstr "Tervetuloa Ylilaudalle, Suomen suurimmalle keskustelufoorumille!"
 
-#: View/Page/Index.phtml:19 View/Template/Default.phtml:123
+#: View/Page/Index.phtml:19 View/Template/Default.phtml:125
 msgid "Discussion boards"
 msgstr "Keskustelulaudat"
 
 #: View/Page/Index.phtml:24 View/Snippets/BoardHeader.phtml:3
-#: View/Template/Default.phtml:128
+#: View/Template/Default.phtml:130
 msgid "NSFW"
 msgstr "NSFW"
 
@@ -388,10 +388,6 @@ msgstr "Ostot yhteensä"
 msgid "Tags"
 msgstr "Tagit"
 
-#: View/Page/Profile.phtml:31
-msgid "User account"
-msgstr "Käyttäjätunnus"
-
 #: View/Page/Profile.phtml:34 View/Page/Profile.phtml:40
 msgid "Change username"
 msgstr "Vaihda käyttäjätunnus"
@@ -440,7 +436,7 @@ msgstr "Viimeksi aktiivisena"
 msgid "Current session"
 msgstr "Nykyinen istunto"
 
-#: View/Page/Profile.phtml:68 View/Template/Default.phtml:116
+#: View/Page/Profile.phtml:68 View/Template/Default.phtml:118
 msgid "Log out"
 msgstr "Kirjaudu ulos"
 
@@ -629,11 +625,11 @@ msgstr "Tapahtui virhe"
 msgid "Log out?"
 msgstr "Kirjaudu ulos?"
 
-#: View/Template/Default.phtml:34 View/Template/Default.phtml:104
+#: View/Template/Default.phtml:34 View/Template/Default.phtml:106
 msgid "Sign up"
 msgstr "Luo tunnus"
 
-#: View/Template/Default.phtml:36 View/Template/Default.phtml:103
+#: View/Template/Default.phtml:36 View/Template/Default.phtml:105
 msgid "Log_in"
 msgstr "Kirjaudu"
 
@@ -661,37 +657,44 @@ msgstr "Ei uusia vastauksia"
 msgid "show full message"
 msgstr "näytä koko viesti"
 
-#: View/Template/Default.phtml:87
+#: View/Template/Default.phtml:45
+msgid "Password changed"
+msgstr "Salasana vaihdettu"
+
+#: View/Template/Default.phtml:89
 msgid "Search Ylilauta..."
 msgstr "Hae Ylilaudalta..."
 
-#: View/Template/Default.phtml:93
+#: View/Template/Default.phtml:95
 msgid "Log in"
 msgstr "Kirjaudu sisään"
 
-#: View/Template/Default.phtml:97
+#: View/Template/Default.phtml:99
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: View/Template/Default.phtml:98
+#: View/Template/Default.phtml:100
 msgid "Password"
 msgstr "Salasana"
 
-#: View/Template/Default.phtml:100
+#: View/Template/Default.phtml:102
 msgid "Password again"
 msgstr "Salasana uudelleen"
 
-#: View/Template/Default.phtml:110
+#: View/Template/Default.phtml:112
 msgid "Profile"
 msgstr "Profiili"
 
-#: View/Template/Default.phtml:111
+#: View/Template/Default.phtml:113
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: View/Template/Default.phtml:112
+#: View/Template/Default.phtml:114
 msgid "Toggle dark theme"
 msgstr "Vaihda tumma teema"
+
+#~ msgid "Your profile"
+#~ msgstr "Profiilisi"
 
 #~ msgid "Invalid username or password."
 #~ msgstr "Virheellinen käyttäjätunnus tai salasana."

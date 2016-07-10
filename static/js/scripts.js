@@ -84,7 +84,7 @@ function deletePost(id) {
     $.ajax({
         url: '/scripts/posts/delete',
         type: "POST",
-        data: {'postId': id}
+        data: {'post_id': id}
     }).done(function (data, textStatus, xhr) {
         $p(id).remove();
         $t(id).remove();
@@ -142,8 +142,8 @@ function getMoreReplies(threadId) {
             url: '/scripts/threads/getreplies',
             type: "POST",
             data: {
-                'threadId': threadId,
-                'fromId': fromId
+                'thread_id': threadId,
+                'from_id': fromId
             }
         }).done(function (data, textStatus, xhr) {
             // Update timestamps
@@ -202,8 +202,8 @@ function getNewReplies(threadId, manual) {
         url: '/scripts/threads/getreplies',
         type: "POST",
         data: {
-            'threadId': threadId,
-            'fromId': fromId,
+            'thread_id': threadId,
+            'from_id': fromId,
             'newest': true,
         }
     }).done(function (data, textStatus, xhr) {
@@ -717,7 +717,7 @@ function addReflinkTooltip(elm) {
         $.ajax({
             url: '/scripts/posts/get',
             type: "POST",
-            data: {'postId': id}
+            data: {'post_id': id}
         }).done(function (data, textStatus, xhr) {
             // Update timestamps
             data = $(data);

@@ -39,10 +39,11 @@ return [
     // Boards
     // Checked at the end so other rules override
     '#^/([a-zA-Z0-9åäö]+)-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'index'],
+    '#^/([a-zA-Z0-9åäö]+)/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['Board', 'catalog'],
     '#^/([a-zA-Z0-9åäö]+)/([0-9]+)$#' => ['Thread', 'index'],
 
     // Boards without slash at end
-    '#^/([a-zA-Z0-9åäö]+)-?([2-9]|[1-9][0-9]+)?$#' => ['Board', 'redirect'],
+    '#^/([a-zA-Z0-9åäö]+)-?([2-9]|[1-9][0-9]+)?/?(catalog)?-?([2-9]|[1-9][0-9]+)?$#' => ['Board', 'redirect'],
 
     // Everything else should just return a 404
     '#.*#' => ['Errors', 'notFound'],

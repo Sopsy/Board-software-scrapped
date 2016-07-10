@@ -1,0 +1,118 @@
+.catalog {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0 5px;
+
+    .thread-box {
+        margin: 5px;
+        background-color: $contentBgColor;
+        width: 200px;
+        height: 300px;
+        overflow: hidden;
+        display: inline-block;
+        position: relative;
+        flex-grow: 1;
+
+        h3 {
+            $height: 30px;
+            font-size: 1.1em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: $height;
+            line-height: $height;
+            margin: 0;
+
+            $subjectBgColor: darken($contentBgColor, 5%);
+            @if (lightness($contentBgColor) < 50) {
+                $subjectBgColor: lighten($contentBgColor, 5%);
+            }
+            background-color: $subjectBgColor;
+
+            .icon {
+                display: inline-block;
+                width: $height;
+                height: $height;
+                line-height: $height;
+                background-color: $contentBgColor;
+                color: $textColor;
+                text-align: center;
+            }
+
+            .subject {
+                padding: 0 10px
+            }
+
+            a {
+                display: block;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+
+        .post-buttons {
+            text-align: right;
+            $height: 25px;
+            height: $height;
+            padding: 3px;
+
+            button {
+                height: $height;
+                width: $height;
+                line-height: $height;
+                cursor: pointer;
+                font-size: 20px;
+                vertical-align: middle;
+
+                $bg: darken($contentBgColor, 5%);
+                $hoverBg: darken($contentBgColor, 10%);
+                $color: #111;
+                @if (lightness($contentBgColor) < 50) {
+                    $bg: lighten($contentBgColor, 5%);
+                    $hoverBg: lighten($contentBgColor, 10%);
+                    $color: #eee;
+                }
+
+                background-color: $bg;
+                color: $color;
+                &:hover {
+                    background-color: $hoverBg;
+                }
+            }
+        }
+
+        .post {
+            margin: 5px;
+            font-size: 0.9em;
+
+            .post-file {
+                margin: -5px -5px 0 -5px;
+                text-align: center;
+                $bg: darken($contentBgColor, 5%);
+                @if (lightness($contentBgColor) < 50) {
+                    $bg: lighten($contentBgColor, 5%);
+                }
+                background-color: $bg;
+
+                img {
+                    max-height: 100px;
+                }
+            }
+        }
+
+        .thread-meta {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            padding: 0 5px 5px 5px;
+            background-color: $contentBgColor;
+            font-size: 0.8em;
+            $color: #777;
+            color: $color;
+            box-shadow: 0 0 10px 10px $contentBgColor;
+        }
+    }
+}

@@ -13,7 +13,7 @@ class User extends ExtendedController
     public function index()
     {
         $view = $this->loadTemplateEngine();
-        $view->pageTitle = _('Your profile');
+        $view->pageTitle = _('User account');
 
         $view->loginSessions = $this->user->getSessions($this->user->id);
         $view->display('Profile');
@@ -85,6 +85,10 @@ class User extends ExtendedController
     {
         $this->validateAjaxCsrfToken();
 
+        if (empty($_POST['session_id'])) {
+            $this->throwJsonError(400);
+        }
+
         $sessionId = Text::filterHex($_POST['session_id']);
 
         $destroySession = $this->user->destroySession(hex2bin($sessionId), $this->user->id);
@@ -97,7 +101,7 @@ class User extends ExtendedController
     {
         $this->validatePostCsrfToken();
 
-        $destroySession = $this->user->destroySession($_POST['session_id'], $this->user->id);
+        $destroySession = $this->user->destroySession($this->user->sessionId, $this->user->id);
         if (!$destroySession) {
             $this->dieWithError(_('What the!? Can\'t logout!?'));
         }
@@ -109,6 +113,10 @@ class User extends ExtendedController
     public function delete()
     {
         $this->validatePostCsrfToken();
+
+        if (empty($_POST['password'])) {
+            $this->badRequest();
+        }
 
         if (!empty($_POST['delete_posts'])) {
             $posts = new Posts($this->db);
