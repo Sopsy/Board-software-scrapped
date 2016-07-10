@@ -46,7 +46,7 @@
         display: block;
         margin-bottom: 0.5em;
         img {
-            height: $height;
+            height: 100%;
             vertical-align: top;
             margin-right: 10px;
         }
@@ -118,6 +118,7 @@
     }
     .buttons {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         margin-top: 5px;
         button, a {
@@ -126,6 +127,9 @@
             &:hover {
                 background-color: $buttonHoverBg;
             }
+        }
+        > *:not(:first-child) {
+            margin-left: 5px;
         }
     }
     #user form {

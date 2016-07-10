@@ -181,6 +181,7 @@
             font-weight: 600;
         }
         .post-id {
+            white-space: nowrap;
             @if (lightness($textColor) > 50) {
                 color: darken($textColor, 40%);
             } @else {

@@ -94,6 +94,19 @@
         #search {
             clear: both;
         }
+        .buttons {
+            display: block;
+            overflow: hidden;
+            margin-top: 10px;
+            > * {
+                display: inline-block;
+                vertical-align: top;
+                float: left;
+                &:not(:first-child) {
+                    margin-left: 10px;
+                }
+            }
+        }
     }
 
     #content {
@@ -154,13 +167,10 @@
 
         .post-meta {
             .post-info {
-                font-size: 0.7em;
+                font-size: 0.8em;
                 display: block;
                 .post-time {
                     margin-left: 0;
-                }
-                .post-id {
-                    white-space: nowrap;
                 }
             }
         }
@@ -173,7 +183,7 @@
                 }
                 @media (min-width:340px) and (max-width:499px) {
                     max-width: 120px;
-                    figcaption { font-size: 0.75em }
+                    figcaption { font-size: 0.85em }
                 }
                 @media (min-width:500px) and (max-width:599px) {
                     max-width: 160px;
