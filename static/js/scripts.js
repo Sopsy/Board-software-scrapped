@@ -113,12 +113,12 @@ function signupForm(elm, e) {
     var signupForm = $('#signup-form');
 
     if (!elm.data('open')) {
-        elm.attr('title', messages.cancel).removeClass('icon-user-plus').addClass('icon-cross2');
+        elm.html(messages.cancel);
         $('#loginbutton').attr('name', 'signup').val(messages.signUp);
         signupForm.slideDown();
         elm.data('open', true);
     } else {
-        elm.attr('title', messages.signUp).removeClass('icon-cross2').addClass('icon-user-plus');
+        elm.html(messages.signUp);
 
         $('#loginbutton').attr('name', 'login').val(messages.logIn);
         signupForm.slideUp();
@@ -533,6 +533,22 @@ function changeSrc(img, src) {
         img.removeData('expanding');
         clearTimeout(loading);
         img.parent().find('.loading').remove();
+    });
+}
+
+// -------------------------------------------
+// User profile related
+// -------------------------------------------
+function destroySession(sessionId) {
+    $.ajax({
+        url: '/scripts/user/destroysession',
+        type: "POST",
+        data: {'session_id': sessionId}
+    }).done(function (xhr, textStatus, errorThrown) {
+        $('#' + sessionId).fadeOut();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
     });
 }
 

@@ -1,7 +1,7 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Exceptions\DatabaseException;
+use YBoard\Data\UserSession;
 use YBoard\Exceptions\UserException;
 use YBoard\Model;
 
@@ -29,8 +29,8 @@ class User extends Model
         $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class, gold_level, account_created
             FROM user_sessions
             LEFT JOIN user_accounts ON id = user_id
-            WHERE session_id = :sessionId LIMIT 1");
-        $q->bindValue('sessionId', $sessionId);
+            WHERE session_id = :session_id LIMIT 1");
+        $q->bindValue('session_id', $sessionId);
         $q->execute();
 
         if ($q->rowCount() == 0) {
@@ -61,9 +61,9 @@ class User extends Model
 
         // Update last active -timestamp and IP-address
         $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = :ip
-            WHERE user_id = :userId AND session_id = :sessionId LIMIT 1");
-        $q->bindValue('userId', (int)$this->id);
-        $q->bindValue('sessionId', $this->sessionId);
+            WHERE user_id = :user_id AND session_id = :session_id LIMIT 1");
+        $q->bindValue('user_id', (int)$this->id);
+        $q->bindValue('session_id', $this->sessionId);
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
 
@@ -114,8 +114,8 @@ class User extends Model
         // Remove last comma
         $update = substr($update, 0, -1);
 
-        $q = $this->db->prepare("UPDATE user_accounts SET " . $update . " WHERE id = :userId LIMIT 1");
-        $q->bindValue('userId', (int)$userId);
+        $q = $this->db->prepare("UPDATE user_accounts SET " . $update . " WHERE id = :user_id LIMIT 1");
+        $q->bindValue('user_id', (int)$userId);
         foreach ($bind as $key => $val) {
             $q->bindValue($key, $val);
         }
@@ -210,9 +210,9 @@ class User extends Model
         // Do note that this function does not verify old password!
         $newPassword = password_hash($newPassword, static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
 
-        $q = $this->db->prepare("UPDATE user_accounts SET password = :newPassword WHERE id = :userId LIMIT 1");
-        $q->bindValue('newPassword', $newPassword);
-        $q->bindValue('userId', $userId);
+        $q = $this->db->prepare("UPDATE user_accounts SET password = :new_password WHERE id = :user_id LIMIT 1");
+        $q->bindValue('new_password', $newPassword);
+        $q->bindValue('user_id', $userId);
         $q->execute();
 
         return true;
@@ -224,9 +224,9 @@ class User extends Model
             $userId = $this->id;
         }
 
-        $q = $this->db->prepare("UPDATE user_accounts SET username = :newUsername WHERE id = :userId LIMIT 1");
-        $q->bindValue('newUsername', $newUsername);
-        $q->bindValue('userId', $userId);
+        $q = $this->db->prepare("UPDATE user_accounts SET username = :new_username WHERE id = :user_id LIMIT 1");
+        $q->bindValue('new_username', $newUsername);
+        $q->bindValue('user_id', $userId);
         $q->execute();
 
         return true;
@@ -237,10 +237,10 @@ class User extends Model
         $sessionId = random_bytes(32);
         $csrfToken = random_bytes(32);
 
-        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, csrf_token, ip) VALUES (:userId, :sessionId, :csrfToken, :ip)");
-        $q->bindValue('userId', (int)$userId);
-        $q->bindValue('sessionId', $sessionId);
-        $q->bindValue('csrfToken', $csrfToken);
+        $q = $this->db->prepare("INSERT INTO user_sessions (user_id, session_id, csrf_token, ip) VALUES (:user_id, :session_id, :csrf_token, :ip)");
+        $q->bindValue('user_id', (int)$userId);
+        $q->bindValue('session_id', $sessionId);
+        $q->bindValue('csrf_token', $csrfToken);
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
 
@@ -250,14 +250,44 @@ class User extends Model
         return true;
     }
 
-    public function destroySession($sessionId = false)
+    public function getSessions(int $userId) : array
+    {
+        $q = $this->db->prepare("SELECT session_id, user_id, csrf_token, ip, login_time, last_active
+            FROM user_sessions WHERE user_id = :user_id");
+        $q->bindValue('user_id', $userId);
+        $q->execute();
+
+        $sessions = [];
+        while ($row = $q->fetch()) {
+            $tmp = new UserSession();
+            $tmp->id = $row->session_id;
+            $tmp->userId = $row->user_id;
+            $tmp->csrfToken = $row->csrf_token;
+            $tmp->ip = inet_ntop($row->ip);
+            $tmp->loginTime = date('c', strtotime($row->login_time));
+            $tmp->lastActive = date('c', strtotime($row->last_active));
+            $sessions[] = $tmp;
+        }
+
+        return $sessions;
+    }
+
+    public function destroySession($sessionId = false, $userId = false)
     {
         if ($sessionId === false) {
             $sessionId = $this->sessionId;
         }
 
-        $q = $this->db->prepare("DELETE FROM user_sessions WHERE session_id = :sessionId LIMIT 1");
-        $q->bindValue('sessionId', $sessionId);
+        $whereUser = '';
+        if ($userId !== false) {
+            $whereUser = ' AND user_id = :user_id';
+        }
+
+        $q = $this->db->prepare("DELETE FROM user_sessions WHERE session_id = :session_id" . $whereUser . " LIMIT 1");
+        $q->bindValue('session_id', $sessionId);
+        if ($userId !== false) {
+            $q->bindValue('user_id', (int)$userId);
+        }
         $q->execute();
 
         return true;
@@ -285,9 +315,9 @@ class User extends Model
             $userId = $this->id;
         }
 
-        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :userId AND expired = 0 LIMIT 1");
+        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND expired = 0 LIMIT 1");
         $q->bindValue('ip', inet_pton($ip));
-        $q->bindValue('userId', $userId);
+        $q->bindValue('user_id', $userId);
         $q->execute();
 
         if ($q->rowCount() >= 1) {

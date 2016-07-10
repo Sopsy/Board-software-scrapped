@@ -8,6 +8,7 @@ class GoldAccount extends ExtendedController
     public function index()
     {
         $view = $this->loadTemplateEngine();
+        $view->pageTitle = _('Gold account');
 
         $view->display('Gold');
     }

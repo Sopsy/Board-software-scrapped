@@ -1,6 +1,6 @@
 .content-box.settings-profile {
     .columns {
-        @include columns(200px, 40px);
+        @include columns(220px, 40px);
         div {
             width: 100%;
             margin-bottom: 20px;
@@ -18,23 +18,40 @@
     }
 
     form {
-        input[type="password"] {
+        input[type="text"], input[type="password"] {
             min-width: 200px;
             padding: 3px 5px;
             width: 50%;
             display: block;
-            background-color: transparent;
-            $border: #ccc;
+            color: $textColor;
+
+            $backgroundColor: #fff;
+            $borderColor: #ccc;
             @if (lightness($contentBgColor) < 50) {
-                $border: #333;
+                $backgroundColor: #000;
+                $borderColor: #333;
             }
-            border: 1px solid $border;
-            @include input-shadow($border);
+            background-color: $backgroundColor;
+            border: 1px solid $borderColor;
+            @include input-shadow($borderColor);
             margin-bottom: 10px;
         }
         label {
             display: block;
             margin-bottom: 10px;
+        }
+    }
+
+    .session {
+        padding: 10px;
+        $backgroundColor: darken($contentBgColor, 3%);
+        @if (lightness($contentBgColor) < 50) {
+            $backgroundColor: lighten($contentBgColor, 3%);
+        }
+        background-color: $backgroundColor;
+
+        .actions {
+            min-height: 30px;
         }
     }
 }

@@ -22,6 +22,26 @@
 
 <?php if ($user->loggedIn) : ?>
 <div class="content-box settings-profile">
+    <h3><?= _('Active logins') ?></h3>
+    <div class="columns">
+    <?php foreach ($loginSessions as $session) : ?>
+        <div class="session" id="<?= bin2hex($session->id) ?>">
+            <div><h5><?= _('IP-address') ?></h5><span><?= $session->ip ?></span></div>
+            <div><h5><?= _('Login time') ?></h5><span class="datetime"><?= $session->loginTime ?></span></div>
+            <div><h5><?= _('Last active') ?></h5><span class="datetime"><?= $session->lastActive ?></span></div>
+            <div class="actions">
+                <?php if ($session->id == $user->sessionId) : ?>
+                <em><?= _('Current session') ?></em>
+                <?php else : ?>
+                <button class="button green" onclick="destroySession('<?= bin2hex($session->id) ?>')"><?= _('Log out') ?></button>
+                <?php endif ?>
+            </div>
+        </div>
+    <?php endforeach ?>
+    </div>
+</div>
+
+<div class="content-box settings-profile">
     <h3><?= _('Delete account') ?></h3>
     <p>
         <?= _('When deleting your account, all information associated with it are permanently deleted.') ?>

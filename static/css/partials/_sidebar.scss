@@ -149,9 +149,8 @@
             padding: 5px 10px;
             width: calc(100% - 20px);
         }
-        #loginbutton {
-            text-align: left;
-            width: 100%;
+        > button {
+            float: right;
         }
         #signup-form {
             display: none;

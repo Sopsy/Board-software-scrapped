@@ -101,6 +101,7 @@
                 <div id="signup-captcha"></div>
             </div>
             <input type="submit" class="button green" name="login" id="loginbutton" value="<?= _('Log_in') ?>">
+            <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
         </form>
     <?php else : ?>
         <h3><?= htmlspecialchars($user->username) ?></h3>
@@ -109,10 +110,7 @@
             <a class="button square icon-user" href="/profile" title="<?= _('Profile') ?>"></a>
             <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
             <button class="button square icon-lamp" onclick="toggleDarkTheme()" title="<?= _('Toggle dark theme') ?>"></button>
-            <?php if (!$user->loggedIn) : ?>
-                <button onclick="signupForm(this, event)" class="button square icon-user-plus" data-open="false"
-                    title="<?= _('Sign up') ?>"></button>
-            <?php else : ?>
+            <?php if ($user->loggedIn) : ?>
                 <form id="logout" action="/scripts/user/logout" method="post">
                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                     <button type="submit" class="button square icon-exit" title="<?= _('Log out') ?>"

@@ -162,4 +162,9 @@ class Text
 
         return $message;
     }
+    
+    public static function filterHex(string $string) : string
+    {
+        return preg_replace('/[^0-9a-f]/', '', strtolower($string));
+    }
 }

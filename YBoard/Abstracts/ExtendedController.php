@@ -194,7 +194,7 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function invalidAjaxData()
     {
-        HttpResponse::setStatusCode(401);
+        HttpResponse::setStatusCode(400);
         $this->jsonMessage(_('Invalid request'), true);
         $this->stopExecution();
     }
@@ -210,6 +210,13 @@ abstract class ExtendedController extends YBoard\Controller
         }
 
         return false;
+    }
+    
+    protected function validatePostCsrfToken()
+    {
+        if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
+            $this->badRequest();
+        }
     }
 
     protected function validateAjaxCsrfToken()

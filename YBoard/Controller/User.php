@@ -1,11 +1,11 @@
 <?php
-
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\UserException;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
+use YBoard\Library\Text;
 use YBoard\Model\Posts;
 
 class User extends ExtendedController
@@ -15,14 +15,13 @@ class User extends ExtendedController
         $view = $this->loadTemplateEngine();
         $view->pageTitle = _('Your profile');
 
+        $view->loginSessions = $this->user->getSessions($this->user->id);
         $view->display('Profile');
     }
 
     public function login()
     {
-        if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
-            $this->badRequest();
-        }
+        $this->validatePostCsrfToken();
 
         if (isset($_POST['login'])) {
             $this->doLogin();
@@ -40,13 +39,23 @@ class User extends ExtendedController
         }
     }
 
+    public function destroySession()
+    {
+        $this->validateAjaxCsrfToken();
+
+        $sessionId = Text::filterHex($_POST['session_id']);
+
+        $destroySession = $this->user->destroySession(hex2bin($sessionId), $this->user->id);
+        if (!$destroySession) {
+            $this->throwJsonError(500);
+        }
+    }
+
     public function logout()
     {
-        if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
-            $this->badRequest();
-        }
+        $this->validatePostCsrfToken();
 
-        $destroySession = $this->user->destroySession();
+        $destroySession = $this->user->destroySession($_POST['session_id'], $this->user->id);
         if (!$destroySession) {
             $this->dieWithError(_('What the!? Can\'t logout!?'));
         }
@@ -57,9 +66,7 @@ class User extends ExtendedController
 
     public function delete()
     {
-        if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
-            $this->badRequest();
-        }
+        $this->validatePostCsrfToken();
 
         if (!empty($_POST['delete_posts'])) {
             $posts = new Posts($this->db);
@@ -78,7 +85,6 @@ class User extends ExtendedController
 
     protected function doLogin()
     {
-
         if (empty($_POST['username']) || empty($_POST['password'])) {
             $this->badRequest(_('Login failed'), _('Invalid username or password.'));
         }

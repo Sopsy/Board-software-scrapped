@@ -25,6 +25,7 @@ return [
     '#^/scripts/user/login$#' => ['User', 'login'],
     '#^/scripts/user/logout$#' => ['User', 'logout'],
     '#^/scripts/user/delete#' => ['User', 'delete'],
+    '#^/scripts/user/destroysession#' => ['User', 'destroySession'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],
