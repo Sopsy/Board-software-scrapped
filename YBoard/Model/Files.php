@@ -130,12 +130,15 @@ class Files extends Model
                 break;
             case 'jpeg':
             case 'jpg':
+            //case 'svg': TODO: needs more work to check dimensions
                 $uploadedFile->destinationFormat = 'jpg';
                 break;
             case 'png':
                 $uploadedFile->destinationFormat = 'png';
                 break;
             case 'mp3':
+            case 'm4a':
+            case 'aac':
             case 'mp4':
             case 'webm':
                 $videoMeta = FileHandler::getVideoMeta($uploadedFile->tmpName);
@@ -250,6 +253,7 @@ class Files extends Model
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
         $q->bindValue('duration', $uploadedFile->duration);
+        $q->bindValue('has_thumbnail', $uploadedFile->hasThumbnail);
         $q->bindValue('has_sound', $uploadedFile->hasSound);
         $q->bindValue('is_gif', $uploadedFile->isGif);
         $q->bindValue('in_progress', $uploadedFile->inProgress);
