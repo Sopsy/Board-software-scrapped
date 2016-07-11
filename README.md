@@ -18,6 +18,13 @@ Static root is static/.
 
 Should work with Apache, but it's not supported as we do not use that.
 
+## Cronjobs
+To avoid unnecessary load while opening pages, all not-so-important things are run on background with cron.
+
+You should add the following lines to crontab. Change times as needed.
+* 13 * * * php <ROOT_PATH>/RunCron.php Hourly
+* 28 1 * * php <ROOT_PATH>/RunCron.php Daily
+
 ## Other
 * You need to generate locales to the server in order for i18n translations to work.
 They use native gettext for maximum performance.

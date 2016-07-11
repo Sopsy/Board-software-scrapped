@@ -22,5 +22,7 @@ class DeleteOldPosts extends CronDatabase
         }
 
         $posts->deleteMultiple($threads);
+
+        echo count($threads) . " threads deleted\n";
     }
 }
