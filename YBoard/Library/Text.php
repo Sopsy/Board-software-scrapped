@@ -172,4 +172,10 @@ class Text
     {
         return date('c', strtotime($date));
     }
+    
+    public static function formatDuration($duration)
+    {
+        return floor($duration / 60) . ':' . str_pad($duration % 60, 2, '0', STR_PAD_LEFT);
+    }
+
 }

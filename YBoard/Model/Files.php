@@ -100,51 +100,63 @@ class Files extends Model
             }
         }
 
-        // File type conversions
-        if ($uploadedFile->extension == 'jpeg') {
-            // JPEG -> JPG
-            $uploadedFile->extension = 'jpg';
-        }
-
-        if ($uploadedFile->extension == 'gif') {
-            // GIF -> JPG or MP4
-            $frames = FileHandler::getGifFrameCount($uploadedFile->tmpName);
-            if ($frames === 0) {
-                throw new InternalException(_('Cannot get the number of GIF frames'));
-            } elseif ($frames > 4000) {
-                throw new FileUploadException(_('The GIF you uploaded is too long, please upload a video file instead'));
-            }
-
-            if ($frames == 1) {
-                $uploadedFile->extension = 'jpg';
-            } else {
-                $uploadedFile->extension = 'mp4';
-                $uploadedFile->isGif = true;
-            }
-        }
-
-        if ($uploadedFile->extension == 'webm') {
-            // WEBM -> MP4
-            $uploadedFile->extension = 'mp4';
-        }
-
-        if ($uploadedFile->extension == 'mp3') {
-            // MP3 -> MP4
-            $uploadedFile->extension = 'mp4';
-        }
-
         $uploadedFile->md5[] = $md5;
 
         $uploadedFile->folder = Text::randomStr(2, false);
         $uploadedFile->name = Text::randomStr(8, false);
         $uploadedFile->size = filesize($uploadedFile->tmpName);
 
+        // Figure out in which format to save the file
         switch ($uploadedFile->extension) {
+            case 'gif':
+                $frames = FileHandler::getGifFrameCount($uploadedFile->tmpName);
+                if ($frames === 0) {
+                    throw new InternalException(_('Cannot get the number of GIF frames'));
+                } elseif ($frames > 4000) {
+                    throw new FileUploadException(_('The GIF you uploaded is too long, please upload a video file instead'));
+                }
+
+                if ($frames == 1) {
+                    $uploadedFile->destinationFormat = 'jpg';
+                } else {
+                    $videoMeta = FileHandler::getVideoMeta($uploadedFile->tmpName);
+                    if ($videoMeta === false) {
+                        throw new FileUploadException(_('Invalid or corrupted media'));
+                    }
+
+                    $uploadedFile->destinationFormat = 'mp4';
+                    $uploadedFile->isGif = true;
+                }
+                break;
+            case 'jpeg':
             case 'jpg':
                 $uploadedFile->destinationFormat = 'jpg';
                 break;
             case 'png':
                 $uploadedFile->destinationFormat = 'png';
+                break;
+            case 'mp3':
+            case 'mp4':
+            case 'webm':
+                $videoMeta = FileHandler::getVideoMeta($uploadedFile->tmpName);
+                if ($videoMeta === false) {
+                    throw new FileUploadException(_('Invalid or corrupted media'));
+                }
+
+                if ($videoMeta->duration > 300) {
+                    throw new FileUploadException(_('The media you uploaded is too long'));
+                }
+
+                $uploadedFile->duration = $videoMeta->duration;
+                $uploadedFile->hasSound = $videoMeta->hasSound;
+
+                if (!$videoMeta->audioOnly) {
+                    $uploadedFile->width = $videoMeta->width;
+                    $uploadedFile->height = $videoMeta->height;
+                    $uploadedFile->destinationFormat = 'mp4';
+                } else {
+                    $uploadedFile->destinationFormat = 'm4a';
+                }
                 break;
             default:
                 $uploadedFile->destinationFormat = $uploadedFile->extension;
@@ -168,7 +180,7 @@ class Files extends Model
         }
 
         // Do whatever we do with the uploaded files here.
-        switch ($uploadedFile->extension) {
+        switch ($uploadedFile->destinationFormat) {
             case 'jpg':
             case 'png':
                 $this->limitPixelCount($uploadedFile->tmpName);
@@ -181,7 +193,7 @@ class Files extends Model
                 chmod($uploadedFile->destination, 0664);
                 chmod($uploadedFile->thumbDestination, 0664);
 
-                if ($uploadedFile->extension == 'png') {
+                if ($uploadedFile->destinationFormat == 'png') {
                     $sendMessage = MessageQueue::MSG_TYPE_DO_PNGCRUSH;
                 }
 
@@ -197,24 +209,21 @@ class Files extends Model
                 list($uploadedFile->width, $uploadedFile->height) = getimagesize($uploadedFile->destination);
 
                 break;
+            case 'm4a':
+                $uploadedFile->inProgress = true;
+                $uploadedFile->hasThumbnail = false;
+
+                rename($uploadedFile->tmpName, $uploadedFile->destination);
+                chmod($uploadedFile->destination, 0664);
+
+                $sendMessage = MessageQueue::MSG_TYPE_PROCESS_AUDIO;
+
+                break;
             case 'mp4':
-
-                $videoMeta = FileHandler::getVideoMeta($uploadedFile->tmpName);
-                if ($videoMeta === false) {
-                    throw new FileUploadException(_('Invalid or corrupted video file'));
-                }
-
-                if ($videoMeta->duration > 300) {
-                    throw new FileUploadException(_('The video you uploaded is too long'));
-                }
-
+                $uploadedFile->inProgress = true;
                 if ($uploadedFile->isGif === null) {
                     $uploadedFile->isGif = false;
                 }
-
-                $uploadedFile->hasSound = $videoMeta->hasSound;
-                $uploadedFile->width = $videoMeta->width;
-                $uploadedFile->height = $videoMeta->height;
 
                 rename($uploadedFile->tmpName, $uploadedFile->destination);
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
@@ -223,7 +232,6 @@ class Files extends Model
                 chmod($uploadedFile->destination, 0664);
                 chmod($uploadedFile->thumbDestination, 0664);
 
-                $uploadedFile->inProgress = true;
                 $sendMessage = MessageQueue::MSG_TYPE_PROCESS_VIDEO;
 
                 break;
@@ -232,14 +240,16 @@ class Files extends Model
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, has_sound, is_gif, in_progress)
-            VALUES (:folder, :name, :extension, :size, :width, :height, :has_sound, :is_gif, :in_progress)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, duration, has_thumbnail,
+            has_sound, is_gif, in_progress) VALUES (:folder, :name, :extension, :size, :width, :height, :duration,
+            :has_thumbnail, :has_sound, :is_gif, :in_progress)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
+        $q->bindValue('duration', $uploadedFile->duration);
         $q->bindValue('has_sound', $uploadedFile->hasSound);
         $q->bindValue('is_gif', $uploadedFile->isGif);
         $q->bindValue('in_progress', $uploadedFile->inProgress);

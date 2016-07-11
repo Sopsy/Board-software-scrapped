@@ -39,12 +39,16 @@
     <?php if (!empty($post->file)) : ?>
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
     <figure class="post-file thumbnail" data-id="<?= $post->file->id ?>">
-        <?php if (in_array($post->file->extension, ['mp3', 'mp4', 'webm'])) : ?>
+        <?php if (in_array($post->file->extension, ['m4a', 'mp4'])) : ?>
             <a href="<?= $fileUrl ?>" onclick="playMedia(this, event)">
+                <?php if ($post->file->hasThumbnail) : ?>
                 <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                <?php else : ?>
+                <span class="no-thumbnail icon-music-note3"></span>
+                <?php endif ?>
                 <span class="overlay center icon-play4"></span>
                 <?php if ($post->file->isGif) : ?>
-                <span class="overlay bottomright">GIF</span>
+                <span class="overlay bottom right">GIF</span>
                 <?php else : ?>
                     <?php if ($post->file->hasSound) : ?>
                         <span class="overlay bottom right icon-volume-high"></span>
@@ -62,7 +66,12 @@
         <figcaption>
             <a href="<?= $fileUrl ?>" target="_blank"><?= htmlspecialchars($post->file->displayName) ?></a>
             <span>
+            <?php if (!empty($post->file->width)) : ?>
                 <?= $post->file->width ?>&times;<?= $post->file->height ?>
+            <?php endif ?>
+            <?php if (!empty($post->file->duration)) : ?>
+                <?= \YBoard\Library\Text::formatDuration($post->file->duration) ?>
+            <?php endif ?>
                 <?= \YBoard\Library\Text::formatBytes($post->file->size) ?>
                 <?= htmlspecialchars(strtoupper($post->file->extension)) ?>
             </span>

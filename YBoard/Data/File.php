@@ -12,7 +12,8 @@ class File
     public $width = null;
     public $height = null;
     public $duration = null;
-    public $inProgress = false;
+    public $hasThumbnail = true;
     public $hasSound = null;
     public $isGif = null;
+    public $inProgress = false;
 }

@@ -23,6 +23,7 @@ class FileHandler
         $video->hasSound = false;
         $video->width = null;
         $video->height = null;
+        $video->audioOnly = false;
 
         // Figure out which stream to use info from and if the file has sound
         foreach ($videoInfo AS $key => $stream) {
@@ -30,22 +31,34 @@ class FileHandler
                 $streamNum = $key;
             } elseif ($stream->codec_type == 'audio') {
                 $video->hasSound = true;
+                if (isset($videoInfo[$key]->duration)) {
+                    $audioDuration = $videoInfo[$key]->duration;
+                }
             }
         }
 
         if (!isset($streamNum)) {
+            // No video found
+            if ($video->hasSound && isset($audioDuration)) {
+                // This is an audio only file, like MP3 without images
+                $video->duration = $audioDuration;
+                $video->audioOnly = true;
+                return $video;
+            }
+
             return false;
         }
 
-        if (!isset($videoInfo[$streamNum]->duration)) {
-            $videoInfo[$streamNum]->duration = 0;
+        if (isset($videoInfo[$streamNum]->duration)) {
+            $video->duration = (int)$videoInfo[$streamNum]->duration;
+        } else {
+            $video->duration = null;
         }
 
         if (!empty($videoInfo[$streamNum]->width) && !empty($videoInfo[$streamNum]->height)) {
             $video->width = (int)$videoInfo[$streamNum]->width;
             $video->height = (int)$videoInfo[$streamNum]->height;
         }
-        $video->duration = (int)$videoInfo[$streamNum]->duration;
 
         return $video;
     }
@@ -60,6 +73,26 @@ class FileHandler
         system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0 -c:v libx264'
             . ' -pix_fmt yuv420p -r 24 -crf 23 -preset:v veryfast -filter_complex scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
             . ' -movflags faststart -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile) . ' > /dev/null 2>&1');
+
+        if (!is_file($tmpFile)) {
+            return false;
+        }
+
+        unlink($file);
+        rename($tmpFile, $file);
+
+        return is_file($file) !== false;
+    }
+
+    public static function convertAudio(string $file) : bool
+    {
+        $tmpFile = sys_get_temp_dir() . '/audio-' . time() . mt_rand(000000, 999999) . '.m4a';
+
+        // TODO: This needs more work. E.g. detect the original bitrate etc.
+        // And maybe even skip completely and just do lossless repackaging if fmt already is aac
+
+        system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0'
+            . ' -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile) . ' > /dev/null 2>&1');
 
         if (!is_file($tmpFile)) {
             return false;

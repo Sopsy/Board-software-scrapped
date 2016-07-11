@@ -270,6 +270,13 @@
             }
         }
 
+        .no-thumbnail {
+            display: block;
+            font-size: 100px;
+            padding: 20px;
+            background-color: #ddd;
+            color: #444;
+        }
         &:not(.media-player-container) .stop-media {
             display: none;
         }
