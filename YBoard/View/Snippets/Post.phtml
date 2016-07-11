@@ -38,12 +38,22 @@
 <blockquote class="post">
     <?php if (!empty($post->file)) : ?>
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
-    <figure class="post-file thumbnail">
+    <figure class="post-file thumbnail" data-id="<?= $post->file->id ?>">
         <?php if (in_array($post->file->extension, ['mp3', 'mp4', 'webm'])) : ?>
             <a href="<?= $fileUrl ?>" onclick="playMedia(this, event)">
                 <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
                 <span class="overlay center icon-play4"></span>
+                <?php if ($post->file->isGif) : ?>
+                <span class="overlay bottomright">GIF</span>
+                <?php else : ?>
+                    <?php if ($post->file->hasSound) : ?>
+                        <span class="overlay bottomright icon-volume-high"></span>
+                    <?php else : ?>
+                        <span class="overlay bottomright icon-mute"></span>
+                    <?php endif ?>
+                <?php endif ?>
             </a>
+            <button class="button green stop-media" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
         <?php else : ?>
             <a href="<?= $fileUrl ?>" onclick="expandImage(this, event)">
                 <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">

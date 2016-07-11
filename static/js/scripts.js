@@ -540,18 +540,12 @@ function playMedia(elm, e) {
     container.removeClass('thumbnail').addClass('media-player-container');
     post.addClass('full');
 
-    var fileUrl = link.attr('href');
-    var poster = img.attr('src');
-    var loop = typeof link.data('loop') != "undefined";
+    var fileId = container.data('id');
 
     $.ajax({
         url: '/scripts/files/getmediaplayer',
         type: "POST",
-        data: {
-            'file_url': fileUrl,
-            'poster': poster,
-            'loop': false
-        }
+        data: {'file_id': fileId}
     }).done(function (xhr, textStatus, errorThrown) {
         container.prepend(xhr);
 

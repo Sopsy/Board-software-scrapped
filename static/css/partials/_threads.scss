@@ -256,13 +256,23 @@
                     font-size: 32px;
                     padding: 10px;
                 }
+                &.bottomright {
+                    bottom: 0;
+                    right: 0;
+                    font-size: 20px;
+                    padding: 5px;
+                }
             }
+        }
+
+        &:not(.media-player-container) .stop-media {
+            display: none;
         }
         &.media-player-container {
             > a {
                 display: none;
             }
-            button {
+            .stop-media {
                 display: block;
             }
         }

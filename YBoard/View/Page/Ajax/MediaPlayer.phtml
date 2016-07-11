@@ -1,6 +1,9 @@
+<?php if (!$inProgress) : ?>
 <div class="media-player">
     <video onvolumechange="saveVolume(this)" autoplay controls<?= ($loop?' loop':'') ?> poster="<?= $poster ?>">
         <source src="<?= $fileUrl ?>">
     </video>
-    <button class="button green" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
 </div>
+<?php else : ?>
+<div class="media-player conversion-in-progress"></div>
+<?php endif ?>

@@ -2,7 +2,9 @@
 namespace YBoard\Controller;
 
 use YBoard\Controller;
+use YBoard\Library\Database;
 use YBoard\Library\TemplateEngine;
+use YBoard\Model\Files;
 use YBoard\Traits\Ajax;
 use YBoard\Traits\PostChecks;
 
@@ -11,22 +13,37 @@ class File Extends Controller
     use PostChecks;
     use Ajax;
 
+    protected $config;
+    protected $db;
+
+    public function __construct()
+    {
+        $this->config = require(ROOT_PATH . '/YBoard/Config/YBoard.php');
+        $this->db = new Database(require(ROOT_PATH . '/YBoard/Config/Database.php'));
+    }
+
     public function getMediaPlayer()
     {
         $this->disallowNonPost();
 
-        // TODO: This does not validate request source. Might need referrer checks or something.
-
-        if (empty($_POST['file_url']) || empty($_POST['poster'])) {
+        if (empty($_POST['file_id'])) {
             $this->invalidAjaxData();
         }
 
-        $loop = empty($_POST['loop']) ? false : $_POST['loop'];
+        $files = new Files($this->db);
+        $file = $files->get($_POST['file_id']);
+
+        if (!$file) {
+            $this->throwJsonError(404);
+        }
 
         $view = new TemplateEngine(ROOT_PATH . '/YBoard/View/', 'Blank');
-        $view->fileUrl = htmlspecialchars($_POST['file_url']);
-        $view->poster = htmlspecialchars($_POST['poster']);
-        $view->loop = $loop == 'true';
+        $view->fileUrl = $this->config['view']['staticUrl'] . '/files/' . $file->folder . '/o/' . $file->name . '/'
+            . '1.' . $file->extension;
+        $view->poster = $this->config['view']['staticUrl'] . '/files/' . $file->folder . '/t/' . $file->name . '.jpg';
+
+        $view->loop = $file->isGif;
+        $view->inProgress = $file->inProgress;
 
         $view->display('Ajax/MediaPlayer');
     }

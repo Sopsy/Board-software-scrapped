@@ -42,7 +42,7 @@ class Files extends Model
     public function get(int $fileId)
     {
         $q = $this->db->prepare('SELECT id, folder, name, extension, size, width, height, duration, in_progress,
-            has_sound FROM files WHERE id = :file_id LIMIT 1');
+            has_sound, is_gif FROM files WHERE id = :file_id LIMIT 1');
         $q->bindValue('file_id', $fileId);
         $q->execute();
 
@@ -62,6 +62,7 @@ class Files extends Model
         $file->duration = $row->duration;
         $file->inProgress = $row->in_progress;
         $file->hasSound = $row->has_sound;
+        $file->isGif = $row->is_gif;
 
         return $file;
     }
@@ -170,7 +171,6 @@ class Files extends Model
         switch ($uploadedFile->extension) {
             case 'jpg':
             case 'png':
-
                 $this->limitPixelCount($uploadedFile->tmpName);
 
                 FileHandler::createImage($uploadedFile->tmpName, $uploadedFile->destination, $this->imgMaxWidth,
@@ -208,6 +208,10 @@ class Files extends Model
                     throw new FileUploadException(_('The video you uploaded is too long'));
                 }
 
+                if ($uploadedFile->isGif === null) {
+                    $uploadedFile->isGif = false;
+                }
+
                 $uploadedFile->hasSound = $videoMeta->hasSound;
                 $uploadedFile->width = $videoMeta->width;
                 $uploadedFile->height = $videoMeta->height;
@@ -228,16 +232,17 @@ class Files extends Model
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, in_progress, is_gif)
-            VALUES (:folder, :name, :extension, :size, :width, :height, :in_progress, :is_gif)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, has_sound, is_gif, in_progress)
+            VALUES (:folder, :name, :extension, :size, :width, :height, :has_sound, :is_gif, :in_progress)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
-        $q->bindValue('in_progress', $uploadedFile->inProgress);
+        $q->bindValue('has_sound', $uploadedFile->hasSound);
         $q->bindValue('is_gif', $uploadedFile->isGif);
+        $q->bindValue('in_progress', $uploadedFile->inProgress);
         $q->execute();
 
         $uploadedFile->id = $this->db->lastInsertId();
