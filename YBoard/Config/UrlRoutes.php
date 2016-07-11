@@ -30,8 +30,10 @@ return [
     '#^/scripts/user/changepassword#' => ['User', 'changePassword'],
 
     // Custom boards
-    '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?#' => ['CustomBoard', 'repliedThreads'],
-    '#^/mythreads-?([2-9]|[1-9][0-9]+)?#' => ['CustomBoard', 'myThreads'],
+    '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreads'],
+    '#^/repliedthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreadsCatalog'],
+    '#^/mythreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreads'],
+    '#^/mythreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreadsCatalog'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],

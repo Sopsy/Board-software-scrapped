@@ -6,7 +6,7 @@ use YBoard\Data\Post;
 use YBoard\Data\Reply;
 use YBoard\Data\Thread;
 use YBoard\Data\ThreadStatistics;
-use YBoard\Library\BbCode;
+use YBoard\Library\Database;
 use YBoard\Library\Text;
 use YBoard\Model;
 
@@ -50,38 +50,69 @@ class Posts extends Model
         }
 
         $row = $q->fetch();
-
-        if (empty($row->subject) && $row->subject != '0') {
-            $row->subject = $this->createSubject($row->message);
-        }
-
-        // Assign values to a class to return
-        $thread = new Thread();
-        $thread->id = $row->id;
-        $thread->locked = (bool)$row->locked;
-        $thread->boardId = $row->board_id;
-        $thread->userId = $row->user_id;
-        $thread->ip = inet_ntop($row->ip);
-        $thread->countryCode = $row->country_code;
-        $thread->time = date('c', strtotime($row->time));
-        $thread->sticky = $row->sticky;
-        $thread->username = Text::formatUsername($row->username);
-        $thread->subject = $row->subject;
-        $thread->message = $row->message;
-        $thread->messageFormatted = Text::formatMessage($row->message);
-        $thread->threadReplies = $this->getReplies($row->id);
-        $thread->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
-
-        $thread->statistics = new ThreadStatistics();
-        $thread->statistics->readCount = $row->read_count;
-        $thread->statistics->replyCount = $row->reply_count;
-        $thread->statistics->distinctReplyCount = $row->distinct_reply_count;
-
-        if (!empty($row->file_id)) {
-            $thread->file = $this->createFileClass($row);
-        }
+        $thread = $this->createThreadClass($row, 10000); // >= 10000 to get all replies
 
         return $thread;
+    }
+
+    public function getThreadsByUser(int $userId) : array
+    {
+        $q = $this->db->prepare("SELECT id FROM posts WHERE user_id = :user_id AND thread_id IS NULL");
+        $q->bindValue('user_id', $userId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        $threads = $q->fetchAll(Database::FETCH_COLUMN);
+
+        return $threads;
+    }
+
+    public function getThreadsRepliedByUser(int $userId) : array
+    {
+        $q = $this->db->prepare("SELECT DISTINCT thread_id AS thread_id FROM posts WHERE user_id = :user_id AND thread_id IS NOT NULL");
+        $q->bindValue('user_id', $userId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        $threads = $q->fetchAll(Database::FETCH_COLUMN);
+
+        return $threads;
+    }
+
+    public function getCustomThreads(array $threadIds, int $page, int $count, int $replyCount) : array
+    {
+        $limitStart = ($page - 1) * $count;
+
+        if (count($threadIds) == 0) {
+            return [];
+        }
+
+        $in = str_repeat('?,', count($threadIds));
+        $in = substr($in, 0, -1);
+
+        $q = $this->db->prepare($this->getPostsQuery("WHERE a.id IN (" . $in . ")
+            ORDER BY bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
+        $q->execute($threadIds);
+
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        $threads = [];
+
+        while ($row = $q->fetch()) {
+            // Assign values to a class to return
+            $thread = $this->createThreadClass($row, $replyCount);
+            $threads[] = $thread;
+        }
+
+        return $threads;
     }
 
     public function getBoardThreads(int $boardId, int $page, int $count, int $replyCount) : array
@@ -100,41 +131,8 @@ class Posts extends Model
         $threads = [];
 
         while ($row = $q->fetch()) {
-            if (empty($row->subject) && $row->subject != '0') {
-                $row->subject = $this->createSubject($row->message);
-            }
-
             // Assign values to a class to return
-            $thread = new Thread();
-            $thread->id = $row->id;
-            $thread->locked = (bool)$row->locked;
-            $thread->boardId = $row->board_id;
-            $thread->userId = $row->user_id;
-            $thread->ip = inet_ntop($row->ip);
-            $thread->countryCode = $row->country_code;
-            $thread->time = date('c', strtotime($row->time));
-            $thread->locked = $row->locked;
-            $thread->sticky = $row->sticky;
-            $thread->username = Text::formatUsername($row->username);
-            $thread->subject = $row->subject;
-            $thread->message = $row->message;
-            $thread->messageFormatted = Text::formatMessage($row->message);
-            if ($replyCount != 0) {
-                $thread->threadReplies = $this->getReplies($row->id, $replyCount, true);
-            } else {
-                $thread->threadReplies = false;
-            }
-            $thread->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
-
-            $thread->statistics = new ThreadStatistics();
-            $thread->statistics->readCount = $row->read_count;
-            $thread->statistics->replyCount = $row->reply_count;
-            $thread->statistics->distinctReplyCount = $row->distinct_reply_count;
-
-            if (!empty($row->file_id)) {
-                $thread->file = $this->createFileClass($row);
-            }
-
+            $thread = $this->createThreadClass($row, $replyCount);
             $threads[] = $thread;
         }
 
@@ -168,25 +166,11 @@ class Posts extends Model
             $q->bindValue('from', $fromId);
         }
         $q->execute();
-        
+
         $replies = [];
         while ($row = $q->fetch()) {
-            $tmp = new Reply();
-            $tmp->id = $row->id;
-            $tmp->threadId = $threadId;
-            $tmp->userId = $row->user_id;
-            $tmp->ip = inet_ntop($row->ip);
-            $tmp->countryCode = $row->country_code;
-            $tmp->username = Text::formatUsername($row->username);
-            $tmp->time = date('c', strtotime($row->time));
-            $tmp->message = $row->message;
-            $tmp->messageFormatted = Text::formatMessage($row->message);
-            $tmp->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
-
-            if (!empty($row->file_id)) {
-                $tmp->file = $this->createFileClass($row);
-            }
-            $replies[] = $tmp;
+            $row->thread_id = $threadId;
+            $replies[] = $this->createReplyClass($row);
         }
 
         if ($newest) {
@@ -314,23 +298,7 @@ class Posts extends Model
         }
 
         $row = $q->fetch();
-
-        $post = new Reply();
-        $post->id = $row->id;
-        $post->boardId = $row->board_id;
-        $post->threadId = $row->thread_id;
-        $post->userId = $row->user_id;
-        $post->ip = inet_ntop($row->ip);
-        $post->countryCode = $row->country_code;
-        $post->username = Text::formatUsername($row->username);
-        $post->time = date('c', strtotime($row->time));
-        $post->message = $row->message;
-        $post->messageFormatted = Text::formatMessage($row->message);
-        $post->postReplies = !empty($row->post_replies) ? explode(',', $row->post_replies) : false;
-
-        if (!empty($row->file_id)) {
-            $post->file = $this->createFileClass($row);
-        }
+        $post = $this->createReplyClass($row);
 
         return $post;
     }
@@ -426,12 +394,77 @@ class Posts extends Model
             a.id, a.board_id, a.thread_id, user_id, ip, country_code, time, locked, sticky, username, subject, message,
             b.file_name AS file_display_name, c.id AS file_id, c.folder AS file_folder, c.name AS file_name,
             c.extension AS file_extension, c.size AS file_size, c.width AS file_width, c.height AS file_height,
-            d.read_count, d.reply_count, d.distinct_reply_count,
+            d.read_count, d.reply_count, d.distinct_reply_count, e.url AS board_url,
             (SELECT GROUP_CONCAT(post_id) FROM posts_replies WHERE post_id_replied = a.id) AS post_replies
             FROM posts a
             LEFT JOIN posts_files b ON a.id = b.post_id
             LEFT JOIN files c ON b.file_id = c.id
-            LEFT JOIN thread_statistics d ON a.id = d.thread_id " . $append;
+            LEFT JOIN thread_statistics d ON a.id = d.thread_id
+            LEFT JOIN boards e ON e.id = a.board_id
+            " . $append;
+    }
+
+    protected function createThreadClass($data, int $replyCount) : Thread
+    {
+        if (empty($data->subject) && $data->subject != '0') {
+            $data->subject = $this->createSubject($data->message);
+        }
+
+        $thread = new Thread();
+        $thread->id = $data->id;
+        $thread->locked = (bool)$data->locked;
+        $thread->boardId = $data->board_id;
+        $thread->boardUrl = $data->board_url;
+        $thread->userId = $data->user_id;
+        $thread->ip = inet_ntop($data->ip);
+        $thread->countryCode = $data->country_code;
+        $thread->time = date('c', strtotime($data->time));
+        $thread->locked = $data->locked;
+        $thread->sticky = $data->sticky;
+        $thread->username = Text::formatUsername($data->username);
+        $thread->subject = $data->subject;
+        $thread->message = $data->message;
+        $thread->messageFormatted = Text::formatMessage($data->message);
+        if ($replyCount == 0) {
+            $thread->threadReplies = false;
+        } elseif ($replyCount >= 10000) {
+            $thread->threadReplies = $this->getReplies($data->id);
+        } else {
+            $thread->threadReplies = $this->getReplies($data->id, $replyCount, true);
+        }
+        $thread->postReplies = !empty($data->post_replies) ? explode(',', $data->post_replies) : false;
+
+        $thread->statistics = new ThreadStatistics();
+        $thread->statistics->readCount = $data->read_count;
+        $thread->statistics->replyCount = $data->reply_count;
+        $thread->statistics->distinctReplyCount = $data->distinct_reply_count;
+
+        if (!empty($data->file_id)) {
+            $thread->file = $this->createFileClass($data);
+        }
+
+        return $thread;
+    }
+
+    protected function createReplyClass($data) : Reply
+    {
+        $reply = new Reply();
+        $reply->id = $data->id;
+        $reply->threadId = $data->thread_id;
+        $reply->userId = $data->user_id;
+        $reply->ip = inet_ntop($data->ip);
+        $reply->countryCode = $data->country_code;
+        $reply->username = Text::formatUsername($data->username);
+        $reply->time = date('c', strtotime($data->time));
+        $reply->message = $data->message;
+        $reply->messageFormatted = Text::formatMessage($data->message);
+        $reply->postReplies = !empty($data->post_replies) ? explode(',', $data->post_replies) : false;
+
+        if (!empty($data->file_id)) {
+            $reply->file = $this->createFileClass($data);
+        }
+
+        return $reply;
     }
 
     protected function createFileClass($data) : File

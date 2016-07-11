@@ -25,7 +25,7 @@
     </div>
     <div class="post-info">
         <span class="post-time datetime"><?= $post->time ?></span>
-        <a href="/<?= $board->url ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
+        <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
             onclick="<?php if (!$thread->locked || $user->isMod) : ?>replyToPost(<?= $post->id ?>);<?php endif ?>return false"
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
     </div>

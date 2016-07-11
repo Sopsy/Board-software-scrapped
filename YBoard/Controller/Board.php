@@ -10,10 +10,7 @@ class Board extends ExtendedController
     public function index($boardUrl, $pageNum = 1)
     {
         $this->verifyBoard($boardUrl);
-
-        if ($pageNum > $this->config['view']['maxPages']) {
-            $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $this->config['view']['maxPages']));
-        }
+        $this->limitPages($pageNum, $this->config['view']['maxPages']);
 
         $posts = new Posts($this->db);
 
@@ -23,22 +20,7 @@ class Board extends ExtendedController
         $view->pageTitle = $board->name;
         $view->bodyClass = 'board-page';
 
-        // Calculate the end and start pages of the pagination
-        // We don't count the total number of pages to save some resources.
-        $view->paginationBase = '';
-        $view->maxPages = $this->config['view']['maxPages'];
-        $view->paginationStartPage = $pageNum - 1;
-        if ($view->paginationStartPage < 2) {
-            $view->paginationStartPage = 2;
-        }
-
-        $view->paginationEndPage = $pageNum + 2;
-        if ($view->paginationEndPage > $this->config['view']['maxPages']) {
-            $view->paginationEndPage = $this->config['view']['maxPages'];
-        }
-        if ($view->paginationEndPage < 5) {
-            $view->paginationEndPage = 5;
-        }
+        $this->initializePagination($view, $pageNum, $this->config['view']['maxPages']);
 
         $view->threads = $posts->getBoardThreads($board->id, $pageNum, 15, 3);
 
@@ -50,10 +32,7 @@ class Board extends ExtendedController
     public function catalog($boardUrl, $pageNum = 1)
     {
         $this->verifyBoard($boardUrl);
-
-        if ($pageNum > $this->config['view']['maxCatalogPages']) {
-            $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $this->config['view']['maxCatalogPages']));
-        }
+        $this->limitPages($pageNum, $this->config['view']['maxCatalogPages']);
 
         $posts = new Posts($this->db);
 
@@ -63,22 +42,7 @@ class Board extends ExtendedController
         $view->pageTitle = $board->name;
         $view->bodyClass = 'board-catalog';
 
-        // Calculate the end and start pages of the pagination
-        // We don't count the total number of pages to save some resources.
-        $view->paginationBase = '/catalog';
-        $view->maxPages = $this->config['view']['maxCatalogPages'];
-        $view->paginationStartPage = $pageNum - 1;
-        if ($view->paginationStartPage < 2) {
-            $view->paginationStartPage = 2;
-        }
-
-        $view->paginationEndPage = $pageNum + 2;
-        if ($view->paginationEndPage > $this->config['view']['maxCatalogPages']) {
-            $view->paginationEndPage = $this->config['view']['maxCatalogPages'];
-        }
-        if ($view->paginationEndPage < 5) {
-            $view->paginationEndPage = 5;
-        }
+        $this->initializePagination($view, $pageNum, $this->config['view']['maxCatalogPages'], '/catalog');
 
         $view->threads = $posts->getBoardThreads($board->id, $pageNum, 100, 0);
 

@@ -145,6 +145,32 @@ abstract class ExtendedController extends YBoard\Controller
         $this->stopExecution();
     }
 
+    protected function initializePagination($view, $pageNum, $maxPages, $base = '')
+    {
+        // Calculate the end and start pages of the pagination
+        // We don't count the total number of pages to save some resources.
+        $view->paginationBase = $base;
+        $view->maxPages = $maxPages;
+        $view->paginationStartPage = $pageNum - 1;
+        if ($view->paginationStartPage < 2) {
+            $view->paginationStartPage = 2;
+        }
+
+        $view->paginationEndPage = $pageNum + 2;
+        if ($view->paginationEndPage > $maxPages) {
+            $view->paginationEndPage = $maxPages;
+        }
+        if ($view->paginationEndPage < 5) {
+            $view->paginationEndPage = 5;
+        }
+    }
+    
+    protected function limitPages($pageNum, $maxPages) {
+        if ($pageNum > $maxPages) {
+            $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $maxPages));
+        }
+    }
+
     protected function loadTemplateEngine($templateFile = 'Default')
     {
         $templateEngine = new TemplateEngine(ROOT_PATH . '/YBoard/View/', $templateFile);
@@ -211,7 +237,7 @@ abstract class ExtendedController extends YBoard\Controller
 
         return false;
     }
-    
+
     protected function validatePostCsrfToken()
     {
         if (!$this->isPostRequest() || empty($_POST['csrf_token']) || !$this->validateCsrfToken($_POST['csrf_token'])) {
