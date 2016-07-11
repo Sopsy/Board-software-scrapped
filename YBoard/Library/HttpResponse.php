@@ -74,6 +74,9 @@ class HttpResponse
             case 410:
                 header($_SERVER["SERVER_PROTOCOL"] . ' 410 Gone');
                 break;
+            case 418:
+                header($_SERVER["SERVER_PROTOCOL"] . ' 418 I\'m a teapot');
+                break;
             case 500:
                 header($_SERVER["SERVER_PROTOCOL"] . ' 500 Internal Server Error');
                 break;

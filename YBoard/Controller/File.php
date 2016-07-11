@@ -36,6 +36,9 @@ class File Extends Controller
         if (!$file) {
             $this->throwJsonError(404);
         }
+        if ($file->inProgress) {
+            $this->throwJsonError(418, _('This file is being processed...'));
+        }
 
         $view = new TemplateEngine(ROOT_PATH . '/YBoard/View/', 'Blank');
         $view->fileUrl = $this->config['view']['staticUrl'] . '/files/' . $file->folder . '/o/' . $file->name . '/'
@@ -43,7 +46,6 @@ class File Extends Controller
         $view->poster = $this->config['view']['staticUrl'] . '/files/' . $file->folder . '/t/' . $file->name . '.jpg';
 
         $view->loop = $file->isGif;
-        $view->inProgress = $file->inProgress;
 
         $view->display('Ajax/MediaPlayer');
     }

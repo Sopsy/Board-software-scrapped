@@ -537,16 +537,26 @@ function playMedia(elm, e) {
     var post = container.parent('.post');
     var img = link.find('img');
 
-    container.removeClass('thumbnail').addClass('media-player-container');
-    post.addClass('full');
-
     var fileId = container.data('id');
+
+    if (typeof link.data('loading') != 'undefined') {
+        return false;
+    }
+
+    link.data('loading', 'true');
+
+    var loading = setTimeout(function () {
+        img.after(loadingAnimation('overlay bottom left'));
+    }, 200);
 
     $.ajax({
         url: '/scripts/files/getmediaplayer',
         type: "POST",
         data: {'file_id': fileId}
     }).done(function (xhr, textStatus, errorThrown) {
+
+        container.removeClass('thumbnail').addClass('media-player-container');
+        post.addClass('full');
         container.prepend(xhr);
 
         var volume = getStoredVal('videoVolume');
@@ -555,7 +565,15 @@ function playMedia(elm, e) {
         }
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
+        if (xhr.status == '418') {
+            toastr.info(errorMessage);
+        } else {
+            toastr.error(errorMessage);
+        }
+    }).always(function () {
+        clearTimeout(loading);
+        container.find('.loading').remove();
+        link.removeData('loading');
     });
 }
 

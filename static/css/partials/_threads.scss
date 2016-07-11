@@ -256,11 +256,16 @@
                     font-size: 32px;
                     padding: 10px;
                 }
-                &.bottomright {
+                &.bottom {
                     bottom: 0;
-                    right: 0;
                     font-size: 20px;
                     padding: 5px;
+                    &.right {
+                        right: 0;
+                    }
+                    &.left {
+                        left: 0;
+                    }
                 }
             }
         }
