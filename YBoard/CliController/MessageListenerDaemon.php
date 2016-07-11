@@ -7,7 +7,7 @@ use YBoard\Library\FileHandler;
 use YBoard\Library\MessageQueue;
 use YBoard\Model\Files;
 
-class ProcessFileDaemon extends CliDatabase
+class MessageListenerDaemon extends CliDatabase
 {
     public function index()
     {
@@ -58,7 +58,7 @@ class ProcessFileDaemon extends CliDatabase
                     $convert = FileHandler::convertVideo($filePath);
 
                     if (!$convert) {
-                        CliLogger::write('[ERROR] Video converion failed: '. $file->id);
+                        CliLogger::write('[ERROR] Video conversion failed: '. $file->id);
                         continue;
                     }
 

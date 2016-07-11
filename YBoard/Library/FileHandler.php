@@ -49,10 +49,13 @@ class FileHandler
 
         return $video;
     }
-    
+
     public static function convertVideo(string $file) : bool
     {
         $tmpFile = sys_get_temp_dir() . '/video-' . time() . mt_rand(000000, 999999) . '.mp4';
+
+        // TODO: This needs more work. E.g. detect the original framerate, original bitrate etc.
+        // And maybe even skip completely and just do lossless repackaging if fmt already is libx264:yuv420p/aac
 
         system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0 -c:v libx264'
             . ' -pix_fmt yuv420p -r 24 -crf 23 -preset:v veryfast -vf scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
@@ -61,10 +64,10 @@ class FileHandler
         if (!is_file($tmpFile)) {
             return false;
         }
-        
+
         unlink($file);
         rename($tmpFile, $file);
-        
+
         return is_file($file) !== false;
     }
 

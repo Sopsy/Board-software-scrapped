@@ -45,6 +45,10 @@
         line-height: $height;
         display: block;
         margin-bottom: 0.5em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+
         img {
             height: 100%;
             vertical-align: top;

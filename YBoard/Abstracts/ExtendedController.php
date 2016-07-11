@@ -12,6 +12,8 @@ abstract class ExtendedController extends YBoard\Controller
 {
     use YBoard\Traits\ErrorPages;
     use YBoard\Traits\Cookies;
+    use YBoard\Traits\PostChecks;
+    use YBoard\Traits\Ajax;
 
     protected $config;
     protected $i18n;
@@ -89,6 +91,8 @@ abstract class ExtendedController extends YBoard\Controller
 
             $this->setLoginCookie($this->user->sessionId);
         }
+
+        return true;
     }
 
     protected function userMaybeBot()
@@ -164,7 +168,7 @@ abstract class ExtendedController extends YBoard\Controller
             $view->paginationEndPage = 5;
         }
     }
-    
+
     protected function limitPages($pageNum, $maxPages) {
         if ($pageNum > $maxPages) {
             $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $maxPages));
@@ -199,30 +203,6 @@ abstract class ExtendedController extends YBoard\Controller
         $templateEngine->boardList = $this->boards->getAll();
 
         return $templateEngine;
-    }
-
-    protected function disallowNonPost()
-    {
-        if (!$this->isPostRequest()) {
-            HttpResponse::setStatusCode(405, ['Allowed' => 'POST']);
-            $this->stopExecution();
-        }
-    }
-
-    protected function isPostRequest()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function invalidAjaxData()
-    {
-        HttpResponse::setStatusCode(400);
-        $this->jsonMessage(_('Invalid request'), true);
-        $this->stopExecution();
     }
 
     protected function validateCsrfToken($token)
@@ -268,21 +248,6 @@ abstract class ExtendedController extends YBoard\Controller
     {
         HttpResponse::setStatusCode(401);
         $this->jsonMessage(_('Your session has expired. Please refresh this page and try again.'), true);
-        $this->stopExecution();
-    }
-
-    protected function jsonMessage($str, $error = false)
-    {
-        echo json_encode(['error' => $error, 'message' => $str]);
-    }
-
-    protected function throwJsonError($statusCode, $message = false)
-    {
-        if ($message) {
-            $this->jsonMessage($message, true);
-        }
-
-        HttpResponse::setStatusCode($statusCode);
         $this->stopExecution();
     }
 }

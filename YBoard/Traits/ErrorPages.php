@@ -43,4 +43,12 @@ trait ErrorPages
     {
         return $this->config['view']['staticUrl'] . str_replace(ROOT_PATH . '/static', '', $path);
     }
+
+    abstract protected function dieWithMessage(
+        $errorTitle,
+        $errorMessage,
+        $httpStatus = false,
+        $bodyClass = false,
+        $image = false
+    );
 }
