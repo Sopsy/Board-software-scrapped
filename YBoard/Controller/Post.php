@@ -198,7 +198,7 @@ class Post extends ExtendedController
             }
 
             try {
-                $file = $files->processUpload($_FILES['files']);
+                $file = $files->processUpload($_FILES['files'], true);
             } catch (FileUploadException $e) {
                 $this->throwJsonError(500, $e->getMessage());
             }
@@ -243,7 +243,7 @@ class Post extends ExtendedController
         $this->user->statistics->increment('messageTotalCharacters', mb_strlen($message));
 
         if ($hasFile) {
-            $posts->addFile($postId, $file->id, $file->origName);
+            $posts->addFile($postId, $file->id, $file->displayName);
             $this->user->statistics->increment('uploadedFiles');
             $this->user->statistics->increment('uploadedFilesTotalSize', $_FILES['files']['size']);
         }

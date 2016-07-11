@@ -86,6 +86,7 @@ class FileHandler
         $cmd = 'nice --adjustment=' . (int)static::NICE_VALUE . ' pngcrush ';
         $cmd .= static::PNGCRUSH_OPTIONS . ' ' . escapeshellarg($file) . ' ' . escapeshellarg($tmpFile);
 
+        echo $cmd;
         shell_exec($cmd);
 
         if (filesize($tmpFile) == 0) {

@@ -1,17 +1,9 @@
 <?php
 namespace YBoard\Data;
 
-class UploadedFile
+class UploadedFile extends File
 {
-    public $id;
     public $tmpName;
-    public $folder;
-    public $name;
-    public $extension;
-    public $origName;
-    public $size;
-    public $width = null;
-    public $height = null;
     public $md5 = [];
     public $thumbDestination;
     public $destination;

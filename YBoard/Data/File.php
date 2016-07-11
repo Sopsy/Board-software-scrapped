@@ -9,6 +9,9 @@ class File
     public $name;
     public $extension;
     public $size;
-    public $width;
-    public $height;
+    public $width = null;
+    public $height = null;
+    public $duration = null;
+    public $inProgress = false;
+    public $hasSound = null;
 }

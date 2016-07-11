@@ -4,6 +4,7 @@ namespace YBoard\Controller;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Library\Cache;
 use YBoard\Library\HttpResponse;
+use YBoard\Library\MessageQueue;
 use YBoard\Model\Posts;
 
 class Thread extends ExtendedController

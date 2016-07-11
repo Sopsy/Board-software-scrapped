@@ -1,10 +1,12 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Data\File;
 use YBoard\Data\UploadedFile;
 use YBoard\Exceptions\FileUploadException;
 use YBoard\Exceptions\InternalException;
 use YBoard\Library\FileHandler;
+use YBoard\Library\MessageQueue;
 use YBoard\Library\Text;
 use YBoard\Model;
 
@@ -37,13 +39,41 @@ class Files extends Model
         return true;
     }
 
-    public function processUpload(array $file) : UploadedFile
+    public function get(int $fileId)
+    {
+        $q = $this->db->prepare('SELECT id, folder, name, extension, size, width, height, duration, in_progress,
+            has_sound FROM files WHERE id = :file_id LIMIT 1');
+        $q->bindValue('file_id', $fileId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+        $row = $q->fetch();
+
+        $file = new File();
+        $file->id = $row->id;
+        $file->folder = $row->folder;
+        $file->name = $row->name;
+        $file->extension = $row->extension;
+        $file->size = $row->size;
+        $file->width = $row->width;
+        $file->height = $row->height;
+        $file->duration = $row->duration;
+        $file->inProgress = $row->in_progress;
+        $file->hasSound = $row->has_sound;
+
+        return $file;
+    }
+
+    public function processUpload(array $file, bool $skipMd5Check = false) : UploadedFile
     {
         // Verify config
         if (!$this->savePath) {
             throw new InternalException(_('File save path not set'));
         }
 
+        $sendMessage = false;
         $uploadedFile = new UploadedFile();
 
         // Rename uploaded file
@@ -52,15 +82,21 @@ class Files extends Model
         }
 
         $md5 = md5(file_get_contents($uploadedFile->tmpName));
-        $uploadedFile->origName = pathinfo($file['name'], PATHINFO_FILENAME);
+        $uploadedFile->displayName = pathinfo($file['name'], PATHINFO_FILENAME);
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-        // If the file already exists, use the old one
-        $oldId = $this->getByMd5($md5);
-        if ($oldId) {
-            $uploadedFile->id = $oldId;
+        if (empty($uploadedFile->extension)) {
+            throw new FileUploadException(_('The file you uploaded is missing a file extension (e.g. ".jpg").'));
+        }
 
-            return $uploadedFile;
+        // If the file already exists, use the old one
+        if (!$skipMd5Check) {
+            $oldId = $this->getByMd5($md5);
+            if ($oldId) {
+                $uploadedFile->id = $oldId;
+
+                return $uploadedFile;
+            }
         }
 
         // File type conversions
@@ -133,8 +169,11 @@ class Files extends Model
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
                     $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
 
+                chmod($uploadedFile->destination, 0664);
+                chmod($uploadedFile->thumbDestination, 0664);
+
                 if ($uploadedFile->extension == 'png') {
-                    FileHandler::pngCrush($uploadedFile->destination);
+                    $sendMessage = MessageQueue::MSG_TYPE_DO_PNGCRUSH;
                 }
 
                 if (!FileHandler::verifyFile($uploadedFile->destination) || !FileHandler::verifyFile($uploadedFile->thumbDestination)) {
@@ -158,22 +197,48 @@ class Files extends Model
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height)
-            VALUES (:folder, :name, :extension, :size, :width, :height)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, in_progress)
+            VALUES (:folder, :name, :extension, :size, :width, :height, :in_progress)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
+        $q->bindValue('in_progress', $uploadedFile->inProgress ? 1 : 0);
         $q->execute();
 
         $uploadedFile->id = $this->db->lastInsertId();
+
+        if ($sendMessage) {
+            $mq = new MessageQueue();
+            $mq->send($uploadedFile->id, $sendMessage);
+        }
 
         // Save MD5
         $this->saveMd5List($uploadedFile->id, $uploadedFile->md5);
 
         return $uploadedFile;
+    }
+
+    public function updateFileSize(int $fileId, int $fileSize) : bool
+    {
+        $q = $this->db->prepare('UPDATE files SET size = :size WHERE id = :file_id LIMIT 1');
+        $q->bindValue('size', $fileSize);
+        $q->bindValue('file_id', $fileId);
+        $q->execute();
+
+        return true;
+    }
+
+    public function updateFileInProgress(int $fileId, bool $inProgress) : bool
+    {
+        $q = $this->db->prepare('UPDATE files SET in_progress = :in_progress WHERE id = :file_id LIMIT 1');
+        $q->bindValue('file_id', $fileId);
+        $q->bindValue('in_progress', $inProgress);
+        $q->execute();
+
+        return true;
     }
 
     public function saveMd5List(int $fileId, array $md5List) : bool
