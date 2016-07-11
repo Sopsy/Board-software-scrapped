@@ -67,6 +67,7 @@ class MessageListenerDaemon extends CliDatabase
                     $md5 = md5(file_get_contents($filePath));
                     $files->saveMd5List($file->id, [$md5]);
                     $files->updateFileSize($file->id, filesize($filePath));
+                    $files->updateFileInProgress($file->id, false);
 
                     break;
                 default:
