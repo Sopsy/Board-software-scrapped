@@ -13,7 +13,8 @@ class Boards extends Model
     {
         parent::__construct($db);
 
-        $q = $this->db->query('SELECT id, name, description, url, alt_url, is_nsfw, is_hidden, show_flags FROM boards ORDER BY name ASC');
+        $q = $this->db->query('SELECT id, name, description, url, alt_url, is_nsfw, is_hidden, show_flags, inactive_hours_delete
+            FROM boards ORDER BY name ASC');
         if ($q === false) {
             return false;
         }
@@ -28,6 +29,7 @@ class Boards extends Model
             $tmp->isNsfw = $row->is_nsfw == 1 ? true : false;
             $tmp->isHidden = $row->is_hidden == 1 ? true : false;
             $tmp->showFlags = $row->show_flags == 1 ? true : false;
+            $tmp->inactiveHoursDelete = $row->inactive_hours_delete == 0 ? false : $row->inactive_hours_delete;
             $this->boards[] = $tmp;
         }
     }

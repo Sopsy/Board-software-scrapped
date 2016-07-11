@@ -36,7 +36,6 @@ set_exception_handler(function (Throwable $e) {
 
 // Set the encoding
 mb_internal_encoding('UTF-8');
-// Strict standards, set to something as a fallback. Will be overridden later.
 date_default_timezone_set('UTC');
 
 // Remove query string from route

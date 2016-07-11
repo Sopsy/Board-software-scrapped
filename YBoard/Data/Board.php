@@ -11,4 +11,5 @@ class Board
     public $isNsfw = false;
     public $isHidden = false;
     public $showFlags = false;
+    public $inactiveHoursDelete = false;
 }

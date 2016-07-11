@@ -82,6 +82,25 @@ class Posts extends Model
         return $threads;
     }
 
+    public function getOldThreads(int $boardId, int $hours, int $limit = 100) : array
+    {
+        $q = $this->db->prepare("SELECT id FROM posts
+            WHERE board_id = :board_id AND thread_id IS NULL AND bump_time < DATE_SUB(NOW(), INTERVAL :hours HOUR)
+            LIMIT :limit");
+        $q->bindValue('board_id', $boardId);
+        $q->bindValue('hours', $hours);
+        $q->bindValue('limit', $limit);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        $threads = $q->fetchAll(Database::FETCH_COLUMN);
+
+        return $threads;
+    }
+
     public function getThreadsRepliedByUser(int $userId, int $limit = 1000) : array
     {
         $q = $this->db->prepare("SELECT DISTINCT thread_id AS thread_id FROM posts
@@ -326,7 +345,7 @@ class Posts extends Model
 
     public function delete(int $postId) : bool
     {
-        $q = $this->db->prepare("INSERT INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
+        $q = $this->db->prepare("INSERT IGNORE INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
             SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts
             WHERE id = :post_id OR thread_id = :post_id_2");
         $q->bindValue('post_id', $postId);
@@ -336,6 +355,31 @@ class Posts extends Model
         $q = $this->db->prepare("DELETE FROM posts WHERE id = :post_id LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->execute();
+
+        return $q->rowCount() != 0;
+    }
+
+    public function deleteMultiple(array $postIds) : bool
+    {
+        $count = count($postIds);
+        if ($count == 0) {
+            return true;
+        } elseif ($count == 1) {
+            return $this->delete($postIds[0]);
+        }
+
+        $in = str_repeat('?,', $count);
+        $in = substr($in, 0, -1);
+
+        $q = $this->db->prepare("INSERT IGNORE INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
+            SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts
+            WHERE id IN (" . $in . ") OR thread_id IN (" . $in . ")");
+        $q->execute(array_merge($postIds, $postIds));
+
+        $q = $this->db->prepare("DELETE FROM posts WHERE id IN (" . $in . ") LIMIT ?");
+        $queryVars = $postIds;
+        array_push($queryVars, $count);
+        $q->execute($queryVars);
 
         return $q->rowCount() != 0;
     }
