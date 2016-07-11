@@ -10,7 +10,7 @@ use YBoard\Model\Posts;
 
 class User extends ExtendedController
 {
-    public function index()
+    public function profile()
     {
         $view = $this->loadTemplateEngine();
         $view->pageTitle = _('User account');

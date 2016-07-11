@@ -20,7 +20,7 @@
     <nav id="front-boards">
         <?php foreach($boardList as $board) : ?>
         <a href="/<?= htmlspecialchars($board->url) ?>/"
-            <?= ($board->nsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->nsfw) :
+            <?= ($board->isNsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->isNsfw) :
             ?> <span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></a>
         <?php endforeach ?>
     </nav>

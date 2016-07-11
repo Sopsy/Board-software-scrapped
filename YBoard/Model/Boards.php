@@ -1,6 +1,7 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Data\Board;
 use YBoard\Library\Database;
 use YBoard\Model;
 
@@ -12,53 +13,82 @@ class Boards extends Model
     {
         parent::__construct($db);
 
-        $q = $this->db->query('SELECT id, name, description, url, alt_url, nsfw, is_hidden FROM boards ORDER BY name ASC');
+        $q = $this->db->query('SELECT id, name, description, url, alt_url, is_nsfw, is_hidden, show_flags FROM boards ORDER BY name ASC');
         if ($q === false) {
             return false;
         }
-        $this->boards = $q->fetchAll(Database::FETCH_ASSOC);
+        $this->boards = [];
+        while ($row = $q->fetch()) {
+            $tmp = new Board();
+            $tmp->id = $row->id;
+            $tmp->name = $row->name;
+            $tmp->description = $row->description;
+            $tmp->url = $row->url;
+            $tmp->altUrl = $row->alt_url;
+            $tmp->isNsfw = $row->is_nsfw == 1 ? true : false;
+            $tmp->isHidden = $row->is_hidden == 1 ? true : false;
+            $tmp->showFlags = $row->show_flags == 1 ? true : false;
+            $this->boards[] = $tmp;
+        }
     }
 
     public function getAll() : array
     {
-        $boards = [];
-        foreach ($this->boards as $board) {
-            $boards[] = (object)$board;
-        }
-
-        return $boards;
+        return $this->boards;
     }
 
     public function isAltUrl(string $url) : bool
     {
-        $exists = array_search($url, array_column($this->boards, 'alt_url'));
+        foreach ($this->boards as $board) {
+            if ($board->altUrl == $url) {
+                return true;
+            }
+        }
 
-        return $exists !== false;
+        return false;
     }
 
-    public function getUrlByAltUrl(string $altUrl) : string
+    public function getUrlByAltUrl(string $altUrl)
     {
-        return $this->boards[array_search($altUrl, array_column($this->boards, 'alt_url'))]['url'];
+        foreach ($this->boards as $board) {
+            if ($board->altUrl == $altUrl) {
+                return $board->url;
+            }
+        }
+
+        return false;
     }
 
     public function exists(string $url) : bool
     {
-        $exists = array_search($url, array_column($this->boards, 'url'));
+        foreach ($this->boards as $board) {
+            if ($board->url == $url) {
+                return true;
+            }
+        }
 
-        return $exists !== false;
+        return false;
     }
 
     public function getByUrl(string $url)
     {
-        $board = $this->boards[array_search($url, array_column($this->boards, 'url'))];
+        foreach ($this->boards as $board) {
+            if ($board->url == $url) {
+                return $board;
+            }
+        }
 
-        return (object)$board;
+        return false;
     }
 
     public function getById(int $boardId)
     {
-        $board = $this->boards[array_search($boardId, array_column($this->boards, 'id'))];
+        foreach ($this->boards as $board) {
+            if ($board->id == $boardId) {
+                return $board;
+            }
+        }
 
-        return (object)$board;
+        return false;
     }
 }

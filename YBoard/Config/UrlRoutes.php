@@ -21,13 +21,17 @@ return [
     '#^/scripts/preferences/toggledarktheme#' => ['Preferences', 'toggleDarkTheme'],
 
     // User account related
-    '#^/profile#' => ['User', 'index'],
+    '#^/profile#' => ['User', 'profile'],
     '#^/scripts/user/login$#' => ['User', 'login'],
     '#^/scripts/user/logout$#' => ['User', 'logout'],
     '#^/scripts/user/delete#' => ['User', 'delete'],
     '#^/scripts/user/destroysession#' => ['User', 'destroySession'],
     '#^/scripts/user/changename#' => ['User', 'changeName'],
     '#^/scripts/user/changepassword#' => ['User', 'changePassword'],
+
+    // Custom boards
+    '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?#' => ['CustomBoard', 'repliedThreads'],
+    '#^/mythreads-?([2-9]|[1-9][0-9]+)?#' => ['CustomBoard', 'myThreads'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],

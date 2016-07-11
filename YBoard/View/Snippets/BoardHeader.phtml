@@ -1,6 +1,6 @@
 <header class="page-header">
     <div class="board-title">
-        <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->nsfw) : ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
+        <h1><a href="/<?= $board->url ?>/"><?= htmlspecialchars($board->name) ?></a><?php if ($board->isNsfw) : ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></h1>
         <h2><?= htmlspecialchars($board->description) ?></h2>
     </div>
     <div class="buttons">
