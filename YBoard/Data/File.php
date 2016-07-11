@@ -14,4 +14,5 @@ class File
     public $duration = null;
     public $inProgress = false;
     public $hasSound = null;
+    public $isGif = null;
 }

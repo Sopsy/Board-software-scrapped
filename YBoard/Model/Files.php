@@ -86,7 +86,7 @@ class Files extends Model
         $uploadedFile->extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
         if (empty($uploadedFile->extension)) {
-            throw new FileUploadException(_('The file you uploaded is missing a file extension (e.g. ".jpg").'));
+            throw new FileUploadException(_('The file you uploaded is missing a file extension (e.g. ".jpg")'));
         }
 
         // If the file already exists, use the old one
@@ -110,8 +110,16 @@ class Files extends Model
             $frames = FileHandler::getGifFrameCount($uploadedFile->tmpName);
             if ($frames === 0) {
                 throw new InternalException(_('Cannot get the number of GIF frames'));
+            } elseif ($frames > 4000) {
+                throw new FileUploadException(_('The GIF you uploaded is too long, please upload a video file instead'));
             }
-            $uploadedFile->extension = $frames == 1 ? 'jpg' : 'mp4';
+
+            if ($frames == 1) {
+                $uploadedFile->extension = 'jpg';
+            } else {
+                $uploadedFile->extension = 'mp4';
+                $uploadedFile->isGif = true;
+            }
         }
 
         if ($uploadedFile->extension == 'webm') {
@@ -162,6 +170,7 @@ class Files extends Model
         switch ($uploadedFile->extension) {
             case 'jpg':
             case 'png':
+
                 $this->limitPixelCount($uploadedFile->tmpName);
 
                 FileHandler::createImage($uploadedFile->tmpName, $uploadedFile->destination, $this->imgMaxWidth,
@@ -189,23 +198,46 @@ class Files extends Model
 
                 break;
             case 'mp4':
-                throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
-                // TODO: Add video support
+
+                $videoMeta = FileHandler::getVideoMeta($uploadedFile->tmpName);
+                if ($videoMeta === false) {
+                    throw new FileUploadException(_('Invalid or corrupted video file'));
+                }
+
+                if ($videoMeta->duration > 300) {
+                    throw new FileUploadException(_('The video you uploaded is too long'));
+                }
+
+                $uploadedFile->hasSound = $videoMeta->hasSound;
+                $uploadedFile->width = $videoMeta->width;
+                $uploadedFile->height = $videoMeta->height;
+
+                rename($uploadedFile->tmpName, $uploadedFile->destination);
+                FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
+                    $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
+
+                chmod($uploadedFile->destination, 0664);
+                chmod($uploadedFile->thumbDestination, 0664);
+
+                $uploadedFile->inProgress = true;
+                $sendMessage = MessageQueue::MSG_TYPE_PROCESS_VIDEO;
+
                 break;
             default:
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, in_progress)
-            VALUES (:folder, :name, :extension, :size, :width, :height, :in_progress)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, in_progress, is_gif)
+            VALUES (:folder, :name, :extension, :size, :width, :height, :in_progress, :is_gif)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
-        $q->bindValue('in_progress', $uploadedFile->inProgress ? 1 : 0);
+        $q->bindValue('in_progress', $uploadedFile->inProgress);
+        $q->bindValue('is_gif', $uploadedFile->isGif);
         $q->execute();
 
         $uploadedFile->id = $this->db->lastInsertId();

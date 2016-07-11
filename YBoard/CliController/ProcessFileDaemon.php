@@ -18,30 +18,61 @@ class ProcessFileDaemon extends CliDatabase
         $message = NULL;
 
         while ($mq->receive(MessageQueue::MSG_TYPE_ALL, $msgType, 10240, $message)) {
-            if ($msgType == MessageQueue::MSG_TYPE_DO_PNGCRUSH) {
-                // $message should be instance of Data\UploadedFile
-                $file = $files->get($message);
-                if (!$file) {
-                    CliLogger::write('ERROR 1: Invalid file '. $message);
-                    continue;
-                }
-                if ($file->extension != 'png') {
-                    CliLogger::write('ERROR 1: Invalid file extension for PNGCrush '. $file->extension);
-                    continue;
-                }
+            switch ($msgType) {
+                case MessageQueue::MSG_TYPE_DO_PNGCRUSH:
+                    // $message should be fileId
+                    $file = $files->get($message);
+                    if (!$file) {
+                        CliLogger::write('[ERROR] Invalid file: '. $message);
+                        continue;
+                    }
+                    if ($file->extension != 'png') {
+                        CliLogger::write('[ERROR] Invalid file extension for PNGCrush: '. $file->extension);
+                        continue;
+                    }
 
-                $filePath = $this->config['files']['savePath'] . '/' . $file->folder . '/o/' . $file->name . '.'. $file->extension;
-                FileHandler::pngCrush($filePath);
-                $md5 = md5(file_get_contents($filePath));
+                    $filePath = $this->config['files']['savePath'] . '/' . $file->folder . '/o/' . $file->name . '.'. $file->extension;
+                    FileHandler::pngCrush($filePath);
+                    $md5 = md5(file_get_contents($filePath));
 
-                $files->saveMd5List($file->id, [$md5]);
-                $files->updateFileSize($file->id, filesize($filePath));
+                    $files->saveMd5List($file->id, [$md5]);
+                    $files->updateFileSize($file->id, filesize($filePath));
+                    $files->updateFileInProgress($file->id, false);
 
-                CliLogger::write('SUCCESS: ' . $file->id .' ' . $filePath);
+                    break;
+                case MessageQueue::MSG_TYPE_PROCESS_VIDEO:
+                    // $message should be fileId
+                    $file = $files->get($message);
+                    if (!$file) {
+                        CliLogger::write('[ERROR] Invalid file: '. $message);
+                        continue;
+                    }
+                    if ($file->extension != 'mp4') {
+                        CliLogger::write('[ERROR] Invalid file extension for video: '. $file->extension);
+                        continue;
+                    }
+
+                    $filePath = $this->config['files']['savePath'] . '/' . $file->folder . '/o/' . $file->name . '.'. $file->extension;
+
+                    // Convert
+                    $convert = FileHandler::convertVideo($filePath);
+
+                    if (!$convert) {
+                        CliLogger::write('[ERROR] Video converion failed: '. $file->id);
+                        continue;
+                    }
+
+                    unset($tmpFile);
+
+                    $md5 = md5(file_get_contents($filePath));
+                    $files->saveMd5List($file->id, [$md5]);
+                    $files->updateFileSize($file->id, filesize($filePath));
+
+                    break;
+                default:
+                    CliLogger::write('[ERROR] Unknown message type: '. $msgType);
+                    break;
             }
-
-            echo $msgType . ' ';
-            var_dump($message);
 
             $msgType = NULL;
             $message = NULL;

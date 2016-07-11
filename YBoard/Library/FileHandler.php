@@ -8,6 +8,66 @@ class FileHandler
     const PNGCRUSH_OPTIONS = '-reduce -fix -rem allb -l 9';
     const IMAGICK_FILTER = 'triangle';
 
+    public static function getVideoMeta(string $file)
+    {
+        $probe = shell_exec('nice --adjustment=19 ffprobe -show_streams -of json ' . escapeshellarg($file) . ' -v quiet');
+        $videoInfo = json_decode($probe);
+
+        if (empty($videoInfo->streams) || count($videoInfo->streams) == 0) {
+            return false;
+        }
+
+        $videoInfo = $videoInfo->streams;
+
+        $video = new \stdClass();
+        $video->hasSound = false;
+        $video->width = null;
+        $video->height = null;
+
+        // Figure out which stream to use info from and if the file has sound
+        foreach ($videoInfo AS $key => $stream) {
+            if ($stream->codec_type == 'video' && empty($streamNum)) {
+                $streamNum = $key;
+            } elseif ($stream->codec_type == 'audio') {
+                $video->hasSound = true;
+            }
+        }
+
+        if (!isset($streamNum)) {
+            return false;
+        }
+
+        if (!isset($videoInfo[$streamNum]->duration)) {
+            $videoInfo[$streamNum]->duration = 0;
+        }
+
+        if (!empty($videoInfo[$streamNum]->width) && !empty($videoInfo[$streamNum]->height)) {
+            $video->width = (int)$videoInfo[$streamNum]->width;
+            $video->height = (int)$videoInfo[$streamNum]->height;
+        }
+        $video->duration = (int)$videoInfo[$streamNum]->duration;
+
+        return $video;
+    }
+    
+    public static function convertVideo(string $file) : bool
+    {
+        $tmpFile = sys_get_temp_dir() . '/video-' . time() . mt_rand(000000, 999999) . '.mp4';
+
+        system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0 -c:v libx264'
+            . ' -pix_fmt yuv420p -r 24 -crf 23 -preset:v veryfast -vf scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
+            . ' -movflags faststart -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile));
+
+        if (!is_file($tmpFile)) {
+            return false;
+        }
+        
+        unlink($file);
+        rename($tmpFile, $file);
+        
+        return is_file($file) !== false;
+    }
+
     public static function createThumbnail(
         string $file,
         string $destination,
