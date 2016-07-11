@@ -1,10 +1,9 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Library\Database;
-use YBoard\Model;
+use YBoard\Abstracts\UserSubModel;
 
-class UserStatistics extends Model
+class UserStatistics extends UserSubModel
 {
     public $pageLoads = 1;
     public $sentReplies = 0;
@@ -23,7 +22,6 @@ class UserStatistics extends Model
     public $markoboyDonations = 0;
     public $niilo22Donations = 0;
 
-    protected $userId;
     protected $statistics;
     protected $toUpdate = [];
     protected $keyNames = [
@@ -42,16 +40,6 @@ class UserStatistics extends Model
         1000 => 'markoboyDonations',
         1001 => 'niilo22Donations',
     ];
-
-    public function __construct(Database $db, $userId, bool $skipLoad = false)
-    {
-        parent::__construct($db);
-        $this->userId = $userId;
-
-        if ($this->userId !== false && !$skipLoad) {
-            $this->load();
-        }
-    }
 
     public function __destruct()
     {

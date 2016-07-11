@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-11 13:26+0300\n"
-"PO-Revision-Date: 2016-07-11 13:26+0300\n"
+"POT-Creation-Date: 2016-07-11 13:54+0300\n"
+"PO-Revision-Date: 2016-07-11 13:54+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -38,21 +38,29 @@ msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 msgid "There's no such thing as a board called \"%s\" here."
 msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 
-#: Controller/CustomBoard.php:102 View/Template/Default.phtml:123
+#: Controller/CustomBoard.php:79 View/Template/Default.phtml:123
 msgid "My threads"
 msgstr "Omat langat"
 
-#: Controller/CustomBoard.php:103
+#: Controller/CustomBoard.php:80
 msgid "All the great threads you have created"
 msgstr "Kaikki ne mahtavat langat, jotka olet luonut"
 
-#: Controller/CustomBoard.php:112 View/Template/Default.phtml:124
+#: Controller/CustomBoard.php:83 View/Template/Default.phtml:124
 msgid "Replied threads"
 msgstr "Vastatut langat"
 
-#: Controller/CustomBoard.php:113
+#: Controller/CustomBoard.php:84
 msgid "Threads that may or may not have any interesting content"
 msgstr "Langat, joissa joko on tai ei ole mitään kiinnostavaa sisältöä"
+
+#: Controller/CustomBoard.php:87
+msgid "Hidden threads"
+msgstr "Piilotetut langat"
+
+#: Controller/CustomBoard.php:88
+msgid "Why are you even reading these?"
+msgstr "Miksi edes luet näitä?"
 
 #: Controller/GoldAccount.php:11 View/Template/Default.phtml:79
 msgid "Gold account"

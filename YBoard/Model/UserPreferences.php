@@ -1,27 +1,16 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Abstracts\UserSubModel;
 use YBoard\Library\Database;
-use YBoard\Model;
 
-class UserPreferences extends Model
+class UserPreferences extends UserSubModel
 {
     public $darkTheme = false;
     public $locale = false;
 
-    protected $userId;
     protected $preferences;
     protected $toUpdate = [];
-
-    public function __construct(Database $db, $userId, bool $skipLoad = false)
-    {
-        parent::__construct($db);
-        $this->userId = $userId;
-
-        if ($userId !== false && !$skipLoad) {
-            $this->load();
-        }
-    }
 
     public function __destruct()
     {

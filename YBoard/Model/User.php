@@ -19,6 +19,7 @@ class User extends Model
     public $goldLevel;
     public $preferences;
     public $statistics;
+    public $threadHide;
     public $loggedIn = false;
     public $isMod = false;
     public $isAdmin = false;
@@ -145,6 +146,7 @@ class User extends Model
     {
         $this->preferences = new UserPreferences($this->db, $this->id, $skipDbLoad);
         $this->statistics = new UserStatistics($this->db, $this->id, $skipDbLoad);
+        $this->threadHide = new UserThreadHide($this->db, $this->id, $skipDbLoad);
 
         return true;
     }
