@@ -10,108 +10,84 @@ class CustomBoard extends ExtendedController
 {
     public function myThreads($pageNum = 1)
     {
-        $this->limitPages($pageNum, $this->config['view']['maxPages']);
-
         $posts = new Posts($this->db);
-
-        $view = $this->loadTemplateEngine();
-        $board = $this->getMyThreadsBoard();
-
-        $view->pageTitle = $board->name;
-        $view->bodyClass = 'board-page';
-
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxPages']);
-
-        $threads = $posts->getThreadsByUser($this->user->id);
-        $view->threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
-
-        $view->board = $board;
-        $view->pageNum = $pageNum;
-        $view->display('Board');
+        $threads = $posts->getThreadsByUser($this->user->id, 15*$this->config['view']['maxPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
+        $this->showCustomBoard($threads, 'mythreads', (int)$pageNum);
     }
 
     public function myThreadsCatalog($pageNum = 1)
     {
-        $this->limitPages($pageNum, $this->config['view']['maxCatalogPages']);
-
         $posts = new Posts($this->db);
-
-        $view = $this->loadTemplateEngine();
-        $board = $this->getMyThreadsBoard();
-
-        $view->pageTitle = $board->name;
-        $view->bodyClass = 'board-catalog';
-
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxCatalogPages'], '/catalog');
-
-        $threads = $posts->getThreadsByUser($this->user->id);
-        $view->threads = $posts->getCustomThreads($threads, $pageNum, 100, 0);
-
-        $view->board = $board;
-        $view->pageNum = $pageNum;
-        $view->display('BoardCatalog');
+        $threads = $posts->getThreadsByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, 100);
+        $this->showCustomBoard($threads, 'mythreads', (int)$pageNum, true);
     }
 
     public function repliedThreads($pageNum = 1)
     {
-        $this->limitPages($pageNum, $this->config['view']['maxPages']);
-
         $posts = new Posts($this->db);
-
-        $view = $this->loadTemplateEngine();
-        $board = $this->getRepliedThreadsBoard();
-
-        $view->pageTitle = $board->name;
-        $view->bodyClass = 'board-page';
-
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxPages']);
-
-        $threads = $posts->getThreadsRepliedByUser($this->user->id);
-        $view->threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
-
-        $view->board = $board;
-        $view->pageNum = $pageNum;
-        $view->display('Board');
+        $threads = $posts->getThreadsRepliedByUser($this->user->id, 15*$this->config['view']['maxPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
+        $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum);
     }
 
     public function repliedThreadsCatalog($pageNum = 1)
     {
-        $this->limitPages($pageNum, $this->config['view']['maxCatalogPages']);
-
         $posts = new Posts($this->db);
+        $threads = $posts->getThreadsRepliedByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, 100);
+        $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum, true);
+    }
+
+    protected function showCustomBoard(array $threads, string $boardName, int $pageNum, bool $catalog = false)
+    {
+        if (!$catalog) {
+            $maxPages = $this->config['view']['maxPages'];
+            $bodyClass = 'board-page';
+            $viewFile = 'Board';
+            $paginationBase = '';
+        } else {
+            $maxPages = $this->config['view']['maxCatalogPages'];
+            $bodyClass = 'board-catalog';
+            $viewFile = 'BoardCatalog';
+            $paginationBase = '/catalog';
+        }
+
+        $this->limitPages($pageNum, $maxPages);
 
         $view = $this->loadTemplateEngine();
-        $board = $this->getRepliedThreadsBoard();
+        $board = $this->getCustomBoard($boardName);
 
         $view->pageTitle = $board->name;
-        $view->bodyClass = 'board-catalog';
+        $view->bodyClass = $bodyClass;
 
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxCatalogPages'], '/catalog');
-
-        $threads = $posts->getThreadsRepliedByUser($this->user->id);
-        $view->threads = $posts->getCustomThreads($threads, $pageNum, 100, 0);
+        $this->initializePagination($view, $pageNum, $maxPages, $paginationBase);
 
         $view->board = $board;
+        $view->threads = $threads;
         $view->pageNum = $pageNum;
-        $view->display('BoardCatalog');
+        $view->display($viewFile);
     }
 
-    protected function getMyThreadsBoard() : Board
+    protected function getCustomBoard(string $name) : Board
     {
         $board = new Board();
-        $board->name = _('My threads');
-        $board->description = _('All the great threads you have created');
-        $board->url = 'mythreads';
-
-        return $board;
-    }
-
-    protected function getRepliedThreadsBoard() : Board
-    {
-        $board = new Board();
-        $board->name = _('Replied threads');
-        $board->description = _('Threads that may or may not have any interesting content');
-        $board->url = 'repliedthreads';
+        $board->url = $name;
+        switch ($name) {
+            case 'mythreads':
+                $board->name = _('My threads');
+                $board->description = _('All the great threads you have created');
+                break;
+            case 'repliedthreads':
+                $board->name = _('Replied threads');
+                $board->description = _('Threads that may or may not have any interesting content');
+                break;
+            case 'hiddenthreads':
+                $board->name = _('Hidden threads');
+                $board->description = _('Why are you even reading these?');
+                break;
+        }
 
         return $board;
     }

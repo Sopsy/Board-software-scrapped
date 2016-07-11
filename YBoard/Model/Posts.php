@@ -55,10 +55,11 @@ class Posts extends Model
         return $thread;
     }
 
-    public function getThreadsByUser(int $userId) : array
+    public function getThreadsByUser(int $userId, int $limit = 1000) : array
     {
-        $q = $this->db->prepare("SELECT id FROM posts WHERE user_id = :user_id AND thread_id IS NULL");
+        $q = $this->db->prepare("SELECT id FROM posts WHERE user_id = :user_id AND thread_id IS NULL LIMIT :limit");
         $q->bindValue('user_id', $userId);
+        $q->bindValue('limit', $limit);
         $q->execute();
 
         if ($q->rowCount() == 0) {
@@ -70,10 +71,12 @@ class Posts extends Model
         return $threads;
     }
 
-    public function getThreadsRepliedByUser(int $userId) : array
+    public function getThreadsRepliedByUser(int $userId, int $limit = 1000) : array
     {
-        $q = $this->db->prepare("SELECT DISTINCT thread_id AS thread_id FROM posts WHERE user_id = :user_id AND thread_id IS NOT NULL");
+        $q = $this->db->prepare("SELECT DISTINCT thread_id AS thread_id FROM posts
+            WHERE user_id = :user_id AND thread_id IS NOT NULL LIMIT :limit");
         $q->bindValue('user_id', $userId);
+        $q->bindValue('limit', $limit);
         $q->execute();
 
         if ($q->rowCount() == 0) {
@@ -85,7 +88,7 @@ class Posts extends Model
         return $threads;
     }
 
-    public function getCustomThreads(array $threadIds, int $page, int $count, int $replyCount) : array
+    public function getCustomThreads(array $threadIds, int $page, int $count, int $replyCount = 0) : array
     {
         $limitStart = ($page - 1) * $count;
 

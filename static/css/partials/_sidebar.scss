@@ -131,6 +131,9 @@
         > *:not(:first-child) {
             margin-left: 5px;
         }
+        + a {
+            margin-top: 10px;
+        }
     }
     #user form {
         overflow: hidden;

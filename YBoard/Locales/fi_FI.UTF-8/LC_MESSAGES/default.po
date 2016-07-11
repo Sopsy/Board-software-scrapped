@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-10 23:09+0300\n"
-"PO-Revision-Date: 2016-07-10 23:09+0300\n"
+"POT-Creation-Date: 2016-07-11 13:26+0300\n"
+"PO-Revision-Date: 2016-07-11 13:26+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -15,28 +15,44 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Abstracts/ExtendedController.php:198
-msgid "Invalid request"
-msgstr "Virheellinen pyyntö"
-
-#: Abstracts/ExtendedController.php:244
-msgid "Your session has expired. Please refresh this page and try again."
-msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
-
-#: Controller/Board.php:18 Controller/Board.php:22 Controller/Post.php:51
-#: Controller/Thread.php:18
+#: Abstracts/ExtendedController.php:170 Controller/Board.php:82
+#: Controller/Post.php:51 Controller/Thread.php:18
 msgid "Not found"
 msgstr "Ei löydy"
 
-#: Controller/Board.php:18
+#: Abstracts/ExtendedController.php:170
+#, php-format
+msgid "Please don't. %s pages is enough."
+msgstr "Älähän nyt. %s sivua on tarpeeksi."
+
+#: Abstracts/ExtendedController.php:224
+msgid "Invalid request"
+msgstr "Virheellinen pyyntö"
+
+#: Abstracts/ExtendedController.php:270
+msgid "Your session has expired. Please refresh this page and try again."
+msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
+
+#: Controller/Board.php:82
 #, php-format
 msgid "There's no such thing as a board called \"%s\" here."
 msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 
-#: Controller/Board.php:22
-#, php-format
-msgid "Please don't. %s pages is enough."
-msgstr "Älähän nyt. %s sivua on tarpeeksi."
+#: Controller/CustomBoard.php:102 View/Template/Default.phtml:123
+msgid "My threads"
+msgstr "Omat langat"
+
+#: Controller/CustomBoard.php:103
+msgid "All the great threads you have created"
+msgstr "Kaikki ne mahtavat langat, jotka olet luonut"
+
+#: Controller/CustomBoard.php:112 View/Template/Default.phtml:124
+msgid "Replied threads"
+msgstr "Vastatut langat"
+
+#: Controller/CustomBoard.php:113
+msgid "Threads that may or may not have any interesting content"
+msgstr "Langat, joissa joko on tai ei ole mitään kiinnostavaa sisältöä"
 
 #: Controller/GoldAccount.php:11 View/Template/Default.phtml:79
 msgid "Gold account"
@@ -58,7 +74,7 @@ msgstr "Tietoa"
 msgid "Advertising"
 msgstr "Mainostaminen"
 
-#: Controller/Post.php:27 Controller/Post.php:51 Controller/Post.php:276
+#: Controller/Post.php:27 Controller/Post.php:51 Controller/Post.php:275
 msgid "Post does not exist"
 msgstr "Viestiä ei ole olemassa"
 
@@ -111,7 +127,7 @@ msgstr "Tiedostosi ylittää suurimman sallitun koon."
 msgid "You are sending messages too fast. Please don't spam."
 msgstr "Lähetät viestejä liian nopeaa. Älä spämmää."
 
-#: Controller/Post.php:280
+#: Controller/Post.php:279
 msgid "This isn't your post!"
 msgstr "Tämä ei ole sinun viesti!"
 
@@ -123,11 +139,15 @@ msgstr "Haku"
 msgid "The thread you are looking for does not exist."
 msgstr "Etsimääsi lankaa ei ole olemassa."
 
+#: Controller/Thread.php:57
+msgid "Thread does not exist"
+msgstr "Lankaa ei ole olemassa"
+
 #: Controller/User.php:16 View/Page/Profile.phtml:31
 msgid "User account"
 msgstr "Käyttäjätunnus"
 
-#: Controller/User.php:31 Controller/User.php:174
+#: Controller/User.php:31 Controller/User.php:182
 msgid "Username is too long"
 msgstr "Käyttäjänimi on liian pitkä"
 
@@ -135,7 +155,7 @@ msgstr "Käyttäjänimi on liian pitkä"
 msgid "This is your current username"
 msgstr "Tämä on nykyinen käyttäjänimesi"
 
-#: Controller/User.php:39 Controller/User.php:178
+#: Controller/User.php:39 Controller/User.php:186
 msgid "This username is already taken, please choose another one"
 msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
 
@@ -143,45 +163,45 @@ msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
 msgid "Invalid password"
 msgstr "Virheellinen salasana"
 
-#: Controller/User.php:102
+#: Controller/User.php:106
 msgid "What the!? Can't logout!?"
 msgstr "Mitä ihmettä!? Ei voi uloskirjautua!?"
 
-#: Controller/User.php:121
+#: Controller/User.php:129
 msgid "User account not deleted"
 msgstr "Käyttäjätunnusta ei poistettu"
 
-#: Controller/User.php:131 Controller/User.php:135
+#: Controller/User.php:139 Controller/User.php:143
 msgid "Login failed"
 msgstr "Kirjautuminen epäonnistui"
 
-#: Controller/User.php:131 Controller/User.php:135
+#: Controller/User.php:139 Controller/User.php:143
 msgid "Invalid username or password"
 msgstr "Virheellinen käyttäjätunnus tai salasana"
 
-#: Controller/User.php:153 Controller/User.php:157 Controller/User.php:161
-#: Controller/User.php:165 Controller/User.php:170 Controller/User.php:174
-#: Controller/User.php:178
+#: Controller/User.php:161 Controller/User.php:165 Controller/User.php:169
+#: Controller/User.php:173 Controller/User.php:178 Controller/User.php:182
+#: Controller/User.php:186
 msgid "Signup failed"
 msgstr "Rekisteröityminen epäonnistui"
 
-#: Controller/User.php:153
+#: Controller/User.php:161
 msgid "You are already logged in"
 msgstr "Olet jo kirjautuneena"
 
-#: Controller/User.php:157
+#: Controller/User.php:165
 msgid "Missing username or password"
 msgstr "Käyttäjätunnus tai salasana puuttuu"
 
-#: Controller/User.php:161 View/Template/Default.phtml:44
+#: Controller/User.php:169 View/Template/Default.phtml:44
 msgid "The two passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
-#: Controller/User.php:165
+#: Controller/User.php:173
 msgid "Please fill the CAPTCHA"
 msgstr "Täytä CAPTCHA"
 
-#: Controller/User.php:170
+#: Controller/User.php:178
 msgid "Invalid CAPTCHA response, please try again"
 msgstr "Virheellinen CAPTCHA, yritä uudelleen"
 
@@ -307,20 +327,32 @@ msgstr "vastaa"
 msgid "update"
 msgstr "päivitä"
 
-#: View/Page/Board.phtml:44
+#: View/Page/Board.phtml:44 View/Page/BoardCatalog.phtml:47
 msgid "There are no threads here..."
 msgstr "Täällä ei ole lankoja..."
+
+#: View/Page/BoardCatalog.phtml:16 View/Snippets/Post.phtml:9
+msgid "Hide"
+msgstr "Piilota"
+
+#: View/Page/BoardCatalog.phtml:19 View/Snippets/Post.phtml:12
+msgid "Report"
+msgstr "Ilmianna"
+
+#: View/Page/BoardCatalog.phtml:22 View/Snippets/Post.phtml:15
+msgid "Delete"
+msgstr "Poista"
 
 #: View/Page/Index.phtml:4
 msgid "Welcome to Ylilauta, the biggest discussion board in Finland!"
 msgstr "Tervetuloa Ylilaudalle, Suomen suurimmalle keskustelufoorumille!"
 
-#: View/Page/Index.phtml:19 View/Template/Default.phtml:125
+#: View/Page/Index.phtml:19 View/Template/Default.phtml:127
 msgid "Discussion boards"
 msgstr "Keskustelulaudat"
 
 #: View/Page/Index.phtml:24 View/Snippets/BoardHeader.phtml:3
-#: View/Template/Default.phtml:130
+#: View/Template/Default.phtml:132
 msgid "NSFW"
 msgstr "NSFW"
 
@@ -518,18 +550,6 @@ msgstr "Vastaa"
 #: View/Snippets/Post.phtml:6
 msgid "Donate gold"
 msgstr "Lahjoita kultatili"
-
-#: View/Snippets/Post.phtml:9
-msgid "Hide"
-msgstr "Piilota"
-
-#: View/Snippets/Post.phtml:12
-msgid "Report"
-msgstr "Ilmianna"
-
-#: View/Snippets/Post.phtml:15
-msgid "Delete"
-msgstr "Poista"
 
 #: View/Snippets/Post.phtml:23
 msgid "OP"
