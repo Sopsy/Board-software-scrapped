@@ -5,13 +5,11 @@
     <!--
     <a href="#"><?= _('Donate gold') ?></a>
     -->
-    <?php if ($board->url == 'hiddenthreads') : ?>
-        <?php if (!$post->threadId) : ?>
+    <?php if (!$post->threadId) : ?>
+        <?php if (in_array($post->id, $user->threadHide->threads)) : ?>
             <button class="button square icon-plus" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
-        <?php endif ?>
-    <?php else : ?>
-        <?php if (!$post->threadId) : ?>
-        <button class="button square icon-minus" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
+        <?php else : ?>
+            <button class="button square icon-minus" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
         <?php endif ?>
     <?php endif ?>
     <?php if ($post->userId != $user->id) : ?>
