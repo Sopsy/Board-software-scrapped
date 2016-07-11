@@ -1,5 +1,20 @@
 <?php
-define('ROOT_PATH', dirname(__DIR__));
+if (php_sapi_name() != "cli") {
+    die("This script should only be run from the CLI.\n\n");
+}
+
+if (empty($argv[1])) {
+    die("Missing controller name\n\n");
+}
+if (empty($argv[2])) {
+    $argv[2] = 'index';
+}
+
+$controller = $argv[1];
+$command = $argv[2];
+
+// Pre-setup
+define('ROOT_PATH', __DIR__);
 
 // Register the autoloader
 spl_autoload_register(function ($className) {
@@ -20,9 +35,9 @@ mb_internal_encoding('UTF-8');
 date_default_timezone_set('UTC');
 
 // Run
-$className = '\YBoard\Cron\\' . $command;
+$className = '\YBoard\CliController\\' . $controller;
 $cron = new $className();
-$cron->runJob();
+$cron->$command();
 
 // Why not?
 echo "\n";

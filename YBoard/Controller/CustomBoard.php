@@ -71,6 +71,7 @@ class CustomBoard extends ExtendedController
             $viewFile = 'BoardCatalog';
             $paginationBase = '/catalog';
         }
+        
 
         $this->limitPages($pageNum, $maxPages);
 

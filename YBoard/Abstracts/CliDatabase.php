@@ -3,7 +3,7 @@ namespace YBoard\Abstracts;
 
 use YBoard\Library\Database;
 
-abstract class CronDatabase
+abstract class CliDatabase
 {
     protected $config;
     protected $db;

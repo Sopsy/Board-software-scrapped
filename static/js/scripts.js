@@ -251,6 +251,7 @@ function getNewReplies(threadId, manual) {
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
+        stopAutoUpdate();
     }).always(function () {
         setTimeout('loadingReplies = false', 100);
         updateAutoUpdateVars();
@@ -828,4 +829,38 @@ function $t(id) {
 
 function $p(id) {
     return $('#post-' + id);
+}
+
+function oldBrowserWarning() {
+    toastr.warning(messages.oldBrowserWarning);
+}
+
+// -------------------------------------------
+// LocalStorage wrappers
+// -------------------------------------------
+function storeVal(key, val) {
+    if (typeof localStorage == 'undefined') {
+        oldBrowserWarning();
+        return false;
+    }
+
+    return localStorage.setItem(key, val);
+}
+
+function getStoredVal(key) {
+    if (typeof localStorage == 'undefined') {
+        oldBrowserWarning();
+        return false;
+    }
+
+    return localStorage.getItem(key);
+}
+
+function removeStoredVal(key) {
+    if (typeof localStorage == 'undefined') {
+        oldBrowserWarning();
+        return false;
+    }
+
+    return localStorage.removeItem(key);
 }
