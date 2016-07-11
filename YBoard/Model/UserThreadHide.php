@@ -34,7 +34,7 @@ class UserThreadHide extends UserSubModel
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 
-        $this->threads = $q->fetch(Database::FETCH_COLUMN);
+        $this->threads = $q->fetchAll(Database::FETCH_COLUMN);
 
         return true;
     }

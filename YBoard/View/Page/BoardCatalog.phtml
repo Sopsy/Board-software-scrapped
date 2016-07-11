@@ -12,8 +12,14 @@
                 <div class="op-post" id="post-<?= $thread->id ?>">
                     <?php $post = $thread ?>
                     <div class="post-buttons">
-                        <?php if (!$post->threadId) : ?>
-                            <button class="button square icon-minus" onclick="" title="<?= _('Hide') ?>"></button>
+                        <?php if ($board->url == 'hiddenthreads') : ?>
+                            <?php if (!$post->threadId) : ?>
+                                <button class="button square icon-plus" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
+                            <?php endif ?>
+                        <?php else : ?>
+                            <?php if (!$post->threadId) : ?>
+                                <button class="button square icon-minus" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
+                            <?php endif ?>
                         <?php endif ?>
                         <?php if ($post->userId != $user->id) : ?>
                             <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>

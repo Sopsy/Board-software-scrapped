@@ -96,6 +96,35 @@ function deletePost(id) {
 }
 
 // -------------------------------------------
+// Thread hiding
+// -------------------------------------------
+function hideThread(id) {
+    $.ajax({
+        url: '/scripts/threads/hide',
+        type: "POST",
+        data: {'thread_id': id}
+    }).done(function (data, textStatus, xhr) {
+        $t(id).fadeOut();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+    });
+}
+
+function restoreThread(id) {
+    $.ajax({
+        url: '/scripts/threads/restore',
+        type: "POST",
+        data: {'thread_id': id}
+    }).done(function (data, textStatus, xhr) {
+        $t(id).fadeOut();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+    });
+}
+
+// -------------------------------------------
 // Signup form in sidebar
 // -------------------------------------------
 function signupForm(elm, e) {

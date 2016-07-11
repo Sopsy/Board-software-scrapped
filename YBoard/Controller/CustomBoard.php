@@ -11,6 +11,7 @@ class CustomBoard extends ExtendedController
     public function myThreads($pageNum = 1)
     {
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
         $threads = $posts->getThreadsByUser($this->user->id, 15*$this->config['view']['maxPages']);
         $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
         $this->showCustomBoard($threads, 'mythreads', (int)$pageNum);
@@ -19,6 +20,7 @@ class CustomBoard extends ExtendedController
     public function myThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
         $threads = $posts->getThreadsByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
         $threads = $posts->getCustomThreads($threads, $pageNum, 100);
         $this->showCustomBoard($threads, 'mythreads', (int)$pageNum, true);
@@ -27,6 +29,7 @@ class CustomBoard extends ExtendedController
     public function repliedThreads($pageNum = 1)
     {
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
         $threads = $posts->getThreadsRepliedByUser($this->user->id, 15*$this->config['view']['maxPages']);
         $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
         $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum);
@@ -35,9 +38,24 @@ class CustomBoard extends ExtendedController
     public function repliedThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
         $threads = $posts->getThreadsRepliedByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
         $threads = $posts->getCustomThreads($threads, $pageNum, 100);
         $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum, true);
+    }
+
+    public function hiddenThreads($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum, 15, 3);
+        $this->showCustomBoard($threads, 'hiddenthreads', (int)$pageNum);
+    }
+
+    public function hiddenThreadsCatalog($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum, 100);
+        $this->showCustomBoard($threads, 'hiddenthreads', (int)$pageNum, true);
     }
 
     protected function showCustomBoard(array $threads, string $boardName, int $pageNum, bool $catalog = false)

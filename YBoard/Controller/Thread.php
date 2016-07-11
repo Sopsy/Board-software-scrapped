@@ -70,4 +70,26 @@ class Thread extends ExtendedController
             $view->display('Ajax/Post');
         }
     }
+
+    public function hide()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['thread_id'])) {
+            $this->throwJsonError(400);
+        }
+
+        $this->user->threadHide->add($_POST['thread_id']);
+    }
+
+    public function restore()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['thread_id'])) {
+            $this->throwJsonError(400);
+        }
+
+        $this->user->threadHide->remove($_POST['thread_id']);
+    }
 }

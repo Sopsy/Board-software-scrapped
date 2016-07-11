@@ -167,4 +167,9 @@ class Text
     {
         return preg_replace('/[^0-9a-f]/', '', strtolower($string));
     }
+    
+    public static function dateToIso8601(string $date)
+    {
+        return date('c', strtotime($date));
+    }
 }

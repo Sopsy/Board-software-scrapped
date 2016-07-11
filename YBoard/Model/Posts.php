@@ -12,6 +12,13 @@ use YBoard\Model;
 
 class Posts extends Model
 {
+    protected $hiddenThreads = [];
+
+    public function setHiddenThreads(array $hiddenThreads)
+    {
+        $this->hiddenThreads = $hiddenThreads;
+    }
+
     public function getThreadMeta(int $id)
     {
         $q = $this->db->prepare("SELECT id, board_id, user_id, ip, country_code, time, locked, sticky
@@ -33,7 +40,7 @@ class Posts extends Model
         $thread->userId = $row->user_id;
         $thread->ip = inet_ntop($row->ip);
         $thread->countryCode = $row->country_code;
-        $thread->time = date('c', strtotime($row->time));
+        $thread->time = Text::dateToIso8601($row->time);
         $thread->sticky = $row->sticky;
 
         return $thread;
@@ -57,10 +64,14 @@ class Posts extends Model
 
     public function getThreadsByUser(int $userId, int $limit = 1000) : array
     {
-        $q = $this->db->prepare("SELECT id FROM posts WHERE user_id = :user_id AND thread_id IS NULL LIMIT :limit");
-        $q->bindValue('user_id', $userId);
-        $q->bindValue('limit', $limit);
-        $q->execute();
+        $q = $this->db->prepare("SELECT id FROM posts
+            WHERE user_id = ? AND thread_id IS NULL" . $this->getHiddenNotIn('id') . " LIMIT ?");
+
+        $queryVars = $this->hiddenThreads;
+        array_unshift($queryVars, $userId);
+        array_push($queryVars, $limit);
+
+        $q->execute($queryVars);
 
         if ($q->rowCount() == 0) {
             return [];
@@ -74,10 +85,13 @@ class Posts extends Model
     public function getThreadsRepliedByUser(int $userId, int $limit = 1000) : array
     {
         $q = $this->db->prepare("SELECT DISTINCT thread_id AS thread_id FROM posts
-            WHERE user_id = :user_id AND thread_id IS NOT NULL LIMIT :limit");
-        $q->bindValue('user_id', $userId);
-        $q->bindValue('limit', $limit);
-        $q->execute();
+            WHERE user_id = ? AND thread_id IS NOT NULL" . $this->getHiddenNotIn('thread_id') . " LIMIT ?");
+
+        $queryVars = $this->hiddenThreads;
+        array_unshift($queryVars, $userId);
+        array_push($queryVars, $limit);
+
+        $q->execute($queryVars);
 
         if ($q->rowCount() == 0) {
             return [];
@@ -122,10 +136,14 @@ class Posts extends Model
     {
         $limitStart = ($page - 1) * $count;
 
-        $q = $this->db->prepare($this->getPostsQuery("WHERE a.board_id = :board_id AND a.thread_id IS NULL
+        $q = $this->db->prepare($this->getPostsQuery("WHERE a.board_id = ? AND a.thread_id IS NULL
+            " . $this->getHiddenNotIn('a.id') . "
             ORDER BY sticky DESC, bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
-        $q->bindValue('board_id', $boardId);
-        $q->execute();
+
+        $queryVars = $this->hiddenThreads;
+        array_unshift($queryVars, $boardId);
+
+        $q->execute($queryVars);
 
         if ($q->rowCount() == 0) {
             return [];
@@ -391,6 +409,19 @@ class Posts extends Model
         return true;
     }
 
+    protected function getHiddenNotIn(string $column) : string
+    {
+        $notIn = '';
+        if (!empty($this->hiddenThreads)) {
+            $notIn = ' AND ' . $column . ' NOT IN (';
+            $notIn .= str_repeat('?,', count($this->hiddenThreads));
+            $notIn = substr($notIn, 0, -1);
+            $notIn .= ')';
+        }
+
+        return $notIn;
+    }
+
     protected function getPostsQuery(string $append = '') : string
     {
         return "SELECT
@@ -421,7 +452,7 @@ class Posts extends Model
         $thread->userId = $data->user_id;
         $thread->ip = inet_ntop($data->ip);
         $thread->countryCode = $data->country_code;
-        $thread->time = date('c', strtotime($data->time));
+        $thread->time = Text::dateToIso8601($data->time);
         $thread->locked = $data->locked;
         $thread->sticky = $data->sticky;
         $thread->username = Text::formatUsername($data->username);
@@ -458,7 +489,7 @@ class Posts extends Model
         $reply->ip = inet_ntop($data->ip);
         $reply->countryCode = $data->country_code;
         $reply->username = Text::formatUsername($data->username);
-        $reply->time = date('c', strtotime($data->time));
+        $reply->time = Text::dateToIso8601($data->time);
         $reply->message = $data->message;
         $reply->messageFormatted = Text::formatMessage($data->message);
         $reply->postReplies = !empty($data->post_replies) ? explode(',', $data->post_replies) : false;

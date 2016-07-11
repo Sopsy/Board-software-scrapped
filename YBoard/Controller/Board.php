@@ -13,6 +13,7 @@ class Board extends ExtendedController
         $this->limitPages($pageNum, $this->config['view']['maxPages']);
 
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
 
         $view = $this->loadTemplateEngine();
         $board = $this->boards->getByUrl($boardUrl);
@@ -35,6 +36,7 @@ class Board extends ExtendedController
         $this->limitPages($pageNum, $this->config['view']['maxCatalogPages']);
 
         $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
 
         $view = $this->loadTemplateEngine();
         $board = $this->boards->getByUrl($boardUrl);

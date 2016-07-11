@@ -3,6 +3,7 @@ namespace YBoard\Model;
 
 use YBoard\Data\UserSession;
 use YBoard\Exceptions\UserException;
+use YBoard\Library\Text;
 use YBoard\Model;
 
 class User extends Model
@@ -40,7 +41,7 @@ class User extends Model
 
         $user = $q->fetch();
         $this->id = $user->id;
-        $this->accountCreated = date('c', strtotime($user->account_created));
+        $this->accountCreated = Text::dateToIso8601($user->account_created);
         $this->sessionId = $user->session_id;
         $this->csrfToken = bin2hex($user->csrf_token);
         $this->username = $user->username;
@@ -264,10 +265,10 @@ class User extends Model
             $tmp = new UserSession();
             $tmp->id = $row->session_id;
             $tmp->userId = $row->user_id;
-            $tmp->csrfToken = $row->csrf_token;
+            $tmp->csrfToken = bin2hex($row->csrf_token);
             $tmp->ip = inet_ntop($row->ip);
-            $tmp->loginTime = date('c', strtotime($row->login_time));
-            $tmp->lastActive = date('c', strtotime($row->last_active));
+            $tmp->loginTime = Text::dateToIso8601($row->login_time);
+            $tmp->lastActive = Text::dateToIso8601($row->last_active);
             $sessions[] = $tmp;
         }
 
@@ -317,7 +318,7 @@ class User extends Model
             $userId = $this->id;
         }
 
-        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND expired = 0 LIMIT 1");
+        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND is_expired = 0 LIMIT 1");
         $q->bindValue('ip', inet_pton($ip));
         $q->bindValue('user_id', $userId);
         $q->execute();

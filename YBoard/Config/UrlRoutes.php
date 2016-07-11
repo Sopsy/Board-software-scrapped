@@ -34,6 +34,8 @@ return [
     '#^/repliedthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreadsCatalog'],
     '#^/mythreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreads'],
     '#^/mythreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreadsCatalog'],
+    '#^/hiddenthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreads'],
+    '#^/hiddenthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreadsCatalog'],
 
     // Post/thread scripts
     '#^/scripts/posts/get#' => ['Post', 'get'],
@@ -41,6 +43,8 @@ return [
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
     '#^/scripts/threads/getreplies#' => ['Thread', 'getReplies'],
+    '#^/scripts/threads/hide#' => ['Thread', 'hide'],
+    '#^/scripts/threads/restore#' => ['Thread', 'restore'],
 
     // Boards
     // Checked at the end so other rules override

@@ -2,7 +2,6 @@
 namespace YBoard\Model;
 
 use YBoard\Abstracts\UserSubModel;
-use YBoard\Library\Database;
 
 class UserPreferences extends UserSubModel
 {
