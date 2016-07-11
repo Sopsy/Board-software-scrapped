@@ -207,11 +207,11 @@
 
             $bg: darken($contentBgColor, 5%);
             $hoverBg: darken($contentBgColor, 10%);
-            $color: #111;
+            $color: #111111;
             @if (lightness($contentBgColor) < 50) {
                 $bg: lighten($contentBgColor, 5%);
                 $hoverBg: lighten($contentBgColor, 10%);
-                $color: #eee;
+                $color: #eeeeee;
             }
 
             background-color: $bg;
@@ -258,7 +258,18 @@
                 }
             }
         }
-
+        &.media-player-container {
+            > a {
+                display: none;
+            }
+            button {
+                display: block;
+            }
+        }
+        video {
+            max-width: 100%;
+            min-width: 240px;
+        }
         &.thumbnail {
             max-width: 240px;
         }
@@ -277,11 +288,11 @@
 
     .post-replies {
         font-size: 0.8em;
-        $color: #777;
+        $color: #777777;
         padding-top: 3px;
         border-top: 1px solid $borderColor;
         @if (lightness($contentBgColor) < 50) {
-            $color: #999;
+            $color: #999999;
         }
         color: $color;
     }

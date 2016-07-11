@@ -6,7 +6,7 @@ use YBoard\Library\TemplateEngine;
 use YBoard\Traits\Ajax;
 use YBoard\Traits\PostChecks;
 
-class Files Extends Controller
+class File Extends Controller
 {
     use PostChecks;
     use Ajax;
@@ -21,10 +21,12 @@ class Files Extends Controller
             $this->invalidAjaxData();
         }
 
+        $loop = empty($_POST['loop']) ? false : $_POST['loop'];
+
         $view = new TemplateEngine(ROOT_PATH . '/YBoard/View/', 'Blank');
-        $view->fileUrl = urlencode($_POST['file_url']);
-        $view->poster = urlencode($_POST['poster']);
-        $view->loop = empty($_POST['loop']) ? false : true;
+        $view->fileUrl = htmlspecialchars($_POST['file_url']);
+        $view->poster = htmlspecialchars($_POST['poster']);
+        $view->loop = $loop == 'true';
 
         $view->display('Ajax/MediaPlayer');
     }

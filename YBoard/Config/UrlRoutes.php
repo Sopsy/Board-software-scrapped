@@ -45,6 +45,7 @@ return [
     '#^/scripts/threads/getreplies#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore#' => ['Thread', 'restore'],
+    '#^/scripts/files/getmediaplayer#' => ['File', 'getMediaPlayer'],
 
     // Boards
     // Checked at the end so other rules override

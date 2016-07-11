@@ -1,13 +1,6 @@
-<video autoplay controls <?= ($loop?' loop':'') ?> poster="<?= $poster ?>">
-<source src="<?= $fileUrl ?>">
-<script>
-    // Save video volume to localStorage (if available)
-    $("video.media").on("volumechange", function() {
-        localStorage.videoVolume = $(this).prop("volume");
-    });
-
-    if(typeof localStorage.videoVolume !== "undefined") {
-        setTimeout(function(){$("video.media").prop("volume", localStorage.videoVolume)}, 10);
-    }
-</script>
-</video>
+<div class="media-player">
+    <video onvolumechange="saveVolume(this)" autoplay controls<?= ($loop?' loop':'') ?> poster="<?= $poster ?>">
+        <source src="<?= $fileUrl ?>">
+    </video>
+    <button class="button green" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
+</div>

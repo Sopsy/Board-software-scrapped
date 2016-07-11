@@ -40,7 +40,7 @@
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
     <figure class="post-file thumbnail">
         <?php if (in_array($post->file->extension, ['mp3', 'mp4', 'webm'])) : ?>
-            <a href="<?= $fileUrl ?>" onclick="playVideo(this, event)">
+            <a href="<?= $fileUrl ?>" onclick="playMedia(this, event)">
                 <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
                 <span class="overlay center icon-play4"></span>
             </a>

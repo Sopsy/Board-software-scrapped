@@ -53,7 +53,10 @@ jQuery.fn.extend({
     },
     localizeCurrency: function () {
         return this.each(function () {
-            this.innerHTML = parseFloat(this.innerHTML).toLocaleString(true, {'style': 'currency', 'currency': 'eur'});
+            this.innerHTML = parseFloat(this.innerHTML).toLocaleString(true, {
+                'style': 'currency',
+                'currency': 'eur'
+            });
         });
     },
     addShowFullPostButtons: function () {
@@ -520,6 +523,63 @@ function submitPost(e) {
             grecaptcha.reset();
         }
     });
+}
+
+// -------------------------------------------
+// Media player
+// -------------------------------------------
+function playMedia(elm, e) {
+    e.preventDefault();
+    stopAllMedia();
+
+    var link = $(elm);
+    var container = link.parent();
+    var post = container.parent('.post');
+    var img = link.find('img');
+
+    container.removeClass('thumbnail').addClass('media-player-container');
+    post.addClass('full');
+
+    var fileUrl = link.attr('href');
+    var poster = img.attr('src');
+    var loop = typeof link.data('loop') != "undefined";
+
+    $.ajax({
+        url: '/scripts/files/getmediaplayer',
+        type: "POST",
+        data: {
+            'file_url': fileUrl,
+            'poster': poster,
+            'loop': false
+        }
+    }).done(function (xhr, textStatus, errorThrown) {
+        container.prepend(xhr);
+
+        var volume = getStoredVal('videoVolume');
+        if (volume != null) {
+            container.find('video').prop('volume', volume);
+        }
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+
+function stopAllMedia() {
+    $('.media-player-container').each(function () {
+        var self = $(this);
+        var mediaPlayer = self.find('.media-player');
+
+        mediaPlayer.find('video').trigger('pause');
+        mediaPlayer.remove();
+
+        self.removeClass('media-player-container').addClass('thumbnail');
+    });
+}
+
+// Volume save
+function saveVolume(elm) {
+    storeVal('videoVolume', $(elm).prop("volume"));
 }
 
 // -------------------------------------------

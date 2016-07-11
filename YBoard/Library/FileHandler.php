@@ -59,7 +59,7 @@ class FileHandler
 
         system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0 -c:v libx264'
             . ' -pix_fmt yuv420p -r 24 -crf 23 -preset:v veryfast -vf scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
-            . ' -movflags faststart -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile));
+            . ' -movflags faststart -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile) . ' > /dev/null 2>&1');
 
         if (!is_file($tmpFile)) {
             return false;
