@@ -86,6 +86,7 @@ class Posts extends Model
     {
         $q = $this->db->prepare("SELECT id FROM posts
             WHERE board_id = :board_id AND thread_id IS NULL AND bump_time < DATE_SUB(NOW(), INTERVAL :hours HOUR)
+            AND sticky = 0
             LIMIT :limit");
         $q->bindValue('board_id', $boardId);
         $q->bindValue('hours', $hours);
