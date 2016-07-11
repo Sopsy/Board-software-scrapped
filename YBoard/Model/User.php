@@ -22,6 +22,8 @@ class User extends Model
     public $preferences;
     public $statistics;
     public $threadHide;
+    public $lastActive;
+    public $lastIp;
     public $loggedIn = false;
     public $isMod = false;
     public $isAdmin = false;
@@ -29,10 +31,11 @@ class User extends Model
 
     public function load($sessionId)
     {
-        $q = $this->db->prepare("SELECT id, session_id, csrf_token, username, class, gold_level, account_created
-            FROM user_sessions
-            LEFT JOIN user_accounts ON id = user_id
-            WHERE session_id = :session_id LIMIT 1");
+        $q = $this->db->prepare("SELECT a.session_id, a.csrf_token, b.id, b.username, b.class, b.gold_level, b.account_created,
+            b.last_active, b.last_ip
+            FROM user_sessions a
+            LEFT JOIN users b ON b.id = a.user_id
+            WHERE a.session_id = :session_id LIMIT 1");
         $q->bindValue('session_id', $sessionId);
         $q->execute();
 
@@ -48,6 +51,8 @@ class User extends Model
         $this->username = $user->username;
         $this->class = $user->class;
         $this->goldLevel = $user->gold_level;
+        $this->lastActive = Text::dateToIso8601($user->last_active);
+        $this->lastIp = empty($user->last_ip) ? false : inet_ntop($user->last_ip);
         $this->loggedIn = empty($user->username) ? false : true;
 
         $this->loadSubclasses();
@@ -62,12 +67,17 @@ class User extends Model
             $this->isMod = true;
         }
 
-        // Update last active -timestamp and IP-address
+        // Update last active -timestamp and IP-address for session and user
         $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = :ip
             WHERE user_id = :user_id AND session_id = :session_id LIMIT 1");
         $q->bindValue('user_id', (int)$this->id);
         $q->bindValue('session_id', $this->sessionId);
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
+        $q->execute();
+
+        $q = $this->db->prepare("UPDATE users SET last_active = NOW(), last_ip = :last_ip WHERE id = :user_id LIMIT 1");
+        $q->bindValue('user_id', (int)$this->id);
+        $q->bindValue('last_ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->execute();
 
         return true;
@@ -117,7 +127,7 @@ class User extends Model
         // Remove last comma
         $update = substr($update, 0, -1);
 
-        $q = $this->db->prepare("UPDATE user_accounts SET " . $update . " WHERE id = :user_id LIMIT 1");
+        $q = $this->db->prepare("UPDATE users SET " . $update . " WHERE id = :user_id LIMIT 1");
         $q->bindValue('user_id', (int)$userId);
         foreach ($bind as $key => $val) {
             $q->bindValue($key, $val);
@@ -136,7 +146,7 @@ class User extends Model
 
     public function create()
     {
-        $q = $this->db->query("INSERT INTO user_accounts VALUES ()");
+        $q = $this->db->query("INSERT INTO users VALUES ()");
 
         $this->id = $this->db->lastInsertId();
         $this->loadSubclasses(true);
@@ -156,7 +166,7 @@ class User extends Model
     public function delete(int $userId, string $password, bool $skipPasswordCheck = false) : bool
     {
         if (!$skipPasswordCheck) {
-            $q = $this->db->prepare("SELECT password FROM user_accounts WHERE id = :user_id LIMIT 1");
+            $q = $this->db->prepare("SELECT password FROM users WHERE id = :user_id LIMIT 1");
             $q->bindValue('user_id', $userId);
             $q->execute();
 
@@ -172,7 +182,7 @@ class User extends Model
 
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
-        $q = $this->db->prepare("DELETE FROM user_accounts WHERE id = :user_id LIMIT 1");
+        $q = $this->db->prepare("DELETE FROM users WHERE id = :user_id LIMIT 1");
         $q->bindValue('user_id', $userId);
         $q->execute();
 
@@ -181,7 +191,7 @@ class User extends Model
 
     public function validateLogin($username, $password)
     {
-        $q = $this->db->prepare("SELECT id, username, password, class FROM user_accounts WHERE username = :username LIMIT 1");
+        $q = $this->db->prepare("SELECT id, username, password, class FROM users WHERE username = :username LIMIT 1");
         $q->bindValue('username', $username);
         $q->execute();
 
@@ -214,7 +224,7 @@ class User extends Model
         // Do note that this function does not verify old password!
         $newPassword = password_hash($newPassword, static::PASSWORD_HASH_TYPE, ['cost' => static::PASSWORD_HASH_COST]);
 
-        $q = $this->db->prepare("UPDATE user_accounts SET password = :new_password WHERE id = :user_id LIMIT 1");
+        $q = $this->db->prepare("UPDATE users SET password = :new_password WHERE id = :user_id LIMIT 1");
         $q->bindValue('new_password', $newPassword);
         $q->bindValue('user_id', $userId);
         $q->execute();
@@ -228,7 +238,7 @@ class User extends Model
             $userId = $this->id;
         }
 
-        $q = $this->db->prepare("UPDATE user_accounts SET username = :new_username WHERE id = :user_id LIMIT 1");
+        $q = $this->db->prepare("UPDATE users SET username = :new_username WHERE id = :user_id LIMIT 1");
         $q->bindValue('new_username', $newUsername);
         $q->bindValue('user_id', $userId);
         $q->execute();
@@ -299,7 +309,7 @@ class User extends Model
 
     public function usernameIsFree($username)
     {
-        $q = $this->db->prepare("SELECT id FROM user_accounts WHERE username LIKE :username LIMIT 1");
+        $q = $this->db->prepare("SELECT id FROM users WHERE username LIKE :username LIMIT 1");
         $q->bindValue('username', $username);
         $q->execute();
 
@@ -334,7 +344,7 @@ class User extends Model
     // Get user accounts that have no active sessions and cannot be logged in to
     public function getUnusable() : array
     {
-        $q = $this->db->query("SELECT a.id FROM user_accounts a
+        $q = $this->db->query("SELECT a.id FROM users a
             LEFT JOIN user_sessions b ON b.user_id = a.id
             WHERE b.session_id IS NULL AND a.username IS NULL AND a.gold_level = 0");
 
@@ -346,12 +356,12 @@ class User extends Model
     public function getExpiredSessions() : array
     {
         $q = $this->db->query("SELECT a.session_id FROM user_sessions a
-            LEFT JOIN user_accounts b ON  b.id = a.user_id
+            LEFT JOIN users b ON  b.id = a.user_id
             WHERE a.last_active < DATE_SUB(NOW(), INTERVAL 3 DAY) AND b.username IS NULL AND b.gold_level = 0");
         $expired_a = $q->fetchAll(Database::FETCH_COLUMN);
 
         $q = $this->db->query("SELECT a.session_id FROM user_sessions a
-            LEFT JOIN user_accounts b ON  b.id = a.user_id
+            LEFT JOIN users b ON  b.id = a.user_id
             WHERE a.last_active < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND b.username IS NOT NULL");
         $expired_b = $q->fetchAll(Database::FETCH_COLUMN);
 
