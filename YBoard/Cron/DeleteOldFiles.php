@@ -30,6 +30,6 @@ class DeleteOldFiles extends CronDatabase
             ++$count;
         }
 
-        echo "\n\n" . $count . " files deleted\n\n";
+        echo "\n\n" . $count . " files deleted\n";
     }
 }

@@ -3,6 +3,7 @@ namespace YBoard\Model;
 
 use YBoard\Data\UserSession;
 use YBoard\Exceptions\UserException;
+use YBoard\Library\Database;
 use YBoard\Library\Text;
 use YBoard\Model;
 
@@ -154,15 +155,15 @@ class User extends Model
 
     public function delete(int $userId, string $password, bool $skipPasswordCheck = false) : bool
     {
-        $q = $this->db->prepare("SELECT password FROM user_accounts WHERE id = :user_id LIMIT 1");
-        $q->bindValue('user_id', $userId);
-        $q->execute();
-
-        if ($q->rowCount() == 0) {
-            throw new UserException(_('Invalid user'));
-        }
-
         if (!$skipPasswordCheck) {
+            $q = $this->db->prepare("SELECT password FROM user_accounts WHERE id = :user_id LIMIT 1");
+            $q->bindValue('user_id', $userId);
+            $q->execute();
+
+            if ($q->rowCount() == 0) {
+                throw new UserException(_('Invalid user'));
+            }
+
             $user = $q->fetch();
             if (!password_verify($password, $user->password)) {
                 throw new UserException(_('Invalid password'));
@@ -328,5 +329,32 @@ class User extends Model
         }
 
         return false;
+    }
+
+    // Get user accounts that have no active sessions and cannot be logged in to
+    public function getUnusable() : array
+    {
+        $q = $this->db->query("SELECT a.id FROM user_accounts a
+            LEFT JOIN user_sessions b ON b.user_id = a.id
+            WHERE b.session_id IS NULL AND a.username IS NULL AND a.gold_level = 0");
+
+        $unused = $q->fetchAll(Database::FETCH_COLUMN);
+
+        return $unused;
+    }
+
+    public function getExpiredSessions() : array
+    {
+        $q = $this->db->query("SELECT a.session_id FROM user_sessions a
+            LEFT JOIN user_accounts b ON  b.id = a.user_id
+            WHERE a.last_active < DATE_SUB(NOW(), INTERVAL 3 DAY) AND b.username IS NULL AND b.gold_level = 0");
+        $expired_a = $q->fetchAll(Database::FETCH_COLUMN);
+
+        $q = $this->db->query("SELECT a.session_id FROM user_sessions a
+            LEFT JOIN user_accounts b ON  b.id = a.user_id
+            WHERE a.last_active < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND b.username IS NOT NULL");
+        $expired_b = $q->fetchAll(Database::FETCH_COLUMN);
+
+        return array_merge($expired_a, $expired_b);
     }
 }

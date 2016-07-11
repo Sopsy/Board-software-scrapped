@@ -23,3 +23,6 @@ date_default_timezone_set('UTC');
 $className = '\YBoard\Cron\\' . $command;
 $cron = new $className();
 $cron->runJob();
+
+// Why not?
+echo "\n";
