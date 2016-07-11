@@ -209,6 +209,22 @@ class Files extends Model
         return $fileId;
     }
 
+    public function deleteOrphans() : bool
+    {
+        $this->db->query("DELETE FROM files WHERE id NOT IN (SELECT file_id FROM posts_files)");
+
+        return true;
+    }
+
+    public function exists(string $name) : bool
+    {
+        $q = $this->db->prepare("SELECT id FROM files WHERE name = :name LIMIT 1");
+        $q->bindValue('name', $name);
+        $q->execute();
+
+        return $q->rowCount() != 0;
+    }
+
     protected function limitPixelCount(string $file)
     {
         if ($this->getPixelCount($file) > $this->maxPixelCount) {
