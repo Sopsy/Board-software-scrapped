@@ -108,6 +108,15 @@
         }
         background-color: $bg;
 
+        hr {
+            border: 0;
+            $color: #000;
+            @if (lightness($contentBgColor) < 50) {
+                $color: #ffffff;
+            }
+            border-top: 1px solid $color;
+            margin: 10px 0;
+        }
     }
 
     .replies-buttons {

@@ -59,6 +59,7 @@ jQuery.fn.extend({
         });
     }
 });
+jQuery.fn.reverse = [].reverse;
 
 // -------------------------------------------
 // Post deletion
@@ -297,6 +298,9 @@ function updateAutoUpdateVars() {
     // Notify about new posts on title
     if (!document.hasFocus() && newReplies > 0) {
         document.title = '(' + newReplies + ') ' + documentTitle;
+        var replies = $('.replies');
+        replies.find('hr').remove();
+        replies.find('.reply:eq(-' + newReplies + ')').before('<hr>');
     } else if (newReplies != 0) {
         newReplies = 0;
     }
