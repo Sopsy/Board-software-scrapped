@@ -429,9 +429,9 @@ function resetOriginalPostFormDestination() {
 var submitInProgress;
 function submitPost(e) {
     e.preventDefault();
-
+    
     if (!('FormData' in window)) {
-        toastr.error(messages.oldBrowserWarning);
+        toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
         return false;
     }
 

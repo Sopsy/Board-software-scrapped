@@ -106,21 +106,25 @@ h4 {
 #content {
     margin-left: 220px;
     overflow: hidden;
+
     .error-image {
         margin-top: 60px;
         max-width: 100%;
+    }
+
+    > .content-box {
+        background-color: $contentBgColor;
+        $shadowColor: darken($bgColor, 5%);
+        @if (lightness($bgColor) < 10) {
+            $shadowColor: lighten($bgColor, 5%);
+        }
+        box-shadow: 0 0 10px 0 $shadowColor;
     }
 }
 
 .content-box {
     padding: 40px 60px;
-    background-color: $contentBgColor;
     margin: 20px 10px;
-    $shadowColor: darken($bgColor, 5%);
-    @if (lightness($bgColor) < 10) {
-        $shadowColor: lighten($bgColor, 5%);
-    }
-    box-shadow: 0 0 10px 0 $shadowColor;
 
     p {
         line-height: 1.25em;

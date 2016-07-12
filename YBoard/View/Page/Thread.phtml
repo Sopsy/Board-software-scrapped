@@ -19,11 +19,11 @@
         <div class="thread-buttons">
             <button class="link" onclick="getNewReplies(<?= $thread->id ?>, true)"><?= _('update') ?></button>
         </div>
-    </div>
 
-    <?php if (!$thread->locked || $user->isMod) : ?>
-        <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
-    <?php endif ?>
+        <?php if (!$thread->locked || $user->isMod) : ?>
+            <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
+        <?php endif ?>
+    </div>
 </div>
 
 

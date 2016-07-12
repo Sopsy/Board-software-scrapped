@@ -2,21 +2,16 @@
     display: none;
 }
 
-.thread-content + #post-form #reset-button {
-    display: none;
-}
-
 #post-form {
-    $postFormBgColor: lighten($bgColor, 5%);
-    background-color: $postFormBgColor;
     margin: 10px;
     padding: 20px;
     box-sizing: border-box;
     overflow: hidden;
 
-    h3 {
-        margin-bottom: 10px;
+    &:not(.visible) #reset-button {
+        display: none;
     }
+
     fieldset {
         max-width: 1000px;
         margin: auto;
@@ -28,7 +23,7 @@
 
             $backgroundColor: #fff;
             $borderColor: #ccc;
-            @if (lightness($postFormBgColor) < 50) {
+            @if (lightness($contentBgColor) < 50) {
                 $backgroundColor: #000;
                 $borderColor: #333;
             }
@@ -65,7 +60,7 @@
                 height: 100%;
 
                 $shadowColor: #ccc;
-                @if (lightness($postFormBgColor) < 50) {
+                @if (lightness($contentBgColor) < 50) {
                     $shadowColor: #333;
                 }
                 @include input-shadow($shadowColor);
@@ -79,7 +74,7 @@
     #message-input {
         $bg: #fff;
         $border: #ccc;
-        @if (lightness($postFormBgColor) < 50) {
+        @if (lightness($contentBgColor) < 50) {
             $bg: #000;
             $border: #333;
         }
@@ -92,7 +87,7 @@
         $bg: #f5f5f5;
         $border: #ccc;
         $hover: #ddd;
-        @if (lightness($postFormBgColor) < 50) {
+        @if (lightness($contentBgColor) < 50) {
             $bg: #111;
             $border: #333;
             $hover: #222;

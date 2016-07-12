@@ -36,12 +36,8 @@
     }
 
     #post-form {
-        padding: 10px;
-        $postFormBgColor: darken($contentBgColor, 5%);
-        @if (lightness($contentBgColor) < 50) {
-            $postFormBgColor: lighten($contentBgColor, 5%);
-        }
-        background-color: $postFormBgColor;
+        margin: 10px 0 0 0;
+        padding: 0;
     }
 
     > h3 {
@@ -132,7 +128,7 @@
 
     .post {
         &.bgcolor,
-        &.own-post {
+        &.own-post:not(.op-post) {
             margin-left: -5px;
             margin-right: -5px;
             padding: 5px;
