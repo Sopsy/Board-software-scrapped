@@ -81,14 +81,13 @@ class Text
 
     public static function formatBytes(int $bytes, int $precision = 2) : string
     {
-        $units = [_('B'), _('KB'), _('MB')];
+        if ($bytes < 1024) {
+            return $bytes . ' ' . _('B');
+        } elseif ($bytes < 1048576) {
+            return round($bytes / 1024, $precision) . ' ' . _('KB');
+        }
 
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= pow(1024, $pow);
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes / 1048576, $precision) . ' ' . _('MB');
     }
 
     public static function clickableLinks(string $message) : string
@@ -162,17 +161,17 @@ class Text
 
         return $message;
     }
-    
+
     public static function filterHex(string $string) : string
     {
         return preg_replace('/[^0-9a-f]/', '', strtolower($string));
     }
-    
+
     public static function dateToIso8601(string $date)
     {
         return date('c', strtotime($date));
     }
-    
+
     public static function formatDuration($duration)
     {
         return floor($duration / 60) . ':' . str_pad($duration % 60, 2, '0', STR_PAD_LEFT);
