@@ -7,9 +7,9 @@
     -->
     <?php if (!$post->threadId) : ?>
         <?php if (in_array($post->id, $user->threadHide->threads)) : ?>
-            <button class="button square icon-plus" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
+            <button class="button square icon-eye" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
         <?php else : ?>
-            <button class="button square icon-minus" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
+            <button class="button square icon-eye-crossed" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
         <?php endif ?>
     <?php endif ?>
     <?php if ($post->userId != $user->id) : ?>

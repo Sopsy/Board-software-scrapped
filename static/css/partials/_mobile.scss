@@ -88,7 +88,7 @@
         .columns {
             @include columns(120px, 10px);
             a {
-                line-height: 3em;
+                line-height: 3.5em;
             }
         }
         #search {

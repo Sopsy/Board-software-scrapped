@@ -412,6 +412,12 @@ class Posts extends Model
             case "readCount":
                 $column = 'read_count';
                 break;
+            case "followCount":
+                $column = 'follow_count';
+                break;
+            case "hideCount":
+                $column = 'hide_count';
+                break;
             default:
                 return false;
         }

@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'icomoon';
-    src: url('/fonts/icomoon.woff?2') format('woff');
+    src: url('/fonts/icomoon.woff?3') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+@mixin icon-style() {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
     speak: none;
@@ -18,6 +18,10 @@
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    @include icon-style();
 }
 
 .icon-palette:before {
@@ -41,14 +45,20 @@
 .icon-eye-crossed:before {
     content: "\e6a6";
 }
+.icon-eye-plus:before {
+    content: "\e6a7";
+}
+.icon-eye-minus:before {
+    content: "\e6a8";
+}
 .icon-floppy-disk:before {
     content: "\e6ae";
 }
 .icon-exit:before {
     content: "\e6d3";
 }
-.icon-medal-empty:before {
-    content: "\e6dd";
+.icon-trophy2:before {
+    content: "\e6e3";
 }
 .icon-music-note3:before {
     content: "\e6e6";
@@ -67,6 +77,9 @@
 }
 .icon-bubbles:before {
     content: "\e7d7";
+}
+.icon-bubble-alert:before {
+    content: "\e7d9";
 }
 .icon-bubble-quote:before {
     content: "\e7e0";
@@ -127,6 +140,15 @@
 }
 .icon-expand4:before {
     content: "\e952";
+}
+.icon-notification:before {
+    content: "\e954";
+}
+.icon-warning:before {
+    content: "\e955";
+}
+.icon-checkmark-circle:before {
+    content: "\e959";
 }
 .icon-grid:before {
     content: "\e975";

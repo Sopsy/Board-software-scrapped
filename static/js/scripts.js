@@ -827,18 +827,6 @@ $('#sidebar').click(function (e) {
 });
 
 // -------------------------------------------
-// Confirm page exit when there's text in the post form
-// -------------------------------------------
-function confirmUnload() {
-    var textarea = $('#post-form').find('textarea');
-    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
-        return messages.confirmUnload;
-    } else {
-        e = null;
-    }
-}
-
-// -------------------------------------------
 // Post higlighting
 // -------------------------------------------
 function highlightPost(id) {
@@ -856,6 +844,15 @@ $(window).on('beforeunload', function (e) {
 }).on('hashchange load', function () {
     removeHighlights();
     highlightPost(window.location.hash);
+}).on('keydown', function (e) {
+    // This brings down the server load quite a bit, as not everything is reloaded when pressing F5
+    if (e.which == 116 && !e.ctrlKey) { // F5
+        pageReload();
+        return false;
+    } else if (e.which == 82 && e.ctrlKey && !e.shiftKey) { // R
+        pageReload();
+        return false;
+    }
 });
 
 // -------------------------------------------
@@ -915,6 +912,18 @@ function $p(id) {
 
 function oldBrowserWarning() {
     toastr.warning(messages.oldBrowserWarning);
+}
+
+// -------------------------------------------
+// Confirm page exit when there's text in the post form
+// -------------------------------------------
+function confirmUnload() {
+    var textarea = $('#post-form').find('textarea');
+    if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
+        return messages.confirmUnload;
+    } else {
+        e = null;
+    }
 }
 
 // -------------------------------------------
