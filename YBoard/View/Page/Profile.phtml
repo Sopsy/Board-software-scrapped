@@ -9,6 +9,7 @@
         <div><h5><?= _('Page loads') ?></h5><span class="number"><?= $user->statistics->pageLoads ?></span></div>
         <div><h5><?= _('Created threads') ?></h5><span class="number"><?= $user->statistics->createdThreads ?></span></div>
         <div><h5><?= _('Sent replies') ?></h5><span class="number"><?= $user->statistics->sentReplies ?></span></div>
+        <div><h5><?= _('Total posts') ?></h5><span class="number"><?= $user->statistics->totalPosts ?></span></div>
         <div><h5><?= _('Uploaded files') ?></h5><span class="number"><?= $user->statistics->uploadedFiles ?></span></div>
         <div><h5><?= _('Total size of uploaded files') ?></h5><span><?= \YBoard\Library\Text::formatBytes($user->statistics->uploadedFilesTotalSize) ?></span></div>
         <div><h5><?= _('Total characters in messages') ?></h5><span class="number"><?= $user->statistics->messageTotalCharacters ?></span></div>

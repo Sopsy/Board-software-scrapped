@@ -183,7 +183,7 @@ function getMoreReplies(threadId) {
             data.find('.datetime').localizeTimestamp(this);
 
             $t(threadId).find('.more-replies-container').html(data);
-            $t(threadId).find('.post:not(.buttoned)').addShowFullPostButtons();
+            $t(threadId).find('.message:not(.buttoned)').addShowFullPostButtons();
         }).fail(function (xhr, textStatus, errorThrown) {
             var errorMessage = getErrorMessage(xhr, errorThrown);
             toastr.error(errorMessage);
@@ -246,11 +246,11 @@ function getNewReplies(threadId, manual) {
         data = $(data);
         data.find('.datetime').localizeTimestamp(this);
 
-        lastUpdateNewReplies = data.find('.post').length;
+        lastUpdateNewReplies = data.find('.message').length;
         newReplies += lastUpdateNewReplies;
 
         data.appendTo(thread.find('.replies'));
-        thread.find('.post:not(.buttoned)').addShowFullPostButtons();
+        thread.find('.message:not(.buttoned)').addShowFullPostButtons();
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
@@ -339,10 +339,10 @@ function stopAutoUpdate() {
 // -------------------------------------------
 // Truncated long posts
 // -------------------------------------------
-$('.post:not(.buttoned)').addShowFullPostButtons();
+$('.message:not(.buttoned)').addShowFullPostButtons();
 
 function showFullPost(elm) {
-    $(elm).parent('.op-post, .reply').find('.post').addClass('full');
+    $(elm).parent('.post').find('.message').addClass('full');
 }
 
 // -------------------------------------------
@@ -534,7 +534,7 @@ function playMedia(elm, e) {
 
     var link = $(elm);
     var container = link.parent();
-    var post = container.parent('.post');
+    var post = container.parent('.message');
     var img = link.find('img');
 
     var fileId = container.data('id');
@@ -600,7 +600,7 @@ function saveVolume(elm) {
 function expandImage(elm, e) {
     e.preventDefault();
     var container = $(elm).parent();
-    var post = container.parent('.post');
+    var post = container.parent('.message');
     var img = $(elm).find('img');
 
     if (typeof img.data('expanding') != 'undefined') {
@@ -834,7 +834,7 @@ function addReflinkTooltip(elm) {
 }
 
 // -------------------------------------------
-// Mobile
+// Mobile menu
 // -------------------------------------------
 function toggleSidebar() {
     $('#sidebar').toggleClass('visible');
@@ -848,22 +848,42 @@ $('#sidebar').click(function (e) {
 // -------------------------------------------
 // Confirm page exit when there's text in the post form
 // -------------------------------------------
-$(window).on('beforeunload', function (e) {
+function confirmUnload() {
     var textarea = $('#post-form').find('textarea');
     if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
         return messages.confirmUnload;
     } else {
         e = null;
     }
-});
-
-function pageReload() {
-    window.location = window.location.href.split('#')[0];
 }
+
+// -------------------------------------------
+// Post higlighting
+// -------------------------------------------
+function highlightPost(id) {
+    $(id).addClass('bgcolor highlighted');
+}
+function removeHighlights() {
+    $('.highlighted').removeClass('bgcolor highlighted');
+}
+
+// -------------------------------------------
+// Window and body event bindings
+// -------------------------------------------
+$(window).on('beforeunload', function (e) {
+    return confirmUnload(e);
+}).on('hashchange load', function () {
+    removeHighlights();
+    highlightPost(window.location.hash);
+});
 
 // -------------------------------------------
 // "Private" functions used by other functions
 // -------------------------------------------
+function pageReload() {
+    window.location = window.location.href.split('#')[0];
+}
+
 function getErrorMessage(xhr, errorThrown) {
     if (xhr.responseText.length != 0) {
         try {

@@ -125,13 +125,33 @@
             $borderColor: lighten($contentBgColor, 10%);
         }
         border-top: 2px solid $borderColor;
-        margin-bottom: 10px;
     }
     .reply {
         overflow: hidden;
     }
 
     .post {
+        &.bgcolor {
+            margin-left: -5px;
+            margin-right: -5px;
+            padding: 5px;
+        }
+        &.highlighted {
+            $bgColor: $contentBgColor;
+            @if (lightness($contentBgColor) > 95) {
+                $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor) - 3%);
+            } @else if (lightness($contentBgColor) < 5) {
+                $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor) + 3%);
+            } @else if (lightness($contentBgColor) < 15) {
+                $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor) - 2%);
+            } @else {
+                $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor));
+            }
+            background-color: $bgColor;
+        }
+    }
+
+    .message {
         margin: 5px 0 10px 0;
         overflow: hidden;
         word-wrap: break-word;
@@ -139,6 +159,7 @@
             max-height: 500px;
         }
     }
+
     .post-truncated {
         $height: 15px;
         $color: darken($contentBgColor, 20%);

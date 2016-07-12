@@ -35,7 +35,7 @@
     </div>
 </div>
 
-<blockquote class="post">
+<blockquote class="message">
     <?php if (!empty($post->file)) : ?>
     <?php $fileUrl = $staticUrl . '/files/' . $post->file->folder . '/o/' . $post->file->name . '/' . rawurlencode($post->file->displayName) . '.' . $post->file->extension; ?>
     <figure class="post-file thumbnail" data-id="<?= $post->file->id ?>">
