@@ -430,6 +430,11 @@ var submitInProgress;
 function submitPost(e) {
     e.preventDefault();
 
+    if (!('FormData' in window)) {
+        toastr.error(messages.oldBrowserWarning);
+        return false;
+    }
+
     // Prevent duplicate submissions by double clicking etc.
     if (submitInProgress) {
         return false;
