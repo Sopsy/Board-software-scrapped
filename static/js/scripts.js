@@ -42,8 +42,7 @@ jQuery.fn.extend({
     },
     localizeTimestamp: function () {
         return this.each(function () {
-            var date = new Date(this.innerHTML);
-            this.innerHTML = date.toLocaleString();
+            this.innerHTML = new Date(this.innerHTML.replace(' ', 'T') + 'Z').toLocaleString();
         });
     },
     localizeNumber: function () {
