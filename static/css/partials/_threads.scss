@@ -137,6 +137,13 @@
             margin-right: -5px;
             padding: 5px;
         }
+        &.own-post:not(.op-post):not(.highlighted) {
+            $bgColor: darken($contentBgColor, 7%);
+            @if (lightness($contentBgColor) < 50) {
+                $bgColor: lighten($contentBgColor, 7%);
+            }
+            background-color: $bgColor;
+        }
         &.highlighted {
             $bgColor: $contentBgColor;
             @if (lightness($contentBgColor) > 95) {
@@ -150,13 +157,6 @@
             }
             background-color: $bgColor;
         }
-        &.own-post:not(.op-post) {
-            $bgColor: darken($contentBgColor, 6%);
-            @if (lightness($contentBgColor) < 50) {
-                $bgColor: lighten($contentBgColor, 6%);
-            }
-            background-color: $bgColor;
-        }
     }
 
     .message {
@@ -165,25 +165,8 @@
         word-wrap: break-word;
         &:not(.full) {
             max-height: 500px;
+            overflow: auto;
         }
-    }
-
-    .post-truncated {
-        $height: 15px;
-        $color: darken($contentBgColor, 20%);
-        @if (lightness($contentBgColor) < 50) {
-            $color: lighten($contentBgColor, 20%);
-        }
-        background: linear-gradient(to bottom, transparent 0, $color $height, transparent $height);
-        margin-top: -($height + 10px);
-        padding-top: $height;
-        text-align: center;
-        display: block;
-        width: 100%;
-    }
-
-    .post.full + .post-truncated {
-        display: none;
     }
 
     $postMetaHeight: 30px;

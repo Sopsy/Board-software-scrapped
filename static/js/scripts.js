@@ -58,21 +58,6 @@ jQuery.fn.extend({
                 'currency': 'eur'
             });
         });
-    },
-    addShowFullPostButtons: function () {
-        return this.each(function () {
-            var self = $(this);
-            if (self.hasClass('buttoned')) {
-                return true;
-            }
-
-            self.addClass('buttoned');
-            if (this.scrollHeight > this.offsetHeight + 100) {
-                self.after('<button class="link post-truncated" onclick="showFullPost(this)">' + messages.showFullMessage + '</button>');
-            } else if (this.scrollHeight > this.offsetHeight) {
-                showFullPost(this);
-            }
-        })
     }
 });
 
@@ -191,7 +176,6 @@ function getMoreReplies(threadId) {
             data.find('.datetime').localizeTimestamp(this);
 
             $t(threadId).find('.more-replies-container').html(data);
-            $t(threadId).find('.message:not(.buttoned)').addShowFullPostButtons();
         }).fail(function (xhr, textStatus, errorThrown) {
             var errorMessage = getErrorMessage(xhr, errorThrown);
             toastr.error(errorMessage);
@@ -258,7 +242,6 @@ function getNewReplies(threadId, manual) {
         newReplies += lastUpdateNewReplies;
 
         data.appendTo(thread.find('.replies'));
-        thread.find('.message:not(.buttoned)').addShowFullPostButtons();
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
@@ -342,15 +325,6 @@ function startAutoUpdate() {
 
 function stopAutoUpdate() {
     clearTimeout(nextUpdateTimeout);
-}
-
-// -------------------------------------------
-// Truncated long posts
-// -------------------------------------------
-$('.message:not(.buttoned)').addShowFullPostButtons();
-
-function showFullPost(elm) {
-    $(elm).parent('.post').find('.message').addClass('full');
 }
 
 // -------------------------------------------

@@ -23,7 +23,7 @@
                 </div>
                 <div class="more-replies-container"></div>
                 <?php foreach($thread->threadReplies as $reply) : ?>
-                    <div class="post reply<?= ($thread->userId==$user->id?' own-post':'') ?>" id="post-<?= $reply->id ?>">
+                    <div class="post reply<?= ($reply->userId==$user->id?' own-post':'') ?>" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
                 <?php endforeach ?>
