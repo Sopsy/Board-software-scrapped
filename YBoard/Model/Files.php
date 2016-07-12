@@ -182,6 +182,7 @@ class Files extends Model
             }
         }
 
+        // TODO: save thumbWidth/thumbHeight so we can use <img height=""> to prevent page jumping when loading images
         // Do whatever we do with the uploaded files here.
         switch ($uploadedFile->destinationFormat) {
             case 'jpg':
