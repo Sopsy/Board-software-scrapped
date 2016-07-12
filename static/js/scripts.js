@@ -90,8 +90,16 @@ function deletePost(id) {
         data: {'post_id': id}
     }).done(function (data, textStatus, xhr) {
         $p(id).remove();
-        $t(id).remove();
-        toastr.success(messages.postDeleted);
+        if ($('body').hasClass('thread-page')) {
+            if ($t(id).is('*')) {
+                // We're in the thread we just deleted
+                returnToBoard();
+            }
+        } else {
+            // The deleted post is not the current thread
+            $t(id).remove();
+            toastr.success(messages.postDeleted);
+        }
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage, messages.errorOccurred);
@@ -882,6 +890,15 @@ $(window).on('beforeunload', function (e) {
 // -------------------------------------------
 function pageReload() {
     window.location = window.location.href.split('#')[0];
+}
+
+function returnToBoard() {
+    // Remove everything after the last slash and redirect
+    // Should work if we are in a thread, otherwise not really
+    var url = window.location.href;
+    url = url.substr(0, url.lastIndexOf('/') + 1);
+
+    window.location = url;
 }
 
 function getErrorMessage(xhr, errorThrown) {
