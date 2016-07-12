@@ -45,13 +45,13 @@ class User extends Model
 
         $user = $q->fetch();
         $this->id = $user->id;
-        $this->accountCreated = Text::dateToIso8601($user->account_created);
+        $this->accountCreated = $user->account_created;
         $this->sessionId = $user->session_id;
         $this->csrfToken = bin2hex($user->csrf_token);
         $this->username = $user->username;
         $this->class = $user->class;
         $this->goldLevel = $user->gold_level;
-        $this->lastActive = Text::dateToIso8601($user->last_active);
+        $this->lastActive = $user->last_active;
         $this->lastIp = empty($user->last_ip) ? false : inet_ntop($user->last_ip);
         $this->loggedIn = empty($user->username) ? false : true;
 
@@ -278,8 +278,8 @@ class User extends Model
             $tmp->userId = $row->user_id;
             $tmp->csrfToken = bin2hex($row->csrf_token);
             $tmp->ip = inet_ntop($row->ip);
-            $tmp->loginTime = Text::dateToIso8601($row->login_time);
-            $tmp->lastActive = Text::dateToIso8601($row->last_active);
+            $tmp->loginTime = $row->login_time;
+            $tmp->lastActive = $row->last_active;
             $sessions[] = $tmp;
         }
 
