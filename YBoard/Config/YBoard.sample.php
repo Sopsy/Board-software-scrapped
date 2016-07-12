@@ -12,7 +12,7 @@ return [
         'previewPosts' => 3,
         'subjectMaxLength' => 60,
         'messageMaxLength' => 12000,
-        'acceptedFileTypes' => '.jpg,.png,.gif,.mp3,.mp4,.webm',
+        'acceptedFileTypes' => '.jpg,.png,.gif,.m4a,.aac,.mp3,.mp4,.webm',
         'gCsePartnerPub' => 'partner-pub-1234567890:1234567890', // Google CSE
         'usernameMaxLength' => 30,
     ],

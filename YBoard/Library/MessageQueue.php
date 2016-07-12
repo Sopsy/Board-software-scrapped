@@ -34,4 +34,9 @@ class MessageQueue
     {
         return msg_receive($this->queue, $desiredMsgType, $msgType, $maxSize, $message);
     }
+
+    public function stat()
+    {
+        return msg_stat_queue($this->queue);
+    }
 }
