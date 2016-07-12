@@ -8,11 +8,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: hsl(hue($highlightColor), saturation($highlightColor), lightness($sidebarColor)+10%);
+    $bg: hsl(hue($highlightColor), saturation($highlightColor), lightness($sidebarColor)+10%);
+    background: $bg;
     border-radius: 10px;
 
     &:hover {
-        background: lighten($highlightColor, 10%);
+        background: lighten($bg, 10%);
     }
     &:window-inactive {
         opacity: 0.5;
