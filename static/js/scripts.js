@@ -355,6 +355,11 @@ function addBbCode(code) {
     $('#post-form').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
 }
 
+function toggleBbColorBar() {
+    $('#color-buttons').toggle();
+    $('#post-form').find('textarea').focus();
+}
+
 function replyToThread(id) {
     var postForm = $('#post-form');
     postForm.appendTo('#thread-' + id + ' .thread-content');
@@ -429,7 +434,7 @@ function resetOriginalPostFormDestination() {
 var submitInProgress;
 function submitPost(e) {
     e.preventDefault();
-    
+
     if (!('FormData' in window)) {
         toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
         return false;
