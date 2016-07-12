@@ -18,30 +18,30 @@
 
     <div id="message-input">
         <div id="format-toolbar">
-            <a class="icon-bold" onclick="addBbCode('b')"></a>
-            <a class="icon-italic" onclick="addBbCode('em')"></a>
-            <a class="icon-strikethrough" onclick="addBbCode('s')"></a>
-            <a class="icon-underline" onclick="addBbCode('u')"></a>
-            <a class="icon-spoiler" onclick="addBbCode('spoiler')"></a>
-            <a class="icon-font-small" onclick="addBbCode('small')"></a>
-            <a class="icon-font-big" onclick="addBbCode('big')"></a>
-            <a class="icon-bubble-quote" onclick="addBbCode('quote')"></a>
-            <a class="icon-code" onclick="addBbCode('code')"></a>
-            <a class="icon-superscript" onclick="addBbCode('sup')"></a>
-            <a class="icon-subscript" onclick="addBbCode('sub')"></a>
-            <a class="icon-palette" onclick="$('#colorbuttons').toggle()"></a>
-            <div id="colorbuttons" style="display: none;">
-                <a class="icon-palette black" onclick="addBbCode('black')"></a>
-                <a class="icon-palette gray" onclick="addBbCode('gray')"></a>
-                <a class="icon-palette white" onclick="addBbCode('white')"></a>
-                <a class="icon-palette brown" onclick="addBbCode('brown')"></a>
-                <a class="icon-palette red" onclick="addBbCode('red')"></a>
-                <a class="icon-palette orange" onclick="addBbCode('orange')"></a>
-                <a class="icon-palette yellow" onclick="addBbCode('yellow')"></a>
-                <a class="icon-palette green" onclick="addBbCode('green')"></a>
-                <a class="icon-palette blue" onclick="addBbCode('blue')"></a>
-                <a class="icon-palette purple" onclick="addBbCode('purple')"></a>
-                <a class="icon-palette pink" onclick="addBbCode('pink')"></a>
+            <a class="icon-bold" title="<?= _('Bold') ?>" onclick="addBbCode('b')"></a>
+            <a class="icon-italic" title="<?= _('Italic') ?>" onclick="addBbCode('em')"></a>
+            <a class="icon-strikethrough" title="<?= _('Strikethrough') ?>" onclick="addBbCode('s')"></a>
+            <a class="icon-underline" title="<?= _('Underline') ?>" onclick="addBbCode('u')"></a>
+            <a class="icon-spoiler" title="<?= _('Spoiler') ?>" onclick="addBbCode('spoiler')"></a>
+            <a class="icon-font-small" title="<?= _('Small text') ?>" onclick="addBbCode('small')"></a>
+            <a class="icon-font-big" title="<?= _('Big text') ?>" onclick="addBbCode('big')"></a>
+            <a class="icon-bubble-quote" title="<?= _('Quote') ?>" onclick="addBbCode('quote')"></a>
+            <a class="icon-code" title="<?= _('Code') ?>" onclick="addBbCode('code')"></a>
+            <a class="icon-superscript" title="<?= _('Superscript') ?>" onclick="addBbCode('sup')"></a>
+            <a class="icon-subscript" title="<?= _('Subscript') ?>" onclick="addBbCode('sub')"></a>
+            <a class="icon-palette" title="<?= _('Colors') ?>" onclick="$('#color-buttons').toggle()"></a>
+            <div id="color-buttons" style="display:none">
+                <a class="icon-palette black" title="<?= _('Black') ?>" onclick="addBbCode('black')"></a>
+                <a class="icon-palette gray" title="<?= _('Gray') ?>" onclick="addBbCode('gray')"></a>
+                <a class="icon-palette white" title="<?= _('White') ?>" onclick="addBbCode('white')"></a>
+                <a class="icon-palette brown" title="<?= _('Brown') ?>" onclick="addBbCode('brown')"></a>
+                <a class="icon-palette red" title="<?= _('Red') ?>" onclick="addBbCode('red')"></a>
+                <a class="icon-palette orange" title="<?= _('Orange') ?>" onclick="addBbCode('orange')"></a>
+                <a class="icon-palette yellow" title="<?= _('Yellow') ?>" onclick="addBbCode('yellow')"></a>
+                <a class="icon-palette green" title="<?= _('Green') ?>" onclick="addBbCode('green')"></a>
+                <a class="icon-palette blue" title="<?= _('Blue') ?>" onclick="addBbCode('blue')"></a>
+                <a class="icon-palette purple" title="<?= _('Purple') ?>" onclick="addBbCode('purple')"></a>
+                <a class="icon-palette pink" title="<?= _('Pink') ?>" onclick="addBbCode('pink')"></a>
             </div>
         </div>
         <textarea name="message" placeholder="<?= _('Message') ?>" maxlength="<?= $messageMaxLength ?>"></textarea>
