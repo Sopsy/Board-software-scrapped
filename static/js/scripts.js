@@ -759,7 +759,7 @@ $('.currency').localizeCurrency();
 // Spoilers & reflinks
 // -------------------------------------------
 var reflinkTooltipTimeout;
-$('body')
+$('body:not(.board-catalog)')
     .on('touchstart', '.spoiler:not(.spoiled)', function (e) {
         e.preventDefault();
         $(this).addClass('spoiled');
@@ -861,10 +861,10 @@ function confirmUnload() {
 // Post higlighting
 // -------------------------------------------
 function highlightPost(id) {
-    $(id).addClass('bgcolor highlighted');
+    $(id).addClass('highlighted');
 }
 function removeHighlights() {
-    $('.highlighted').removeClass('bgcolor highlighted');
+    $('.highlighted').removeClass('highlighted');
 }
 
 // -------------------------------------------

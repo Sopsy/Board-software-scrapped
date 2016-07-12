@@ -8,7 +8,7 @@
     <div class="content-box thread" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">
         <?php include($viewFilesPath . '/Snippets/ThreadSubject.phtml') ?>
         <div class="thread-content">
-            <div class="post op-post" id="post-<?= $thread->id ?>">
+            <div class="post op-post<?= ($thread->userId==$user->id?' own-post':'') ?>" id="post-<?= $thread->id ?>">
                 <?php $post = $thread; include($viewFilesPath . '/Snippets/Post.phtml') ?>
             </div>
 
@@ -23,7 +23,7 @@
                 </div>
                 <div class="more-replies-container"></div>
                 <?php foreach($thread->threadReplies as $reply) : ?>
-                    <div class="post reply" id="post-<?= $reply->id ?>">
+                    <div class="post reply<?= ($thread->userId==$user->id?' own-post':'') ?>" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
                 <?php endforeach ?>

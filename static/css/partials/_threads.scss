@@ -131,7 +131,8 @@
     }
 
     .post {
-        &.bgcolor {
+        &.bgcolor,
+        &.own-post {
             margin-left: -5px;
             margin-right: -5px;
             padding: 5px;
@@ -146,6 +147,13 @@
                 $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor) - 2%);
             } @else {
                 $bgColor: hsl(hue($highlightColor), saturation($highlightColor), lightness($contentBgColor));
+            }
+            background-color: $bgColor;
+        }
+        &.own-post:not(.op-post) {
+            $bgColor: darken($contentBgColor, 6%);
+            @if (lightness($contentBgColor) < 50) {
+                $bgColor: lighten($contentBgColor, 6%);
             }
             background-color: $bgColor;
         }
