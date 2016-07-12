@@ -40,7 +40,7 @@ class Posts extends Model
         $thread->userId = $row->user_id;
         $thread->ip = inet_ntop($row->ip);
         $thread->countryCode = $row->country_code;
-        $thread->time = Text::dateToIso8601($row->time);
+        $thread->time = $row->time;
         $thread->sticky = $row->sticky;
 
         return $thread;
@@ -499,13 +499,12 @@ class Posts extends Model
         $thread->userId = $data->user_id;
         $thread->ip = inet_ntop($data->ip);
         $thread->countryCode = $data->country_code;
-        $thread->time = Text::dateToIso8601($data->time);
+        $thread->time = $data->time;
         $thread->locked = $data->locked;
         $thread->sticky = $data->sticky;
-        $thread->username = Text::formatUsername($data->username);
+        $thread->username = $data->username;
         $thread->subject = $data->subject;
         $thread->message = $data->message;
-        $thread->messageFormatted = Text::formatMessage($data->message);
         if ($replyCount == 0) {
             $thread->threadReplies = false;
         } elseif ($replyCount >= 10000) {
@@ -535,10 +534,9 @@ class Posts extends Model
         $reply->userId = $data->user_id;
         $reply->ip = inet_ntop($data->ip);
         $reply->countryCode = $data->country_code;
-        $reply->username = Text::formatUsername($data->username);
-        $reply->time = Text::dateToIso8601($data->time);
+        $reply->username = $data->username;
+        $reply->time = $data->time;
         $reply->message = $data->message;
-        $reply->messageFormatted = Text::formatMessage($data->message);
         $reply->postReplies = !empty($data->post_replies) ? explode(',', $data->post_replies) : false;
 
         if (!empty($data->file_id)) {

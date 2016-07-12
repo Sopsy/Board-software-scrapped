@@ -12,7 +12,6 @@ class Post
     public $time;
     public $username;
     public $message;
-    public $messageFormatted;
     public $postReplies;
     public $file = false;
 }

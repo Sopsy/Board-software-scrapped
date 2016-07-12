@@ -167,11 +167,6 @@ class Text
         return preg_replace('/[^0-9a-f]/', '', strtolower($string));
     }
 
-    public static function dateToIso8601(string $date)
-    {
-        return date('c', strtotime($date));
-    }
-
     public static function formatDuration($duration)
     {
         return floor($duration / 60) . ':' . str_pad($duration % 60, 2, '0', STR_PAD_LEFT);

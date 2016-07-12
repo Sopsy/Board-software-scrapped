@@ -22,7 +22,7 @@
 
 <div class="post-meta">
     <div class="user-info">
-        <span class="username"><?= htmlspecialchars($post->username) ?></span>
+        <span class="username"><?= htmlspecialchars(\YBoard\Library\Text::formatUsername($post->username)) ?></span>
         <?php if ($post->userId == $thread->userId) : ?>
             <span class="text-tag op"><?= _('OP') ?></span>
         <?php endif ?>
@@ -78,7 +78,7 @@
         </figcaption>
     </figure>
     <?php endif ?>
-    <?= $post->messageFormatted ?>
+    <?= \YBoard\Library\Text::formatMessage($post->message) ?>
 </blockquote>
 
 <?php if ($post->postReplies) : ?>

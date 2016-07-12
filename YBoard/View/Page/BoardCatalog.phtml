@@ -28,17 +28,17 @@
                     </div>
 
                     <blockquote class="post">
-                            <figure class="post-file thumbnail">
-                                <a href="/<?= $board->url ?>/<?= $thread->id ?>">
-                                    <?php if (!empty($post->file)) : ?>
-                                        <?php $src = $staticUrl . '/files/' . $post->file->folder . '/t/' . $post->file->name . '.jpg' ?>
-                                    <?php else : ?>
-                                        <?php $src = $staticUrl . '/img/norppa_ylilauta.svg' ?>
-                                    <?php endif ?>
-                                    <img src="<?= $src ?>" alt="">
-                                </a>
-                            </figure>
-                        <?= $post->messageFormatted ?>
+                        <figure class="post-file thumbnail">
+                            <a href="/<?= $board->url ?>/<?= $thread->id ?>">
+                                <?php if (!empty($post->file)) : ?>
+                                    <?php $src = $staticUrl . '/files/' . $post->file->folder . '/t/' . $post->file->name . '.jpg' ?>
+                                <?php else : ?>
+                                    <?php $src = $staticUrl . '/img/norppa_ylilauta.svg' ?>
+                                <?php endif ?>
+                                <img src="<?= $src ?>" alt="">
+                            </a>
+                        </figure>
+                        <?= \YBoard\Library\Text::formatMessage($post->message) ?>
                     </blockquote>
                 </div>
                 <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
