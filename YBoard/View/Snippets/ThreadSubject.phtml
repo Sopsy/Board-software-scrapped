@@ -1,6 +1,8 @@
 <h3>
-    <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?=
-        ($user->threadFollow->exists($thread->id)?'#post-' . $user->threadFollow->threads[$thread->id]->lastSeenReply:'') ?>">
+    <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?php
+    if ($user->threadFollow->exists($thread->id) && $user->threadFollow->threads[$thread->id]->lastSeenReply) :
+        ?>#post-<?= $user->threadFollow->threads[$thread->id]->lastSeenReply ?><?php
+    endif ?>">
 
     <?php if ($thread->sticky) :
         ?><span class="icon-pushpin icon" title="<?= _('Sticky') ?>"></span><?php

@@ -38,4 +38,10 @@ class Preferences extends ExtendedController
 
         $this->user->preferences->set('themeVariation', $_POST['id']);
     }
+
+    public function toggleHideSidebar()
+    {
+        $this->validateAjaxCsrfToken();
+        $this->user->preferences->set('hideSidebar', !$this->user->preferences->hideSidebar);
+    }
 }

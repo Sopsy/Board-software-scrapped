@@ -8,6 +8,7 @@ class UserPreferences extends UserSubModel
     public $theme = 'default';
     public $themeVariation = 0;
     public $locale = false;
+    public $hideSidebar = false;
 
     protected $preferences;
     protected $toUpdate = [];
@@ -47,6 +48,10 @@ class UserPreferences extends UserSubModel
             case 'locale':
                 $key = 3;
                 break;
+            case 'hideSidebar':
+                $key = 4;
+                $value = (int)$value;
+                break;
             default:
                 return false;
         }
@@ -73,6 +78,9 @@ class UserPreferences extends UserSubModel
                     break;
                 case 3:
                     $this->locale = $row->preferences_value;
+                    break;
+                case 4:
+                    $this->hideSidebar = (bool)$row->preferences_value;
                     break;
                 default:
                     continue;

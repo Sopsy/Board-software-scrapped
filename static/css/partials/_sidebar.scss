@@ -180,4 +180,33 @@
         color: red;
         font-weight: bold;
     }
+
+    #sidebar-hide-button {
+        font-family: icomoon;
+        cursor: pointer;
+        background-color: transparent;
+        border: 0;
+        color: $sidebarLinkColor;
+        top: 50%;
+        position: absolute;
+        left: 0;
+        display: block;
+        font-size: 10px;
+        width: 11px;
+        height: 20px;
+        text-align: center;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 5px 1px 5px 0;
+        transform: translateY(-50%);
+        &:hover {
+            background-color: $buttonBg;
+        }
+        &:before {
+            content: "\e93b";
+        }
+    }
+    &.visible #sidebar-hide-button:before {
+        content: "\e93c";
+    }
 }

@@ -807,27 +807,13 @@ function switchThemeVariation() {
         return true;
     }
 
-    /*
-    $('<div class="css-loading">' + messages.loading + '</div>').appendTo('body')
-        .css({
-            'position': 'fixed',
-            'top': 0,
-            'right': 0,
-            'bottom': 0,
-            'left': 0,
-            'background-color': '#eee',
-            'text-align': 'center',
-            'padding-top': '20%',
-        });
-    */
-
     $('<link>').attr({
         'rel': 'stylesheet',
         'class': 'css',
         'href': newHref,
         'data-alt': JSON.stringify(variations),
         'data-cur-alt': next,
-    }).appendTo('head');
+    }).insertAfter(css);
 
     setTimeout(function(){
         $('.css:first').remove();
@@ -837,6 +823,26 @@ function switchThemeVariation() {
         url: '/scripts/preferences/setthemevariation',
         type: "POST",
         data: {'id': next}
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+}
+function toggleHideSidebar() {
+    if ($('#hide-sidebar').is('*')) {
+        $('#hide-sidebar').remove();
+        $('#sidebar').removeClass('visible');
+    } else {
+        $('<link>').attr({
+            'rel': 'stylesheet',
+            'id': 'hide-sidebar',
+            'href': config.staticUrl + '/css/hide_sidebar.css',
+        }).appendTo('head');
+    }
+
+    $.ajax({
+        url: '/scripts/preferences/togglehidesidebar',
+        type: "POST"
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);

@@ -19,6 +19,7 @@ return [
     '#^/preferences$#' => ['Preferences', 'index'],
     '#^/scripts/preferences/save$#' => ['Preferences', 'save'],
     '#^/scripts/preferences/setthemevariation#' => ['Preferences', 'setThemeVariation'],
+    '#^/scripts/preferences/togglehidesidebar#' => ['Preferences', 'toggleHideSidebar'],
 
     // User account related
     '#^/profile/(.+)?$#' => ['User', 'profile'],
