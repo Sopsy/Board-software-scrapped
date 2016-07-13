@@ -11,24 +11,24 @@ trait Cookies
             return false;
         }
 
-        if (strlen($_COOKIE['user']) !== 64) {
+        if (strlen($_COOKIE['user']) <= 65 || substr_count($_COOKIE['user'], '-') !== 1) {
             return false;
         }
 
-        $sessionId = hex2bin($_COOKIE['user']);
+        list($userId, $sessionId) = explode('-', $_COOKIE['user']);
 
-        return $sessionId;
+        return ['userId' => (int)$userId, 'sessionId' => hex2bin($sessionId)];
     }
 
-    protected function setLoginCookie($sessionId)
+    protected function setLoginCookie(int $userId, $sessionId) : bool
     {
         $sessionId = bin2hex($sessionId);
-        HttpResponse::setCookie('user', $sessionId);
+        HttpResponse::setCookie('user', $userId . '-' . $sessionId);
 
         return true;
     }
 
-    protected function deleteLoginCookie($reload = false)
+    protected function deleteLoginCookie(bool $reload = false) : bool
     {
         HttpResponse::setCookie('user', '', false);
         if ($reload) {

@@ -7,6 +7,7 @@ use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Posts;
+use YBoard\Model\UserSessions;
 
 class User extends ExtendedController
 {
@@ -15,7 +16,9 @@ class User extends ExtendedController
         $view = $this->loadTemplateEngine();
         $view->pageTitle = _('User account');
 
-        $view->loginSessions = $this->user->getSessions($this->user->id);
+        $sessions = new UserSessions($this->db);
+
+        $view->loginSessions = $sessions->getAllByUser($this->user->id);
         $view->display('Profile');
     }
 
@@ -91,7 +94,7 @@ class User extends ExtendedController
 
         $sessionId = Text::filterHex($_POST['session_id']);
 
-        $destroySession = $this->user->destroySession(hex2bin($sessionId), $this->user->id);
+        $destroySession = $this->user->session->destroy(hex2bin($sessionId));
         if (!$destroySession) {
             $this->throwJsonError(500);
         }
@@ -101,13 +104,12 @@ class User extends ExtendedController
     {
         $this->validatePostCsrfToken();
 
-        $destroySession = $this->user->destroySession($this->user->sessionId, $this->user->id);
+        $destroySession = $this->user->session->destroy();
         if (!$destroySession) {
             $this->dieWithError(_('What the!? Can\'t logout!?'));
         }
 
-        $this->deleteLoginCookie(false);
-        HttpResponse::redirectExit('/');
+        $this->deleteLoginCookie();
     }
 
     public function delete()
@@ -124,7 +126,7 @@ class User extends ExtendedController
         }
 
         try {
-            $this->user->delete($this->user->id, $_POST['password']);
+            $this->user->delete();
         } catch (UserException $e) {
             $this->badRequest(_('User account not deleted'), $e->getMessage());
         }
@@ -139,16 +141,19 @@ class User extends ExtendedController
             $this->badRequest(_('Login failed'), _('Invalid username or password'));
         }
 
-        if (!$this->user->validateLogin($_POST['username'], $_POST['password'])) {
+        $newUser = $this->user->getByLogin($_POST['username'], $_POST['password']);
+        if (!$newUser) {
             $this->blockAccess(_('Login failed'), _('Invalid username or password'));
         }
 
-        $this->user->destroySession();
-        $this->user->createSession($this->user->id);
+        $this->user->session->destroy();
 
-        $this->setLoginCookie($this->user->sessionId);
+        $newUser->session = new UserSessions($this->db, $newUser->id);
+        $newUser->session->create();
 
-        if ($this->user->class != 0) {
+        $this->setLoginCookie($newUser->id, $newUser->session->id);
+
+        if ($newUser->class != 0) {
             // TODO: write mod login to log
         }
 

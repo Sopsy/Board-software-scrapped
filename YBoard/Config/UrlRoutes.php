@@ -21,7 +21,7 @@ return [
     '#^/scripts/preferences/toggledarktheme#' => ['Preferences', 'toggleDarkTheme'],
 
     // User account related
-    '#^/profile#' => ['User', 'profile'],
+    '#^/profile/([0-9]+)?#' => ['User', 'profile'],
     '#^/scripts/user/login$#' => ['User', 'login'],
     '#^/scripts/user/logout$#' => ['User', 'logout'],
     '#^/scripts/user/delete#' => ['User', 'delete'],

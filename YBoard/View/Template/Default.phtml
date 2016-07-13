@@ -110,7 +110,7 @@
         <h3><?= htmlspecialchars($user->username) ?></h3>
     <?php endif ?>
         <div class="buttons">
-            <a class="button square icon-user" href="/profile" title="<?= _('Profile') ?>"></a>
+            <a class="button square icon-user" href="/profile/" title="<?= _('Profile') ?>"></a>
             <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
             <button class="button square icon-lamp" onclick="toggleDarkTheme()" title="<?= _('Toggle dark theme') ?>"></button>
             <?php if ($user->loggedIn) : ?>

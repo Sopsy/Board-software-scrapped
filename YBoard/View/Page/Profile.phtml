@@ -63,7 +63,7 @@
             <div><h5><?= _('Login time') ?></h5><span class="datetime"><?= $session->loginTime ?></span></div>
             <div><h5><?= _('Last active') ?></h5><span class="datetime"><?= $session->lastActive ?></span></div>
             <div class="actions">
-                <?php if ($session->id == $user->sessionId) : ?>
+                <?php if ($session->id == $user->session->id) : ?>
                 <em><?= _('Current session') ?></em>
                 <?php else : ?>
                 <button class="button green" onclick="destroySession('<?= bin2hex($session->id) ?>')"><?= _('Log out') ?></button>

@@ -65,16 +65,29 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function loadUser()
     {
-        $this->user = new Model\User($this->db);
-
-        $sessionId = $this->getLoginCookie();
-        if ($sessionId !== false) {
-            $load = $this->user->load($sessionId);
-            if (!$load) {
+        $cookie = $this->getLoginCookie();
+        if ($cookie !== false) {
+            // Load session
+            $session = new Model\UserSessions($this->db, $cookie['userId'], $cookie['sessionId']);
+            if (!$session) {
                 $this->deleteLoginCookie(true);
             }
-        } else {
+
+            // Load user
+            $this->user = new Model\User($this->db, $session->userId);
+            if (!$this->user) {
+                $this->deleteLoginCookie(true);
+            }
+
+            $this->user->session = $session;
+
+            // Update last active timestamps
+            $this->user->updateLastActive();
+            $this->user->session->updateLastActive();
+        }
+        else {
             // Session does not exist
+            $this->user = new Model\User($this->db);
             if ($this->userMaybeBot()) {
                 $this->user->createTemporary();
                 return false;
@@ -84,12 +97,13 @@ abstract class ExtendedController extends YBoard\Controller
             if (!$createUser) {
                 $this->dieWithError();
             }
-            $createSession = $this->user->createSession($this->user->id);
+            $this->user->session = new Model\UserSessions($this->db, $this->user->id);
+            $createSession = $this->user->session->create();
             if (!$createSession) {
                 $this->dieWithError();
             }
 
-            $this->setLoginCookie($this->user->sessionId);
+            $this->setLoginCookie($this->user->id, $this->user->session->id);
         }
 
         return true;
@@ -153,6 +167,7 @@ abstract class ExtendedController extends YBoard\Controller
     {
         // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
+        // TODO: if count of threads on current page is smaller than maxPages, set maxPages = curPage
         $view->paginationBase = $base;
         $view->maxPages = $maxPages;
         $view->paginationStartPage = $pageNum - 1;
@@ -197,7 +212,7 @@ abstract class ExtendedController extends YBoard\Controller
         $templateEngine->stylesheet = $stylesheet;
         $templateEngine->altStylesheet = $altStylesheet;
 
-        $templateEngine->csrfToken = $this->user->csrfToken;
+        $templateEngine->csrfToken = $this->user->session->csrfToken;
         $templateEngine->reCaptchaPublicKey = $this->config['reCaptcha']['publicKey'];
         $templateEngine->user = $this->user;
         $templateEngine->boardList = $this->boards->getAll();
@@ -207,11 +222,11 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function validateCsrfToken($token)
     {
-        if (empty($token) || empty($this->user->csrfToken)) {
+        if (empty($token) || empty($this->user->session->csrfToken)) {
             return false;
         }
 
-        if ($token == $this->user->csrfToken) {
+        if ($token == $this->user->session->csrfToken) {
             return true;
         }
 
@@ -231,11 +246,11 @@ abstract class ExtendedController extends YBoard\Controller
             $this->ajaxCsrfValidationFail();
         }
 
-        if (empty($_SERVER['HTTP_X_CSRF_TOKEN']) || empty($this->user->csrfToken)) {
+        if (empty($_SERVER['HTTP_X_CSRF_TOKEN']) || empty($this->user->session->csrfToken)) {
             $this->ajaxCsrfValidationFail();
         }
 
-        if ($_SERVER['HTTP_X_CSRF_TOKEN'] == $this->user->csrfToken) {
+        if ($_SERVER['HTTP_X_CSRF_TOKEN'] == $this->user->session->csrfToken) {
             return true;
         }
 
