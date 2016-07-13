@@ -348,7 +348,7 @@ function updateAutoUpdateVars() {
     }
 
     // Notify about new posts on title
-    if (!document.hasFocus() && newReplies > 0) {
+    if (!document.hasFocus() && newReplies > 0 && $('body').hasClass('thread-page')) {
         document.title = '(' + newReplies + ') ' + documentTitle;
         var replies = $('.replies');
         replies.find('hr').remove();

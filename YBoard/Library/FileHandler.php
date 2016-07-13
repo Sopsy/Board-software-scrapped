@@ -71,7 +71,8 @@ class FileHandler
         // And maybe even skip completely and just do lossless repackaging if fmt already is libx264:yuv420p/aac
 
         system('nice --adjustment=19 ffmpeg -i ' . escapeshellarg($file) . ' -threads 0 -c:v libx264'
-            . ' -pix_fmt yuv420p -r 24 -crf 23 -preset:v veryfast -filter_complex scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
+            . ' -pix_fmt yuv420p -crf 23 -maxrate 3000k -bufsize 9000k -preset:v veryfast -profile:v high -level:v 4.1'
+            . ' -filter_complex scale="trunc(in_w/2)*2:trunc(in_h/2)*2"'
             . ' -movflags faststart -c:a aac -ac 2 -ar 44100 -b:a 128k ' . escapeshellarg($tmpFile) . ' > /dev/null 2>&1');
 
         if (!is_file($tmpFile)) {
