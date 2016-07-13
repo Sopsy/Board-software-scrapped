@@ -61,8 +61,6 @@ class UserStatistics extends UserSubModel
         $q = $this->db->prepare("INSERT INTO user_statistics (user_id, statistics_key, statistics_value)
             VALUES " . $query . " ON DUPLICATE KEY UPDATE statistics_value = VALUES(statistics_value)");
         $q->execute($queryVars);
-
-        return true;
     }
 
     public function increment(string $keyName, int $incrementBy = 1) : bool

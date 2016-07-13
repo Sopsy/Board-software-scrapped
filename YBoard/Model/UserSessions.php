@@ -6,7 +6,7 @@ use YBoard\Model;
 
 class UserSessions extends Model
 {
-    public $id = false;
+    public $id = null;
     public $userId;
     public $csrfToken;
     public $ip;

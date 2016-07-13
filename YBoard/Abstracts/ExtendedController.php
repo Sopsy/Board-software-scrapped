@@ -69,13 +69,13 @@ abstract class ExtendedController extends YBoard\Controller
         if ($cookie !== false) {
             // Load session
             $session = new Model\UserSessions($this->db, $cookie['userId'], $cookie['sessionId']);
-            if ($session->id === false) {
+            if ($session->id === null) {
                 $this->deleteLoginCookie(true);
             }
 
             // Load user
             $this->user = new Model\User($this->db, $session->userId);
-            if ($this->user->id === false) {
+            if ($this->user->id === null) {
                 $this->deleteLoginCookie(true);
             }
 
@@ -93,15 +93,10 @@ abstract class ExtendedController extends YBoard\Controller
                 return false;
             }
 
-            $createUser = $this->user->create();
-            if (!$createUser) {
-                $this->dieWithError();
-            }
+            $this->user->create();
+
             $this->user->session = new Model\UserSessions($this->db, $this->user->id);
-            $createSession = $this->user->session->create();
-            if (!$createSession) {
-                $this->dieWithError();
-            }
+            $this->user->session->create();
 
             $this->setLoginCookie($this->user->id, $this->user->session->id);
         }
@@ -111,8 +106,8 @@ abstract class ExtendedController extends YBoard\Controller
 
     protected function userMaybeBot()
     {
-        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) // Great way of detecting crawlers!
-        {
+        if (empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            // Great way of detecting crawlers!
             return true;
         }
 

@@ -9,7 +9,7 @@ class User extends Model
     const PASSWORD_HASH_COST = 12;
     const PASSWORD_HASH_TYPE = PASSWORD_BCRYPT;
 
-    public $id = false;
+    public $id = null;
     public $session;
     public $accountCreated;
     public $username;
@@ -28,17 +28,20 @@ class User extends Model
     public function __construct(Database $db, int $userId = null)
     {
         parent::__construct($db);
+        $this->id = $userId;
 
-        if ($userId) {
-            $this->load($userId);
-        }
+        $this->load();
     }
 
-    protected function load(int $userId) : bool
+    protected function load() : bool
     {
+        if ($this->id === null) {
+            return true;
+        }
+
         $q = $this->db->prepare("SELECT id, username, class, gold_level, account_created, last_active, last_ip
             FROM users WHERE id = :user_id LIMIT 1");
-        $q->bindValue('user_id', $userId);
+        $q->bindValue('user_id', $this->id);
         $q->execute();
 
         if ($q->rowCount() == 0) {

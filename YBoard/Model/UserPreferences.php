@@ -31,8 +31,6 @@ class UserPreferences extends UserSubModel
         $q = $this->db->prepare("INSERT INTO user_preferences (user_id, preferences_key, preferences_value)
             VALUES " . $query . " ON DUPLICATE KEY UPDATE preferences_value = VALUES(preferences_value)");
         $q->execute($queryVars);
-
-        return true;
     }
 
     public function set($keyName, $value) : bool
