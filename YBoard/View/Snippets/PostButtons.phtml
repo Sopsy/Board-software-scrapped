@@ -6,12 +6,12 @@
     <a href="#"><?= _('Donate gold') ?></a>
     -->
     <?php if (!$post->threadId) : ?>
-        <?php if (!in_array($post->id, $user->threadHide->threads)) : ?>
+        <?php if (!$user->threadHide->exists($post->id)) : ?>
             <button class="button square icon-eye-crossed" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
         <?php else : ?>
             <button class="button square icon-eye" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
         <?php endif ?>
-        <?php if (!in_array($post->id, $user->threadFollow->threads)) : ?>
+        <?php if (!$user->threadFollow->exists($post->id)) : ?>
             <button class="button square icon-bookmark-add followbutton" onclick="followThread(<?= $post->id ?>)" title="<?= _('Follow') ?>"></button>
         <?php else : ?>
             <button class="button square icon-bookmark-remove followbutton" onclick="unfollowThread(<?= $post->id ?>)" title="<?= _('Unfollow') ?>"></button>

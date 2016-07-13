@@ -28,6 +28,11 @@ class UserThreadHide extends UserSubModel
         return true;
     }
 
+    public function exists(int $threadId) : bool
+    {
+        return in_array($threadId, $this->threads);
+    }
+
     protected function load() : bool
     {
         $q = $this->db->prepare("SELECT thread_id FROM user_thread_hide WHERE user_id = :user_id");

@@ -100,9 +100,8 @@ class UserSessions extends Model
         }
 
         $q = $this->db->prepare("DELETE FROM user_sessions
-            WHERE session_id = :session_id AND user_id = :user_id LIMIT 1");
+            WHERE session_id = :session_id LIMIT 1");
         $q->bindValue('session_id', $sessionId);
-        $q->bindValue('user_id', $this->userId);
         $q->execute();
 
         return true;

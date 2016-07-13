@@ -234,7 +234,7 @@ class Post extends ExtendedController
 
             // Increment followed threads unread count
             $followed = new UserThreadFollow($this->db);
-            $followed->incrementUnreadCount($thread->id);
+            $followed->incrementUnreadCount($thread->id, $this->user->id);
 
             // Enable flood limit
             Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);

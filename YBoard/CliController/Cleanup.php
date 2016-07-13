@@ -6,6 +6,7 @@ use YBoard\Model\Boards;
 use YBoard\Model\Files;
 use YBoard\Model\Posts;
 use YBoard\Model\User;
+use YBoard\Model\UserSessions;
 
 class Cleanup extends CliDatabase
 {
@@ -58,19 +59,20 @@ class Cleanup extends CliDatabase
     public function deleteOldUsers()
     {
         $user = new User($this->db);
+        $userSessions = new UserSessions($this->db);
 
         // Expire old sessions
-        $expiredSessions = $user->getExpiredSessions();
+        $expiredSessions = $userSessions->getExpired();
         foreach ($expiredSessions as $sessionId) {
             // Looping a query is not good practise, but I'm lazy.
-            $user->destroySession($sessionId);
+            $userSessions->destroy($sessionId);
         }
 
         // Delete unusable user accounts
         $unusable = $user->getUnusable();
         foreach ($unusable as $userId) {
             // Looping a query is not good practise, but I'm lazy.
-            $user->delete($userId, '', true);
+            $user->delete($userId);
         }
 
         echo count($expiredSessions) . " expired sessions deleted\n";

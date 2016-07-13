@@ -91,6 +91,7 @@ abstract class ExtendedController extends YBoard\Controller
             $this->user = new Model\User($this->db);
             if ($this->userMaybeBot()) {
                 $this->user->createTemporary();
+                $this->user->session = new Model\UserSessions($this->db);
                 return false;
             }
 

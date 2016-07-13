@@ -125,7 +125,11 @@
         <div class="columns">
             <a href="/mythreads/"><?= _('My threads') ?></a>
             <a href="/repliedthreads/"><?= _('Replied threads') ?></a>
-            <a href="/followedthreads/"><?= _('Followed threads') ?></a>
+            <a href="/followedthreads/"><?= _('Followed threads') ?>
+                <?php if($user->threadFollow->unreadCount != 0) : ?>
+                    <span class="unread-count">(<?= $user->threadFollow->unreadCount ?>)</span>
+                <?php endif ?>
+            </a>
             <a href="/hiddenthreads/"><?= _('Hidden threads') ?></a>
         </div>
     </nav>

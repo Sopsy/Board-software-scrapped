@@ -44,7 +44,7 @@ class UserStatistics extends UserSubModel
     public function __destruct()
     {
         // Delayed update to prevent unnecessary database queries
-        if ($this->userId === false || empty($this->toUpdate)) {
+        if ($this->userId === null || empty($this->toUpdate)) {
             return true;
         }
 

@@ -47,14 +47,14 @@ class CustomBoard extends ExtendedController
     public function followedThreads($pageNum = 1)
     {
         $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads($this->user->threadFollow->threads, $pageNum, 15, 3);
+        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum, 15, 3);
         $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum);
     }
 
     public function followedThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads($this->user->threadFollow->threads, $pageNum, 100);
+        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum, 100);
         $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum, true);
     }
 

@@ -27,6 +27,17 @@ class Thread extends ExtendedController
             // TODO: Maybe change to 301
         }
 
+        // Clear unread count and update last seen reply
+        if ($this->user->threadFollow->exists($thread->id)) {
+            if (!empty($thread->threadReplies)) {
+                $tmp = array_slice($thread->threadReplies, -1);
+                $lastReply = array_pop($tmp);
+                $this->user->threadFollow->setLastSeenReply($lastReply->id, $thread->id);
+            }
+            $this->user->threadFollow->resetUnreadCount($thread->id);
+        }
+
+        // Increment thread views
         $viewCacheKey = 'thread-view-' . $thread->id . '-' . $_SERVER['REMOTE_ADDR'];
         if (!Cache::exists($viewCacheKey)) {
             Cache::add($viewCacheKey, 1, 300);
@@ -69,6 +80,12 @@ class Thread extends ExtendedController
         foreach ($replies as $post) {
             $view->post = $post;
             $view->display('Ajax/Post');
+        }
+
+        // Clear unread count and update last seen reply
+        if ($this->user->threadFollow->exists($_POST['thread_id'])) {
+            $this->user->threadFollow->resetUnreadCount($_POST['thread_id']);
+            $this->user->threadFollow->setLastSeenReply($_POST['from_id'], $_POST['thread_id']);
         }
     }
 

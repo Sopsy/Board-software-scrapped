@@ -1,5 +1,17 @@
-<h3><a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?>">
-    <?php if ($thread->sticky) : ?><span class="icon-pushpin icon" title="<?= _('Sticky') ?>"></span><?php endif
-    ?><?php if ($thread->locked) : ?><span class="icon-lock icon" title="<?= _('Locked') ?>"></span><?php endif
+<h3>
+    <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?=
+        ($user->threadFollow->exists($thread->id)?'#post-' . $user->threadFollow->threads[$thread->id]->lastSeenReply:'') ?>">
+
+    <?php if ($thread->sticky) :
+        ?><span class="icon-pushpin icon" title="<?= _('Sticky') ?>"></span><?php
+    endif;
+    if ($thread->locked) :
+        ?><span class="icon-lock icon" title="<?= _('Locked') ?>"></span><?php
+    endif;
     ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span>
-</a></h3>
+
+    <?php if ($user->threadFollow->exists($thread->id) && $user->threadFollow->threads[$thread->id]->unreadCount != 0) : ?>
+        <span class="unread-count"><?= $user->threadFollow->threads[$thread->id]->unreadCount ?></span>
+    <?php endif ?>
+    </a>
+</h3>

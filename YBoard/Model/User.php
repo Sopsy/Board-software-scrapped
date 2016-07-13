@@ -94,12 +94,16 @@ class User extends Model
         return true;
     }
 
-    public function delete() : bool
+    public function delete(int $userId = null) : bool
     {
+        if (!$userId) {
+            $userId = $this->id;
+        }
+
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
         $q = $this->db->prepare("DELETE FROM users WHERE id = :user_id LIMIT 1");
-        $q->bindValue('user_id', $this->id);
+        $q->bindValue('user_id', $userId);
         $q->execute();
 
         return true;
