@@ -34,10 +34,12 @@ return [
     '#^/scripts/session/logout$#' => ['Session', 'logOut'],
 
     // Custom boards
-    '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreads'],
-    '#^/repliedthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreadsCatalog'],
     '#^/mythreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreads'],
     '#^/mythreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'myThreadsCatalog'],
+    '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreads'],
+    '#^/repliedthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreadsCatalog'],
+    '#^/followedthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'followedThreads'],
+    '#^/followedthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'followedThreadsCatalog'],
     '#^/hiddenthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreads'],
     '#^/hiddenthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreadsCatalog'],
 
@@ -49,6 +51,8 @@ return [
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore$#' => ['Thread', 'restore'],
+    '#^/scripts/threads/follow$#' => ['Thread', 'follow'],
+    '#^/scripts/threads/unfollow$#' => ['Thread', 'unfollow'],
     '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
 
     // Boards

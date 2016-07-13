@@ -8,12 +8,12 @@ abstract class UserSubModel extends Model
 {
     protected $userId;
 
-    public function __construct(Database $db, $userId, bool $skipLoad = false)
+    public function __construct(Database $db, $userId = null, bool $skipLoad = false)
     {
         parent::__construct($db);
         $this->userId = $userId;
 
-        if ($this->userId !== false && !$skipLoad) {
+        if ($this->userId !== null && !$skipLoad) {
             $this->load();
         }
     }

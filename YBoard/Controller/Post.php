@@ -9,6 +9,7 @@ use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Posts;
+use YBoard\Model\UserThreadFollow;
 use YBoard\Model\WordBlacklist;
 
 class Post extends ExtendedController
@@ -230,6 +231,10 @@ class Post extends ExtendedController
             // Update stats
             $this->user->statistics->increment('sentReplies');
             $posts->updateThreadStats($thread->id, 'replyCount');
+
+            // Increment followed threads unread count
+            $followed = new UserThreadFollow($this->db);
+            $followed->incrementUnreadCount($thread->id);
 
             // Enable flood limit
             Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);

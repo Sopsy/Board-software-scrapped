@@ -44,6 +44,20 @@ class CustomBoard extends ExtendedController
         $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum, true);
     }
 
+    public function followedThreads($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads($this->user->threadFollow->threads, $pageNum, 15, 3);
+        $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum);
+    }
+
+    public function followedThreadsCatalog($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads($this->user->threadFollow->threads, $pageNum, 100);
+        $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum, true);
+    }
+
     public function hiddenThreads($pageNum = 1)
     {
         $posts = new Posts($this->db);
@@ -99,7 +113,11 @@ class CustomBoard extends ExtendedController
                 break;
             case 'repliedthreads':
                 $board->name = _('Replied threads');
-                $board->description = _('Threads that may or may not have any interesting content');
+                $board->description = _('Threads that may even have some interesting content');
+                break;
+            case 'followedthreads':
+                $board->name = _('Followed threads');
+                $board->description = _('Threads you have bookmarked');
                 break;
             case 'hiddenthreads':
                 $board->name = _('Hidden threads');

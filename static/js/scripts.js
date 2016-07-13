@@ -122,7 +122,18 @@ function unfollowThread(id) {
 
 function toggleFollowButton(threadId) {
     var button = $t(threadId).find('.followbutton');
-    button.toggleClass('icon-bookmark-add').toggleClass('icon-bookmark-remove');
+
+    if (button.hasClass('icon-bookmark-add')) {
+        button
+            .removeClass('icon-bookmark-add')
+            .addClass('icon-bookmark-remove')
+            .attr('onclick', 'unfollowThread(' + threadId + ')');
+    } else {
+        button
+            .removeClass('icon-bookmark-remove')
+            .addClass('icon-bookmark-add')
+            .attr('onclick', 'followThread(' + threadId + ')');
+    }
 }
 
 // -------------------------------------------
@@ -375,7 +386,16 @@ function stopAutoUpdate() {
 // Functions related to post form
 // -------------------------------------------
 var postformLocation = $('#post-form').prev();
-function showPostForm() {
+function showPostForm(isReply) {
+    if (typeof isReply == 'undefined') {
+        isReply = false;
+    }
+
+    if (!isReply) {
+        // Reset if we click the "Create thread" -button
+        resetPostForm();
+    }
+
     var form = $('#post-form');
     form.addClass('visible');
     var textarea = $('#post-message');
@@ -409,7 +429,7 @@ function toggleBbColorBar() {
 function replyToThread(id) {
     var postForm = $('#post-form');
     postForm.appendTo('#thread-' + id + ' .thread-content');
-    showPostForm();
+    showPostForm(true);
 
     saveOriginalPostFormDestination();
     $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
@@ -426,7 +446,7 @@ function replyToPost(id, newline) {
 
     var postForm = $('#post-form');
     postForm.appendTo('#post-' + id);
-    showPostForm();
+    showPostForm(true);
 
     saveOriginalPostFormDestination();
     $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));

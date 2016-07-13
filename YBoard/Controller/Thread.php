@@ -80,6 +80,9 @@ class Thread extends ExtendedController
             $this->throwJsonError(400);
         }
 
+        $posts = new Posts($this->db);
+        $posts->updateThreadStats($_POST['thread_id'], 'hideCount');
+
         $this->user->threadHide->add($_POST['thread_id']);
     }
 
@@ -91,6 +94,37 @@ class Thread extends ExtendedController
             $this->throwJsonError(400);
         }
 
+        $posts = new Posts($this->db);
+        $posts->updateThreadStats($_POST['thread_id'], 'hideCount', -1);
+
         $this->user->threadHide->remove($_POST['thread_id']);
+    }
+
+    public function follow()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['thread_id'])) {
+            $this->throwJsonError(400);
+        }
+
+        $posts = new Posts($this->db);
+        $posts->updateThreadStats($_POST['thread_id'], 'followCount');
+
+        $this->user->threadFollow->add($_POST['thread_id']);
+    }
+
+    public function unfollow()
+    {
+        $this->validateAjaxCsrfToken();
+
+        if (empty($_POST['thread_id'])) {
+            $this->throwJsonError(400);
+        }
+
+        $posts = new Posts($this->db);
+        $posts->updateThreadStats($_POST['thread_id'], 'followCount', -1);
+
+        $this->user->threadFollow->remove($_POST['thread_id']);
     }
 }
