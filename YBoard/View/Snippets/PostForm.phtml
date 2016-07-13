@@ -5,7 +5,20 @@
     <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
 <?php else : ?>
     <h3><?= _('Create a thread') ?></h3>
+    <?php if ($board->id !== null) : ?>
     <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
+    <?php else : ?>
+    <input type="hidden" id="post-destination">
+    <label id="label-board">
+        <span><?= _('Board') ?></span>
+        <select name="board" required>
+            <option value="" selected disabled><?= _('Select') ?></option>
+            <?php foreach ($boardList as $singleBoard) : ?>
+            <option value="<?= $singleBoard->url ?>"><?= htmlspecialchars($singleBoard->name) ?></option>
+            <?php endforeach ?>
+        </select>
+    </label>
+    <?php endif ?>
     <label id="label-subject">
         <span><?= _('Subject') ?></span>
         <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $subjectMaxLength ?>">

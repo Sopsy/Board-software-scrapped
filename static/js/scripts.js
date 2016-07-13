@@ -358,6 +358,7 @@ function resetPostForm() {
     var postForm = $('#post-form');
     postForm[0].reset();
     postForm.insertAfter(postformLocation);
+
     resetOriginalPostFormDestination();
     hidePostForm();
 }
@@ -394,7 +395,6 @@ function replyToPost(id, newline) {
     showPostForm();
 
     saveOriginalPostFormDestination();
-
     $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
 
     var textarea = $('#post-message');
@@ -419,6 +419,12 @@ function replyToPost(id, newline) {
 function saveOriginalPostFormDestination() {
     var destElm = $('#post-destination');
 
+    // Hide board selector
+    if ($('#label-board').is('*')) {
+        $('#label-board').hide().find('select').removeAttr('required');
+        return true;
+    }
+
     if (typeof destElm.data('orig-name') != 'undefined') {
         return true;
     }
@@ -432,10 +438,17 @@ function saveOriginalPostFormDestination() {
 function resetOriginalPostFormDestination() {
     var destElm = $('#post-destination');
 
+    // Restore board selector
+    if ($('#label-board').is('*')) {
+        $('#label-board').show().find('select').attr('required', true);
+        destElm.removeAttr('name').removeAttr('value');
+    }
+
     if (typeof destElm.data('orig-name') == 'undefined') {
         return true;
     }
 
+    // In a thread or a board
     destElm.attr('name', destElm.data('orig-name'));
     destElm.val(destElm.data('orig-value'));
 
