@@ -34,7 +34,7 @@ jQuery.fn.extend({
 
                 this.focus();
             } else {
-                // Nothing selected, append
+                // Nothing selected/not supported, append
                 this.value += before + after;
                 this.focus();
             }
@@ -266,7 +266,7 @@ if ($('body').hasClass('thread-page')) {
             var windowBottom = $(window).height() + $(window).scrollTop();
             var repliesBottom = $('.replies').offset().top + $('.replies').height();
             if (windowBottom > repliesBottom) {
-                if (!updateRunning && !$('#message-input').find('textarea').is(':focus')) {
+                if (!updateRunning && !$('#post-message').is(':focus')) {
                     updateRunning = true;
                     startAutoUpdate();
                 }
@@ -285,7 +285,7 @@ if ($('body').hasClass('thread-page')) {
             }
         });
     var startTimeout;
-    $('#message-input').find('textarea')
+    $('#post-message')
         .on('focus', function () {
             clearTimeout(startTimeout);
             stopAutoUpdate();
@@ -344,7 +344,7 @@ var postformLocation = $('#post-form').prev();
 function showPostForm() {
     var form = $('#post-form');
     form.addClass('visible');
-    var textarea = form.find('textarea');
+    var textarea = $('#post-message');
     if (textarea.is(':visible')) {
         textarea.focus();
     }
@@ -363,12 +363,12 @@ function resetPostForm() {
 }
 
 function addBbCode(code) {
-    $('#post-form').find('textarea').insertAtCaret('[' + code + ']', '[/' + code + ']');
+    $('#post-message').insertAtCaret('[' + code + ']', '[/' + code + ']');
 }
 
 function toggleBbColorBar() {
     $('#color-buttons').toggle();
-    $('#post-form').find('textarea').focus();
+    $('#post-message').focus();
 }
 
 function replyToThread(id) {
@@ -379,7 +379,7 @@ function replyToThread(id) {
     saveOriginalPostFormDestination();
     $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
 
-    postForm.find('textarea').focus();
+    $('#post-message').focus();
 }
 
 function replyToPost(id, newline) {
@@ -397,7 +397,7 @@ function replyToPost(id, newline) {
 
     $('#post-destination').attr('name', 'thread').val(postForm.closest('.thread').data('id'));
 
-    var textarea = postForm.find('textarea');
+    var textarea = $('#post-message');
     textarea.focus();
 
     var append = '';
@@ -939,7 +939,7 @@ function oldBrowserWarning() {
 // Confirm page exit when there's text in the post form
 // -------------------------------------------
 function confirmUnload() {
-    var textarea = $('#post-form').find('textarea');
+    var textarea = $('#post-message');
     if (!submitInProgress && textarea.is(':visible') && textarea.val().length != 0) {
         return messages.confirmUnload;
     } else {
