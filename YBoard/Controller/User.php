@@ -42,7 +42,7 @@ class User extends ExtendedController
             $this->throwJsonError(400, _('This username is already taken, please choose another one'));
         }
 
-        if (!$this->user->validateLogin($this->user->username, $_POST['password'])) {
+        if (!$this->user->validatePassword($_POST['password'])) {
             $this->throwJsonError(401, _('Invalid password'));
         }
 
@@ -57,7 +57,7 @@ class User extends ExtendedController
             $this->throwJsonError(400);
         }
 
-        if (!$this->user->validateLogin($this->user->username, $_POST['password'])) {
+        if (!$this->user->validatePassword($_POST['password'])) {
             $this->throwJsonError(401, _('Invalid password'));
         }
 

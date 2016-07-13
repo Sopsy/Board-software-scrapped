@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'icomoon';
-    src: url('/fonts/icomoon.woff?5') format('woff');
+    src: url('/fonts/icomoon.woff?7') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -22,6 +22,10 @@
 
 [class^="icon-"], [class*=" icon-"] {
     @include icon-style();
+    &.spin {
+        animation: spin 1s infinite linear;
+        display: inline-block;
+    }
 }
 
 .icon-spoiler:before {
@@ -66,8 +70,8 @@
 .icon-exit:before {
     content: "\e6d3";
 }
-.icon-trophy2:before {
-    content: "\e6e3";
+.icon-medal-first:before {
+    content: "\e6de";
 }
 .icon-music-note3:before {
     content: "\e6e6";
@@ -93,6 +97,9 @@
 .icon-bubble-quote:before {
     content: "\e7e0";
 }
+.icon-tombstone:before {
+    content: "\e8a1";
+}
 .icon-alarm:before {
     content: "\e8aa";
 }
@@ -101,6 +108,9 @@
 }
 .icon-mute:before {
     content: "\e8b4";
+}
+.icon-loading:before {
+    content: "\e8d0";
 }
 .icon-sync:before {
     content: "\e8da";
@@ -189,3 +199,4 @@
 .icon-youtube:before {
     content: "\eefc";
 }
+

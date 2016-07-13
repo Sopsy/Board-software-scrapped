@@ -124,16 +124,31 @@ class User extends Model
 
         $user = $q->fetch();
 
-        if (empty($user->username)) {
-            return false;
-        }
-
         if (password_verify($password, $user->password)) {
             $newUser = new self($this->db);
             $newUser->id = $user->id;
             $newUser->class = $user->class;
 
             return $newUser;
+        }
+
+        return false;
+    }
+
+    public function validatePassword($password) : bool
+    {
+        $q = $this->db->prepare("SELECT id, username, password, class FROM users WHERE username = :username LIMIT 1");
+        $q->bindValue('username', $this->username);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        $user = $q->fetch();
+
+        if (password_verify($password, $user->password)) {
+            return true;
         }
 
         return false;

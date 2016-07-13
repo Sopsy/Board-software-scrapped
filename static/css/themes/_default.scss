@@ -3,15 +3,14 @@
 @import '../lib/toastr';
 @import '../lib/tooltipster';
 
-
 $sidebarBorderColor: darken($sidebarColor, 15%);
 @if (lightness($sidebarColor) < 50) {
     $sidebarBorderColor: lighten($sidebarColor, 15%);
 }
 
-$sidebarLinkColor: #eee;
+$sidebarLinkColor: #eeeeee;
 @if (lightness($sidebarColor) > 50) {
-    $sidebarLinkColor: #111;
+    $sidebarLinkColor: #111111;
 }
 
 @mixin columns($width, $gap) {
@@ -23,12 +22,25 @@ $sidebarLinkColor: #eee;
     -webkit-column-gap: $gap;
 }
 
-@mixin input-shadow($color: #ddd) {
+@mixin input-shadow($color: #dddddd) {
     box-shadow: 0 1px 4px $color inset;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
 }
 
 #mobile-menu {
     display: none;
+}
+span.loading {
+    font-size: 20px;
+    color: $highlightColor;
 }
 
 @import '../partials/scrollbar';

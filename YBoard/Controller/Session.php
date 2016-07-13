@@ -53,7 +53,7 @@ class Session extends ExtendedController
         HttpResponse::redirectExit('/');
     }
 
-    protected function signUp()
+    public function signUp()
     {
         $this->validatePostCsrfToken();
 

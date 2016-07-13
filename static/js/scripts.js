@@ -923,7 +923,7 @@ function loadingAnimation(classes) {
         classes += ' ';
     }
 
-    return '<img class="' + classes + 'loading" src="' + config.staticUrl + '/img/loading.gif" alt="">';
+    return '<span class="' + classes + 'loading icon-loading spin"></span>';
 }
 
 function getSelectionText() {
