@@ -1,0 +1,26 @@
+<div class="post-buttons">
+    <?php if (!$thread->locked || $user->isMod) : ?>
+        <button class="button square icon-bubbles" onclick="replyToPost(<?= $post->id ?>)" title="<?= _('Reply') ?>"></button>
+    <?php endif ?>
+    <!--
+    <a href="#"><?= _('Donate gold') ?></a>
+    -->
+    <?php if (!$post->threadId) : ?>
+        <?php if (!in_array($post->id, $user->threadHide->threads)) : ?>
+            <button class="button square icon-eye-crossed" onclick="hideThread(<?= $post->id ?>)" title="<?= _('Hide') ?>"></button>
+        <?php else : ?>
+            <button class="button square icon-eye" onclick="restoreThread(<?= $post->id ?>)" title="<?= _('Restore') ?>"></button>
+        <?php endif ?>
+        <?php if (!in_array($post->id, $user->threadFollow->threads)) : ?>
+            <button class="button square icon-bookmark-add followbutton" onclick="followThread(<?= $post->id ?>)" title="<?= _('Follow') ?>"></button>
+        <?php else : ?>
+            <button class="button square icon-bookmark-remove followbutton" onclick="unfollowThread(<?= $post->id ?>)" title="<?= _('Unfollow') ?>"></button>
+        <?php endif ?>
+    <?php endif ?>
+    <?php if ($post->userId != $user->id) : ?>
+        <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>
+    <?php endif ?>
+    <?php if ($post->userId == $user->id || $user->isMod) : ?>
+        <button class="button square icon-trash2" onclick="deletePost(<?= $post->id ?>)" title="<?= _('Delete') ?>"></button>
+    <?php endif ?>
+</div>

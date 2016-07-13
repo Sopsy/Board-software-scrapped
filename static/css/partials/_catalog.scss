@@ -7,7 +7,7 @@
     .thread-box {
         margin: 5px;
         background-color: $contentBgColor;
-        width: 160px;
+        width: 150px;
         height: 300px;
         overflow: hidden;
         display: inline-block;
@@ -16,13 +16,13 @@
 
         h3 {
             $height: 30px;
-            font-size: 1.1em;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             height: $height;
             line-height: $height;
             margin: 0;
+            font-size: 1.1em;
 
             $subjectBgColor: darken($contentBgColor, 5%);
             @if (lightness($contentBgColor) < 50) {
@@ -37,7 +37,9 @@
                 line-height: $height;
                 background-color: $contentBgColor;
                 color: $textColor;
+                font-size: 20px;
                 text-align: center;
+                vertical-align: top;
             }
 
             .subject {

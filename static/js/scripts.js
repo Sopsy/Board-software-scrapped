@@ -92,6 +92,40 @@ function deletePost(id) {
 }
 
 // -------------------------------------------
+// Thread following
+// -------------------------------------------
+function followThread(id) {
+    toggleFollowButton(id);
+    $.ajax({
+        url: '/scripts/threads/follow',
+        type: "POST",
+        data: {'thread_id': id}
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+        toggleFollowButton(id);
+    });
+}
+
+function unfollowThread(id) {
+    toggleFollowButton(id);
+    $.ajax({
+        url: '/scripts/threads/unfollow',
+        type: "POST",
+        data: {'thread_id': id}
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+        toggleFollowButton(id);
+    });
+}
+
+function toggleFollowButton(threadId) {
+    var button = $t(threadId).find('.followbutton');
+    button.toggleClass('icon-bookmark-add').toggleClass('icon-bookmark-remove');
+}
+
+// -------------------------------------------
 // Thread hiding
 // -------------------------------------------
 function hideThread(id) {
@@ -509,7 +543,13 @@ function submitPost(e) {
             return xhr;
         }
     }).done(function (data, textStatus, xhr) {
-        var thread = fd.get('thread');
+        var dest = $('#post-destination');
+        if (dest.attr('name') != 'thread') {
+            var thread = null;
+        } else {
+            var thread = dest.val();
+        }
+
         if (thread != null) {
             toastr.success(messages.postSent);
             getNewReplies(thread);
@@ -520,7 +560,7 @@ function submitPost(e) {
             if (typeof data.message == 'undefined') {
                 toastr.error(messages.errorOccurred);
             } else {
-                window.location = '/' + fd.get('board') + '/' + data.message;
+                window.location = '/' + dest.val() + '/' + data.message;
             }
         }
 

@@ -3,21 +3,21 @@
 <div class="content-box settings-profile">
     <h3><?= _('Trivia') ?></h3>
     <div class="columns">
-        <div><h5><?= _('Account created') ?></h5><span class="datetime"><?= $user->accountCreated ?></span></div>
-        <div><h5><?= _('User ID') ?></h5><span class="number"><?= $user->id ?></span></div>
-        <div><h5><?= _('Gold level') ?></h5><span class="number"><?= $user->goldLevel ?></span></div>
-        <div><h5><?= _('Page loads') ?></h5><span class="number"><?= $user->statistics->pageLoads ?></span></div>
-        <div><h5><?= _('Created threads') ?></h5><span class="number"><?= $user->statistics->createdThreads ?></span></div>
-        <div><h5><?= _('Sent replies') ?></h5><span class="number"><?= $user->statistics->sentReplies ?></span></div>
-        <div><h5><?= _('Total posts') ?></h5><span class="number"><?= $user->statistics->totalPosts ?></span></div>
-        <div><h5><?= _('Uploaded files') ?></h5><span class="number"><?= $user->statistics->uploadedFiles ?></span></div>
-        <div><h5><?= _('Total size of uploaded files') ?></h5><span><?= \YBoard\Library\Text::formatBytes($user->statistics->uploadedFilesTotalSize) ?></span></div>
-        <div><h5><?= _('Total characters in messages') ?></h5><span class="number"><?= $user->statistics->messageTotalCharacters ?></span></div>
-        <div><h5><?= _('Average message length') ?></h5><span class="number"><?= $user->statistics->messageAverageLength ?></span></div>
-        <div><h5><?= _('Epic threads') ?></h5><span class="number"><?= $user->statistics->epicThreads ?></span></div>
-        <div><h5><?= _('Gold accounts donated') ?></h5><span class="number"><?= $user->statistics->goldAccountsDonated ?></span></div>
-        <div><h5><?= _('Gold accounts received') ?></h5><span class="number"><?= $user->statistics->goldAccountsReceived ?></span></div>
-        <div><h5><?= _('Total purchases') ?></h5><span class="currency"><?= $user->statistics->purchasesTotalPrice ?></span></div>
+        <div><h5><?= _('Account created') ?></h5><span class="datetime"><?= $profile->accountCreated ?></span></div>
+        <div><h5><?= _('User ID') ?></h5><span class="number"><?= $profile->id ?></span></div>
+        <div><h5><?= _('Gold level') ?></h5><span class="number"><?= $profile->goldLevel ?></span></div>
+        <div><h5><?= _('Page loads') ?></h5><span class="number"><?= $profile->statistics->pageLoads ?></span></div>
+        <div><h5><?= _('Created threads') ?></h5><span class="number"><?= $profile->statistics->createdThreads ?></span></div>
+        <div><h5><?= _('Sent replies') ?></h5><span class="number"><?= $profile->statistics->sentReplies ?></span></div>
+        <div><h5><?= _('Total posts') ?></h5><span class="number"><?= $profile->statistics->totalPosts ?></span></div>
+        <div><h5><?= _('Uploaded files') ?></h5><span class="number"><?= $profile->statistics->uploadedFiles ?></span></div>
+        <div><h5><?= _('Total size of uploaded files') ?></h5><span><?= \YBoard\Library\Text::formatBytes($profile->statistics->uploadedFilesTotalSize) ?></span></div>
+        <div><h5><?= _('Total characters in messages') ?></h5><span class="number"><?= $profile->statistics->messageTotalCharacters ?></span></div>
+        <div><h5><?= _('Average message length') ?></h5><span class="number"><?= $profile->statistics->messageAverageLength ?></span></div>
+        <div><h5><?= _('Epic threads') ?></h5><span class="number"><?= $profile->statistics->epicThreads ?></span></div>
+        <div><h5><?= _('Gold accounts donated') ?></h5><span class="number"><?= $profile->statistics->goldAccountsDonated ?></span></div>
+        <div><h5><?= _('Gold accounts received') ?></h5><span class="number"><?= $profile->statistics->goldAccountsReceived ?></span></div>
+        <div><h5><?= _('Total purchases') ?></h5><span class="currency"><?= $profile->statistics->purchasesTotalPrice ?></span></div>
     </div>
 </div>
 
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<?php if ($user->loggedIn) : ?>
+<?php if ($profile->isRegistered && $user->id == $profile->id) : ?>
 <div class="content-box settings-profile">
     <h3><?= _('User account') ?></h3>
     <div class="flex">

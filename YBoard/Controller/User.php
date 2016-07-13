@@ -4,22 +4,53 @@ namespace YBoard\Controller;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\UserException;
 use YBoard\Library\HttpResponse;
-use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Posts;
 use YBoard\Model\UserSessions;
 
 class User extends ExtendedController
 {
-    public function profile()
+    public function profile($username = false)
     {
-        $view = $this->loadTemplateEngine();
-        $view->pageTitle = _('User account');
+        if (empty($username)) {
+            $user = $this->user;
+            $pageTitle = _('User account');
+        } else {
+            $user = new \YBoard\Model\User($this->db);
+            $user->loadByUsername($username);
+
+            if ($user->id === null) {
+                $this->notFound();
+            }
+
+            $pageTitle = sprintf(_('User: %s'), $user->username);
+        }
 
         $sessions = new UserSessions($this->db);
 
+        $view = $this->loadTemplateEngine();
+        $view->pageTitle = $pageTitle;
+        $view->profile = $user;
+
         $view->loginSessions = $sessions->getAllByUser($this->user->id);
         $view->display('Profile');
+    }
+
+    public function redirect($userId)
+    {
+        // Limit to admins
+        if (!$this->user->isAdmin) {
+            $this->notFound();
+        }
+
+        $user = new \YBoard\Model\User($this->db);
+        $user->loadById($userId);
+
+        if ($user->id === null) {
+            $this->notFound();
+        }
+
+        HttpResponse::redirectExit('/profile/' . $user->username);
     }
 
     public function changeName()

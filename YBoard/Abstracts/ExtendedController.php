@@ -74,7 +74,8 @@ abstract class ExtendedController extends YBoard\Controller
             }
 
             // Load user
-            $this->user = new Model\User($this->db, $session->userId);
+            $this->user = new Model\User($this->db);
+            $this->user->loadById($session->userId);
             if ($this->user->id === null) {
                 $this->deleteLoginCookie(true);
             }

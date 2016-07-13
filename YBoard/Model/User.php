@@ -15,60 +15,52 @@ class User extends Model
     public $username;
     public $class = 0;
     public $goldLevel = 0;
-    public $preferences;
-    public $statistics;
-    public $threadHide;
     public $lastActive;
     public $lastIp;
+    public $isRegistered = false;
     public $loggedIn = false;
     public $isMod = false;
     public $isAdmin = false;
     public $requireCaptcha = true;
 
-    public function __construct(Database $db, int $userId = null)
+    public $preferences;
+    public $statistics;
+    public $threadHide;
+    public $threadFollow;
+
+    public function __construct(Database $db)
     {
         parent::__construct($db);
-        $this->id = $userId;
-
-        $this->load();
     }
 
-    protected function load() : bool
+    public function loadById(int $userId) : bool
     {
-        if ($this->id === null) {
-            return true;
-        }
-
         $q = $this->db->prepare("SELECT id, username, class, gold_level, account_created, last_active, last_ip
             FROM users WHERE id = :user_id LIMIT 1");
-        $q->bindValue('user_id', $this->id);
+        $q->bindValue('user_id', $userId);
         $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
         }
 
-        $user = $q->fetch();
-        $this->id = $user->id;
-        $this->accountCreated = $user->account_created;
-        $this->username = $user->username;
-        $this->class = $user->class;
-        $this->goldLevel = $user->gold_level;
-        $this->lastActive = $user->last_active;
-        $this->lastIp = inet_ntop($user->last_ip);
-        $this->loggedIn = !empty($user->username);
+        $this->setVariables($q->fetch());
 
-        $this->loadSubclasses();
+        return true;
+    }
 
-        // TODO: Maybe change to sentPosts > n instead
-        $this->requireCaptcha = !$this->loggedIn;
+    public function loadByUsername($username)
+    {
+        $q = $this->db->prepare("SELECT id, username, class, gold_level, account_created, last_active, last_ip
+            FROM users WHERE username = :username LIMIT 1");
+        $q->bindValue('username', $username);
+        $q->execute();
 
-        if ($this->class == 1) {
-            $this->isMod = true;
-            $this->isAdmin = true;
-        } elseif ($this->class == 2) {
-            $this->isMod = true;
+        if ($q->rowCount() == 0) {
+            return false;
         }
+
+        $this->setVariables($q->fetch());
 
         return true;
     }
@@ -97,6 +89,7 @@ class User extends Model
         $this->preferences = new UserPreferences($this->db, $this->id, $skipDbLoad);
         $this->statistics = new UserStatistics($this->db, $this->id, $skipDbLoad);
         $this->threadHide = new UserThreadHide($this->db, $this->id, $skipDbLoad);
+        $this->threadFollow = new UserThreadFollow($this->db, $this->id, $skipDbLoad);
 
         return true;
     }
@@ -224,5 +217,29 @@ class User extends Model
         $q->execute();
 
         return true;
+    }
+
+    protected function setVariables($data)
+    {
+        $this->id = $data->id;
+        $this->accountCreated = $data->account_created;
+        $this->username = $data->username;
+        $this->class = $data->class;
+        $this->goldLevel = $data->gold_level;
+        $this->lastActive = $data->last_active;
+        $this->lastIp = inet_ntop($data->last_ip);
+        $this->isRegistered = $this->loggedIn = !empty($data->username); // Doubled just for clarity
+
+        $this->loadSubclasses();
+
+        // TODO: Maybe change to sentPosts > n instead
+        $this->requireCaptcha = !$this->isRegistered;
+
+        if ($this->class == 1) {
+            $this->isMod = true;
+            $this->isAdmin = true;
+        } elseif ($this->class == 2) {
+            $this->isMod = true;
+        }
     }
 }

@@ -6,29 +6,30 @@ return [
     '#^/$#' => ['Index', 'index'],
 
     // Gold account
-    '#^/gold#' => ['GoldAccount', 'index'],
+    '#^/gold$#' => ['GoldAccount', 'index'],
 
     // Info pages
-    '#^/faq#' => ['InfoPages', 'faq'],
-    '#^/rules#' => ['InfoPages', 'rules'],
-    '#^/about#' => ['InfoPages', 'about'],
-    '#^/advertising#' => ['InfoPages', 'advertising'],
-    '#^/search#' => ['Search', 'index'],
+    '#^/faq$#' => ['InfoPages', 'faq'],
+    '#^/rules$#' => ['InfoPages', 'rules'],
+    '#^/about$#' => ['InfoPages', 'about'],
+    '#^/advertising$#' => ['InfoPages', 'advertising'],
+    '#^/search$#' => ['Search', 'index'],
 
     // Preferences
-    '#^/preferences#' => ['Preferences', 'index'],
-    '#^/scripts/preferences/save#' => ['Preferences', 'save'],
-    '#^/scripts/preferences/toggledarktheme#' => ['Preferences', 'toggleDarkTheme'],
+    '#^/preferences$#' => ['Preferences', 'index'],
+    '#^/scripts/preferences/save$#' => ['Preferences', 'save'],
+    '#^/scripts/preferences/toggledarktheme$#' => ['Preferences', 'toggleDarkTheme'],
 
     // User account related
-    '#^/profile/([0-9]+)?#' => ['User', 'profile'],
-    '#^/scripts/user/destroysession#' => ['User', 'destroySession'],
-    '#^/scripts/user/changename#' => ['User', 'changeName'],
-    '#^/scripts/user/changepassword#' => ['User', 'changePassword'],
-    '#^/scripts/user/delete#' => ['User', 'delete'],
+    '#^/profile/(.+)?$#' => ['User', 'profile'],
+    '#^/scripts/user/redirect/([0-9]+)$#' => ['User', 'redirect'],
+    '#^/scripts/user/destroysession$#' => ['User', 'destroySession'],
+    '#^/scripts/user/changename$#' => ['User', 'changeName'],
+    '#^/scripts/user/changepassword$#' => ['User', 'changePassword'],
+    '#^/scripts/user/delete$#' => ['User', 'delete'],
 
     // Sign up, log in, log out
-    '#^/scripts/session/signup#' => ['Session', 'signUp'],
+    '#^/scripts/session/signup$#' => ['Session', 'signUp'],
     '#^/scripts/session/login$#' => ['Session', 'logIn'],
     '#^/scripts/session/logout$#' => ['Session', 'logOut'],
 
@@ -41,14 +42,14 @@ return [
     '#^/hiddenthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreadsCatalog'],
 
     // Post/thread scripts
-    '#^/scripts/posts/get#' => ['Post', 'get'],
-    '#^/scripts/posts/redirect/([0-9]+)#' => ['Post', 'redirect'],
+    '#^/scripts/posts/get$#' => ['Post', 'get'],
+    '#^/scripts/posts/redirect/([0-9]+)$#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
-    '#^/scripts/threads/getreplies#' => ['Thread', 'getReplies'],
-    '#^/scripts/threads/hide#' => ['Thread', 'hide'],
-    '#^/scripts/threads/restore#' => ['Thread', 'restore'],
-    '#^/scripts/files/getmediaplayer#' => ['File', 'getMediaPlayer'],
+    '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
+    '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
+    '#^/scripts/threads/restore$#' => ['Thread', 'restore'],
+    '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
 
     // Boards
     // Checked at the end so other rules override
