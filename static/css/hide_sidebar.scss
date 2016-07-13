@@ -1,0 +1,22 @@
+@import 'config/variables';
+
+body {
+    margin-top: $topMenuHeight;
+}
+
+#topbar {
+    display: block;
+}
+
+#sidebar {
+    top: $topMenuHeight;
+    z-index: 999;
+    display: none;
+    &.visible {
+        display: block
+    }
+}
+
+#content {
+    margin-left: 0;
+}

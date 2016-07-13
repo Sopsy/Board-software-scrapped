@@ -1,0 +1,54 @@
+#topbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: $topMenuHeight;
+    line-height: $topMenuHeight;
+    overflow: hidden;
+    z-index: 1000;
+    background-color: $sidebarColor;
+    box-shadow: 0 0 10px 0 darken($sidebarColor, 10%);
+
+    button, a {
+        cursor: pointer;
+        color: $sidebarLinkColor;
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        display: inline-block;
+        height: $topMenuHeight;
+        line-height: $topMenuHeight;
+    }
+
+    .sidebar-toggle {
+        float: left;
+        text-align: center;
+        color: $sidebarLinkColor;
+        padding-right: 10px;
+        span {
+            font-size: 20px;
+            width: $topMenuHeight;
+            line-height: $topMenuHeight;
+            display: inline-block;
+            vertical-align: top;
+        }
+        &:hover {
+            background-color: lighten($sidebarColor, 10%);
+        }
+    }
+
+    .buttons {
+        float: right;
+        font-size: 20px;
+        > * {
+            border-left: 1px solid lighten($sidebarColor, 10%);
+            text-align: center;
+            width: $topMenuHeight;
+            &:hover {
+                background-color: lighten($sidebarColor, 10%);
+            }
+        }
+    }
+}

@@ -18,7 +18,7 @@ return [
     // Preferences
     '#^/preferences$#' => ['Preferences', 'index'],
     '#^/scripts/preferences/save$#' => ['Preferences', 'save'],
-    '#^/scripts/preferences/toggledarktheme$#' => ['Preferences', 'toggleDarkTheme'],
+    '#^/scripts/preferences/setthemevariation#' => ['Preferences', 'setThemeVariation'],
 
     // User account related
     '#^/profile/(.+)?$#' => ['User', 'profile'],

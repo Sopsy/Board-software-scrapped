@@ -783,8 +783,32 @@ function changePassword(e) {
 // -------------------------------------------
 // Theme switcher
 // -------------------------------------------
-function toggleDarkTheme() {
-    $('<div id="css-loading">' + messages.loading + '</div>').appendTo('body')
+function switchThemeVariation() {
+    var css = $('.css:last');
+    var variations = css.data('alt');
+    var current = css.data('cur-alt').toString();
+    if (typeof variations == 'undefined') {
+        return false;
+    }
+
+    var keys = Object.keys(variations);
+    var next = keys[($.inArray(current, keys) + 1) % keys.length];
+    console.log(variations);
+    console.log(keys[next]);
+    if (typeof keys[next] == 'undefined') {
+        next = 0;
+    }
+    console.log(variations[current]);
+    console.log(variations[keys[next]]);
+
+    var oldHref = css.attr('href');
+    var newHref = oldHref.replace(variations[current], variations[keys[next]]);
+    if (newHref == oldHref) {
+        return true;
+    }
+
+    /*
+    $('<div class="css-loading">' + messages.loading + '</div>').appendTo('body')
         .css({
             'position': 'fixed',
             'top': 0,
@@ -795,28 +819,24 @@ function toggleDarkTheme() {
             'text-align': 'center',
             'padding-top': '20%',
         });
-
-    var css = $('#css');
-    var newHref = css.data('alt');
-    //css.data('alt', css.attr('href'));
+    */
 
     $('<link>').attr({
         'rel': 'stylesheet',
-        'id': 'css',
+        'class': 'css',
         'href': newHref,
-        'data-alt': css.attr('href'),
-    })
-        .on('load', function () {
-            $('#css').remove();
-            $('#css-loading').html('').fadeOut(200, function () {
-                this.remove();
-            });
-        })
-        .appendTo('head');
+        'data-alt': JSON.stringify(variations),
+        'data-cur-alt': next,
+    }).appendTo('head');
+
+    setTimeout(function(){
+        $('.css:first').remove();
+    }, 2000);
 
     $.ajax({
-        url: '/scripts/preferences/toggledarktheme',
+        url: '/scripts/preferences/setthemevariation',
         type: "POST",
+        data: {'id': next}
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
@@ -918,6 +938,10 @@ $('#sidebar').click(function (e) {
     if (e.offsetX > $('#sidebar').innerWidth()) {
         toggleSidebar();
     }
+});
+
+$('body >:not(#topbar):not(#sidebar)').on('click', function (e) {
+    $('#sidebar.visible').removeClass('visible');
 });
 
 // -------------------------------------------

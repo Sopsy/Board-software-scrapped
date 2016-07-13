@@ -1,0 +1,120 @@
+// Ylilauta 2016 dark style
+$bgColor: #ffe;
+$sidebarColor: #ffe;
+$contentBgColor: #fffff5;
+$textColor: #800;
+
+$highlightColor: #800;
+$red: #ba1f27;
+
+$linkColor: #00e;
+$linkHoverColor: #d00;
+
+// >quote and <quote
+$quoteColor: #789922;
+$blueQuoteColor: #226199;
+
+@import 'themes/default';
+
+#sidebar {
+    nav {
+        border-color: #ccc !important;
+        h3 {
+            color: $textColor;
+        }
+    }
+    a {
+        color: #550;
+        &:hover:not(#logo) {
+            background-color: #fec;
+        }
+    }
+}
+
+.board-navigation a:not(.cur),
+.thread h3 a,
+.post-meta a {
+    color: $textColor !important;
+    &:hover {
+        color: $linkHoverColor !important;
+    }
+}
+.board-navigation .pagination {
+    .cur {
+        background-color: $textColor;
+        color: #fff;
+    }
+}
+.thread {
+    border: 1px solid #ddc;
+
+    h3 {
+        background-color: #ffe4c9 !important;
+    }
+    .thread-content {
+        padding: 0;
+    }
+    .message,
+    .thread-meta,
+    .thread-buttons {
+        padding: 5px;
+    }
+    .post-buttons {
+        padding: 1px 3px;
+    }
+    .thread-meta {
+        color: #707070;
+    }
+
+    .op-post .post-meta {
+        padding: 5px;
+        background-color: #fff3e7;
+        border-bottom: 1px solid #ddc;
+        box-shadow: 0 5px 5px -5px #ddc;
+        min-height: 31px;
+        box-sizing: border-box;
+    }
+
+    .post-buttons button {
+        line-height: 16px;
+        font-size: 16px;
+        padding: 2px;
+        background-color: #133b5e;
+        border-radius: 3px;
+        color: #fff;
+        width: auto;
+        height: auto;
+    }
+    .post-replies {
+        border-color: #d9bfb7;
+        padding: 5px;
+        font-size: 0.8em;
+        font-weight: 700;
+        color: $textColor;
+    }
+    .replies {
+        background-color: transparent;
+    }
+    .reply {
+        background-color: #f3e6de;
+        border-bottom: 1px solid #d9bfb7;
+        border-right: 1px solid #d9bfb7;
+        border-top: 0 !important;
+        padding: 0 !important;
+        margin-bottom: 5px;
+        &.own-post {
+            background-color: #f2d9c9 !important;
+        }
+
+        .post-meta {
+            padding: 1px 5px;
+            background-color: #eee1d9;
+            border-bottom: 1px solid #f4e9e2;
+            min-height: 0;
+            color: $textColor;
+            .username {
+                color: #117743;
+            }
+        }
+    }
+}

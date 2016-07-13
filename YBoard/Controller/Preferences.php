@@ -9,6 +9,7 @@ class Preferences extends ExtendedController
     {
         $view = $this->loadTemplateEngine();
 
+        $view->pageTitle = _('Preferences');
         $view->display('Preferences');
     }
 
@@ -25,9 +26,16 @@ class Preferences extends ExtendedController
         }
     }
 
-    public function toggleDarkTheme()
+    public function setThemeVariation()
     {
         $this->validateAjaxCsrfToken();
-        $this->user->preferences->set('darkTheme', !$this->user->preferences->darkTheme);
+
+        $currentTheme = $this->user->preferences->theme;
+        if ((empty($_POST['id']) && $_POST['id'] === 0)
+            || !array_key_exists($_POST['id'], $this->config['view']['themes'][$currentTheme]['css'])) {
+            $this->throwJsonError(400);
+        }
+
+        $this->user->preferences->set('themeVariation', $_POST['id']);
     }
 }

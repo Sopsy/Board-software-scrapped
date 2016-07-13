@@ -1,3 +1,5 @@
+@import '../config/variables';
+
 @import '../lib/normalize';
 @import '../lib/icomoon';
 @import '../lib/toastr';
@@ -35,9 +37,6 @@ $sidebarLinkColor: #eeeeee;
     }
 }
 
-#mobile-menu {
-    display: none;
-}
 span.loading {
     font-size: 20px;
     color: $highlightColor;
@@ -45,9 +44,10 @@ span.loading {
 
 @import '../partials/scrollbar';
 @import '../partials/content';
-@import '../partials/header';
 @import '../partials/tags';
+@import '../partials/topbar';
 @import '../partials/sidebar';
+@import '../partials/header';
 @import '../partials/page-error';
 @import '../partials/page-front';
 @import '../partials/page-profile';

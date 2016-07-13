@@ -149,11 +149,13 @@
     }
 
     .post {
-        &.bgcolor,
-        &.own-post:not(.op-post) {
-            margin-left: -5px;
-            margin-right: -5px;
-            padding: 5px;
+        &:not(.op-post) {
+            &.highlighted,
+            &.own-post {
+                margin-left: -5px;
+                margin-right: -5px;
+                padding: 5px;
+            }
         }
         &.own-post:not(.op-post):not(.highlighted) {
             $bgColor: darken($contentBgColor, 7%);

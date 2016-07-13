@@ -200,14 +200,12 @@ abstract class ExtendedController extends YBoard\Controller
             $this->user->statistics->increment('pageLoads');
         }
 
-        $stylesheet = 'ylilauta';
-        $altStylesheet = 'ylilauta_dark';
-        if ($this->user->preferences->darkTheme) {
-            $stylesheet = 'ylilauta_dark';
-            $altStylesheet = 'ylilauta';
-        }
+        $stylesheet = $this->config['view']['themes'][$this->user->preferences->theme]['css'][$this->user->preferences->themeVariation];
+        $altStylesheets = json_encode($this->config['view']['themes'][$this->user->preferences->theme]['css']);
+
         $templateEngine->stylesheet = $stylesheet;
-        $templateEngine->altStylesheet = $altStylesheet;
+        $templateEngine->stylesheetVariation = $this->user->preferences->themeVariation;
+        $templateEngine->altStylesheets = $altStylesheets;
 
         $templateEngine->csrfToken = $this->user->session->csrfToken;
         $templateEngine->reCaptchaPublicKey = $this->config['reCaptcha']['publicKey'];

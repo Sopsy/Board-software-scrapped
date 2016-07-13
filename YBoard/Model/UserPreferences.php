@@ -5,7 +5,8 @@ use YBoard\Abstracts\UserSubModel;
 
 class UserPreferences extends UserSubModel
 {
-    public $darkTheme = false;
+    public $theme = 'default';
+    public $themeVariation = 0;
     public $locale = false;
 
     protected $preferences;
@@ -36,9 +37,15 @@ class UserPreferences extends UserSubModel
     public function set($keyName, $value) : bool
     {
         switch ($keyName) {
-            case 'darkTheme':
+            case 'theme':
                 $key = 1;
-                $value = $value ? 1 : 0;
+                break;
+            case 'themeVariation':
+                $key = 2;
+                $value = (int)$value;
+                break;
+            case 'locale':
+                $key = 3;
                 break;
             default:
                 return false;
@@ -59,9 +66,12 @@ class UserPreferences extends UserSubModel
         while ($row = $q->fetch()) {
             switch ($row->preferences_key) {
                 case 1:
-                    $this->darkTheme = (bool)$row->preferences_value;
+                    $this->theme = $row->preferences_value;
                     break;
                 case 2:
+                    $this->themeVariation = (int)$row->preferences_value;
+                    break;
+                case 3:
                     $this->locale = $row->preferences_value;
                     break;
                 default:
