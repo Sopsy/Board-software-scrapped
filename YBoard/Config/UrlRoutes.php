@@ -22,12 +22,15 @@ return [
 
     // User account related
     '#^/profile/([0-9]+)?#' => ['User', 'profile'],
-    '#^/scripts/user/login$#' => ['User', 'login'],
-    '#^/scripts/user/logout$#' => ['User', 'logout'],
-    '#^/scripts/user/delete#' => ['User', 'delete'],
     '#^/scripts/user/destroysession#' => ['User', 'destroySession'],
     '#^/scripts/user/changename#' => ['User', 'changeName'],
     '#^/scripts/user/changepassword#' => ['User', 'changePassword'],
+    '#^/scripts/user/delete#' => ['User', 'delete'],
+
+    // Sign up, log in, log out
+    '#^/scripts/session/signup#' => ['Session', 'signUp'],
+    '#^/scripts/session/login$#' => ['Session', 'logIn'],
+    '#^/scripts/session/logout$#' => ['Session', 'logOut'],
 
     // Custom boards
     '#^/repliedthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'repliedThreads'],

@@ -69,13 +69,13 @@ abstract class ExtendedController extends YBoard\Controller
         if ($cookie !== false) {
             // Load session
             $session = new Model\UserSessions($this->db, $cookie['userId'], $cookie['sessionId']);
-            if (!$session) {
+            if ($session->id === false) {
                 $this->deleteLoginCookie(true);
             }
 
             // Load user
             $this->user = new Model\User($this->db, $session->userId);
-            if (!$this->user) {
+            if ($this->user->id === false) {
                 $this->deleteLoginCookie(true);
             }
 

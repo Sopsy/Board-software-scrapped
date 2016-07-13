@@ -135,17 +135,24 @@ function signupForm(elm, e) {
         });
     }
 
+    var form = $('#login');
     var signupForm = $('#signup-form');
 
+    if (typeof form.data('login') == 'undefined') {
+        form.data('login', form.attr('action'));
+    }
+
     if (!elm.data('open')) {
+        form.attr('action', form.data('signup'));
         elm.html(messages.cancel);
-        $('#loginbutton').attr('name', 'signup').val(messages.signUp);
+        $('#loginbutton').val(messages.signUp);
         signupForm.slideDown();
         elm.data('open', true);
     } else {
+        form.attr('action', form.data('login'));
         elm.html(messages.signUp);
 
-        $('#loginbutton').attr('name', 'login').val(messages.logIn);
+        $('#loginbutton').val(messages.logIn);
         signupForm.slideUp();
         signupForm.find('input').val('');
         elm.data('open', false);

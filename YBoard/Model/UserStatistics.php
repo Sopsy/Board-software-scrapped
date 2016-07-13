@@ -5,7 +5,7 @@ use YBoard\Abstracts\UserSubModel;
 
 class UserStatistics extends UserSubModel
 {
-    public $pageLoads = 1;
+    public $pageLoads = 0;
     public $sentReplies = 0;
     public $createdThreads = 0;
     public $totalPosts = 0;

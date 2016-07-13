@@ -28,6 +28,7 @@
     </div>
 </div>
 
+<?php if ($user->loggedIn) : ?>
 <div class="content-box settings-profile">
     <h3><?= _('User account') ?></h3>
     <div class="flex">
@@ -53,7 +54,6 @@
     </div>
 </div>
 
-<?php if ($user->loggedIn) : ?>
 <div class="content-box settings-profile">
     <h3><?= _('Active logins') ?></h3>
     <div class="flex center">

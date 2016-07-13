@@ -94,7 +94,7 @@
     <nav id="user">
     <?php if (!$user->loggedIn) : ?>
         <h3><?= _('Log in') ?></h3>
-        <form id="login" action="/scripts/user/login" method="post">
+        <form id="login" action="/scripts/session/login" data-signup="/scripts/session/signup" method="post">
             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
             <input type="hidden" name="redirto" value="<?= htmlspecialchars(empty($redirTo)?$_SERVER['REQUEST_URI']:$redirTo) ?>">
             <input type="text" name="username" placeholder="<?= _('Username') ?>" maxlength="<?= $usernameMaxLength ?>" required>
@@ -114,7 +114,7 @@
             <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
             <button class="button square icon-lamp" onclick="toggleDarkTheme()" title="<?= _('Toggle dark theme') ?>"></button>
             <?php if ($user->loggedIn) : ?>
-                <form id="logout" action="/scripts/user/logout" method="post">
+                <form id="logout" action="/scripts/session/logout" method="post">
                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                     <button type="submit" class="button square icon-exit" title="<?= _('Log out') ?>"
                         onclick="if(!confirm(messages.logOutConfirm)){return false}"></button>

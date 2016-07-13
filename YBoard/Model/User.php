@@ -9,7 +9,7 @@ class User extends Model
     const PASSWORD_HASH_COST = 12;
     const PASSWORD_HASH_TYPE = PASSWORD_BCRYPT;
 
-    public $id;
+    public $id = false;
     public $session;
     public $accountCreated;
     public $username;
@@ -30,10 +30,8 @@ class User extends Model
         parent::__construct($db);
 
         if ($userId) {
-            return $this->load($userId);
+            $this->load($userId);
         }
-
-        return true;
     }
 
     protected function load(int $userId) : bool
@@ -74,6 +72,7 @@ class User extends Model
 
     public function createTemporary()
     {
+        $this->lastActive = $this->accountCreated = date('Y-m-d H:i:s');
         $this->loadSubclasses(true);
     }
 
@@ -84,6 +83,7 @@ class User extends Model
         $q->execute();
 
         $this->id = $this->db->lastInsertId();
+        $this->lastActive = $this->accountCreated = date('Y-m-d H:i:s');
         $this->loadSubclasses(true);
 
         return true;
@@ -129,7 +129,7 @@ class User extends Model
             $newUser = new self($this->db);
             $newUser->id = $user->id;
             $newUser->class = $user->class;
-            
+
             return $newUser;
         }
 

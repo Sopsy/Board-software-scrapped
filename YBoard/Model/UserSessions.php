@@ -6,7 +6,7 @@ use YBoard\Model;
 
 class UserSessions extends Model
 {
-    public $id;
+    public $id = false;
     public $userId;
     public $csrfToken;
     public $ip;
@@ -19,16 +19,16 @@ class UserSessions extends Model
 
         $this->userId = $userId;
         $this->id = $sessionId;
-        
-        return $this->load();
+
+        $this->load();
     }
-    
+
     protected function load() : bool
     {
-        if (!$this->id || !$this->userId) {
+        if ($this->id === null || $this->userId === null) {
             return true;
         }
-        
+
         $q = $this->db->prepare("SELECT session_id, user_id, csrf_token, ip, login_time, last_active
             FROM user_sessions WHERE session_id = :session_id AND user_id = :user_id LIMIT 1");
         $q->bindValue('session_id', $this->id);
@@ -88,8 +88,7 @@ class UserSessions extends Model
         $this->id = $sessionId;
         $this->csrfToken = bin2hex($csrfToken);
         $this->ip = $_SERVER['REMOTE_ADDR'];
-        $this->loginTime = date('Y-m-d H:i:s');
-        $this->lastActive = date('Y-m-d H:i:s');
+        $this->loginTime = $this->lastActive = date('Y-m-d H:i:s');
 
         return true;
     }
