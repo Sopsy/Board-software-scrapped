@@ -12,6 +12,7 @@ class UserPreferences extends UserSubModel
     public $threadsPerPage = 10;
     public $repliesPerThread = 3;
     public $threadsPerCatalogPage = 100;
+    public $hiddenNotificationTypes = [];
 
     protected $preferences;
     protected $toUpdate = [];
@@ -24,6 +25,7 @@ class UserPreferences extends UserSubModel
         5 => 'threadsPerPage',
         6 => 'repliesPerThread',
         7 => 'threadsPerCatalogPage',
+        8 => 'hiddenNotificationTypes',
     ];
 
     public function __destruct()
@@ -79,6 +81,12 @@ class UserPreferences extends UserSubModel
                     $value = 250;
                 }
                 break;
+            case 8:
+                foreach ($value as &$v) {
+                    $v = (int)$v;
+                }
+                $value = implode(',', $value);
+                break;
         }
 
         $this->toUpdate[$key] = $value;
@@ -128,6 +136,9 @@ class UserPreferences extends UserSubModel
                     break;
                 case 4:
                     $value = (bool)$value;
+                    break;
+                case 8:
+                    $value = explode(',', $value);
                     break;
             }
             $this->{$keyName} = $value;

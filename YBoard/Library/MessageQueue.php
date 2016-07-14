@@ -7,6 +7,7 @@ class MessageQueue
     const MSG_TYPE_DO_PNGCRUSH = 1;
     const MSG_TYPE_PROCESS_VIDEO = 2;
     const MSG_TYPE_PROCESS_AUDIO = 3;
+    const MSG_TYPE_ADD_POST_NOTIFICATION = 4;
 
     protected $queue;
     protected $queueId = 190675; // Just a random number

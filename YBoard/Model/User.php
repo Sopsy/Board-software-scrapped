@@ -27,6 +27,7 @@ class User extends Model
     public $statistics;
     public $threadHide;
     public $threadFollow;
+    public $notifications;
 
     public function __construct(Database $db)
     {
@@ -90,6 +91,7 @@ class User extends Model
         $this->statistics = new UserStatistics($this->db, $this->id, $skipDbLoad);
         $this->threadHide = new UserThreadHide($this->db, $this->id, $skipDbLoad);
         $this->threadFollow = new UserThreadFollow($this->db, $this->id, $skipDbLoad);
+        $this->notifications = new UserNotifications($this->db, $this->id, $this->preferences->hiddenNotificationTypes, $skipDbLoad);
 
         return true;
     }

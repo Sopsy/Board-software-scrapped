@@ -35,6 +35,15 @@ class UserThreadFollow extends UserSubModel
         return array_key_exists($threadId, $this->threads);
     }
 
+    public function getFollowers(int $threadId) : array
+    {
+        $q = $this->db->prepare("SELECT user_id FROM user_thread_follow WHERE thread_id = :thread_id");
+        $q->bindValue('thread_id', $threadId);
+        $q->execute();
+
+        return $q->fetchAll(Database::FETCH_COLUMN);
+    }
+
     public function setLastSeenReply(int $lastSeenId, int $threadId) : bool
     {
         $q = $this->db->prepare("UPDATE user_thread_follow SET last_seen_reply = :last_seen_id

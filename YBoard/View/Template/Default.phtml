@@ -120,8 +120,8 @@
     <?php endif ?>
         <div class="buttons">
             <a href="getNotifications()" class="button square icon-alarm" title="<?= _('Notifications') ?>"><?php
-                if($user->threadFollow->unreadCount != 0) :
-                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
+                if($user->notifications->unreadCount != 0) :
+                    ?><span class="unread-count red"><?= $user->notifications->unreadCount ?></span><?php
                 endif
             ?></a>
             <a href="/followedthreads/" class="button square icon-bookmark2" title="<?= _('Followed threads') ?>"><?php

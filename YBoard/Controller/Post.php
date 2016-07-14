@@ -2,15 +2,18 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
-use YBoard\Exceptions\FileUploadException;
+use YBoard\CliController\MessageListenerDaemon;
 use YBoard\Library\Cache;
 use YBoard\Library\GeoIP;
 use YBoard\Library\HttpResponse;
+use YBoard\Library\MessageQueue;
 use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Log;
 use YBoard\Model\Posts;
+use YBoard\Model\User;
+use YBoard\Model\UserNotifications;
 use YBoard\Model\UserThreadFollow;
 use YBoard\Model\WordBlacklist;
 
@@ -130,6 +133,11 @@ class Post extends ExtendedController
                 $this->throwJsonError(400, _('Please type a message'));
             }
 
+            // At least 20 characters
+            if (mb_strlen($message) < 20) {
+                $this->throwJsonError(400, _('Please type a longer message'));
+            }
+
             $board = $this->boards->getByUrl($_POST['board']);
         } else { // Replying to a thread
             $thread = $posts->getThreadMeta($_POST['thread']);
@@ -200,6 +208,8 @@ class Post extends ExtendedController
             $username = $this->user->username;
         }
 
+        $messageQueue = new MessageQueue();
+        $notificationsSkipUsers = [];
         if (!$isReply) {
             // Check flood limit
             if (Cache::exists('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'])) {
@@ -237,6 +247,29 @@ class Post extends ExtendedController
             if (!$sage) {
                 $posts->bumpThread($thread->id);
             }
+
+            if ($thread->userId != $this->user->id) {
+                // Notify OP
+                $messageQueue->send([
+                    UserNotifications::NOTIFICATION_TYPE_THREAD_REPLY,
+                    $thread->id,
+                    $notificationsSkipUsers
+                ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+                error_log(MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+                $notificationsSkipUsers[] = $thread->userId;
+
+                // Notify all following users
+                $followers = $this->user->threadFollow->getFollowers($thread->id);
+                foreach ($followers as $follower) {
+                    $messageQueue->send([
+                        UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY,
+                        $thread->id,
+                        $follower,
+                        $notificationsSkipUsers
+                    ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+                    $notificationsSkipUsers[] = $follower;
+                }
+            }
         }
 
         // Save file
@@ -253,7 +286,12 @@ class Post extends ExtendedController
         $posts->setPostReplies($postId, $postReplies);
 
         // TODO: Save tags
-        // TODO: Add notifications
+
+        // Notify all replied users
+        foreach ($postReplies as $reply) {
+            $messageQueue->send([UserNotifications::NOTIFICATION_TYPE_POST_REPLY, $reply, $notificationsSkipUsers],
+                MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+        }
 
         if (!$isReply) {
             $this->jsonMessage($postId);
