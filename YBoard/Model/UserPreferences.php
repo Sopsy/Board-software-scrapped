@@ -16,6 +16,16 @@ class UserPreferences extends UserSubModel
     protected $preferences;
     protected $toUpdate = [];
 
+    protected $keyToName = [
+        1 => 'theme',
+        2 => 'themeVariation',
+        3 => 'locale',
+        4 => 'hideSidebar',
+        5 => 'threadsPerPage',
+        6 => 'repliesPerThread',
+        7 => 'threadsPerCatalogPage',
+    ];
+
     public function __destruct()
     {
         // Delayed update to prevent unnecessary database queries
@@ -40,48 +50,57 @@ class UserPreferences extends UserSubModel
 
     public function set($keyName, $value) : bool
     {
-        switch ($keyName) {
-            case 'theme':
-                $key = 1;
-                break;
-            case 'themeVariation':
-                $key = 2;
+        if (!array_search($keyName, $this->keyToName)) {
+            return false;
+        }
+
+        $key = array_search($keyName, $this->keyToName);
+
+        // Verify and filter values if needed
+        switch ($key) {
+            case 4:
                 $value = (int)$value;
                 break;
-            case 'locale':
-                $key = 3;
-                break;
-            case 'hideSidebar':
-                $key = 4;
-                $value = (int)$value;
-                break;
-            case 'threadsPerPage':
-                $key = 5;
-                $value = (int)$value;
+            case 5:
                 if ($value > 50) {
                     $value = 50;
                 }
+                $value = (int)$value;
                 break;
-            case 'repliesPerThread':
-                $key = 6;
+            case 6:
                 $value = (int)$value;
                 if ($value > 10) {
                     $value = 10;
                 }
                 break;
-            case 'threadsPerCatalogPage':
-                $key = 7;
+            case 7:
                 $value = (int)$value;
                 if ($value > 250) {
                     $value = 250;
                 }
                 break;
-            default:
-                return false;
         }
 
         $this->toUpdate[$key] = $value;
         $this->{$keyName} = $value;
+
+        return true;
+    }
+
+    public function reset($keyName)
+    {
+        if (array_search($keyName, $this->keyToName)) {
+            $key = array_search($keyName, $this->keyToName);
+            $defaults = new self($this->db);
+            $this->{$keyName} = $defaults->{$keyName};
+        } else {
+            $key = (int)$keyName;
+        }
+
+        $q = $this->db->prepare("DELETE FROM user_preferences WHERE preferences_key = :preferences_key AND user_id = :user_id");
+        $q->bindValue('preferences_key', $key);
+        $q->bindValue('user_id', $this->userId);
+        $q->execute();
 
         return true;
     }
@@ -93,31 +112,25 @@ class UserPreferences extends UserSubModel
         $q->execute();
 
         while ($row = $q->fetch()) {
+            if (!array_key_exists($row->preferences_key, $this->keyToName)) {
+                $this->reset($row->preferences_key);
+                continue;
+            }
+            $keyName = $this->keyToName[$row->preferences_key];
+            $value = $row->preferences_value;
+
             switch ($row->preferences_key) {
-                case 1:
-                    $this->theme = $row->preferences_value;
-                    break;
                 case 2:
-                    $this->themeVariation = (int)$row->preferences_value;
-                    break;
-                case 3:
-                    $this->locale = $row->preferences_value;
+                case 5:
+                case 6:
+                case 7:
+                    $value = (int)$value;
                     break;
                 case 4:
-                    $this->hideSidebar = (bool)$row->preferences_value;
+                    $value = (bool)$value;
                     break;
-                case 5:
-                    $this->threadsPerPage = (int)$row->preferences_value;
-                    break;
-                case 6:
-                    $this->repliesPerThread = (int)$row->preferences_value;
-                    break;
-                case 7:
-                    $this->threadsPerCatalogPage = (int)$row->preferences_value;
-                    break;
-                default:
-                    continue;
             }
+            $this->{$keyName} = $value;
         }
 
         return true;

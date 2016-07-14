@@ -85,13 +85,13 @@ abstract class ExtendedController extends YBoard\Controller
             // Update last active timestamps
             $this->user->updateLastActive();
             $this->user->session->updateLastActive();
-        }
-        else {
+        } else {
             // Session does not exist
             $this->user = new Model\User($this->db);
             if ($this->userMaybeBot()) {
                 $this->user->createTemporary();
                 $this->user->session = new Model\UserSessions($this->db);
+
                 return false;
             }
 
@@ -181,7 +181,8 @@ abstract class ExtendedController extends YBoard\Controller
         }
     }
 
-    protected function limitPages($pageNum, $maxPages) {
+    protected function limitPages($pageNum, $maxPages)
+    {
         if ($pageNum > $maxPages) {
             $this->notFound(_('Not found'), sprintf(_('Please don\'t. %s pages is enough.'), $maxPages));
         }
@@ -198,6 +199,16 @@ abstract class ExtendedController extends YBoard\Controller
         // Increment user page loads only when using the "Default" -template
         if ($templateFile == 'Default') {
             $this->user->statistics->increment('pageLoads');
+        }
+
+        // Verify theme exists
+        if (!array_key_exists($this->user->preferences->theme, $this->config['view']['themes'])) {
+            $this->user->preferences->reset('theme');
+        }
+        if (!array_key_exists($this->user->preferences->themeVariation,
+            $this->config['view']['themes'][$this->user->preferences->theme]['css'])
+        ) {
+            $this->user->preferences->reset('themeVariation');
         }
 
         $stylesheet = $this->config['view']['themes'][$this->user->preferences->theme]['css'][$this->user->preferences->themeVariation];
