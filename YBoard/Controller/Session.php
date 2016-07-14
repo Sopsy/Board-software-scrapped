@@ -4,6 +4,7 @@ namespace YBoard\Controller;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
+use YBoard\Model\Log;
 use YBoard\Model\UserSessions;
 
 class Session extends ExtendedController
@@ -28,8 +29,10 @@ class Session extends ExtendedController
 
         $this->setLoginCookie($newUser->id, $newUser->session->id);
 
+        // Log mod logins
         if ($newUser->class != 0) {
-            // TODO: write mod login to log
+            $log = new Log($this->db);
+            $log->write(Log::ACTION_ID_MOD_LOGIN, $newUser->id);
         }
 
         // Redirect

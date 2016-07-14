@@ -132,7 +132,6 @@ class Files extends Model
                 break;
             case 'jpeg':
             case 'jpg':
-            //case 'svg': TODO: needs more work to check dimensions
                 $uploadedFile->destinationFormat = 'jpg';
                 break;
             case 'png':

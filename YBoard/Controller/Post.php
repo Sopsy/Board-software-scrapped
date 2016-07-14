@@ -4,10 +4,12 @@ namespace YBoard\Controller;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Exceptions\FileUploadException;
 use YBoard\Library\Cache;
+use YBoard\Library\GeoIP;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
+use YBoard\Model\Log;
 use YBoard\Model\Posts;
 use YBoard\Model\UserThreadFollow;
 use YBoard\Model\WordBlacklist;
@@ -159,11 +161,7 @@ class Post extends ExtendedController
             }
         }
 
-        // TODO: This could be done better...
-        // TODO: Add ipv6 support
-        require_once(__DIR__ . '/../Vendor/ip2location.php');
-        $ip2location = new \IP2Location\Database(__DIR__ . '/../Vendor/IP2LOCATION-LITE-DB1.BIN');
-        $countryCode = strtoupper($ip2location->lookup($_SERVER['REMOTE_ADDR'], \IP2Location\Database::COUNTRY)['countryCode']);
+        $countryCode = GeoIP::getCountryCode($_SERVER['REMOTE_ADDR']);
 
         // Message options
         $sage = empty($_POST['sage']) ? false : true;
@@ -278,6 +276,12 @@ class Post extends ExtendedController
 
         if ($post->userId != $this->user->id && !$this->user->isMod) {
             $this->throwJsonError(403, _('This isn\'t your post!'));
+        }
+
+        if ($post->userId != $this->user->id) {
+            // Log post deletions by mods
+            $log = new Log($this->db);
+            $log->write(Log::ACTION_ID_MOD_POST_DELETE, $this->user->id, $post->id);
         }
 
         if (!empty($post->threadId)) {

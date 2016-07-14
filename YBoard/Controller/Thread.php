@@ -24,7 +24,6 @@ class Thread extends ExtendedController
         if ($boardUrl != $board->url) {
             // Invalid board for current thread, redirect
             HttpResponse::redirectExit('/' . $board->url . '/' . $thread->id);
-            // TODO: Maybe change to 301
         }
 
         // Clear unread count and update last seen reply

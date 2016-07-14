@@ -236,8 +236,7 @@ class User extends Model
 
         $this->loadSubclasses();
 
-        // TODO: Maybe change to sentPosts > n instead
-        $this->requireCaptcha = !$this->isRegistered;
+        $this->requireCaptcha = $this->statistics->totalPosts < 1;
 
         if ($this->class == 1) {
             $this->isMod = true;
