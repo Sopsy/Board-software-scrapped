@@ -15,15 +15,19 @@ class Board extends ExtendedController
         $posts = new Posts($this->db);
         $posts->setHiddenThreads($this->user->threadHide->threads);
 
-        $view = $this->loadTemplateEngine();
         $board = $this->boards->getByUrl($boardUrl);
+        $threads = $posts->getBoardThreads($board->id, $pageNum, $this->user->preferences->threadsPerPage,
+            $this->user->preferences->repliesPerThread);
+
+        $isLastPage = count($threads) < $this->user->preferences->threadsPerPage;
+
+        $view = $this->loadTemplateEngine();
 
         $view->pageTitle = $board->name;
         $view->bodyClass = 'board-page';
+        $view->threads = $threads;
 
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxPages']);
-
-        $view->threads = $posts->getBoardThreads($board->id, $pageNum, 15, 3);
+        $this->initializePagination($view, $pageNum, $this->config['view']['maxPages'], $isLastPage);
 
         $view->board = $board;
         $view->pageNum = $pageNum;
@@ -38,17 +42,20 @@ class Board extends ExtendedController
         $posts = new Posts($this->db);
         $posts->setHiddenThreads($this->user->threadHide->threads);
 
-        $view = $this->loadTemplateEngine();
         $board = $this->boards->getByUrl($boardUrl);
+        $threads = $posts->getBoardThreads($board->id, $pageNum, $this->user->preferences->threadsPerCatalogPage);
+
+        $isLastPage = count($threads) < $this->user->preferences->threadsPerCatalogPage;
+
+        $view = $this->loadTemplateEngine();
 
         $view->pageTitle = $board->name;
         $view->bodyClass = 'board-catalog';
 
-        $this->initializePagination($view, $pageNum, $this->config['view']['maxCatalogPages'], '/catalog');
-
-        $view->threads = $posts->getBoardThreads($board->id, $pageNum, 100, 0);
+        $this->initializePagination($view, $pageNum, $this->config['view']['maxCatalogPages'], $isLastPage, '/catalog');
 
         $view->board = $board;
+        $view->threads = $threads;
         $view->pageNum = $pageNum;
         $view->display('BoardCatalog');
     }

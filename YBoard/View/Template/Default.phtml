@@ -119,6 +119,16 @@
         <h3><?= htmlspecialchars($user->username) ?></h3>
     <?php endif ?>
         <div class="buttons">
+            <a href="getNotifications()" class="button square icon-alarm" title="<?= _('Notifications') ?>"><?php
+                if($user->threadFollow->unreadCount != 0) :
+                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
+                endif
+            ?></a>
+            <a href="/followedthreads/" class="button square icon-bookmark2" title="<?= _('Followed threads') ?>"><?php
+                if($user->threadFollow->unreadCount != 0) :
+                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
+                endif
+            ?></a>
             <a class="button square icon-user" href="/profile/" title="<?= _('Profile') ?>"></a>
             <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
             <button class="button square icon-lamp" onclick="switchThemeVariation()" title="<?= _('Switch theme colors') ?>"></button>
@@ -129,13 +139,6 @@
                         onclick="if(!confirm(messages.logOutConfirm)){return false}"></button>
                 </form>
             <?php endif ?>
-        </div>
-        <div class="buttons">
-            <a href="/followedthreads/" title="<?= _('Followed threads') ?>"><?php
-                if($user->threadFollow->unreadCount != 0) :
-                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
-                endif
-            ?></a>
         </div>
         <div class="columns">
             <a href="/mythreads/"><?= _('My threads') ?></a>

@@ -152,7 +152,7 @@ class Posts extends Model
         return $threads;
     }
 
-    public function getBoardThreads(int $boardId, int $page, int $count, int $replyCount) : array
+    public function getBoardThreads(int $boardId, int $page, int $count, int $replyCount = 0) : array
     {
         $limitStart = ($page - 1) * $count;
 

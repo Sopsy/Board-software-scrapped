@@ -52,12 +52,7 @@
             overflow: hidden;
             margin-top: 10px;
             > * {
-                display: inline-block;
-                vertical-align: top;
-                float: left;
-                &:not(:first-child) {
-                    margin-left: 10px;
-                }
+                margin: 0 5px 5px 0;
             }
         }
     }

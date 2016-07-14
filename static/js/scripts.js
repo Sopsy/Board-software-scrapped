@@ -385,6 +385,7 @@ function stopAutoUpdate() {
 // -------------------------------------------
 // Functions related to post form
 // -------------------------------------------
+// FIXME: These functions might need reviewing
 var postformLocation = $('#post-form').prev();
 function showPostForm(isReply) {
     if (typeof isReply == 'undefined') {
@@ -914,7 +915,7 @@ function switchThemeVariation() {
         'data-cur-alt': next,
     }).insertAfter(css);
 
-    setTimeout(function(){
+    var timeout = setTimeout(function(){
         $('.css:first').remove();
     }, 2000);
 
@@ -925,6 +926,7 @@ function switchThemeVariation() {
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
+        clearTimeout(timeout);
     });
 }
 function toggleHideSidebar() {

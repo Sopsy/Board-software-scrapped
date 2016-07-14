@@ -12,63 +12,73 @@ class CustomBoard extends ExtendedController
     {
         $posts = new Posts($this->db);
         $posts->setHiddenThreads($this->user->threadHide->threads);
-        $threads = $posts->getThreadsByUser($this->user->id, 15*$this->config['view']['maxPages']);
-        $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
+        $threads = $posts->getThreadsByUser($this->user->id,
+            $this->user->preferences->threadsPerPage*$this->config['view']['maxPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, $this->user->preferences->threadsPerPage,
+            $this->user->preferences->repliesPerThread);
         $this->showCustomBoard($threads, 'mythreads', (int)$pageNum);
-    }
-
-    public function myThreadsCatalog($pageNum = 1)
-    {
-        $posts = new Posts($this->db);
-        $posts->setHiddenThreads($this->user->threadHide->threads);
-        $threads = $posts->getThreadsByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
-        $threads = $posts->getCustomThreads($threads, $pageNum, 100);
-        $this->showCustomBoard($threads, 'mythreads', (int)$pageNum, true);
     }
 
     public function repliedThreads($pageNum = 1)
     {
         $posts = new Posts($this->db);
         $posts->setHiddenThreads($this->user->threadHide->threads);
-        $threads = $posts->getThreadsRepliedByUser($this->user->id, 15*$this->config['view']['maxPages']);
-        $threads = $posts->getCustomThreads($threads, $pageNum, 15, 3);
+        $threads = $posts->getThreadsRepliedByUser($this->user->id,
+            $this->user->preferences->threadsPerPage*$this->config['view']['maxPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, $this->user->preferences->threadsPerPage,
+            $this->user->preferences->repliesPerThread);
         $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum);
+    }
+
+    public function followedThreads($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum,
+            $this->user->preferences->threadsPerPage, $this->user->preferences->repliesPerThread);
+        $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum);
+    }
+
+    public function hiddenThreads($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum,
+            $this->user->preferences->threadsPerPage, $this->user->preferences->repliesPerThread);
+        $this->showCustomBoard($threads, 'hiddenthreads', (int)$pageNum);
+    }
+
+    public function myThreadsCatalog($pageNum = 1)
+    {
+        $posts = new Posts($this->db);
+        $posts->setHiddenThreads($this->user->threadHide->threads);
+        $threads = $posts->getThreadsByUser($this->user->id,
+            $this->user->preferences->threadsPerCatalogPage*$this->config['view']['maxCatalogPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, $this->user->preferences->threadsPerCatalogPage);
+        $this->showCustomBoard($threads, 'mythreads', (int)$pageNum, true);
     }
 
     public function repliedThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
         $posts->setHiddenThreads($this->user->threadHide->threads);
-        $threads = $posts->getThreadsRepliedByUser($this->user->id, 100*$this->config['view']['maxCatalogPages']);
-        $threads = $posts->getCustomThreads($threads, $pageNum, 100);
+        $threads = $posts->getThreadsRepliedByUser($this->user->id,
+            $this->user->preferences->threadsPerCatalogPage*$this->config['view']['maxCatalogPages']);
+        $threads = $posts->getCustomThreads($threads, $pageNum, $this->user->preferences->threadsPerCatalogPage);
         $this->showCustomBoard($threads, 'repliedthreads', (int)$pageNum, true);
-    }
-
-    public function followedThreads($pageNum = 1)
-    {
-        $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum, 15, 3);
-        $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum);
     }
 
     public function followedThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum, 100);
+        $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum,
+            $this->user->preferences->threadsPerCatalogPage);
         $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum, true);
-    }
-
-    public function hiddenThreads($pageNum = 1)
-    {
-        $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum, 15, 3);
-        $this->showCustomBoard($threads, 'hiddenthreads', (int)$pageNum);
     }
 
     public function hiddenThreadsCatalog($pageNum = 1)
     {
         $posts = new Posts($this->db);
-        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum, 100);
+        $threads = $posts->getCustomThreads($this->user->threadHide->threads, $pageNum,
+            $this->user->preferences->threadsPerCatalogPage);
         $this->showCustomBoard($threads, 'hiddenthreads', (int)$pageNum, true);
     }
 
@@ -79,11 +89,13 @@ class CustomBoard extends ExtendedController
             $bodyClass = 'board-page';
             $viewFile = 'Board';
             $paginationBase = '';
+            $isLastPage = count($threads) < $this->user->preferences->threadsPerPage;
         } else {
             $maxPages = $this->config['view']['maxCatalogPages'];
             $bodyClass = 'board-catalog';
             $viewFile = 'BoardCatalog';
             $paginationBase = '/catalog';
+            $isLastPage = count($threads) < $this->user->preferences->threadsPerCatalogPage;
         }
 
         $this->limitPages($pageNum, $maxPages);
@@ -94,7 +106,7 @@ class CustomBoard extends ExtendedController
         $view->pageTitle = $board->name;
         $view->bodyClass = $bodyClass;
 
-        $this->initializePagination($view, $pageNum, $maxPages, $paginationBase);
+        $this->initializePagination($view, $pageNum, $maxPages, $isLastPage, $paginationBase);
 
         $view->board = $board;
         $view->threads = $threads;

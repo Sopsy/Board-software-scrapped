@@ -160,11 +160,14 @@ abstract class ExtendedController extends YBoard\Controller
         $this->stopExecution();
     }
 
-    protected function initializePagination($view, $pageNum, $maxPages, $base = '')
+    protected function initializePagination($view, $pageNum, $maxPages, $isLastPage, $base = '')
     {
+        if ($isLastPage) {
+            $maxPages = $pageNum;
+        }
+
         // Calculate the end and start pages of the pagination
         // We don't count the total number of pages to save some resources.
-        // TODO: if count of threads on current page is smaller than maxPages, set maxPages = curPage
         $view->paginationBase = $base;
         $view->maxPages = $maxPages;
         $view->paginationStartPage = $pageNum - 1;
@@ -175,9 +178,6 @@ abstract class ExtendedController extends YBoard\Controller
         $view->paginationEndPage = $pageNum + 2;
         if ($view->paginationEndPage > $maxPages) {
             $view->paginationEndPage = $maxPages;
-        }
-        if ($view->paginationEndPage < 5) {
-            $view->paginationEndPage = 5;
         }
     }
 

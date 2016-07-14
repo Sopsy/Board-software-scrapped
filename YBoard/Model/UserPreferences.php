@@ -9,6 +9,9 @@ class UserPreferences extends UserSubModel
     public $themeVariation = 0;
     public $locale = false;
     public $hideSidebar = false;
+    public $threadsPerPage = 10;
+    public $repliesPerThread = 3;
+    public $threadsPerCatalogPage = 100;
 
     protected $preferences;
     protected $toUpdate = [];
@@ -52,12 +55,33 @@ class UserPreferences extends UserSubModel
                 $key = 4;
                 $value = (int)$value;
                 break;
+            case 'threadsPerPage':
+                $key = 5;
+                $value = (int)$value;
+                if ($value > 50) {
+                    $value = 50;
+                }
+                break;
+            case 'repliesPerThread':
+                $key = 6;
+                $value = (int)$value;
+                if ($value > 10) {
+                    $value = 10;
+                }
+                break;
+            case 'threadsPerCatalogPage':
+                $key = 7;
+                $value = (int)$value;
+                if ($value > 250) {
+                    $value = 250;
+                }
+                break;
             default:
                 return false;
         }
 
         $this->toUpdate[$key] = $value;
-        $this->{$key} = $value;
+        $this->{$keyName} = $value;
 
         return true;
     }
@@ -81,6 +105,15 @@ class UserPreferences extends UserSubModel
                     break;
                 case 4:
                     $this->hideSidebar = (bool)$row->preferences_value;
+                    break;
+                case 5:
+                    $this->threadsPerPage = (int)$row->preferences_value;
+                    break;
+                case 6:
+                    $this->repliesPerThread = (int)$row->preferences_value;
+                    break;
+                case 7:
+                    $this->threadsPerCatalogPage = (int)$row->preferences_value;
                     break;
                 default:
                     continue;

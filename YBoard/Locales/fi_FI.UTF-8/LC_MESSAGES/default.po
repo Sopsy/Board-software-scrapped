@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-14 14:08+0300\n"
-"PO-Revision-Date: 2016-07-14 14:09+0300\n"
+"POT-Creation-Date: 2016-07-14 15:11+0300\n"
+"PO-Revision-Date: 2016-07-14 15:11+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -103,7 +103,7 @@ msgstr "Tietoa"
 msgid "Advertising"
 msgstr "Mainostaminen"
 
-#: Controller/Post.php:28 Controller/Post.php:52 Controller/Post.php:270
+#: Controller/Post.php:28 Controller/Post.php:52 Controller/Post.php:276
 msgid "Post does not exist"
 msgstr "Viestiä ei ole olemassa"
 
@@ -111,50 +111,54 @@ msgstr "Viestiä ei ole olemassa"
 msgid "You are banned!"
 msgstr "Olet bannattu!"
 
-#: Controller/Post.php:103
+#: Controller/Post.php:107
 #, php-format
 msgid ""
-"File \"%s\" was not found, please type a different name or upload a file"
-msgstr "Tiedostoa \"%s\" ei löytynyt, kirjoita toinen nimi tai lähetä tiedosto"
+"File \"%s\" was not found, please type a different name or choose a file"
+msgstr "Tiedoston \"%s\" ei todettiin, kirjoita eri nimi tai lähetä tiedosto"
 
-#: Controller/Post.php:117
+#: Controller/Post.php:113
+msgid "Please type a file name"
+msgstr ""
+
+#: Controller/Post.php:123
 msgid "Invalid board"
 msgstr "Virheellinen lauta"
 
-#: Controller/Post.php:122
+#: Controller/Post.php:128
 msgid "Please type a message"
 msgstr "Kirjoita viesti"
 
-#: Controller/Post.php:131
+#: Controller/Post.php:137
 msgid "Invalid thread"
 msgstr "Virheellinen lanka"
 
-#: Controller/Post.php:135
+#: Controller/Post.php:141
 msgid "This thread is locked"
 msgstr "Tämä lanka on lukittu"
 
-#: Controller/Post.php:141
+#: Controller/Post.php:147
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:147
+#: Controller/Post.php:153
 msgid "Please fill the CAPTCHA."
 msgstr "Täytä CAPTCHA."
 
-#: Controller/Post.php:152
+#: Controller/Post.php:158
 msgid "Invalid CAPTCHA response. Please try again."
 msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 
-#: Controller/Post.php:186
+#: Controller/Post.php:192
 #, php-format
 msgid "Your message contained a blacklisted word: %s"
 msgstr "Viestisi sisälsi mustalistatun sanan: %s"
 
-#: Controller/Post.php:202 Controller/Post.php:216
+#: Controller/Post.php:208 Controller/Post.php:222
 msgid "You are sending messages too fast. Please don't spam."
 msgstr "Lähetät viestejä liian nopeaa. Älä spämmää."
 
-#: Controller/Post.php:274
+#: Controller/Post.php:280
 msgid "This isn't your post!"
 msgstr "Tämä ei ole sinun viesti!"
 
@@ -933,6 +937,11 @@ msgstr "Profiili"
 #: View/Template/Default.phtml:124
 msgid "Switch theme colors"
 msgstr "Vaihda teeman värejä"
+
+#~ msgid ""
+#~ "File \"%s\" was not found, please type a different name or upload a file"
+#~ msgstr ""
+#~ "Tiedostoa \"%s\" ei löytynyt, kirjoita toinen nimi tai lähetä tiedosto"
 
 #~ msgid "Threads that may or may not have any interesting content"
 #~ msgstr "Langat, joissa joko on tai ei ole mitään kiinnostavaa sisältöä"

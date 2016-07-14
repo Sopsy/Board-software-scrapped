@@ -104,7 +104,7 @@ class Post extends ExtendedController
             $files = new Files($this->db);
             $file = $files->getByName($fileName);
             if (!$file) {
-                $this->throwJsonError(404, sprintf(_('File "%s" was not found, please type a different name or upload a file'),
+                $this->throwJsonError(404, sprintf(_('File "%s" was not found, please type a different name or choose a file'),
                     htmlspecialchars($fileName)));
             }
             $hasFile = true;
