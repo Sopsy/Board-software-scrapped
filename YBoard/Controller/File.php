@@ -1,30 +1,47 @@
 <?php
 namespace YBoard\Controller;
 
-use YBoard\Controller;
-use YBoard\Library\Database;
+use YBoard\Abstracts\ExtendedController;
+use YBoard\Exceptions\FileUploadException;
 use YBoard\Library\TemplateEngine;
 use YBoard\Model\Files;
-use YBoard\Traits\Ajax;
-use YBoard\Traits\PostChecks;
 
-class File Extends Controller
+class File Extends ExtendedController
 {
-    use PostChecks;
-    use Ajax;
-
-    protected $config;
-    protected $db;
-
-    public function __construct()
+    public function upload()
     {
-        $this->config = require(ROOT_PATH . '/YBoard/Config/YBoard.php');
-        $this->db = new Database(require(ROOT_PATH . '/YBoard/Config/Database.php'));
+        if (empty($_FILES['file'])) {
+            $this->throwJsonError(400, _('No file uploaded'));
+        }
+
+        // Check that we have enough free space for files
+        if (disk_free_space($this->config['files']['savePath']) <= $this->config['files']['diskMinFree']) {
+            $this->throwJsonError(403, _('File uploads are temporarily disabled'));
+        }
+
+        // Process file
+        $files = new Files($this->db);
+        $files->setConfig($this->config['files']);
+
+        if ($_FILES['file']['size'] >= $this->config['files']['maxSize']) {
+            $this->throwJsonError(400, _('Your files exceed the maximum upload size.'));
+        }
+
+        try {
+            $file = $files->processUpload($_FILES['file']);
+        } catch (FileUploadException $e) {
+            $this->throwJsonError(400, $e->getMessage());
+        }
+
+        $this->user->statistics->increment('uploadedFiles');
+        $this->user->statistics->increment('uploadedFilesTotalSize', $_FILES['file']['size']);
+
+        $this->jsonMessage($file->id);
     }
 
     public function getMediaPlayer()
     {
-        $this->disallowNonPost();
+        $this->validateAjaxCsrfToken();
 
         if (empty($_POST['file_id'])) {
             $this->invalidAjaxData();

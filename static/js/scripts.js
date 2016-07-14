@@ -411,7 +411,16 @@ function hidePostForm() {
 function resetPostForm() {
     var postForm = $('#post-form');
     postForm[0].reset();
+    $('#file-id').val('');
+    $('#file-name').val('');
     postForm.insertAfter(postformLocation);
+    postForm.find('.progressbar').each(function() {
+        updateProgressBar($(this), 0);
+    });
+
+    if (fileUploadXhr !== null) {
+        fileUploadXhr.abort();
+    }
 
     resetOriginalPostFormDestination();
     hidePostForm();
@@ -509,23 +518,27 @@ function resetOriginalPostFormDestination() {
     return true;
 }
 
-var submitInProgress;
-function submitPost(e) {
-    e.preventDefault();
-
+var fileUploadInProgress = false;
+var fileUploadXhr = null;
+$('#post-files').on('change', function(e) {
     if (!('FormData' in window)) {
         toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
         return false;
     }
 
-    // Prevent duplicate submissions by double clicking etc.
-    if (submitInProgress) {
-        return false;
-    }
-    submitInProgress = true;
-
     var form = $(e.target);
-    var fileInput = form.find('input:file');
+    var fileInput = $(this);
+    var progressBar = fileInput.parent('label').next('.file-progress');
+
+    $('#file-name').val('');
+    form.removeData('do-submit');
+
+    // Abort any ongoing uploads
+    if (fileUploadXhr !== null) {
+        fileUploadXhr.abort();
+    }
+
+    progressBar.find('div').css('width', '1%');
 
     // Calculate upload size and check it does not exceed the set maximum
     var maxSize = fileInput.data('maxsize');
@@ -537,14 +550,20 @@ function submitPost(e) {
 
     if (fileSizeSum > maxSize) {
         toastr.warning(messages.maxSizeExceeded);
-        submitInProgress = false;
         return false;
     }
 
-    var fd = new FormData(form[0]);
+    var fd = new FormData();
+    fd.append('file', this.files[0]);
 
-    $.ajax({
-        url: form.attr("action"),
+    fileUploadInProgress = true;
+
+    var fileName = $('#post-files').val().split('\\').pop().split('.');
+    fileName.pop();
+    $('#file-name').val(fileName.join('.'));
+
+    fileUploadXhr = $.ajax({
+        url: '/scripts/files/upload',
         type: "POST",
         processData: false,
         contentType: false,
@@ -557,11 +576,77 @@ function submitPost(e) {
             xhr.upload.addEventListener('progress', function (evt) {
                 if (evt.lengthComputable) {
                     var percent = Math.round((evt.loaded / evt.total) * 100);
-                    $('#post-progress').find('div').css('width', percent + '%');
+                    if (percent < 1) {
+                        percent = 1;
+                    } else if (percent > 95) {
+                        percent = 95;
+                    }
+                    updateProgressBar(progressBar, percent);
                 }
             }, false);
             return xhr;
         }
+    }).always(function () {
+        fileUploadInProgress = false;
+    }).done(function (data, textStatus, xhr) {
+        updateProgressBar(progressBar, 100);
+        data = JSON.parse(data);
+        if (data.message.length != 0) {
+            $('#file-id').val(data.message);
+
+            if (typeof $('#post-form').data('do-submit') != 'undefined') {
+                submitPost();
+            }
+        } else {
+            toastr.error(messages.errorOccurred);
+            updateProgressBar(progressBar, 0);
+        }
+    }).fail(function (xhr, textStatus, errorThrown) {
+        if (typeof xhr.responseText != 'undefined') {
+            var errorMessage = getErrorMessage(xhr, errorThrown);
+            toastr.error(errorMessage, messages.errorOccurred);
+        }
+        updateProgressBar(progressBar, 0);
+    });
+});
+
+var submitInProgress;
+function submitPost(e) {
+    if (typeof e != 'undefined') {
+        e.preventDefault();
+    }
+
+    if (!('FormData' in window)) {
+        toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
+        return false;
+    }
+
+    var form = $('#post-form');
+    var submitButton = form.find('input[type="submit"].button');
+
+    // File upload in progress -> wait until done
+    if (fileUploadInProgress) {
+        submitButton.attr('disabled', true);
+        form.data('do-submit', 'true');
+        return false;
+    }
+
+    // Prevent duplicate submissions by double clicking etc.
+    if (submitInProgress) {
+        return false;
+    }
+    submitInProgress = true;
+
+    form.find('#post-files').val('');
+
+    var fd = new FormData(form[0]);
+
+    $.ajax({
+        url: form.attr("action"),
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: fd
     }).done(function (data, textStatus, xhr) {
         var dest = $('#post-destination');
         if (dest.attr('name') != 'thread') {
@@ -590,7 +675,7 @@ function submitPost(e) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage, messages.errorOccurred);
     }).always(function () {
-        $('#post-progress').find('div').css('width', '');
+        submitButton.removeAttr('disabled');
         submitInProgress = false;
 
         // Reset captcha if present
@@ -598,6 +683,20 @@ function submitPost(e) {
             grecaptcha.reset();
         }
     });
+}
+
+function updateProgressBar(elm, progress) {
+    if (progress < 0) {
+        progress = 0;
+    } else if (progress > 100) {
+        progress = 100;
+    }
+
+    if (progress == 0) {
+        elm.find('div').css('width', 0).removeClass('in-progress');
+    } else {
+        elm.find('div').css('width', progress +'%').addClass('in-progress');
+    }
 }
 
 // -------------------------------------------

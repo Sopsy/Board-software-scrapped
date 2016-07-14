@@ -177,8 +177,8 @@
     }
 
     .unread-count {
-        color: red;
-        font-weight: bold;
+        display: inline-block;
+        vertical-align: bottom;
     }
 
     #sidebar-hide-button {
@@ -186,7 +186,7 @@
         cursor: pointer;
         background-color: transparent;
         border: 0;
-        color: $sidebarLinkColor;
+        color: darken($sidebarLinkColor, 20%);
         top: 50%;
         position: absolute;
         left: 0;

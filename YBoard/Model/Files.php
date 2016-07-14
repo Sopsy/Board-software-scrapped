@@ -49,20 +49,22 @@ class Files extends Model
         if ($q->rowCount() == 0) {
             return false;
         }
-        $row = $q->fetch();
+        $file = $this->createFileClass($q->fetch());
 
-        $file = new File();
-        $file->id = $row->id;
-        $file->folder = $row->folder;
-        $file->name = $row->name;
-        $file->extension = $row->extension;
-        $file->size = $row->size;
-        $file->width = $row->width;
-        $file->height = $row->height;
-        $file->duration = $row->duration;
-        $file->inProgress = $row->in_progress;
-        $file->hasSound = $row->has_sound;
-        $file->isGif = $row->is_gif;
+        return $file;
+    }
+
+    public function getByName(string $fileName)
+    {
+        $q = $this->db->prepare('SELECT id, folder, name, extension, size, width, height, duration, in_progress,
+            has_sound, is_gif FROM posts_files a LEFT JOIN files b ON a.file_id = b.id WHERE file_name = :file_name LIMIT 1');
+        $q->bindValue('file_name', $fileName);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+        $file = $this->createFileClass($q->fetch());
 
         return $file;
     }
@@ -359,5 +361,23 @@ class Files extends Model
         }
 
         return $sizes[0] * $sizes[1];
+    }
+
+    protected function createFileClass($data) : File
+    {
+        $file = new File();
+        $file->id = $data->id;
+        $file->folder = $data->folder;
+        $file->name = $data->name;
+        $file->extension = $data->extension;
+        $file->size = $data->size;
+        $file->width = $data->width;
+        $file->height = $data->height;
+        $file->duration = $data->duration;
+        $file->inProgress = $data->in_progress;
+        $file->hasSound = $data->has_sound;
+        $file->isGif = $data->is_gif;
+
+        return $file;
     }
 }

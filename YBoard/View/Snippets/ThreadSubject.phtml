@@ -13,7 +13,7 @@
     ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span>
 
     <?php if ($user->threadFollow->exists($thread->id) && $user->threadFollow->threads[$thread->id]->unreadCount != 0) : ?>
-        <span class="unread-count"><?= $user->threadFollow->threads[$thread->id]->unreadCount ?></span>
+        <span class="notification-count"><?= $user->threadFollow->threads[$thread->id]->unreadCount ?></span>
     <?php endif ?>
     </a>
 </h3>

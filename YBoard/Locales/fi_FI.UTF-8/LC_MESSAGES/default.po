@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: YBoard 0.1\n"
-"POT-Creation-Date: 2016-07-13 15:06+0300\n"
-"PO-Revision-Date: 2016-07-13 15:06+0300\n"
+"POT-Creation-Date: 2016-07-14 14:08+0300\n"
+"PO-Revision-Date: 2016-07-14 14:09+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fi_FI\n"
@@ -15,12 +15,12 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Abstracts/ExtendedController.php:184 Controller/Board.php:84
-#: Controller/Post.php:51 Controller/Thread.php:19
+#: Abstracts/ExtendedController.php:186 Controller/Board.php:84
+#: Controller/Post.php:52 Controller/Thread.php:19
 msgid "Not found"
 msgstr "Ei löydy"
 
-#: Abstracts/ExtendedController.php:184
+#: Abstracts/ExtendedController.php:186
 #, php-format
 msgid "Please don't. %s pages is enough."
 msgstr "Älähän nyt. %s sivua on tarpeeksi."
@@ -34,110 +34,133 @@ msgstr "Istuntosi on vanhentunut. Päivitä tämä sivu ja yritä uudelleen."
 msgid "There's no such thing as a board called \"%s\" here."
 msgstr "Täällä ei ole lautaa, jonka nimi olisi \"%s\"."
 
-#: Controller/CustomBoard.php:97 View/Template/Default.phtml:126
+#: Controller/CustomBoard.php:111 View/Template/Default.phtml:141
 msgid "My threads"
 msgstr "Omat langat"
 
-#: Controller/CustomBoard.php:98
+#: Controller/CustomBoard.php:112
 msgid "All the great threads you have created"
 msgstr "Kaikki ne mahtavat langat, jotka olet luonut"
 
-#: Controller/CustomBoard.php:101 View/Template/Default.phtml:127
+#: Controller/CustomBoard.php:115 View/Template/Default.phtml:142
 msgid "Replied threads"
 msgstr "Vastatut langat"
 
-#: Controller/CustomBoard.php:102
-msgid "Threads that may or may not have any interesting content"
-msgstr "Langat, joissa joko on tai ei ole mitään kiinnostavaa sisältöä"
+#: Controller/CustomBoard.php:116
+msgid "Threads that may even have some interesting content"
+msgstr "Langat, joissa saattaa olla jopa kiinnostavaa sisältöä"
 
-#: Controller/CustomBoard.php:105 View/Template/Default.phtml:128
+#: Controller/CustomBoard.php:119 View/Template/Default.phtml:71
+#: View/Template/Default.phtml:134
+msgid "Followed threads"
+msgstr "Seuratut langat"
+
+#: Controller/CustomBoard.php:120
+msgid "Threads you have marked as interesting"
+msgstr "Kiinnostavaksi merkitsemäsi langat"
+
+#: Controller/CustomBoard.php:123 View/Template/Default.phtml:143
 msgid "Hidden threads"
 msgstr "Piilotetut langat"
 
-#: Controller/CustomBoard.php:106
+#: Controller/CustomBoard.php:124
 msgid "Why are you even reading these?"
 msgstr "Miksi edes luet näitä?"
 
-#: Controller/File.php:40
+#: Controller/File.php:14
+msgid "No file uploaded"
+msgstr "Ei lähetettyä tiedostoa"
+
+#: Controller/File.php:19
+msgid "File uploads are temporarily disabled"
+msgstr "Tiedostojen lähettäminen on väliaikaisesti poissa käytöstä"
+
+#: Controller/File.php:27 View/Template/Default.phtml:42
+msgid "Your files exceed the maximum upload size."
+msgstr "Tiedostosi ylittää suurimman sallitun koon."
+
+#: Controller/File.php:57
 msgid "This file is being processed..."
 msgstr "Tätä tiedostoa käsitellään..."
 
-#: Controller/GoldAccount.php:11 View/Template/Default.phtml:81
+#: Controller/GoldAccount.php:11 View/Template/Default.phtml:89
 msgid "Gold account"
 msgstr "Kultatili"
 
-#: Controller/InfoPages.php:12 View/Template/Default.phtml:82
+#: Controller/InfoPages.php:12 View/Template/Default.phtml:90
 msgid "FAQ"
 msgstr "UKK"
 
-#: Controller/InfoPages.php:21 View/Template/Default.phtml:83
+#: Controller/InfoPages.php:21 View/Template/Default.phtml:91
 msgid "Rules"
 msgstr "Säännöt"
 
-#: Controller/InfoPages.php:30 View/Template/Default.phtml:84
+#: Controller/InfoPages.php:30 View/Template/Default.phtml:92
 msgid "About"
 msgstr "Tietoa"
 
-#: Controller/InfoPages.php:39 View/Template/Default.phtml:85
+#: Controller/InfoPages.php:39 View/Template/Default.phtml:93
 msgid "Advertising"
 msgstr "Mainostaminen"
 
-#: Controller/Post.php:27 Controller/Post.php:51 Controller/Post.php:275
+#: Controller/Post.php:28 Controller/Post.php:52 Controller/Post.php:270
 msgid "Post does not exist"
 msgstr "Viestiä ei ole olemassa"
 
-#: Controller/Post.php:88
+#: Controller/Post.php:89
 msgid "You are banned!"
 msgstr "Olet bannattu!"
 
-#: Controller/Post.php:104
+#: Controller/Post.php:103
+#, php-format
+msgid ""
+"File \"%s\" was not found, please type a different name or upload a file"
+msgstr "Tiedostoa \"%s\" ei löytynyt, kirjoita toinen nimi tai lähetä tiedosto"
+
+#: Controller/Post.php:117
 msgid "Invalid board"
 msgstr "Virheellinen lauta"
 
-#: Controller/Post.php:109
+#: Controller/Post.php:122
 msgid "Please type a message"
 msgstr "Kirjoita viesti"
 
-#: Controller/Post.php:118
+#: Controller/Post.php:131
 msgid "Invalid thread"
 msgstr "Virheellinen lanka"
 
-#: Controller/Post.php:122
+#: Controller/Post.php:135
 msgid "This thread is locked"
 msgstr "Tämä lanka on lukittu"
 
-#: Controller/Post.php:128
+#: Controller/Post.php:141
 msgid "Please type a message or choose a file"
 msgstr "Kirjoita viesti tai valitse tiedosto"
 
-#: Controller/Post.php:134
+#: Controller/Post.php:147
 msgid "Please fill the CAPTCHA."
 msgstr "Täytä CAPTCHA."
 
-#: Controller/Post.php:139
+#: Controller/Post.php:152
 msgid "Invalid CAPTCHA response. Please try again."
 msgstr "Virheellinen CAPTCHA. Yritä uudelleen."
 
-#: Controller/Post.php:173
+#: Controller/Post.php:186
 #, php-format
 msgid "Your message contained a blacklisted word: %s"
 msgstr "Viestisi sisälsi mustalistatun sanan: %s"
 
-#: Controller/Post.php:188
-msgid "File uploads are temporarily disabled"
-msgstr "Tiedostojen lähettäminen on väliaikaisesti poissa käytöstä"
-
-#: Controller/Post.php:197 View/Template/Default.phtml:38
-msgid "Your files exceed the maximum upload size."
-msgstr "Tiedostosi ylittää suurimman sallitun koon."
-
-#: Controller/Post.php:210 Controller/Post.php:224
+#: Controller/Post.php:202 Controller/Post.php:216
 msgid "You are sending messages too fast. Please don't spam."
 msgstr "Lähetät viestejä liian nopeaa. Älä spämmää."
 
-#: Controller/Post.php:279
+#: Controller/Post.php:274
 msgid "This isn't your post!"
 msgstr "Tämä ei ole sinun viesti!"
+
+#: Controller/Preferences.php:12 View/Template/Default.phtml:123
+msgid "Preferences"
+msgstr "Asetukset"
 
 #: Controller/Search.php:12
 msgid "Search"
@@ -170,7 +193,7 @@ msgstr "Olet jo kirjautuneena"
 msgid "Missing username or password"
 msgstr "Käyttäjätunnus tai salasana puuttuu"
 
-#: Controller/Session.php:69 View/Template/Default.phtml:45
+#: Controller/Session.php:69 View/Template/Default.phtml:49
 msgid "The two passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
@@ -182,11 +205,11 @@ msgstr "Täytä CAPTCHA"
 msgid "Invalid CAPTCHA response, please try again"
 msgstr "Virheellinen CAPTCHA, yritä uudelleen"
 
-#: Controller/Session.php:82 Controller/User.php:34
+#: Controller/Session.php:82 Controller/User.php:65
 msgid "Username is too long"
 msgstr "Käyttäjänimi on liian pitkä"
 
-#: Controller/Session.php:86 Controller/User.php:42
+#: Controller/Session.php:86 Controller/User.php:73
 msgid "This username is already taken, please choose another one"
 msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
 
@@ -194,7 +217,7 @@ msgstr "Tämä käyttäjänimi on jo käytössä, valitse toinen"
 msgid "The thread you are looking for does not exist."
 msgstr "Etsimääsi lankaa ei ole olemassa."
 
-#: Controller/Thread.php:58
+#: Controller/Thread.php:69
 msgid "Thread does not exist"
 msgstr "Lankaa ei ole olemassa"
 
@@ -202,15 +225,20 @@ msgstr "Lankaa ei ole olemassa"
 msgid "User account"
 msgstr "Käyttäjätunnus"
 
-#: Controller/User.php:38
+#: Controller/User.php:26
+#, php-format
+msgid "User: %s"
+msgstr "Käyttäjä: %s"
+
+#: Controller/User.php:69
 msgid "This is your current username"
 msgstr "Tämä on nykyinen käyttäjänimesi"
 
-#: Controller/User.php:46 Controller/User.php:61
+#: Controller/User.php:77 Controller/User.php:92
 msgid "Invalid password"
 msgstr "Virheellinen salasana"
 
-#: Controller/User.php:99
+#: Controller/User.php:130
 msgid "User account not deleted"
 msgstr "Käyttäjätunnusta ei poistettu"
 
@@ -230,53 +258,53 @@ msgstr "Mt"
 msgid "Anonymous"
 msgstr "Anonyymi"
 
-#: Model/Files.php:74
+#: Model/Files.php:76
 msgid "File save path not set"
 msgstr "Tiedostojen tallennuspolkua ei ole asetettu"
 
-#: Model/Files.php:82
+#: Model/Files.php:84
 msgid "Cannot move uploaded file"
 msgstr "Lähetetyn tiedoston siirtäminen epäonnistui"
 
-#: Model/Files.php:90
+#: Model/Files.php:92
 msgid "The file you uploaded is missing a file extension (e.g. \".jpg\")"
 msgstr "Lähettämästäsi tiedostosta puuttuu tiedostopääte (esim. \".jpg\")"
 
-#: Model/Files.php:114
+#: Model/Files.php:116
 msgid "Cannot get the number of GIF frames"
 msgstr "GIF-ruutujen määrän hakeminen epäonnistui"
 
-#: Model/Files.php:116
+#: Model/Files.php:118
 msgid "The GIF you uploaded is too long, please upload a video file instead"
 msgstr "Lähettämäsi GIF on liian pitkä, lähetä videotiedosto sen sijasta"
 
-#: Model/Files.php:124 Model/Files.php:146
+#: Model/Files.php:126 Model/Files.php:148
 msgid "Invalid or corrupted media"
 msgstr "Virheellinen tai vioittunut media"
 
-#: Model/Files.php:150
+#: Model/Files.php:152
 msgid "The media you uploaded is too long"
 msgstr "Lähettämäsi media on liian pitkä"
 
-#: Model/Files.php:176 Model/Files.php:181
+#: Model/Files.php:178 Model/Files.php:183
 msgid "Creating a file directory failed"
 msgstr "Tiedostohakemiston luominen epäonnistui"
 
-#: Model/Files.php:206
+#: Model/Files.php:208
 msgid "Saving the uploaded file failed"
 msgstr "Lähetetyn tiedoston tallentaminen epäonnistui"
 
-#: Model/Files.php:243
+#: Model/Files.php:245
 #, php-format
 msgid "Unsupported file type: %s"
 msgstr "Tiedostotyyppi ei ole tuettu: %s"
 
-#: Model/Files.php:348
+#: Model/Files.php:350
 #, php-format
 msgid "Uploaded file exceeds the max pixel count of %s MP"
 msgstr "Lähetetty tiedosto ylittää suurimman sallitun pikselimäärän (%s MP)"
 
-#: Model/Files.php:358
+#: Model/Files.php:360
 msgid "The file is not a valid image"
 msgstr "Tiedosto ei ole validi kuva"
 
@@ -352,38 +380,30 @@ msgstr "vastaa"
 msgid "update"
 msgstr "päivitä"
 
-#: View/Page/Board.phtml:44 View/Page/BoardCatalog.phtml:51
+#: View/Page/Board.phtml:44 View/Page/BoardCatalog.phtml:37
 msgid "There are no threads here..."
 msgstr "Täällä ei ole lankoja..."
-
-#: View/Page/BoardCatalog.phtml:17 View/Snippets/Post.phtml:10
-msgid "Restore"
-msgstr "Palauta"
-
-#: View/Page/BoardCatalog.phtml:19 View/Snippets/Post.phtml:12
-msgid "Hide"
-msgstr "Piilota"
-
-#: View/Page/BoardCatalog.phtml:23 View/Snippets/Post.phtml:16
-msgid "Report"
-msgstr "Ilmianna"
-
-#: View/Page/BoardCatalog.phtml:26 View/Snippets/Post.phtml:19
-msgid "Delete"
-msgstr "Poista"
 
 #: View/Page/Index.phtml:4
 msgid "Welcome to Ylilauta, the biggest discussion board in Finland!"
 msgstr "Tervetuloa Ylilaudalle, Suomen suurimmalle keskustelufoorumille!"
 
-#: View/Page/Index.phtml:19 View/Template/Default.phtml:132
+#: View/Page/Index.phtml:19 View/Template/Default.phtml:147
 msgid "Discussion boards"
 msgstr "Keskustelulaudat"
 
 #: View/Page/Index.phtml:24 View/Snippets/BoardHeader.phtml:3
-#: View/Template/Default.phtml:137
+#: View/Template/Default.phtml:152
 msgid "NSFW"
 msgstr "NSFW"
+
+#: View/Page/Preferences.phtml:4
+msgid "Appearance"
+msgstr "Ulkonäkö"
+
+#: View/Page/Preferences.phtml:5
+msgid "Theme"
+msgstr "Teema"
 
 #: View/Page/Profile.phtml:4
 msgid "Trivia"
@@ -501,7 +521,7 @@ msgstr "Viimeksi aktiivisena"
 msgid "Current session"
 msgstr "Nykyinen istunto"
 
-#: View/Page/Profile.phtml:69 View/Template/Default.phtml:120
+#: View/Page/Profile.phtml:69 View/Template/Default.phtml:128
 msgid "Log out"
 msgstr "Kirjaudu ulos"
 
@@ -568,7 +588,7 @@ msgstr ""
 msgid "Also delete all posts I have sent."
 msgstr "Poista myös kaikki lähettämäni viestit."
 
-#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:7
+#: View/Snippets/BoardHeader.phtml:8 View/Snippets/PostForm.phtml:8
 msgid "Create a thread"
 msgstr "Luo lanka"
 
@@ -576,179 +596,211 @@ msgstr "Luo lanka"
 msgid "Reply to thread"
 msgstr "Vastaa lankaan"
 
-#: View/Snippets/Post.phtml:3
-msgid "Reply"
-msgstr "Vastaa"
-
-#: View/Snippets/Post.phtml:6
-msgid "Donate gold"
-msgstr "Lahjoita kultatili"
-
-#: View/Snippets/Post.phtml:27
+#: View/Snippets/Post.phtml:7
 msgid "OP"
 msgstr "AP"
 
-#: View/Snippets/Post.phtml:34
+#: View/Snippets/Post.phtml:14
 msgid "No."
 msgstr "Nro."
 
-#: View/Snippets/Post.phtml:60
+#: View/Snippets/Post.phtml:40
 msgid "Hide media"
 msgstr "Piilota media"
 
-#: View/Snippets/Post.phtml:86
+#: View/Snippets/Post.phtml:66
 msgid "Replies"
 msgstr "Vastaukset"
 
-#: View/Snippets/PostForm.phtml:4
+#: View/Snippets/PostButtons.phtml:3
+msgid "Reply"
+msgstr "Vastaa"
+
+#: View/Snippets/PostButtons.phtml:6
+msgid "Donate gold"
+msgstr "Lahjoita kultatili"
+
+#: View/Snippets/PostButtons.phtml:10
+msgid "Hide"
+msgstr "Piilota"
+
+#: View/Snippets/PostButtons.phtml:12
+msgid "Restore"
+msgstr "Palauta"
+
+#: View/Snippets/PostButtons.phtml:15
+msgid "Follow"
+msgstr "Seuraa"
+
+#: View/Snippets/PostButtons.phtml:17
+msgid "Unfollow"
+msgstr "Lopeta seuraaminen"
+
+#: View/Snippets/PostButtons.phtml:21
+msgid "Report"
+msgstr "Ilmianna"
+
+#: View/Snippets/PostButtons.phtml:24
+msgid "Delete"
+msgstr "Poista"
+
+#: View/Snippets/PostForm.phtml:5
 msgid "Submit a reply"
 msgstr "Lähetä vastaus"
 
-#: View/Snippets/PostForm.phtml:13
+#: View/Snippets/PostForm.phtml:14
 msgid "Board"
 msgstr "Lauta"
 
-#: View/Snippets/PostForm.phtml:15
+#: View/Snippets/PostForm.phtml:16
 msgid "Select"
 msgstr "Valitse"
 
-#: View/Snippets/PostForm.phtml:23 View/Snippets/PostForm.phtml:24
+#: View/Snippets/PostForm.phtml:24 View/Snippets/PostForm.phtml:25
 msgid "Subject"
 msgstr "Aihe"
 
-#: View/Snippets/PostForm.phtml:28
+#: View/Snippets/PostForm.phtml:29
 msgid "File"
 msgstr "Tiedosto"
 
-#: View/Snippets/PostForm.phtml:35
+#: View/Snippets/PostForm.phtml:31
+msgid "Choose file"
+msgstr "Valitse tiedosto"
+
+#: View/Snippets/PostForm.phtml:32
+msgid "No file selected"
+msgstr "Ei valittua tiedostoa"
+
+#: View/Snippets/PostForm.phtml:38
 msgid "Bold"
 msgstr "Lihavointi"
 
-#: View/Snippets/PostForm.phtml:36
+#: View/Snippets/PostForm.phtml:39
 msgid "Italic"
 msgstr "Kursivointi"
 
-#: View/Snippets/PostForm.phtml:37
+#: View/Snippets/PostForm.phtml:40
 msgid "Strikethrough"
 msgstr "Yliviivaus"
 
-#: View/Snippets/PostForm.phtml:38
+#: View/Snippets/PostForm.phtml:41
 msgid "Underline"
 msgstr "Alleviivaus"
 
-#: View/Snippets/PostForm.phtml:39
+#: View/Snippets/PostForm.phtml:42
 msgid "Spoiler"
 msgstr "Juonipaljastus"
 
-#: View/Snippets/PostForm.phtml:40
+#: View/Snippets/PostForm.phtml:43
 msgid "Small text"
 msgstr "Pieni teksti"
 
-#: View/Snippets/PostForm.phtml:41
+#: View/Snippets/PostForm.phtml:44
 msgid "Big text"
 msgstr "Suuri teksti"
 
-#: View/Snippets/PostForm.phtml:42
+#: View/Snippets/PostForm.phtml:45
 msgid "Quote"
 msgstr "Lainaus"
 
-#: View/Snippets/PostForm.phtml:43
+#: View/Snippets/PostForm.phtml:46
 msgid "Code"
 msgstr "Koodi"
 
-#: View/Snippets/PostForm.phtml:44
+#: View/Snippets/PostForm.phtml:47
 msgid "Superscript"
 msgstr "Ylätunniste"
 
-#: View/Snippets/PostForm.phtml:45
+#: View/Snippets/PostForm.phtml:48
 msgid "Subscript"
 msgstr "Alatunniste"
 
-#: View/Snippets/PostForm.phtml:46
+#: View/Snippets/PostForm.phtml:49
 msgid "Colors"
 msgstr "Värit"
 
-#: View/Snippets/PostForm.phtml:48
+#: View/Snippets/PostForm.phtml:51
 msgid "Black"
 msgstr "Musta"
 
-#: View/Snippets/PostForm.phtml:49
+#: View/Snippets/PostForm.phtml:52
 msgid "Gray"
 msgstr "Harmaa"
 
-#: View/Snippets/PostForm.phtml:50
+#: View/Snippets/PostForm.phtml:53
 msgid "White"
 msgstr "Valkoinen"
 
-#: View/Snippets/PostForm.phtml:51
+#: View/Snippets/PostForm.phtml:54
 msgid "Brown"
 msgstr "Ruskea"
 
-#: View/Snippets/PostForm.phtml:52
+#: View/Snippets/PostForm.phtml:55
 msgid "Red"
 msgstr "Punainen"
 
-#: View/Snippets/PostForm.phtml:53
+#: View/Snippets/PostForm.phtml:56
 msgid "Orange"
 msgstr "Oranssi"
 
-#: View/Snippets/PostForm.phtml:54
+#: View/Snippets/PostForm.phtml:57
 msgid "Yellow"
 msgstr "Keltainen"
 
-#: View/Snippets/PostForm.phtml:55
+#: View/Snippets/PostForm.phtml:58
 msgid "Green"
 msgstr "Vihreä"
 
-#: View/Snippets/PostForm.phtml:56
+#: View/Snippets/PostForm.phtml:59
 msgid "Blue"
 msgstr "Sininen"
 
-#: View/Snippets/PostForm.phtml:57
+#: View/Snippets/PostForm.phtml:60
 msgid "Purple"
 msgstr "Violetti"
 
-#: View/Snippets/PostForm.phtml:58
+#: View/Snippets/PostForm.phtml:61
 msgid "Pink"
 msgstr "Pinkki"
 
-#: View/Snippets/PostForm.phtml:61
+#: View/Snippets/PostForm.phtml:64
 msgid "Message"
 msgstr "Viesti"
 
-#: View/Snippets/PostForm.phtml:68
+#: View/Snippets/PostForm.phtml:70
 msgid "Options"
 msgstr "Valinnat"
 
-#: View/Snippets/PostForm.phtml:69 View/Template/Default.phtml:36
+#: View/Snippets/PostForm.phtml:71 View/Template/Default.phtml:40
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: View/Snippets/PostForm.phtml:70
+#: View/Snippets/PostForm.phtml:72
 msgid "Submit"
 msgstr "Lähetä"
 
-#: View/Snippets/PostForm.phtml:72
+#: View/Snippets/PostForm.phtml:74
 msgid "Functions"
 msgstr "Toiminnot"
 
-#: View/Snippets/PostForm.phtml:75
+#: View/Snippets/PostForm.phtml:77
 msgid "Don't bump the thread"
 msgstr "Älä nosta lankaa"
 
-#: View/Snippets/PostForm.phtml:79
+#: View/Snippets/PostForm.phtml:81
 msgid "Hide your name"
 msgstr "Piilota nimesi"
 
-#: View/Snippets/PostForm.phtml:81
+#: View/Snippets/PostForm.phtml:83
 msgid "Gold account functions"
 msgstr "Kultatilitoiminnot"
 
-#: View/Snippets/PostForm.phtml:84
+#: View/Snippets/PostForm.phtml:86
 msgid "Keep original file dimensions"
-msgstr ""
+msgstr "Säilytä alkuperäisen tiedoston mitat"
 
-#: View/Snippets/PostForm.phtml:88
+#: View/Snippets/PostForm.phtml:90
 msgid "Hide message from non-golds"
 msgstr "Piilota viesti kultatilittömiltä"
 
@@ -770,63 +822,63 @@ msgstr "luettu kerran"
 msgid "read %d times"
 msgstr "luettu %d kertaa"
 
-#: View/Snippets/ThreadSubject.phtml:2
+#: View/Snippets/ThreadSubject.phtml:8
 msgid "Sticky"
 msgstr "Tahmattu"
 
-#: View/Snippets/ThreadSubject.phtml:3
+#: View/Snippets/ThreadSubject.phtml:11
 msgid "Locked"
 msgstr "Lukittu"
 
-#: View/Template/Default.phtml:32
+#: View/Template/Default.phtml:36
 msgid "Loading..."
 msgstr "Ladataan..."
 
-#: View/Template/Default.phtml:33
+#: View/Template/Default.phtml:37
 msgid "An error occurred"
 msgstr "Tapahtui virhe"
 
-#: View/Template/Default.phtml:34
+#: View/Template/Default.phtml:38
 msgid "Log out?"
 msgstr "Kirjaudu ulos?"
 
-#: View/Template/Default.phtml:35 View/Template/Default.phtml:108
+#: View/Template/Default.phtml:39 View/Template/Default.phtml:116
 msgid "Sign up"
 msgstr "Luo tunnus"
 
-#: View/Template/Default.phtml:37 View/Template/Default.phtml:107
+#: View/Template/Default.phtml:41 View/Template/Default.phtml:115
 msgid "Log_in"
 msgstr "Kirjaudu"
 
-#: View/Template/Default.phtml:39
+#: View/Template/Default.phtml:43
 msgid "Delete post?"
 msgstr "Poista viesti?"
 
-#: View/Template/Default.phtml:40
+#: View/Template/Default.phtml:44
 msgid "Post sent"
 msgstr "Viesti lähetetty"
 
-#: View/Template/Default.phtml:41
+#: View/Template/Default.phtml:45
 msgid "Post deleted"
 msgstr "Viesti poistettu"
 
-#: View/Template/Default.phtml:42
+#: View/Template/Default.phtml:46
 msgid "Your message will be lost."
 msgstr "Viestisi häviää."
 
-#: View/Template/Default.phtml:43
+#: View/Template/Default.phtml:47
 msgid "No new replies"
 msgstr "Ei uusia vastauksia"
 
-#: View/Template/Default.phtml:44
+#: View/Template/Default.phtml:48
 msgid "show full message"
 msgstr "näytä koko viesti"
 
-#: View/Template/Default.phtml:46
+#: View/Template/Default.phtml:50
 msgid "Password changed"
 msgstr "Salasana vaihdettu"
 
-#: View/Template/Default.phtml:47
+#: View/Template/Default.phtml:51
 msgid ""
 "You are using an outdated browser which does not support some modern "
 "techniques used by this website. Please upgrade your browser."
@@ -834,37 +886,59 @@ msgstr ""
 "Käytät vanhentunutta selainta, joka ei tue joitain tällä sivustolla "
 "käytettyjä moderneja tekniikoita. Päivitä selaimesi."
 
-#: View/Template/Default.phtml:91
+#: View/Template/Default.phtml:68
+msgid "Menu"
+msgstr "Valikko"
+
+#: View/Template/Default.phtml:70
+msgid "Notifications"
+msgstr "Ilmoitukset"
+
+#: View/Template/Default.phtml:75
+msgid "Go to bottom"
+msgstr "Siirry alareunaan"
+
+#: View/Template/Default.phtml:76
+msgid "Back to top"
+msgstr "Takaisin ylös"
+
+#: View/Template/Default.phtml:77
+msgid "Refresh page"
+msgstr "Päivitä sivu"
+
+#: View/Template/Default.phtml:99
 msgid "Search Ylilauta..."
 msgstr "Hae Ylilaudalta..."
 
-#: View/Template/Default.phtml:97
+#: View/Template/Default.phtml:105
 msgid "Log in"
 msgstr "Kirjaudu sisään"
 
-#: View/Template/Default.phtml:101
+#: View/Template/Default.phtml:109
 msgid "Username"
 msgstr "Käyttäjätunnus"
 
-#: View/Template/Default.phtml:102
+#: View/Template/Default.phtml:110
 msgid "Password"
 msgstr "Salasana"
 
-#: View/Template/Default.phtml:104
+#: View/Template/Default.phtml:112
 msgid "Password again"
 msgstr "Salasana uudelleen"
 
-#: View/Template/Default.phtml:114
+#: View/Template/Default.phtml:122
 msgid "Profile"
 msgstr "Profiili"
 
-#: View/Template/Default.phtml:115
-msgid "Preferences"
-msgstr "Asetukset"
+#: View/Template/Default.phtml:124
+msgid "Switch theme colors"
+msgstr "Vaihda teeman värejä"
 
-#: View/Template/Default.phtml:116
-msgid "Toggle dark theme"
-msgstr "Vaihda tumma teema"
+#~ msgid "Threads that may or may not have any interesting content"
+#~ msgstr "Langat, joissa joko on tai ei ole mitään kiinnostavaa sisältöä"
+
+#~ msgid "Toggle dark theme"
+#~ msgstr "Vaihda tumma teema"
 
 #~ msgid "Invalid user"
 #~ msgstr "Virheellinen käyttäjä"

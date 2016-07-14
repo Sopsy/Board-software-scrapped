@@ -117,7 +117,7 @@ class CustomBoard extends ExtendedController
                 break;
             case 'followedthreads':
                 $board->name = _('Followed threads');
-                $board->description = _('Threads you have bookmarked');
+                $board->description = _('Threads you have marked as interesting');
                 break;
             case 'hiddenthreads':
                 $board->name = _('Hidden threads');

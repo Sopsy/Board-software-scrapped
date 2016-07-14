@@ -130,22 +130,43 @@
     input[type="submit"] {
         float: right;
     }
-    .button {
-        font-size: 1rem;
+
+    #label-file {
+        position: relative;
+        #post-files {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .button {
+            font-size: $fontSize;
+            padding: 4px 10px;
+            text-align: center;
+            box-sizing: border-box;
+        }
     }
 }
 
-#post-progress {
+.file-progress {
     width: 100%;
     box-sizing: border-box;
     color: #eee;
     overflow: hidden;
-    height: 5px;
+    margin-top: -5px;
+    margin-bottom: 5px;
     > div {
         width: 0;
-        height: 5px;
+        height: 0;
         background-color: $highlightColor;
         box-sizing: border-box;
+        &.in-progress {
+            height: 5px;
+        }
     }
 }
 

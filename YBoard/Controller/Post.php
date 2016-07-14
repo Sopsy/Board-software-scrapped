@@ -93,7 +93,25 @@ class Post extends ExtendedController
 
         // Is this a reply or a new thread?
         $isReply = !empty($_POST['thread']);
-        $hasFile = !empty($_FILES['files']['tmp_name']);
+        $hasFile = !empty($_POST['file_id']);
+
+        if (!empty($_POST['file_name'])) {
+            $fileName = trim(Text::removeForbiddenUnicode($_POST['file_name']));
+        }
+
+        // Try getting a file by given name
+        if (!$hasFile && !empty($fileName)) {
+            $files = new Files($this->db);
+            $file = $files->getByName($fileName);
+            if (!$file) {
+                $this->throwJsonError(404, sprintf(_('File "%s" was not found, please type a different name or upload a file'),
+                    htmlspecialchars($fileName)));
+            }
+            $hasFile = true;
+            $_POST['file_id'] = $file->id;
+        } elseif ($hasFile && empty($fileName)) {
+            $this->throwJsonError(400, _('Please type a file name'));
+        }
 
         // Prepare message
         $message = isset($_POST['message']) ? trim($_POST['message']) : false;
@@ -184,27 +202,6 @@ class Post extends ExtendedController
             $username = $this->user->username;
         }
 
-        // Check that we have enough free space for files
-        if (disk_free_space($this->config['files']['savePath']) <= $this->config['files']['diskMinFree']) {
-            $this->throwJsonError(400, _('File uploads are temporarily disabled'));
-        }
-
-        // Process file
-        if ($hasFile) {
-            $files = new Files($this->db);
-            $files->setConfig($this->config['files']);
-
-            if ($_FILES['files']['size'] >= $this->config['files']['maxSize']) {
-                $this->throwJsonError(400, _('Your files exceed the maximum upload size.'));
-            }
-
-            try {
-                $file = $files->processUpload($_FILES['files'], true);
-            } catch (FileUploadException $e) {
-                $this->throwJsonError(500, $e->getMessage());
-            }
-        }
-
         if (!$isReply) {
             // Check flood limit
             if (Cache::exists('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'])) {
@@ -244,14 +241,13 @@ class Post extends ExtendedController
             }
         }
 
+        // Save file
+        if ($hasFile) {
+            $posts->addFile($postId, $_POST['file_id'], $_POST['file_name']);
+        }
+
         // Increment Total message characters -stats
         $this->user->statistics->increment('messageTotalCharacters', mb_strlen($message));
-
-        if ($hasFile) {
-            $posts->addFile($postId, $file->id, $file->displayName);
-            $this->user->statistics->increment('uploadedFiles');
-            $this->user->statistics->increment('uploadedFilesTotalSize', $_FILES['files']['size']);
-        }
 
         // Save replies
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);

@@ -293,6 +293,15 @@ class Posts extends Model
         return true;
     }
 
+    public function removeFiles(int $postId) : bool
+    {
+        $q = $this->db->prepare("DELETE FROM posts_files WHERE post_id = :post_id");
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        return true;
+    }
+
     public function addFile(int $postId, int $fileId, string $fileName) : bool
     {
         $q = $this->db->prepare("INSERT INTO posts_files (post_id, file_id, file_name) VALUES (:post_id, :file_id, :file_name)");

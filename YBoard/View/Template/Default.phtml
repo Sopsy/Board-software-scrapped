@@ -70,7 +70,7 @@
         ><button id="notifications-button" onclick="getNotifications()" class="icon-alarm" title="<?= _('Notifications') ?>"></button
         ><a href="/followedthreads/" class="icon-bookmark2" title="<?= _('Followed threads') ?>"><?php
             if($user->threadFollow->unreadCount != 0) :
-                ?><span class="unread-count"><?= $user->threadFollow->unreadCount ?></span><?php
+                ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
             endif ?></a
         ><button onclick="$(document).scrollTop($('body').height())" class="icon-enter-down2" title="<?= _('Go to bottom') ?>"></button
         ><button onclick="$(document).scrollTop(0)" class="icon-enter-up2" title="<?= _('Back to top') ?>"></button
@@ -130,14 +130,16 @@
                 </form>
             <?php endif ?>
         </div>
+        <div class="buttons">
+            <a href="/followedthreads/" title="<?= _('Followed threads') ?>"><?php
+                if($user->threadFollow->unreadCount != 0) :
+                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
+                endif
+            ?></a>
+        </div>
         <div class="columns">
             <a href="/mythreads/"><?= _('My threads') ?></a>
             <a href="/repliedthreads/"><?= _('Replied threads') ?></a>
-            <a href="/followedthreads/"><?= _('Followed threads') ?>
-                <?php if($user->threadFollow->unreadCount != 0) : ?>
-                    <span class="unread-count">(<?= $user->threadFollow->unreadCount ?>)</span>
-                <?php endif ?>
-            </a>
             <a href="/hiddenthreads/"><?= _('Hidden threads') ?></a>
         </div>
     </nav>

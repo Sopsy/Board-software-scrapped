@@ -1,5 +1,6 @@
 <form class="content-box" id="post-form" action="/scripts/posts/submit" method="post" onsubmit="submitPost(event)">
     <fieldset>
+        <input type="hidden" id="file-id" name="file_id">
 <?php if (!empty($thread->id)) : ?>
     <h3><?= _('Submit a reply') ?></h3>
     <input type="hidden" id="post-destination" name="thread" value="<?= $thread->id ?>">
@@ -27,8 +28,10 @@
     <label id="label-file">
         <span><?= _('File') ?> <span><<?= \YBoard\Library\Text::formatBytes($uploadMaxSize) ?></span></span>
         <input type="file" name="files" id="post-files" accept="<?= $acceptedFileTypes ?>" data-maxsize="<?= $uploadMaxSize ?>">
+        <div class="button gray"><?= _('Choose file') ?></div>
+        <input type="text" id="file-name" name="file_name" placeholder="<?= _('No file selected') ?>">
     </label>
-    <?php // TODO: XHR2 file upload on background so user can type while the file is uploading ?>
+    <div class="file-progress progressbar"><div></div></div>
 
     <div id="message-input">
         <div id="format-toolbar">
@@ -59,7 +62,6 @@
             </div>
         </div>
         <textarea id="post-message" name="message" placeholder="<?= _('Message') ?>" maxlength="<?= $messageMaxLength ?>"></textarea>
-        <div id="post-progress"><div></div></div>
     </div>
 
     <?php if ($user->requireCaptcha) : ?>

@@ -1,6 +1,6 @@
 body {
     background: $bgColor;
-    font: 14px $fontFamily;
+    font: $fontSize $fontFamily;
     color: $textColor;
     word-wrap: break-word;
 }
@@ -73,6 +73,10 @@ button.link {
         text-align: center;
         font-size: 20px;
     }
+
+    &:disabled {
+        opacity: 0.5;
+    }
 }
 
 
@@ -132,5 +136,25 @@ h4 {
 
     h3 {
         text-align: center;
+    }
+}
+
+.unread-count {
+    $size: 18px;
+    font-size: 0.6rem;
+    border-radius: $size;
+    width: $size;
+    height: $size;
+    text-align: center;
+    line-height: $size;
+    overflow: hidden;
+
+    &.red {
+        color: #fff;
+        background-color: darkred;
+    }
+    &.green {
+        color: #fff;
+        background: darkgreen;
     }
 }
