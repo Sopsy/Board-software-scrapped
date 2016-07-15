@@ -255,6 +255,9 @@ class Post extends ExtendedController
                     $notificationsSkipUsers,
                 ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
                 $notificationsSkipUsers[] = $thread->userId;
+
+                // Mark thread notifications as read
+                $this->user->notifications->markReadByThread($thread->id);
             } else {
                 // Mark thread notifications as read for OP
                 $this->user->notifications->markReadByPost($thread->id);

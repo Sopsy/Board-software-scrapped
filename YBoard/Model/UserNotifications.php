@@ -36,6 +36,7 @@ class UserNotifications extends Model
 
     public function decrementCountByPostId($postId, $type = null)
     {
+        // FIXME: IN (:var) does not work
         if (is_array($postId)) {
             $eq = 'IN (:post_id)';
             $postId = implode(',', $postId);
@@ -102,8 +103,19 @@ class UserNotifications extends Model
     public function markRead(int $notificationId) : bool
     {
         $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1
-            WHERE id = :id AND user_id = :user_id LIMIT 1");
+            WHERE id = :id AND user_id = :user_id AND is_read = 0 LIMIT 1");
         $q->bindValue('id', $notificationId);
+        $q->bindValue('user_id', $this->userId);
+        $q->execute();
+
+        return true;
+    }
+
+    public function markReadByThread(int $threadId) : bool
+    {
+        $q = $this->db->prepare("UPDATE user_notifications SET is_read = 1, count = 0
+            WHERE user_id = :user_id AND post_id IN (SELECT id FROM posts WHERE thread_id = :thread_id) AND is_read = 0");
+        $q->bindValue('thread_id', $threadId);
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 
@@ -113,7 +125,7 @@ class UserNotifications extends Model
     public function markReadByPost(int $postId) : bool
     {
         $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1
-            WHERE post_id = :post_id AND user_id = :user_id LIMIT 1");
+            WHERE post_id = :post_id AND user_id = :user_id AND is_read = 0 LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->bindValue('user_id', $this->userId);
         $q->execute();
@@ -123,7 +135,8 @@ class UserNotifications extends Model
 
     public function markAllRead() : bool
     {
-        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1 WHERE user_id = :user_id");
+        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1
+            WHERE user_id = :user_id AND is_read = 0");
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 
@@ -132,6 +145,7 @@ class UserNotifications extends Model
 
     protected function load()
     {
+        // FIXME: IN (:var) does not work
         $notIn = '';
         if (!empty($this->hiddenTypes)) {
             $notIn = ' AND type NOT IN (:hidden_types)';

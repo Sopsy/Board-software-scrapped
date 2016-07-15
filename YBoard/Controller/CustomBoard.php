@@ -34,7 +34,7 @@ class CustomBoard extends ExtendedController
     {
         $posts = new Posts($this->db);
         $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->threads), $pageNum,
-            $this->user->preferences->threadsPerPage, $this->user->preferences->repliesPerThread);
+            $this->user->preferences->threadsPerPage, $this->user->preferences->repliesPerThread, true);
         $this->showCustomBoard($threads, 'followedthreads', (int)$pageNum);
     }
 

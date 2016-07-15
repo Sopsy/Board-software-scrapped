@@ -81,7 +81,7 @@ class UserThreadFollow extends UserSubModel
     protected function load() : bool
     {
         $q = $this->db->prepare("SELECT thread_id, last_seen_reply, unread_count
-            FROM user_thread_follow WHERE user_id = :user_id");
+            FROM user_thread_follow WHERE user_id = :user_id ORDER BY unread_count DESC");
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 

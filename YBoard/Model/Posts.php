@@ -122,7 +122,7 @@ class Posts extends Model
         return $threads;
     }
 
-    public function getCustomThreads(array $threadIds, int $page, int $count, int $replyCount = 0) : array
+    public function getCustomThreads(array $threadIds, int $page, int $count, int $replyCount = 0, $keepOrder = false) : array
     {
         $limitStart = ($page - 1) * $count;
 
@@ -130,11 +130,16 @@ class Posts extends Model
             return [];
         }
 
-        $in = str_repeat('?,', count($threadIds));
-        $in = substr($in, 0, -1);
+        $in = $this->db->buildIn($threadIds);
+
+        $order = '';
+        if ($keepOrder) {
+            $order = ' FIELD(a.id, ' . $in . '),';
+            $threadIds = array_merge($threadIds, $threadIds);
+        }
 
         $q = $this->db->prepare($this->getPostsQuery("WHERE a.id IN (" . $in . ")
-            ORDER BY bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
+            ORDER BY" . $order . " bump_time DESC LIMIT " . (int)$limitStart . ', ' . (int)$count));
         $q->execute($threadIds);
 
         if ($q->rowCount() == 0) {
@@ -315,6 +320,7 @@ class Posts extends Model
 
     public function getMeta($postId)
     {
+        // FIXME: IN (:var) does not work
         $where = '= :post_id';
         if (is_array($postId)) {
             $where = 'IN (:post_id)';
@@ -401,8 +407,7 @@ class Posts extends Model
             return $this->delete($postIds[0]);
         }
 
-        $in = str_repeat('?,', $count);
-        $in = substr($in, 0, -1);
+        $in = $this->db->buildIn($count);
 
         $q = $this->db->prepare("INSERT IGNORE INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
             SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts

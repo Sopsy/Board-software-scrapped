@@ -50,33 +50,11 @@ class Database extends PDO
         }
     }
 
-    public function buildSetQuery(array $cols, array $vals)
+    public function buildIn(array $array) : string
     {
-        $query = '';
-        $i = 0;
-        foreach ($cols AS $col) {
-            $query .= "`" . str_replace('`', '``',
-                    $col) . "` = " . ($vals[$i] !== null ? $this->quote($vals[$i]) : 'NULL') . ", ";
-            ++$i;
-        }
+        $in = str_repeat('?,', count($array));
+        $in = substr($in, 0, -1);
 
-        return mb_substr($query, 0, -2);
-    }
-
-    public function buildInsertQuery(array $cols, array $vals)
-    {
-        $query = ['', ''];
-        $i = 0;
-        foreach ($cols AS $col) {
-            $query[0] .= "`" . str_replace('`', '``', $col) . "`, ";
-            $query[1] .= $this->quote($vals[$i]) . ", ";
-            ++$i;
-        }
-
-        foreach ($query AS &$q) {
-            $q = mb_substr($q, 0, -2);
-        }
-
-        return $query;
+        return $in;
     }
 }
