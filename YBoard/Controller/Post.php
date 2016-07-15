@@ -2,7 +2,6 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
-use YBoard\CliController\MessageListenerDaemon;
 use YBoard\Library\Cache;
 use YBoard\Library\GeoIP;
 use YBoard\Library\HttpResponse;
@@ -12,7 +11,6 @@ use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Log;
 use YBoard\Model\Posts;
-use YBoard\Model\User;
 use YBoard\Model\UserNotifications;
 use YBoard\Model\UserThreadFollow;
 use YBoard\Model\WordBlacklist;
@@ -109,8 +107,9 @@ class Post extends ExtendedController
             $files = new Files($this->db);
             $file = $files->getByName($fileName);
             if (!$file) {
-                $this->throwJsonError(404, sprintf(_('File "%s" was not found, please type a different name or choose a file'),
-                    htmlspecialchars($fileName)));
+                $this->throwJsonError(404,
+                    sprintf(_('File "%s" was not found, please type a different name or choose a file'),
+                        htmlspecialchars($fileName)));
             }
             $hasFile = true;
             $_POST['file_id'] = $file->id;
@@ -212,7 +211,7 @@ class Post extends ExtendedController
         $notificationsSkipUsers = [];
         if (!$isReply) {
             // Check flood limit
-            if (Cache::exists('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'])) {
+            if (Cache::exists('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
 
@@ -223,10 +222,10 @@ class Post extends ExtendedController
             $this->user->statistics->increment('createdThreads');
 
             // Enable flood limit
-            Cache::add('SpamLimit-thread-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
+            Cache::add('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
         } else {
             // Check flood limit
-            if (Cache::exists('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'])) {
+            if (Cache::exists('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
 
@@ -242,7 +241,7 @@ class Post extends ExtendedController
             $followed->incrementUnreadCount($thread->id, $this->user->id);
 
             // Enable flood limit
-            Cache::add('SpamLimit-reply-'. $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
+            Cache::add('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
 
             if (!$sage) {
                 $posts->bumpThread($thread->id);
@@ -253,22 +252,25 @@ class Post extends ExtendedController
                 $messageQueue->send([
                     UserNotifications::NOTIFICATION_TYPE_THREAD_REPLY,
                     $thread->id,
-                    $notificationsSkipUsers
+                    $notificationsSkipUsers,
                 ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
-                error_log(MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
                 $notificationsSkipUsers[] = $thread->userId;
+            }
 
-                // Notify all following users
-                $followers = $this->user->threadFollow->getFollowers($thread->id);
-                foreach ($followers as $follower) {
-                    $messageQueue->send([
-                        UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY,
-                        $thread->id,
-                        $follower,
-                        $notificationsSkipUsers
-                    ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
-                    $notificationsSkipUsers[] = $follower;
+            // Notify all following users
+            $followers = $this->user->threadFollow->getFollowers($thread->id);
+            foreach ($followers as $follower) {
+                if ($follower == $thread->userId) {
+                    // ... except the OP
+                    continue;
                 }
+                $messageQueue->send([
+                    UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY,
+                    $thread->id,
+                    $follower,
+                    $notificationsSkipUsers,
+                ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+                $notificationsSkipUsers[] = $follower;
             }
         }
 
@@ -322,10 +324,18 @@ class Post extends ExtendedController
             $log->write(Log::ACTION_ID_MOD_POST_DELETE, $this->user->id, $post->id);
         }
 
-        if (!empty($post->threadId)) {
-            $posts->updateThreadStats($post->threadId, 'replyCount', -1);
+        $messageQueue = new MessageQueue();
+
+        // Delete notifications about post replies
+        $replied = $posts->getRepliedPosts($_POST['post_id']);
+        if (!empty($replied)) {
+            $messageQueue->send([
+                'types' => UserNotifications::NOTIFICATION_TYPE_POST_REPLY,
+                'posts' => $replied,
+            ], MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION);
         }
 
+        // Delete post
         $posts->delete($_POST['post_id']);
     }
 }

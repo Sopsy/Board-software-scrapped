@@ -34,6 +34,47 @@ class UserNotifications extends Model
         }
     }
 
+    public function decrementCountByPostId($postId, $type = null)
+    {
+        if (is_array($postId)) {
+            $eq = 'IN (:post_id)';
+            $postId = implode(',', $postId);
+        } else {
+            $eq = '= :post_id';
+        }
+
+        $whereType = '';
+        if ($type !== null) {
+            if (is_array($type)) {
+                $whereType = ' AND type IN (:type)';
+                $type = implode(',', $type);
+            } else {
+                $whereType = ' AND type = :type';
+            }
+        }
+
+        $q = $this->db->prepare("UPDATE user_notifications SET count = count-1 WHERE post_id " . $eq . $whereType);
+        $q->bindValue('post_id', $postId);
+        if ($type !== null) {
+            $q->bindValue('type', $type);
+        }
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function clearInvalid()
+    {
+        $q = $this->db->prepare("DELETE FROM user_notifications WHERE is_read = 0 and count = 0");
+        $q->execute();
+
+        return true;
+    }
+
     public function add(int $userId, int $type, string $customData = null, int $postId = null)
     {
         $q = $this->db->prepare("INSERT INTO user_notifications (user_id, type, post_id, custom_data) 
@@ -49,10 +90,30 @@ class UserNotifications extends Model
         return true;
     }
 
+    public function remove(int $notificationId) : bool
+    {
+        $q = $this->db->prepare("DELETE FROM user_notifications WHERE id = :id LIMIT 1");
+        $q->bindValue('id', $notificationId);
+        $q->execute();
+
+        return true;
+    }
+
     public function markRead(int $notificationId) : bool
     {
-        $q = $this->db->prepare("UPDATE user_notifications SET is_read = 1 WHERE id = :id LIMIT 1");
+        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1 WHERE id = :id LIMIT 1");
         $q->bindValue('id', $notificationId);
+        $q->execute();
+
+        return true;
+    }
+
+    public function markReadByPost(int $postId) : bool
+    {
+        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1
+            WHERE post_id = :post_id AND user_id = :user_id LIMIT 1");
+        $q->bindValue('post_id', $postId);
+        $q->bindValue('user_id', $this->userId);
         $q->execute();
 
         return true;

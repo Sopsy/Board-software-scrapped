@@ -353,6 +353,15 @@ class Posts extends Model
         return $post;
     }
 
+    public function getRepliedPosts(int $postId) : array
+    {
+        $q = $this->db->prepare("SELECT post_id_replied FROM posts_replies WHERE post_id = :post_id");
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        return $q->fetchAll(Database::FETCH_COLUMN);
+    }
+
     public function delete(int $postId) : bool
     {
         $q = $this->db->prepare("INSERT IGNORE INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)

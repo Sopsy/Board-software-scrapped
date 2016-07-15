@@ -1,14 +1,12 @@
 <?php
 namespace YBoard\CliController;
 
-use YBoard\Abstracts\CliDatabase;
 use YBoard\Library\CliLogger;
 use YBoard\Library\Database;
 use YBoard\Library\FileHandler;
 use YBoard\Library\MessageQueue;
 use YBoard\Model\Files;
 use YBoard\Model\Posts;
-use YBoard\Model\User;
 use YBoard\Model\UserNotifications;
 
 class MessageListenerDaemon
@@ -40,7 +38,7 @@ class MessageListenerDaemon
         $msgType = null;
         $message = null;
 
-        while ($mq->receive(MessageQueue::MSG_TYPE_ALL, $msgType, 10240, $message)) {
+        while ($mq->receive(MessageQueue::MSG_TYPE_ALL, $msgType, 102400, $message)) {
             $this->connectDb();
 
             switch ($msgType) {
@@ -60,6 +58,10 @@ class MessageListenerDaemon
                     // Message should be [notificationType, postId, [userId], skipUsers]
                     $this->addPostNotification($message);
                     break;
+                case MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION:
+                    // Message should be $postId or [$postId, $postId, $postId, ...]
+                    $this->removePostNotification($message);
+                    break;
                 default:
                     CliLogger::write('[ERROR] Unknown message type: ' . $msgType);
                     break;
@@ -77,10 +79,12 @@ class MessageListenerDaemon
         $file = $files->get($message);
         if (!$file) {
             CliLogger::write('[ERROR] Invalid file: ' . $message);
+
             return false;
         }
         if ($file->extension != 'png') {
             CliLogger::write('[ERROR] Invalid file extension for PNGCrush: ' . $file->extension);
+
             return false;
         }
 
@@ -101,10 +105,12 @@ class MessageListenerDaemon
         $file = $files->get($message);
         if (!$file) {
             CliLogger::write('[ERROR] Invalid file: ' . $message);
+
             return false;
         }
         if ($file->extension != 'mp4') {
             CliLogger::write('[ERROR] Invalid file extension for video: ' . $file->extension);
+
             return false;
         }
 
@@ -115,6 +121,7 @@ class MessageListenerDaemon
 
         if (!$convert) {
             CliLogger::write('[ERROR] Video conversion failed: ' . $file->id);
+
             return false;
         }
 
@@ -132,10 +139,12 @@ class MessageListenerDaemon
         $file = $files->get($message);
         if (!$file) {
             CliLogger::write('[ERROR] Invalid file: ' . $message);
+
             return false;
         }
         if ($file->extension != 'm4a') {
             CliLogger::write('[ERROR] Invalid file extension for video: ' . $file->extension);
+
             return false;
         }
 
@@ -146,6 +155,7 @@ class MessageListenerDaemon
 
         if (!$convert) {
             CliLogger::write('[ERROR] Audio conversion failed: ' . $file->id);
+
             return false;
         }
 
@@ -163,20 +173,18 @@ class MessageListenerDaemon
             return false;
         }
 
-        $notificationType = $message[0];
-
-        if ($notificationType == UserNotifications::NOTIFICATION_TYPE_POST_REPLY) {
-            if (count($message) != 3) {
-                return false;
-            }
-
-            list($notificationType, $postId, $skipUsers) = $message;
-        } else {
+        if ($message[0] == UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY) {
             if (count($message) != 4) {
                 return false;
             }
 
             list($notificationType, $postId, $userId, $skipUsers) = $message;
+        } else {
+            if (count($message) != 3) {
+                return false;
+            }
+
+            list($notificationType, $postId, $skipUsers) = $message;
         }
 
         $posts = new Posts($this->db);
@@ -195,6 +203,20 @@ class MessageListenerDaemon
         }
 
         $userNotifications->add($userId, $notificationType, null, $repliedPost->id);
+
+        return true;
+    }
+
+    protected function removePostNotification($message)
+    {
+        $userNotifications = new UserNotifications($this->db);
+
+        if (!is_array($message) || empty($message['types']) || empty($message['posts'])) {
+            return false;
+        }
+
+        $userNotifications->decrementCountByPostId($message['posts'], $message['types']);
+        $userNotifications->clearInvalid();
 
         return true;
     }
