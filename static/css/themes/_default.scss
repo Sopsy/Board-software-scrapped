@@ -1,5 +1,10 @@
 @import '../config/variables';
 
+$tooltipBorderColor: #ccc;
+@if (lightness($contentBgColor) < 50) {
+    $tooltipBorderColor: #444;
+}
+
 @import '../lib/normalize';
 @import '../lib/icomoon';
 @import '../lib/toastr';
@@ -56,4 +61,5 @@ span.loading {
 @import '../partials/catalog';
 @import '../partials/navigation';
 @import '../partials/text-formatting';
+@import '../partials/modal-box';
 @import '../partials/mobile';

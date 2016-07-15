@@ -205,6 +205,74 @@ function signupForm(elm, e) {
 }
 
 // -------------------------------------------
+// Notifications
+// -------------------------------------------
+$.fn.extend({
+    openModal: function(name) {
+        // Don't double initialize
+        if (this.hasClass('tooltipstered')) {
+            return true;
+        }
+
+        var closeButton = '<button class="close-modal-button icon-cross2"></button>';
+        var ajax = true;
+        if (name == 'notifications') {
+            var url = '/scripts/notifications/get';
+        } else if (name == 'report') {
+            var url = '/scripts/report/getform';
+        } else {
+            return false;
+        }
+
+        this.tooltipster({
+            content: loadingAnimation(),
+            side: 'bottom',
+            animationDuration: 0,
+            updateAnimation: null,
+            delay: 0,
+            arrow: false,
+            contentAsHTML: true,
+            theme: 'modal-box',
+            trigger: 'click',
+            interactive: 'true',
+            functionReady: function(instance, helper) {
+                if (ajax) {
+                    $.ajax({
+                        url: url,
+                        type: "POST"
+                    }).done(function (data, textStatus, xhr) {
+                        data = $(data);
+                        data.find('.datetime').localizeTimestamp(this);
+
+                        instance.content(closeButton + data);
+                    }).fail(function (xhr, textStatus, errorThrown) {
+                        var errorMessage = getErrorMessage(xhr, errorThrown);
+                        instance.content(closeButton + errorMessage);
+                    });
+                } else {
+                    instance.content(closeButton + data);
+                }
+                $(helper.tooltip).on('click', '.close-modal-button', function() {
+                    instance.close();
+                });
+            },
+            functionAfter: function(instance, helper) {
+                instance.content(closeButton + loadingAnimation());
+            }
+        }).tooltipster('open')
+    }
+});
+
+function closeModal() {
+    $('.tooltipstered').tooltipster('close');
+}
+
+function getNotifications(elm)
+{
+    $(elm).openModal('notifications');
+}
+
+// -------------------------------------------
 // Thread inline expansion
 // -------------------------------------------
 function getMoreReplies(threadId) {
