@@ -1083,7 +1083,7 @@ $('.currency').localizeCurrency();
 // -------------------------------------------
 // Spoilers & reflinks
 // -------------------------------------------
-var reflinkTooltipTimeout;
+var reflinkCreateTimeout;
 $('body:not(.board-catalog)')
     .on('touchstart', '.spoiler:not(.spoiled)', function (e) {
         e.preventDefault();
@@ -1094,69 +1094,65 @@ $('body:not(.board-catalog)')
     })
     .on('contextmenu', '.reflink', function (e) {
         e.preventDefault();
-        e.stopPropagation();
-        return false;
     })
-    .on('touchstart mouseenter', '.reflink', function (e) {
-        var elm = this;
-        reflinkTooltipTimeout = setTimeout(function () {
-            addReflinkTooltip(elm);
-            $(elm).tooltipster('open');
+    .on('touchstart mouseenter', '.reflink:not(.tooltipstered)', function (e) {
+        var elm = $(this);
+        reflinkCreateTimeout = setTimeout(function() {
+            e.preventDefault();
+            var id = elm.data('id');
+            var content = loadingAnimation();
+            if ($p(id).is('*')) {
+                content = $p(id).html();
+            }
+
+            elm.tooltipster({
+                content: content,
+                side: 'bottom',
+                animationDuration: 0,
+                updateAnimation: null,
+                delay: 0,
+                arrow: false,
+                contentAsHTML: true,
+                theme: 'thread',
+                trigger: 'custom',
+                triggerOpen: {
+                    mouseenter: true,
+                    touchstart: true
+                },
+                triggerClose: {
+                    mouseleave: true,
+                    click: true
+                },
+                functionInit: function (instance, helper) {
+                    var id = $(helper.origin).data('id');
+                    $.ajax({
+                        url: '/scripts/posts/get',
+                        type: "POST",
+                        data: {'post_id': id}
+                    }).done(function (data, textStatus, xhr) {
+                        // Update timestamps
+                        data = $(data);
+                        data.find('.datetime').localizeTimestamp(this);
+
+                        instance.content(data);
+                    }).fail(function (xhr, textStatus, errorThrown) {
+                        var errorMessage = getErrorMessage(xhr, errorThrown);
+                        instance.content(errorMessage);
+                    });
+                }
+            }).tooltipster('open');
         }, 100);
     })
-    .on('click touchend mouseleave', '.reflink', function (e) {
-        clearTimeout(reflinkTooltipTimeout);
-        if ($(this).hasClass('tooltipstered')) {
-            $(this).tooltipster('close');
-        }
+    .on('touchend mouseleave', '.reflink:not(.tooltipstered)', function (e) {
+        clearTimeout(reflinkCreateTimeout);
     })
-    .on('click', '.reflink', function (e) {
+    .on('click', ':not(.tooltipster-base) .reflink', function (e) {
         var id = $(this).data('id');
         if ($p(id).is('*')) {
             e.preventDefault();
             window.location = window.location.href.split('#')[0] + '#post-' + id;
         }
     });
-
-function addReflinkTooltip(elm) {
-    var elm = $(elm);
-    // Don't double initialize
-    if (elm.hasClass('tooltipstered')) {
-        return true;
-    }
-
-    elm.tooltipster({
-        content: loadingAnimation(),
-        side: 'bottom',
-        animationDuration: 0,
-        updateAnimation: null,
-        delay: 0,
-        arrow: false,
-        contentAsHTML: true,
-        theme: 'thread',
-        trigger: 'custom',
-    }).tooltipster('open');
-    var id = elm.data('id');
-
-    if ($p(id).is('*')) {
-        elm.tooltipster('content', $p(id).html());
-    } else {
-        $.ajax({
-            url: '/scripts/posts/get',
-            type: "POST",
-            data: {'post_id': id}
-        }).done(function (data, textStatus, xhr) {
-            // Update timestamps
-            data = $(data);
-            data.find('.datetime').localizeTimestamp(this);
-
-            elm.tooltipster('content', data);
-        }).fail(function (xhr, textStatus, errorThrown) {
-            var errorMessage = getErrorMessage(xhr, errorThrown);
-            elm.tooltipster('content', errorMessage);
-        });
-    }
-}
 
 // -------------------------------------------
 // Mobile menu
@@ -1175,6 +1171,29 @@ $('body >:not(#topbar):not(#sidebar)').on('click', function (e) {
 });
 
 // -------------------------------------------
+// Catalog search
+// -------------------------------------------
+function searchCatalog(word) {
+    var threads = $('.thread-box');
+    if (word.length == 0) {
+        threads.show();
+    } else {
+        threads.hide();
+        threads.each(function() {
+            var self = $(this);
+            if (self.find('h3').html().toLowerCase().indexOf(word.toLowerCase()) !== -1) {
+                $(this).show();
+                return true;
+            }
+            if (self.find('.post').html().toLowerCase().indexOf(word.toLowerCase()) !== -1) {
+                $(this).show();
+                return true;
+            }
+        });
+    }
+}
+
+// -------------------------------------------
 // Post higlighting
 // -------------------------------------------
 function highlightPost(id) {
@@ -1189,9 +1208,19 @@ function removeHighlights() {
 // -------------------------------------------
 $(window).on('beforeunload', function (e) {
     return confirmUnload(e);
-}).on('hashchange load', function () {
-    removeHighlights();
-    highlightPost(window.location.hash);
+}).on('hashchange load', function (e) {
+    if (e.type == 'hashchange') {
+        removeHighlights();
+    }
+    if (window.location.hash.length != 0) {
+        highlightPost(window.location.hash);
+        // Prevent posts going under the top bar
+        // FIXME: Hacky... Causes slight page jumping. Not good.
+        if ($('#topbar').is(':visible')) {
+            var post = $(window.location.hash);
+            $(window).scrollTop(post.offset().top - $('#topbar').height());
+        }
+    }
 }).on('keydown', function (e) {
     // This brings down the server load quite a bit, as not everything is reloaded when pressing F5
     if (e.which == 116 && !e.ctrlKey) { // F5

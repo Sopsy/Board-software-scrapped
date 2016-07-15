@@ -4,6 +4,9 @@
 <?php include($viewFilesPath . '/Snippets/PostForm.phtml') ?>
 
 <?php if (!empty($threads)) : ?>
+<div class="catalog-functions">
+    <input type="text" onkeyup="searchCatalog(this.value)" placeholder="<?= _('Search threads...') ?>">
+</div>
 <div class="catalog">
     <?php foreach($threads as $thread) : ?>
         <div class="thread-box" id="thread-<?= $thread->id ?>" data-id="<?= $thread->id ?>">

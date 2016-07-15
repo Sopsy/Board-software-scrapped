@@ -188,7 +188,7 @@ class MessageListenerDaemon
 
         if (!is_array($postId)) {
             $repliedPost = $posts->getMeta($postId);
-            if (!$repliedPost) {
+            if (!$repliedPost || empty($repliedPost->userId)) {
                 return false;
             }
 

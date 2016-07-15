@@ -9,9 +9,13 @@
     </div>
     <div class="post-info">
         <span class="post-time datetime"><?= $post->time ?></span>
+        <?php if (!isset($tooltip)) : ?>
         <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?>#post-<?= $post->id ?>"
             onclick="<?php if (!$thread->locked || $user->isMod) : ?>replyToPost(<?= $post->id ?>);<?php endif ?>return false"
             class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
+        <?php else : ?>
+        <a href="/scripts/posts/redirect/<?= $post->id ?>" class="post-id"><?= _('No.') ?> <?= $post->id ?></a>
+        <?php endif ?>
     </div>
 </div>
 
