@@ -41,30 +41,34 @@ class MessageListenerDaemon
         while ($mq->receive(MessageQueue::MSG_TYPE_ALL, $msgType, 102400, $message)) {
             $this->connectDb();
 
-            switch ($msgType) {
-                case MessageQueue::MSG_TYPE_DO_PNGCRUSH:
-                    // $message should be fileId
-                    $this->doPngCrush($message);
-                    break;
-                case MessageQueue::MSG_TYPE_PROCESS_VIDEO:
-                    // $message should be fileId
-                    $this->processVideo($message);
-                    break;
-                case MessageQueue::MSG_TYPE_PROCESS_AUDIO:
-                    // $message should be fileId
-                    $this->processAudio($message);
-                    break;
-                case MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION:
-                    // Message should be [notificationType, postId, [userId], skipUsers]
-                    $this->addPostNotification($message);
-                    break;
-                case MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION:
-                    // Message should be $postId or [$postId, $postId, $postId, ...]
-                    $this->removePostNotification($message);
-                    break;
-                default:
-                    CliLogger::write('[ERROR] Unknown message type: ' . $msgType);
-                    break;
+            try {
+                switch ($msgType) {
+                    case MessageQueue::MSG_TYPE_DO_PNGCRUSH:
+                        // $message should be fileId
+                        $this->doPngCrush($message);
+                        break;
+                    case MessageQueue::MSG_TYPE_PROCESS_VIDEO:
+                        // $message should be fileId
+                        $this->processVideo($message);
+                        break;
+                    case MessageQueue::MSG_TYPE_PROCESS_AUDIO:
+                        // $message should be fileId
+                        $this->processAudio($message);
+                        break;
+                    case MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION:
+                        // Message should be [notificationType, postId, [userId], skipUsers]
+                        $this->addPostNotification($message);
+                        break;
+                    case MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION:
+                        // Message should be $postId or [$postId, $postId, $postId, ...]
+                        $this->removePostNotification($message);
+                        break;
+                    default:
+                        CliLogger::write('[ERROR] Unknown message type: ' . $msgType);
+                        break;
+                }
+            } catch (\Throwable $e) {
+                CliLogger::write($e->getMessage());
             }
 
             $this->closeDb();
@@ -181,20 +185,28 @@ class MessageListenerDaemon
 
         $posts = new Posts($this->db);
         $userNotifications = new UserNotifications($this->db);
-        $repliedPost = $posts->getMeta($postId);
-        if (!$repliedPost) {
-            return false;
-        }
 
-        if (empty($userId)) {
-            $userId = $repliedPost->userId;
-        }
+        if (!is_array($postId)) {
+            $repliedPost = $posts->getMeta($postId);
+            if (!$repliedPost) {
+                return false;
+            }
 
-        if (in_array($userId, $skipUsers)) {
-            return true;
-        }
+            if (in_array($repliedPost->userId, $skipUsers)) {
+                return true;
+            }
+            $userNotifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
+        } else {
+            $repliedPosts = $posts->getMeta($postId);
+            foreach ($repliedPosts as $repliedPost) {
+                if (in_array($repliedPost->userId, $skipUsers)) {
+                    continue;
+                }
 
-        $userNotifications->add($userId, $notificationType, null, $repliedPost->id);
+                $userNotifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
+                $skipUsers[] = $repliedPost->userId;
+            }
+        }
 
         return true;
     }

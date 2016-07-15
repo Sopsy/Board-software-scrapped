@@ -313,28 +313,42 @@ class Posts extends Model
         return true;
     }
 
-    public function getMeta(int $postId)
+    public function getMeta($postId)
     {
+        $where = '= :post_id';
+        if (is_array($postId)) {
+            $where = 'IN (:post_id)';
+        }
         $q = $this->db->prepare("SELECT id, board_id, thread_id, user_id, ip, country_code, time, username
-            FROM posts WHERE id = :post_id LIMIT 1");
-        $q->bindValue('post_id', $postId);
+            FROM posts WHERE id " . $where);
+        if (is_array($postId)) {
+            $q->bindValue('post_id', implode(',', $postId));
+        } else {
+            $q->bindValue('post_id', $postId);
+        }
         $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
         }
 
-        $row = $q->fetch();
-        $post = new Post();
-        $post->id = $row->id;
-        $post->boardId = $row->board_id;
-        $post->threadId = $row->thread_id;
-        $post->userId = $row->user_id;
-        $post->ip = inet_ntop($row->ip);
-        $post->countryCode = $row->country_code;
-        $post->time = $row->time;
+        $posts = [];
+        while ($row = $q->fetch()) {
+            $post = new Post();
+            $post->id = $row->id;
+            $post->boardId = $row->board_id;
+            $post->threadId = $row->thread_id;
+            $post->userId = $row->user_id;
+            $post->ip = inet_ntop($row->ip);
+            $post->countryCode = $row->country_code;
+            $post->time = $row->time;
+            $posts[] = $post;
+        }
 
-        return $post;
+        if (!is_array($postId)) {
+            $posts = $posts[0];
+        }
+        return $posts;
     }
 
     public function get(int $postId)

@@ -311,6 +311,23 @@ function updateUnreadNotificationCount(count) {
 }
 
 // -------------------------------------------
+// Threadlist search
+// -------------------------------------------
+function searchThreadlist(word) {
+    if (word.length == 0) {
+        $('.thread-box').show();
+    } else {
+        $('.thread-box').hide();
+        $('.thread-box').each(function() {
+            var self = $(this);
+            if (self.find('.post').html().toLowerCase().indexOf(word) !== -1) {
+                $(this).show();
+            }
+        });
+    }
+}
+
+// -------------------------------------------
 // Thread inline expansion
 // -------------------------------------------
 function getMoreReplies(threadId) {

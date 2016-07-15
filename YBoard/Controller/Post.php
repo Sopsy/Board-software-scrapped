@@ -277,10 +277,13 @@ class Post extends ExtendedController
         // TODO: Save tags
 
         // Notify all replied users
-        $notificationsSkipUsers[] = $this->user->id;
-        foreach ($postReplies as $reply) {
-            $messageQueue->send([UserNotifications::NOTIFICATION_TYPE_POST_REPLY, $reply, $notificationsSkipUsers],
-                MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
+        if (!empty($postReplies)) {
+            $notificationsSkipUsers[] = $this->user->id;
+            $messageQueue->send([
+                UserNotifications::NOTIFICATION_TYPE_POST_REPLY,
+                $postReplies,
+                $notificationsSkipUsers
+            ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
         }
 
         if (!$isReply) {
