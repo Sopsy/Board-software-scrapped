@@ -49,5 +49,13 @@
         } @else {
             color: lighten($textColor, 40%);
         }
+
+        .reflink {
+            margin-left: 10px;
+            color: $highlightColor;
+            &:hover {
+                color: $linkHoverColor;
+            }
+        }
     }
 }

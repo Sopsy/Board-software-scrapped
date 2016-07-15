@@ -67,11 +67,9 @@
 <div id="topbar">
     <button class="sidebar-toggle" onclick="toggleSidebar()"><span class="icon-menu"></span><?= _('Menu') ?></button>
     <div class="buttons"
-        ><button id="notifications-button" onclick="getNotifications(this)" class="icon-alarm" title="<?= _('Notifications') ?>"><?php
-            if($user->notifications->unreadCount != 0) :
-                ?><span class="unread-notifications unread-count red"><?= $user->notifications->unreadCount ?></span><?php
-            endif
-            ?></button
+        ><button id="notifications-button" onclick="getNotifications(this)" class="icon-alarm" title="<?= _('Notifications') ?>"
+            ><span class="unread-notifications unread-count red<?= ($user->notifications->unreadCount==0?' none':'') ?>"
+            ><?= $user->notifications->unreadCount ?></span></button
         ><a href="/followedthreads/" class="icon-bookmark2" title="<?= _('Followed threads') ?>"><?php
             if($user->threadFollow->unreadCount != 0) :
                 ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
@@ -123,11 +121,9 @@
         <h3><?= htmlspecialchars($user->username) ?></h3>
     <?php endif ?>
         <div class="buttons">
-            <button onclick="getNotifications(this)" class="button square icon-alarm" title="<?= _('Notifications') ?>"><?php
-                if($user->notifications->unreadCount != 0) :
-                    ?><span class="unread-notifications unread-count red"><?= $user->notifications->unreadCount ?></span><?php
-                endif
-            ?></button>
+            <button onclick="getNotifications(this)" class="button square icon-alarm" title="<?= _('Notifications') ?>"
+                ><span class="unread-notifications unread-count red<?= ($user->notifications->unreadCount==0?' none':'') ?>"
+                ><?= $user->notifications->unreadCount ?></span></button>
             <a href="/followedthreads/" class="button square icon-bookmark2" title="<?= _('Followed threads') ?>"><?php
                 if($user->threadFollow->unreadCount != 0) :
                     ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php

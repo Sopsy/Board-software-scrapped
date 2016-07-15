@@ -260,8 +260,8 @@ class Post extends ExtendedController
             // Notify all following users
             $followers = $this->user->threadFollow->getFollowers($thread->id);
             foreach ($followers as $follower) {
-                if ($follower == $thread->userId) {
-                    // ... except the OP
+                if ($follower == $thread->userId || $follower == $this->user->id) {
+                    // ... except the OP and current user
                     continue;
                 }
                 $messageQueue->send([

@@ -8,15 +8,19 @@
         <div class="notification <?= (!$notification->isRead?'not-read':'is-read') ?>" id="n-<?= $notification->id ?>">
             <?php if (!empty($notification->postId)) : ?>
                 <a href="/scripts/posts/redirect/<?= $notification->postId ?>"
-                   onclick="markNotificationRead(<?= $notification->id ?>)" class="reflink"
-                   data-id="<?= $notification->postId ?>">
-                <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
-                <?= $notification->postId ?></a>
+                   onclick="markNotificationRead(<?= $notification->id ?>)">
+                    <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
+                </a>
             <?php else : ?>
                 <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
             <?php endif ?>
             <div class="notification-meta">
                 <span class="datetime"><?= $notification->time ?></span>
+                <?php if (!empty($notification->postId)) : ?>
+                    <a href="/scripts/posts/redirect/<?= $notification->postId ?>" class="reflink"
+                       onclick="markNotificationRead(<?= $notification->id ?>)"
+                       data-id="<?= $notification->postId ?>">&gt;&gt;<?= $notification->postId ?></a>
+                <?php endif ?>
             </div>
             <?php if (!$notification->isRead) : ?>
             <button class="mark-read icon-checkmark-circle" onclick="markNotificationRead(<?= $notification->id ?>)"></button>
