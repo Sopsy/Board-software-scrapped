@@ -133,7 +133,7 @@ class Post extends ExtendedController
             }
 
             // At least 20 characters
-            if (mb_strlen($message) < 20) {
+            if (mb_strlen($message) < 10) {
                 $this->throwJsonError(400, _('Please type a longer message'));
             }
 
@@ -255,22 +255,9 @@ class Post extends ExtendedController
                     $notificationsSkipUsers,
                 ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
                 $notificationsSkipUsers[] = $thread->userId;
-            }
-
-            // Notify all following users
-            $followers = $this->user->threadFollow->getFollowers($thread->id);
-            foreach ($followers as $follower) {
-                if ($follower == $thread->userId || $follower == $this->user->id) {
-                    // ... except the OP and current user
-                    continue;
-                }
-                $messageQueue->send([
-                    UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY,
-                    $thread->id,
-                    $follower,
-                    $notificationsSkipUsers,
-                ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
-                $notificationsSkipUsers[] = $follower;
+            } else {
+                // Mark thread notifications as read for OP
+                $this->user->notifications->markReadByPost($thread->id);
             }
         }
 
@@ -290,6 +277,7 @@ class Post extends ExtendedController
         // TODO: Save tags
 
         // Notify all replied users
+        $notificationsSkipUsers[] = $this->user->id;
         foreach ($postReplies as $reply) {
             $messageQueue->send([UserNotifications::NOTIFICATION_TYPE_POST_REPLY, $reply, $notificationsSkipUsers],
                 MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);

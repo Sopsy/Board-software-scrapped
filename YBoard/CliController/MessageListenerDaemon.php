@@ -173,19 +173,11 @@ class MessageListenerDaemon
             return false;
         }
 
-        if ($message[0] == UserNotifications::NOTIFICATION_TYPE_FOLLOWED_REPLY) {
-            if (count($message) != 4) {
-                return false;
-            }
-
-            list($notificationType, $postId, $userId, $skipUsers) = $message;
-        } else {
-            if (count($message) != 3) {
-                return false;
-            }
-
-            list($notificationType, $postId, $skipUsers) = $message;
+        if (count($message) != 3) {
+            return false;
         }
+
+        list($notificationType, $postId, $skipUsers) = $message;
 
         $posts = new Posts($this->db);
         $userNotifications = new UserNotifications($this->db);

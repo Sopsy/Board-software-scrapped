@@ -9,7 +9,7 @@ class UserNotifications extends Model
 {
     const NOTIFICATION_TYPE_POST_REPLY = 1;
     const NOTIFICATION_TYPE_THREAD_REPLY = 2;
-    const NOTIFICATION_TYPE_FOLLOWED_REPLY = 3;
+    //const NOTIFICATION_TYPE_FOLLOWED_REPLY = 3;
     const NOTIFICATION_TYPE_GOT_TAG = 4;
     const NOTIFICATION_TYPE_GOT_GOLD = 5;
     const NOTIFICATION_TYPE_THREAD_SUPERSAGED = 6;
@@ -166,14 +166,6 @@ class UserNotifications extends Model
                     break;
                 case static::NOTIFICATION_TYPE_THREAD_REPLY:
                     $text = _('Your thread has') . ' ';
-                    if ($notification->count == 1) {
-                        $text .= _('a new reply');
-                    } else {
-                        $text .= _('%d new replies');
-                    }
-                    break;
-                case static::NOTIFICATION_TYPE_FOLLOWED_REPLY:
-                    $text = _('A thread you are following has') . ' ';
                     if ($notification->count == 1) {
                         $text .= _('a new reply');
                     } else {
