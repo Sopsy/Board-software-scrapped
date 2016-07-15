@@ -44,6 +44,7 @@
             line-height: $height;
             margin: 0;
             font-size: 1.1em;
+            position: relative;
 
             $subjectBgColor: darken($contentBgColor, 5%);
             @if (lightness($contentBgColor) < 50) {
@@ -72,6 +73,18 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
+            }
+
+            .notification-count {
+                position: absolute;
+                right: 0;
+                min-width: $height;
+                height: $height;
+                padding: 0 5px;
+                text-align: center;
+                box-sizing: border-box;
+                background-color: hsla(hue($highlightColor), saturation($highlightColor), lightness($highlightColor), 0.5);
+                color: #fff;
             }
         }
 
