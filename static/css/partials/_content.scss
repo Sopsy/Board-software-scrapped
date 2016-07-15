@@ -157,4 +157,7 @@ h4 {
         color: #fff;
         background: darkgreen;
     }
+    &.none {
+        display: none !important;
+    }
 }

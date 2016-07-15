@@ -79,7 +79,7 @@ class UserNotifications extends Model
     {
         $q = $this->db->prepare("INSERT INTO user_notifications (user_id, type, post_id, custom_data) 
             VALUES (:user_id, :type, :post_id, :custom_data)
-            ON DUPLICATE KEY UPDATE count = count+1");
+            ON DUPLICATE KEY UPDATE is_read = 0, count = count+1");
 
         $q->bindValue('user_id', $userId);
         $q->bindValue('type', $type);

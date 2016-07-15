@@ -250,6 +250,7 @@ $.fn.extend({
                         data = data.prop('outerHTML');
 
                         instance.content(closeButton + data);
+                        updateUnreadNotificationCount($('.notifications-list .not-read').length);
                     }).fail(function (xhr, textStatus, errorThrown) {
                         var errorMessage = getErrorMessage(xhr, errorThrown);
                         instance.content(closeButton + errorMessage);
@@ -268,29 +269,25 @@ $.fn.extend({
     }
 });
 
-function getNotifications(elm)
-{
+function getNotifications(elm) {
     $(elm).openModal('notifications');
 }
 
-function markNotificationRead(id)
-{
-    $('.notifications-list').find('.notification[data-id="' + id + '"]').removeClass('not-read').addClass('read');
+function markNotificationRead(id) {
+    $('#n-' + id).removeClass('not-read').addClass('is-read');
     $.ajax({
         url: '/scripts/notifications/markread',
         type: "POST",
-        data: {'id': id},
+        data: {'id': id}
     }).fail(function (xhr, textStatus, errorThrown) {
         var errorMessage = getErrorMessage(xhr, errorThrown);
         toastr.error(errorMessage);
     });
 
-    $('.unread-notifications').html($('.unread-notifications').html()*1-1);
+    updateUnreadNotificationCount($('.notification.not-read').length);
 }
 
-function markAllNotificationsRead()
-{
-    $('.notifications-list .notification').removeClass('not-read').addClass('read');
+function markAllNotificationsRead() {
     $.ajax({
         url: '/scripts/notifications/markallread',
         type: "POST"
@@ -299,7 +296,18 @@ function markAllNotificationsRead()
         toastr.error(errorMessage);
     });
 
-    $('.unread-notifications').remove();
+    updateUnreadNotificationCount(0);
+}
+
+function updateUnreadNotificationCount(count) {
+    var elm = $('.unread-notifications');
+    elm.html(parseInt(count));
+
+    if (count == 0) {
+        elm.addClass('none');
+    } else {
+        elm.removeClass('none');
+    }
 }
 
 // -------------------------------------------

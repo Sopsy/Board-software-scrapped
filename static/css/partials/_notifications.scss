@@ -1,9 +1,53 @@
 .notification {
-    border-bottom: 1px solid #ccc;
+    $borderColor: darken($contentBgColor, 10%);
+    @if (lightness($contentBgColor) < 50) {
+        $borderColor: lighten($contentBgColor, 10%);
+    }
+    border-bottom: 1px solid $borderColor;
+    position: relative;
+    padding: 5px 20px 5px 5px;
 
-    &.read {
-        .mark-read {
-            display: none;
+    &.not-read {
+        $bgColor: darken($contentBgColor, 5%);
+        @if (lightness($contentBgColor) < 50) {
+            $bgColor: lighten($contentBgColor, 5%);
+        }
+        background-color: $bgColor;
+    }
+
+    &:last-of-type {
+        border-bottom: 0;
+    }
+
+    .mark-read {
+        position: absolute;
+        background: none;
+        border: 0;
+        color: #fff;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        font-size: 10px;
+        padding: 0;
+        &:hover {
+            color: $highlightColor;
+        }
+    }
+    &.is-read .mark-read {
+        display: none;
+    }
+
+    a {
+        color: $textColor;
+    }
+
+    .notification-meta {
+        display: block;
+        font-size: 0.85em;
+        @if (lightness($textColor) > 50) {
+            color: darken($textColor, 40%);
+        } @else {
+            color: lighten($textColor, 40%);
         }
     }
 }

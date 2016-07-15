@@ -1,9 +1,13 @@
 .modal-box {
     left: 20px !important;
     top: 20px !important;
-    background-color: $bgColor;
+    background-color: $contentBgColor;
     min-width: 300px;
     min-height: 200px;
+
+    .modal-content.has-buttons {
+        margin-bottom: 50px;
+    }
 
     .close-modal-button {
         position: absolute;
