@@ -15,12 +15,12 @@ class UserNotifications extends Model
     const NOTIFICATION_TYPE_THREAD_SUPERSAGED = 6;
     const NOTIFICATION_TYPE_THREAD_FORCEBUMPED = 7;
     const NOTIFICATION_TYPE_THREAD_REVIVED = 8;
-    const NOTIFICATION_TYPE_THREAD_LOCKED = 9;
+    const NOTIFICATION_TYPE_THREAD_AUTOLOCKED = 9;
 
     protected $userId;
     protected $hiddenTypes;
 
-    public $notifications = [];
+    public $list = [];
     public $unreadCount = 0;
 
     public function __construct(Database $db, int $userId = null, array $hiddenTypes = [], bool $skipLoad = false)
@@ -101,8 +101,10 @@ class UserNotifications extends Model
 
     public function markRead(int $notificationId) : bool
     {
-        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1 WHERE id = :id LIMIT 1");
+        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1
+            WHERE id = :id AND user_id = :user_id LIMIT 1");
         $q->bindValue('id', $notificationId);
+        $q->bindValue('user_id', $this->userId);
         $q->execute();
 
         return true;
@@ -121,7 +123,7 @@ class UserNotifications extends Model
 
     public function markAllRead() : bool
     {
-        $q = $this->db->prepare("UPDATE user_notifications SET is_read = 1 WHERE user_id = :user_id");
+        $q = $this->db->prepare("UPDATE user_notifications SET count = 0, is_read = 1 WHERE user_id = :user_id");
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 
@@ -150,12 +152,66 @@ class UserNotifications extends Model
             $notification->type = $row->type;
             $notification->postId = $row->post_id;
             $notification->customData = $row->custom_data;
-            $notification->count = $row->count;
+            $notification->count = $row->count == 0 ? 1 : $row->count;
             $notification->isRead = (bool)$row->is_read;
+
+            switch ($notification->type) {
+                case static::NOTIFICATION_TYPE_POST_REPLY:
+                    $text = _('Your message has') . ' ';
+                    if ($notification->count == 1) {
+                        $text .= _('a new reply');
+                    } else {
+                        $text .= _('%d new replies');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_REPLY:
+                    $text = _('Your thread has') . ' ';
+                    if ($notification->count == 1) {
+                        $text .= _('a new reply');
+                    } else {
+                        $text .= _('%d new replies');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_FOLLOWED_REPLY:
+                    $text = _('A thread you are following has') . ' ';
+                    if ($notification->count == 1) {
+                        $text .= _('a new reply');
+                    } else {
+                        $text .= _('%d new replies');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_GOT_TAG:
+                    $text = _('You just got a new tag: %s!');
+                    break;
+                case static::NOTIFICATION_TYPE_GOT_GOLD:
+                    $text = _('Someone just gave you a gold account');
+                    if (!empty($notification->postId)) {
+                        $text .= ' ' . _('for your post %s');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_SUPERSAGED:
+                    $text = _('Someone supersaged your thread...');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_FORCEBUMPED:
+                    $text = _('Someone force bumped your thread');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_REVIVED:
+                    $text = _('Someone revived your thread');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_AUTOLOCKED:
+                    $text = _('Your thread reached the reply limit');
+                    break;
+                default:
+                    $text = _('Lolwut? Unknown notification!');
+                    break;
+            }
+            $notification->text = $text;
 
             if (!$notification->isRead) {
                 ++$this->unreadCount;
             }
+
+            $this->list[] = $notification;
         }
 
         return true;

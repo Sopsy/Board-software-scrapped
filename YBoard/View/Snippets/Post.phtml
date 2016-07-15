@@ -37,7 +37,7 @@
                     <?php endif ?>
                 <?php endif ?>
             </a>
-            <button class="button green stop-media" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
+            <button class="button primary stop-media" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
         <?php else : ?>
             <a href="<?= $fileUrl ?>" onclick="expandImage(this, event)">
                 <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">

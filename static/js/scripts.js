@@ -214,13 +214,16 @@ $.fn.extend({
             return true;
         }
 
-        var closeButton = '<button class="close-modal-button icon-cross2"></button>';
+        var closeButton = '<button class="close-modal close-modal-button icon-cross2"></button>';
         var ajax = true;
+        var url;
+        var data;
         if (name == 'notifications') {
-            var url = '/scripts/notifications/get';
+            url = '/scripts/notifications/get';
         } else if (name == 'report') {
-            var url = '/scripts/report/getform';
+            url = '/scripts/report/getform';
         } else {
+            data = messages.errorOccurred;
             return false;
         }
 
@@ -233,6 +236,7 @@ $.fn.extend({
             arrow: false,
             contentAsHTML: true,
             theme: 'modal-box',
+            zIndex: 1001,
             trigger: 'click',
             interactive: 'true',
             functionReady: function(instance, helper) {
@@ -243,6 +247,7 @@ $.fn.extend({
                     }).done(function (data, textStatus, xhr) {
                         data = $(data);
                         data.find('.datetime').localizeTimestamp(this);
+                        data = data.prop('outerHTML');
 
                         instance.content(closeButton + data);
                     }).fail(function (xhr, textStatus, errorThrown) {
@@ -252,7 +257,7 @@ $.fn.extend({
                 } else {
                     instance.content(closeButton + data);
                 }
-                $(helper.tooltip).on('click', '.close-modal-button', function() {
+                $(helper.tooltip).on('click', '.close-modal', function() {
                     instance.close();
                 });
             },
@@ -263,13 +268,38 @@ $.fn.extend({
     }
 });
 
-function closeModal() {
-    $('.tooltipstered').tooltipster('close');
-}
-
 function getNotifications(elm)
 {
     $(elm).openModal('notifications');
+}
+
+function markNotificationRead(id)
+{
+    $('.notifications-list').find('.notification[data-id="' + id + '"]').removeClass('not-read').addClass('read');
+    $.ajax({
+        url: '/scripts/notifications/markread',
+        type: "POST",
+        data: {'id': id},
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+
+    $('.unread-notifications').html($('.unread-notifications').html()*1-1);
+}
+
+function markAllNotificationsRead()
+{
+    $('.notifications-list .notification').removeClass('not-read').addClass('read');
+    $.ajax({
+        url: '/scripts/notifications/markallread',
+        type: "POST"
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage);
+    });
+
+    $('.unread-notifications').remove();
 }
 
 // -------------------------------------------
@@ -726,7 +756,7 @@ function submitPost(e) {
 
         if (thread != null) {
             toastr.success(messages.postSent);
-            getNewReplies(thread);
+            getNewReplies(thread, true);
         } else if (data.length == 0) {
             pageReload();
         } else {

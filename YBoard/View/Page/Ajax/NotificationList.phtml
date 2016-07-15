@@ -1,0 +1,29 @@
+<div>
+<div class="notifications-list">
+    <h3><?= _('Notifications') ?></h3>
+    <?php if (empty($notifications)) : ?>
+    <p><?= _('You don\'t have any notifications...') ?></p>
+    <?php else : ?>
+    <?php foreach ($notifications as $notification) : ?>
+    <div class="notification <?= (!$notification->isRead?'not-read':'read') ?>">
+        <?php if (!empty($notification->postId)) : ?>
+            <a href="/scripts/posts/redirect/<?= $notification->postId ?>"
+               onclick="markNotificationRead(<?= $notification->id ?>)" class="reflink"
+               data-id="<?= $notification->postId ?>">
+            <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
+            <?= $notification->postId ?></a>
+        <?php else : ?>
+            <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
+        <?php endif ?>
+        <span class="datetime"><?= $notification->time ?></span>
+        <?php if (!$notification->isRead) : ?>
+        <button class="mark-read icon-checkmark-circle" onclick="markNotificationRead(<?= $notification->id ?>)"></button>
+        <?php endif ?>
+    </div>
+    <?php endforeach ?>
+    <?php endif ?>
+</div>
+<div class="modal-buttons">
+    <button class="button primary right close-modal" onclick="markAllNotificationsRead()"><?= _('Mark all as read') ?></button>
+</div>
+</div>

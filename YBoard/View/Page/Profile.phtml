@@ -39,7 +39,7 @@
                 <input type="text" name="newname" placeholder="<?= _('New name') ?>" maxlength="<?= $usernameMaxLength ?>" required>
                 <input type="text" name="preventautocomplete" style="display:none">
                 <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
-                <input type="submit" class="button green" value="<?= _('Change username') ?>">
+                <input type="submit" class="button primary" value="<?= _('Change username') ?>">
             </form>
         </div>
         <div>
@@ -48,7 +48,7 @@
                 <input type="password" name="newpass" placeholder="<?= _('New password') ?>" required>
                 <input type="password" name="newpassre" placeholder="<?= _('New password again') ?>" required>
                 <input type="password" name="password" placeholder="<?= _('Current password') ?>" required>
-                <input type="submit" class="button green" value="<?= _('Change password') ?>">
+                <input type="submit" class="button primary" value="<?= _('Change password') ?>">
             </form>
         </div>
     </div>
@@ -66,7 +66,7 @@
                 <?php if ($session->id == $user->session->id) : ?>
                 <em><?= _('Current session') ?></em>
                 <?php else : ?>
-                <button class="button green" onclick="destroySession('<?= bin2hex($session->id) ?>')"><?= _('Log out') ?></button>
+                <button class="button primary" onclick="destroySession('<?= bin2hex($session->id) ?>')"><?= _('Log out') ?></button>
                 <?php endif ?>
             </div>
         </div>
@@ -95,7 +95,7 @@
             <input type="checkbox" name="delete_posts">
             <?= _('Also delete all posts I have sent.') ?>
         </label>
-        <input class="button green" type="submit" value="<?= _('Delete account') ?>">
+        <input class="button primary" type="submit" value="<?= _('Delete account') ?>">
     </form>
 </div>
 <?php endif ?>

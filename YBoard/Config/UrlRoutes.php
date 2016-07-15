@@ -29,6 +29,11 @@ return [
     '#^/scripts/user/changepassword$#' => ['User', 'changePassword'],
     '#^/scripts/user/delete$#' => ['User', 'delete'],
 
+    // Notifications
+    '#^/scripts/notifications/get$#' => ['Notifications', 'get'],
+    '#^/scripts/notifications/markread$#' => ['Notifications', 'markRead'],
+    '#^/scripts/notifications/markallread$#' => ['Notifications', 'markAllRead'],
+
     // Sign up, log in, log out
     '#^/scripts/session/signup$#' => ['Session', 'signUp'],
     '#^/scripts/session/login$#' => ['Session', 'logIn'],

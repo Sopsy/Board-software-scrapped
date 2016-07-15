@@ -1,0 +1,9 @@
+.notification {
+    border-bottom: 1px solid #ccc;
+
+    &.read {
+        .mark-read {
+            display: none;
+        }
+    }
+}

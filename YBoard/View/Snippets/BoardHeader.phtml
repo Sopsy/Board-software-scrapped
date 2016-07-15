@@ -5,9 +5,9 @@
     </div>
     <div class="buttons">
         <?php if (empty($thread)) : ?>
-        <button class="button green create-thread toggle-postform" onclick="showPostForm()"><?= _('Create a thread') ?></button>
+        <button class="button primary create-thread toggle-postform" onclick="showPostForm()"><?= _('Create a thread') ?></button>
         <?php elseif (!$thread->locked) : ?>
-        <button class="button green add-reply toggle-postform" onclick="showPostForm()"><?= _('Reply to thread') ?></button>
+        <button class="button primary add-reply toggle-postform" onclick="showPostForm()"><?= _('Reply to thread') ?></button>
         <?php endif ?>
     </div>
 </header>

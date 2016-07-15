@@ -10,4 +10,5 @@ class Notification
     public $customData;
     public $count;
     public $isRead;
+    public $text;
 }
