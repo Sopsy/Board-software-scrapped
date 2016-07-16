@@ -36,30 +36,25 @@ class UserNotifications extends Model
 
     public function decrementCountByPostId($postId, $type = null)
     {
-        // FIXME: IN (:var) does not work
-        if (is_array($postId)) {
-            $eq = 'IN (:post_id)';
-            $postId = implode(',', $postId);
-        } else {
-            $eq = '= :post_id';
+        if (!is_array($postId)) {
+            $postId = [$postId];
         }
+
+        $params = $postId;
 
         $whereType = '';
         if ($type !== null) {
-            if (is_array($type)) {
-                $whereType = ' AND type IN (:type)';
-                $type = implode(',', $type);
-            } else {
-                $whereType = ' AND type = :type';
+            if (!is_array($type)) {
+                $type = [$type];
             }
+
+            $params = array_merge($postId, $type);
+            $whereType = ' AND type IN (' . $this->db->buildIn($type) . ')';
         }
 
-        $q = $this->db->prepare("UPDATE user_notifications SET count = count-1 WHERE post_id " . $eq . $whereType);
-        $q->bindValue('post_id', $postId);
-        if ($type !== null) {
-            $q->bindValue('type', $type);
-        }
-        $q->execute();
+        $q = $this->db->prepare("UPDATE user_notifications SET count = count-1
+            WHERE post_id IN (" . $this->db->buildIn($postId) . ")" . $whereType);
+        $q->execute($params);
 
         if ($q->rowCount() == 0) {
             return false;
@@ -193,19 +188,16 @@ class UserNotifications extends Model
 
     protected function load()
     {
-        // FIXME: IN (:var) does not work
+        $params = [$this->userId];
         $notIn = '';
         if (!empty($this->hiddenTypes)) {
-            $notIn = ' AND type NOT IN (:hidden_types)';
+            $params = array_merge($params, $this->hiddenTypes);
+            $notIn = ' AND type NOT IN (' . $this->db->buildIn($this->hiddenTypes) . ')';
         }
 
         $q = $this->db->prepare("SELECT id, time, type, post_id, custom_data, count, is_read FROM user_notifications
             WHERE user_id = :user_id" . $notIn . " ORDER BY is_read ASC, time DESC LIMIT 100");
-        $q->bindValue('user_id', $this->userId);
-        if (!empty($this->hiddenTypes)) {
-            $q->bindValue('hidden_types', implode(',', $this->hiddenTypes));
-        }
-        $q->execute();
+        $q->execute($params);
 
         while ($row = $q->fetch()) {
             $notification = new Notification();
