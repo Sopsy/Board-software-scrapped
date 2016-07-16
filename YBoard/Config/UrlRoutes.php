@@ -23,7 +23,6 @@ return [
 
     // User account related
     '#^/profile/(.+)?$#' => ['User', 'profile'],
-    '#^/scripts/user/redirect/([0-9]+)$#' => ['User', 'redirect'],
     '#^/scripts/user/destroysession$#' => ['User', 'destroySession'],
     '#^/scripts/user/changename$#' => ['User', 'changeName'],
     '#^/scripts/user/changepassword$#' => ['User', 'changePassword'],
@@ -54,6 +53,7 @@ return [
     '#^/scripts/posts/redirect/([0-9]+)$#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
+    '#^/scripts/posts/deletefile$#' => ['Post', 'deleteFile'],
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore$#' => ['Thread', 'restore'],

@@ -297,7 +297,6 @@ class Post extends ExtendedController
     public function delete()
     {
         $this->validateAjaxCsrfToken();
-
         if (empty($_POST['post_id'])) {
             $this->throwJsonError(400);
         }
@@ -331,5 +330,32 @@ class Post extends ExtendedController
 
         // Delete post
         $posts->delete($_POST['post_id']);
+    }
+
+    public function deleteFile()
+    {
+        $this->validateAjaxCsrfToken();
+        if (empty($_POST['post_id'])) {
+            $this->throwJsonError(400);
+        }
+
+        $posts = new Posts($this->db);
+        $post = $posts->getMeta($_POST['post_id']);
+        if (!$post) {
+            $this->throwJsonError(404, _('Post does not exist'));
+        }
+
+        if ($post->userId != $this->user->id && !$this->user->isMod) {
+            $this->throwJsonError(403, _('This isn\'t your post!'));
+        }
+
+        if ($post->userId != $this->user->id) {
+            // Log file deletions by mods
+            $log = new Log($this->db);
+            $log->write(Log::ACTION_ID_MOD_POST_FILE_DELETE, $this->user->id, $post->id);
+        }
+
+        // Delete file
+        $posts->removeFiles($_POST['post_id']);
     }
 }

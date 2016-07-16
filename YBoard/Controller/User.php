@@ -10,20 +10,28 @@ use YBoard\Model\UserSessions;
 
 class User extends ExtendedController
 {
-    public function profile($username = false)
+    public function profile($userId = false)
     {
-        if (empty($username)) {
+        if (empty($userId)) {
             $user = $this->user;
-            $pageTitle = _('User account');
+            $pageTitle = _('Your profile');
         } else {
+            if (!$this->user->isAdmin) {
+                $this->notFound();
+            }
+
             $user = new \YBoard\Model\User($this->db);
-            $user->loadByUsername($username);
+            $user->loadById($userId);
 
             if ($user->id === null) {
                 $this->notFound();
             }
 
-            $pageTitle = sprintf(_('User: %s'), $user->username);
+            if (!empty($user->username)) {
+                $pageTitle = sprintf(_('Profile for user: %s'), $user->username);
+            } else {
+                $pageTitle = _('Profile for unregistered user');
+            }
         }
 
         $sessions = new UserSessions($this->db);
@@ -36,23 +44,6 @@ class User extends ExtendedController
             $view->loginSessions = $sessions->getAllByUser($this->user->id);
         }
         $view->display('Profile');
-    }
-
-    public function redirect($userId)
-    {
-        // Limit to admins
-        if (!$this->user->isAdmin) {
-            $this->notFound();
-        }
-
-        $user = new \YBoard\Model\User($this->db);
-        $user->loadById($userId);
-
-        if ($user->id === null) {
-            $this->notFound();
-        }
-
-        HttpResponse::redirectExit('/profile/' . $user->username);
     }
 
     public function changeName()

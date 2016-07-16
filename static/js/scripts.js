@@ -90,6 +90,23 @@ function deletePost(id) {
         toastr.error(errorMessage, messages.errorOccurred);
     });
 }
+function deleteFile(id) {
+    if (!confirm(messages.confirmDeleteFile)) {
+        return false;
+    }
+
+    $.ajax({
+        url: '/scripts/posts/deletefile',
+        type: "POST",
+        data: {'post_id': id}
+    }).done(function (data, textStatus, xhr) {
+        $p(id).find('figure').remove();
+        toastr.success(messages.fileDeleted);
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+    });
+}
 
 // -------------------------------------------
 // Thread following

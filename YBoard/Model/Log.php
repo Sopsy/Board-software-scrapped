@@ -7,6 +7,7 @@ class Log extends Model
 {
     const ACTION_ID_MOD_LOGIN = 1;
     const ACTION_ID_MOD_POST_DELETE = 2;
+    const ACTION_ID_MOD_POST_FILE_DELETE = 3;
 
     public function write(int $actionId, int $userId, $customData = null) : bool
     {

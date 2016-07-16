@@ -22,9 +22,12 @@
                 data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
                 onclick="openModMenu(this, <?= $post->id ?>)" title="<?= _('Moderation') ?>"></button>
         <div class="mod-menu-html">
-            <p>IP: <?= $post->ip ?> (<?= $post->countryCode ?>)</p>
-            <p>UID: <?= $post->userId ?></p>
-            <p><button onclick="deletePost(<?= $post->id ?>)" class="link"><?= _('Delete') ?></button></p>
+            <p><?= _('IP') ?>: <?= $post->ip ?> (<?= $post->countryCode ?>)</p>
+            <p><?= _('User ID') ?>: <a href="/profile/<?= $post->userId ?>"><?= $post->userId ?></a></p>
+            <?php if(!empty($post->file)) : ?>
+                <p><button onclick="deleteFile(<?= $post->id ?>)" class="link"><?= _('Delete file from post') ?></button></p>
+            <?php endif ?>
+            <p><button onclick="deletePost(<?= $post->id ?>)" class="link"><?= _('Delete post') ?></button></p>
         </div>
     <?php else : ?>
         <?php if ($post->userId != $user->id) : ?>
