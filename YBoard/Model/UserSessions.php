@@ -124,6 +124,10 @@ class UserSessions extends Model
 
     public function updateLastActive() : bool
     {
+        if ($this->id === null) {
+            return false;
+        }
+
         $q = $this->db->prepare("UPDATE user_sessions SET last_active = NOW(), ip = :ip
             WHERE session_id = :session_id LIMIT 1");
         $q->bindValue('session_id', $this->id);

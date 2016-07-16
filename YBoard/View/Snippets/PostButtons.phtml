@@ -20,12 +20,12 @@
     <?php if ($user->isMod) : ?>
         <button class="mod-menu button square icon-wrench" data-ip="<?= $post->ip ?>" data-uid="<?= $post->userId ?>"
                 data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
-                onclick="openModMenu(this, <?= $post->id ?>)" title="<?= _('Moderation') ?>">
-            <div>
-                <p>IP: <?= $post->ip ?></p>
-                <p>UID: <?= $post->userId ?></p>
-            </div>
-        </button>
+                onclick="openModMenu(this, <?= $post->id ?>)" title="<?= _('Moderation') ?>"></button>
+        <div class="mod-menu-html">
+            <p>IP: <?= $post->ip ?> (<?= $post->countryCode ?>)</p>
+            <p>UID: <?= $post->userId ?></p>
+            <p><button onclick="deletePost(<?= $post->id ?>)" class="link"><?= _('Delete') ?></button></p>
+        </div>
     <?php else : ?>
         <?php if ($post->userId != $user->id) : ?>
             <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>

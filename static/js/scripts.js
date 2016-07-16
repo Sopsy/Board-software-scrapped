@@ -211,9 +211,7 @@ function openModMenu(elm, postId) {
 
 }
 $('.mod-menu').tooltipster({
-    content: function() {
-
-    },
+    content: loadingAnimation(),
     side: 'bottom',
     animationDuration: 0,
     updateAnimation: null,
@@ -222,7 +220,11 @@ $('.mod-menu').tooltipster({
     contentAsHTML: true,
     zIndex: 1001,
     trigger: 'click',
-    interactive: 'true'
+    interactive: 'true',
+    functionInit: function(instance, helper) {
+        var content = $(helper.origin).next('.mod-menu-html').show().detach();
+        instance.content(content);
+    }
 });
 
 // -------------------------------------------
