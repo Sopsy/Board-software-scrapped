@@ -10,27 +10,34 @@
     <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
     <?php else : ?>
     <input type="hidden" id="post-destination">
-    <label id="label-board">
-        <span><?= _('Board') ?></span>
-        <select name="board" required>
-            <option value="" selected disabled><?= _('Select') ?></option>
-            <?php foreach ($boardList as $singleBoard) : ?>
-            <option value="<?= $singleBoard->url ?>"><?= htmlspecialchars($singleBoard->name) ?></option>
-            <?php endforeach ?>
-        </select>
-    </label>
+    <div class="input-row">
+        <label id="label-board">
+            <span class="label"><?= _('Board') ?></span>
+            <select name="board" required>
+                <option value="" selected disabled><?= _('Select') ?></option>
+                <?php foreach ($boardList as $singleBoard) : ?>
+                <option value="<?= $singleBoard->url ?>"><?= htmlspecialchars($singleBoard->name) ?></option>
+                <?php endforeach ?>
+            </select>
+        </label>
+    </div>
     <?php endif ?>
-    <label id="label-subject">
-        <span><?= _('Subject') ?></span>
-        <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $subjectMaxLength ?>">
-    </label>
+    <div class="input-row">
+        <label id="label-subject">
+            <span class="label"><?= _('Subject') ?></span>
+            <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $subjectMaxLength ?>">
+        </label>
+    </div>
 <?php endif ?>
-    <label id="label-file">
-        <span><?= _('File') ?> <span><<?= \YBoard\Library\Text::formatBytes($uploadMaxSize) ?></span></span>
-        <input type="file" name="files" id="post-files" accept="<?= $acceptedFileTypes ?>" data-maxsize="<?= $uploadMaxSize ?>">
-        <div class="button gray"><?= _('Choose file') ?></div>
+    <div class="input-row">
+        <label id="label-file">
+            <span class="label"><?= _('File') ?> <span>&lt;<?= \YBoard\Library\Text::formatBytes($uploadMaxSize) ?></span></span>
+            <input type="file" name="files" id="post-files" accept="<?= $acceptedFileTypes ?>" data-maxsize="<?= $uploadMaxSize ?>">
+            <span class="button gray"><?= _('Choose file') ?></span>
+        </label>
         <input type="text" id="file-name" name="file_name" placeholder="<?= _('No file selected') ?>">
-    </label>
+        <button type="button" onclick="removePostFile()" class="button gray icon-cross2"></button>
+    </div>
     <div class="file-progress progressbar"><div></div></div>
 
     <div id="message-input">
@@ -67,8 +74,8 @@
     <?php if ($user->requireCaptcha) : ?>
     <div id="post-form-captcha"></div>
     <?php endif ?>
-    <button onclick="$('#post-options').toggle();return false" class="button gray"><?= _('Options') ?></button>
-    <button id="reset-button" onclick="resetPostForm();return false" class="button gray"><?= _('Cancel') ?></button>
+    <button type="button" onclick="$('#post-options').toggle();return false" class="button gray"><?= _('Options') ?></button>
+    <button type="button" id="reset-button" onclick="resetPostForm();return false" class="button gray"><?= _('Cancel') ?></button>
     <input type="submit" class="button primary" value="<?= _('Submit') ?>">
     <div id="post-options">
         <h4><?= _('Functions') ?></h4>

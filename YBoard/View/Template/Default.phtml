@@ -94,7 +94,7 @@
             <a href="/about"><?= _('About') ?></a>
             <a href="/advertising"><?= _('Advertising') ?></a>
         </div>
-        <form id="search" type="post" action="/search" id="cse-search-box2">
+        <form id="search" method="get" action="/search">
             <input name="cx" value="<?= $gCsePartnerPub ?>" type="hidden">
             <input name="cof" value="FORID:10" type="hidden">
             <input name="ie" value="UTF-8" type="hidden">

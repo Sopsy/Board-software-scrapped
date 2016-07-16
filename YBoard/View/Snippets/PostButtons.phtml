@@ -17,10 +17,20 @@
             <button class="button square icon-bookmark-remove followbutton" onclick="unfollowThread(<?= $post->id ?>)" title="<?= _('Unfollow') ?>"></button>
         <?php endif ?>
     <?php endif ?>
-    <?php if ($post->userId != $user->id) : ?>
-        <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>
-    <?php endif ?>
-    <?php if ($post->userId == $user->id || $user->isMod) : ?>
-        <button class="button square icon-trash2" onclick="deletePost(<?= $post->id ?>)" title="<?= _('Delete') ?>"></button>
+    <?php if ($user->isMod) : ?>
+        <button class="mod-menu button square icon-wrench" data-ip="<?= $post->ip ?>" data-uid="<?= $post->userId ?>"
+                data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
+                onclick="openModMenu(this, <?= $post->id ?>)" title="<?= _('Moderation') ?>">
+            <div>
+                <p>IP: <?= $post->ip ?></p>
+                <p>UID: <?= $post->userId ?></p>
+            </div>
+        </button>
+    <?php else : ?>
+        <?php if ($post->userId != $user->id) : ?>
+            <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>
+        <?php else : ?>
+            <button class="button square icon-trash2" onclick="deletePost(<?= $post->id ?>)" title="<?= _('Delete') ?>"></button>
+        <?php endif ?>
     <?php endif ?>
 </div>

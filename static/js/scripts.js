@@ -205,6 +205,27 @@ function signupForm(elm, e) {
 }
 
 // -------------------------------------------
+// Post moderation
+// -------------------------------------------
+function openModMenu(elm, postId) {
+
+}
+$('.mod-menu').tooltipster({
+    content: function() {
+
+    },
+    side: 'bottom',
+    animationDuration: 0,
+    updateAnimation: null,
+    delay: 0,
+    arrow: false,
+    contentAsHTML: true,
+    zIndex: 1001,
+    trigger: 'click',
+    interactive: 'true'
+});
+
+// -------------------------------------------
 // Notifications
 // -------------------------------------------
 $.fn.extend({
@@ -535,17 +556,9 @@ function hidePostForm() {
 function resetPostForm() {
     var postForm = $('#post-form');
     postForm[0].reset();
-    $('#file-id').val('');
-    $('#file-name').val('');
     postForm.insertAfter(postformLocation);
-    postForm.find('.progressbar').each(function() {
-        updateProgressBar($(this), 0);
-    });
 
-    if (fileUploadXhr !== null) {
-        fileUploadXhr.abort();
-    }
-
+    removePostFile();
     resetOriginalPostFormDestination();
     hidePostForm();
 }
@@ -642,6 +655,19 @@ function resetOriginalPostFormDestination() {
     return true;
 }
 
+function removePostFile() {
+    $('#post-files').val('')
+    $('#file-id').val('');
+    $('#file-name').val('');
+    $('#post-form').find('.progressbar').each(function() {
+        updateProgressBar($(this), 0);
+    });
+
+    if (fileUploadXhr !== null) {
+        fileUploadXhr.abort();
+    }
+}
+
 var fileUploadInProgress = false;
 var fileUploadXhr = null;
 $('#post-files').on('change', function(e) {
@@ -652,7 +678,7 @@ $('#post-files').on('change', function(e) {
 
     var form = $(e.target);
     var fileInput = $(this);
-    var progressBar = fileInput.parent('label').next('.file-progress');
+    var progressBar = fileInput.parent().parent('.input-row').next('.file-progress');
 
     $('#file-name').val('');
     form.removeData('do-submit');

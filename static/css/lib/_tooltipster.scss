@@ -52,6 +52,7 @@
     z-index: 1000;
     max-width: 100%;
 
+    background-color: $contentBgColor;
     border: 5px solid $tooltipBorderColor;
     box-shadow: 5px 5px 15px -10px #000;
 }

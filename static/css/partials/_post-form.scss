@@ -18,25 +18,29 @@
         border: 0;
         padding: 0;
 
-        > label {
+        .input-row {
             $height: 30px;
 
             $backgroundColor: #fff;
-            $borderColor: #ccc;
             @if (lightness($contentBgColor) < 50) {
                 $backgroundColor: #000;
-                $borderColor: #333;
             }
             background-color: $backgroundColor;
-            border: 1px solid $borderColor;
             overflow: hidden;
             box-sizing: border-box;
             width: 100%;
             height: $height;
-            display: flex;
             margin-bottom: 5px;
+            display: flex;
 
-            > span {
+            label {
+                &:not(#label-file) {
+                    flex-grow: 1;
+                }
+                display: flex;
+            }
+
+            .label {
                 background-color: $highlightColor;
                 color: #ffffff;
                 display: inline-block;
@@ -59,9 +63,9 @@
                 background-color: transparent;
                 height: 100%;
 
-                $shadowColor: #ccc;
+                $shadowColor: #aaa;
                 @if (lightness($contentBgColor) < 50) {
-                    $shadowColor: #333;
+                    $shadowColor: #555;
                 }
                 @include input-shadow($shadowColor);
 
@@ -73,14 +77,13 @@
     }
     #message-input {
         $bg: #fff;
-        $border: #ccc;
+        $shadowColor: #aaa;
         @if (lightness($contentBgColor) < 50) {
             $bg: #000;
-            $border: #333;
+            $shadowColor: #555;
         }
         background-color: $bg;
-        border: 1px solid $border;
-        @include input-shadow($border);
+        @include input-shadow($shadowColor);
         margin-bottom: 5px;
     }
     #format-toolbar {
