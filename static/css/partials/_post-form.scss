@@ -55,14 +55,13 @@
                 }
             }
             input, select {
-                color: $textColor;
                 flex-grow: 1;
-                border: 0;
                 padding-left: 5px;
                 box-sizing: border-box;
-                background-color: transparent;
                 height: 100%;
 
+                color: $textColor;
+                background-color: transparent;
                 $shadowColor: #aaa;
                 @if (lightness($contentBgColor) < 50) {
                     $shadowColor: #555;

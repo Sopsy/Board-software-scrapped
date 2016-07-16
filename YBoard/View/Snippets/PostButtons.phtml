@@ -17,6 +17,7 @@
             <button class="button square icon-bookmark-remove followbutton" onclick="unfollowThread(<?= $post->id ?>)" title="<?= _('Unfollow') ?>"></button>
         <?php endif ?>
     <?php endif ?>
+    <button class="button square icon-flag2" onclick="reportPost(this, <?= $post->id?>)" title="<?= _('Report') ?>"></button>
     <?php if ($user->isMod) : ?>
         <button class="mod-menu button square icon-wrench" data-ip="<?= $post->ip ?>" data-uid="<?= $post->userId ?>"
                 data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
@@ -31,7 +32,6 @@
         </div>
     <?php else : ?>
         <?php if ($post->userId != $user->id) : ?>
-            <button class="button square icon-flag2" onclick="" title="<?= _('Report') ?>"></button>
         <?php else : ?>
             <button class="button square icon-trash2" onclick="deletePost(<?= $post->id ?>)" title="<?= _('Delete') ?>"></button>
         <?php endif ?>

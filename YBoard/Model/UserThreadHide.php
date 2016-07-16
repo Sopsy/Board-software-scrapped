@@ -6,7 +6,7 @@ use YBoard\Library\Database;
 
 class UserThreadHide extends UserSubModel
 {
-    public $threads = [];
+    protected $threads = [];
 
     public function add(int $threadId) : bool
     {
@@ -31,6 +31,11 @@ class UserThreadHide extends UserSubModel
     public function exists(int $threadId) : bool
     {
         return in_array($threadId, $this->threads);
+    }
+
+    public function getAll()
+    {
+        return $this->threads;
     }
 
     protected function load() : bool

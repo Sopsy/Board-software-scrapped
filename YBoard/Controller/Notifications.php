@@ -11,7 +11,7 @@ class Notifications extends ExtendedController
 
         $view = $this->loadTemplateEngine('Blank');
 
-        $view->notifications = $this->user->notifications->list;
+        $view->notifications = $this->user->notifications->getAll();
         $view->display('Ajax/NotificationList');
     }
 

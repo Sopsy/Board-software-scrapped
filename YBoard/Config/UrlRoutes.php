@@ -61,6 +61,8 @@ return [
     '#^/scripts/threads/unfollow$#' => ['Thread', 'unfollow'],
     '#^/scripts/files/upload#' => ['File', 'upload'],
     '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
+    '#^/scripts/report/getform$#' => ['PostReport', 'getForm'],
+    '#^/scripts/report/submit#' => ['PostReport', 'submit'],
 
     // Boards
     // Checked at the end so other rules override

@@ -28,7 +28,7 @@ class User extends ExtendedController
             }
 
             if (!empty($user->username)) {
-                $pageTitle = sprintf(_('Profile for user: %s'), $user->username);
+                $pageTitle = sprintf(_('Profile for user %s'), $user->username);
             } else {
                 $pageTitle = _('Profile for unregistered user');
             }

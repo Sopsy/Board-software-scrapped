@@ -49,7 +49,6 @@
                 $borderColor: #333;
             }
             background-color: $backgroundColor;
-            border: 1px solid $borderColor;
             @include input-shadow($borderColor);
             margin-bottom: 10px;
         }

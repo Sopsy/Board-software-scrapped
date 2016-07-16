@@ -1,6 +1,6 @@
 // CSRF token to each request and disable caching
 $.ajaxSetup({
-    cache: false,
+    cache: false, //    timeout: 3000,
     headers: {
         'X-CSRF-Token': config.csrfToken
     }
@@ -62,10 +62,60 @@ jQuery.fn.extend({
 jQuery.fn.reverse = [].reverse;
 
 // -------------------------------------------
+// Post reporting
+// -------------------------------------------
+function reportPost(elm, id) {
+    $(elm).openModal('/scripts/report/getform', false, function () {
+        if (typeof grecaptcha != 'undefined' && $('#report-captcha').html().length == 0) {
+            grecaptcha.render('report-captcha', {
+                'sitekey': config.reCaptchaPublicKey
+            });
+        }
+        $('#report-post-id').val(id);
+    });
+}
+function submitReport(e) {
+    if (typeof e != 'undefined') {
+        e.preventDefault();
+    }
+
+    if (!('FormData' in window)) {
+        toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
+        return false;
+    }
+
+    var form = $(e.target);
+    var fd = new FormData(e.target);
+
+    var oldHtml = $(e.target).html();
+    $(e.target).html(loadingAnimation());
+
+    $.ajax({
+        url: form.attr('action'),
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: fd
+    }).done(function () {
+        toastr.success(messages.postReported);
+        closeModals();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        if (xhr.status == '418') {
+            toastr.info(errorMessage);
+            closeModals();
+        } else {
+            toastr.error(errorMessage, messages.errorOccurred);
+            $(e.target).html(oldHtml);
+        }
+    });
+}
+
+// -------------------------------------------
 // Post deletion
 // -------------------------------------------
 function deletePost(id) {
-    if (!confirm(messages.confirmDelete)) {
+    if (!confirm(messages.confirmDeletePost)) {
         return false;
     }
 
@@ -73,7 +123,7 @@ function deletePost(id) {
         url: '/scripts/posts/delete',
         type: "POST",
         data: {'post_id': id}
-    }).done(function (data, textStatus, xhr) {
+    }).done(function () {
         $p(id).remove();
         if ($('body').hasClass('thread-page')) {
             if ($t(id).is('*')) {
@@ -85,10 +135,7 @@ function deletePost(id) {
             $t(id).remove();
             toastr.success(messages.postDeleted);
         }
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
-    });
+    }).fail(ajaxError);
 }
 function deleteFile(id) {
     if (!confirm(messages.confirmDeleteFile)) {
@@ -99,13 +146,10 @@ function deleteFile(id) {
         url: '/scripts/posts/deletefile',
         type: "POST",
         data: {'post_id': id}
-    }).done(function (data, textStatus, xhr) {
+    }).done(function () {
         $p(id).find('figure').remove();
         toastr.success(messages.fileDeleted);
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
-    });
+    }).fail(ajaxError);
 }
 
 // -------------------------------------------
@@ -118,8 +162,7 @@ function followThread(id) {
         type: "POST",
         data: {'thread_id': id}
     }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
+        ajaxError(xhr, textStatus, errorThrown);
         toggleFollowButton(id);
     });
 }
@@ -131,8 +174,7 @@ function unfollowThread(id) {
         type: "POST",
         data: {'thread_id': id}
     }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
+        ajaxError(xhr, textStatus, errorThrown);
         toggleFollowButton(id);
     });
 }
@@ -157,15 +199,16 @@ function toggleFollowButton(threadId) {
 // Thread hiding
 // -------------------------------------------
 function hideThread(id) {
+    $t(id).fadeOut();
     $.ajax({
         url: '/scripts/threads/hide',
         type: "POST",
         data: {'thread_id': id}
-    }).done(function (data, textStatus, xhr) {
-        $t(id).fadeOut();
+    }).done(function () {
+        $t(id).remove();
     }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
+        ajaxError(xhr, textStatus, errorThrown);
+        $t(id).stop().show();
     });
 }
 
@@ -174,12 +217,9 @@ function restoreThread(id) {
         url: '/scripts/threads/restore',
         type: "POST",
         data: {'thread_id': id}
-    }).done(function (data, textStatus, xhr) {
+    }).done(function () {
         $t(id).fadeOut();
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
-    });
+    }).fail(ajaxError);
 }
 
 // -------------------------------------------
@@ -238,37 +278,39 @@ $('.mod-menu').tooltipster({
     zIndex: 1001,
     trigger: 'click',
     interactive: 'true',
-    functionInit: function(instance, helper) {
+    functionInit: function (instance, helper) {
         var content = $(helper.origin).next('.mod-menu-html').show().detach();
         instance.content(content);
     }
 });
 
 // -------------------------------------------
-// Notifications
+// Modal windows (not always so modal though)
 // -------------------------------------------
 $.fn.extend({
-    openModal: function(name) {
+    openModal: function (url, content, completeCallback) {
+        closeModals();
+
+        var ajax = typeof url == 'string';
+
+        if (typeof content == 'undefined') {
+            content = loadingAnimation();
+        }
+
+        if (typeof completeCallback != 'function') {
+            completeCallback = function () {
+            };
+        }
+
         // Don't double initialize
         if (this.hasClass('tooltipstered')) {
             return true;
         }
 
         var closeButton = '<button class="close-modal close-modal-button icon-cross2"></button>';
-        var ajax = true;
-        var url;
-        var data;
-        if (name == 'notifications') {
-            url = '/scripts/notifications/get';
-        } else if (name == 'report') {
-            url = '/scripts/report/getform';
-        } else {
-            data = messages.errorOccurred;
-            return false;
-        }
 
         this.tooltipster({
-            content: loadingAnimation(),
+            content: content,
             side: 'bottom',
             animationDuration: 0,
             updateAnimation: null,
@@ -278,39 +320,51 @@ $.fn.extend({
             theme: 'modal-box',
             zIndex: 1001,
             trigger: 'click',
-            interactive: 'true',
-            functionReady: function(instance, helper) {
+            interactive: true,
+            trackTooltip: true,
+            functionReady: function (instance, helper) {
                 if (ajax) {
                     $.ajax({
                         url: url,
                         type: "POST"
-                    }).done(function (data, textStatus, xhr) {
+                    }).done(function (data) {
                         data = $(data);
                         data.find('.datetime').localizeTimestamp(this);
                         data = data.prop('outerHTML');
 
                         instance.content(closeButton + data);
-                        updateUnreadNotificationCount($('.notifications-list .not-read').length);
-                    }).fail(function (xhr, textStatus, errorThrown) {
-                        var errorMessage = getErrorMessage(xhr, errorThrown);
-                        instance.content(closeButton + errorMessage);
-                    });
+                        completeCallback();
+                    }).fail(ajaxError);
                 } else {
-                    instance.content(closeButton + data);
+                    completeCallback();
                 }
-                $(helper.tooltip).on('click', '.close-modal', function() {
+                $(helper.tooltip).on('click', '.close-modal', function () {
                     instance.close();
                 });
             },
-            functionAfter: function(instance, helper) {
-                instance.content(closeButton + loadingAnimation());
+            functionAfter: function (instance, helper) {
+                if (ajax) {
+                    instance.content(closeButton + loadingAnimation());
+                }
             }
         }).tooltipster('open')
     }
 });
 
+function closeModals() {
+    var instances = $.tooltipster.instances();
+    $.each(instances, function(i, instance){
+        instance.close();
+    });
+}
+
+// -------------------------------------------
+// Notifications
+// -------------------------------------------
 function getNotifications(elm) {
-    $(elm).openModal('notifications');
+    $(elm).openModal('/scripts/notifications/get', null, true, function () {
+        updateUnreadNotificationCount($('.notifications-list .not-read').length);
+    });
 }
 
 function markNotificationRead(id) {
@@ -319,10 +373,7 @@ function markNotificationRead(id) {
         url: '/scripts/notifications/markread',
         type: "POST",
         data: {'id': id}
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 
     updateUnreadNotificationCount($('.notification.not-read').length);
 }
@@ -331,10 +382,7 @@ function markAllNotificationsRead() {
     $.ajax({
         url: '/scripts/notifications/markallread',
         type: "POST"
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 
     updateUnreadNotificationCount(0);
 }
@@ -358,7 +406,7 @@ function searchThreadlist(word) {
         $('.thread-box').show();
     } else {
         $('.thread-box').hide();
-        $('.thread-box').each(function() {
+        $('.thread-box').each(function () {
             var self = $(this);
             if (self.find('.post').html().toLowerCase().indexOf(word) !== -1) {
                 $(this).show();
@@ -385,16 +433,13 @@ function getMoreReplies(threadId) {
                 'thread_id': threadId,
                 'from_id': fromId
             }
-        }).done(function (data, textStatus, xhr) {
+        }).done(function (data) {
             // Update timestamps
             data = $(data);
             data.find('.datetime').localizeTimestamp(this);
 
             $t(threadId).find('.more-replies-container').html(data);
-        }).fail(function (xhr, textStatus, errorThrown) {
-            var errorMessage = getErrorMessage(xhr, errorThrown);
-            toastr.error(errorMessage);
-        });
+        }).fail(ajaxError);
     } else {
         // Contract
         $t(threadId).removeClass('expanded').find('.more-replies-container').html('');
@@ -443,9 +488,9 @@ function getNewReplies(threadId, manual) {
         data: {
             'thread_id': threadId,
             'from_id': fromId,
-            'newest': true,
+            'newest': true
         }
-    }).done(function (data, textStatus, xhr) {
+    }).done(function (data) {
         if (manual && data.length == 0) {
             toastr.info(messages.noNewReplies);
         }
@@ -458,8 +503,7 @@ function getNewReplies(threadId, manual) {
 
         data.appendTo(thread.find('.replies'));
     }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
+        ajaxError(xhr, textStatus, errorThrown);
         stopAutoUpdate();
     }).always(function () {
         setTimeout('loadingReplies = false', 100);
@@ -678,7 +722,7 @@ function removePostFile() {
     $('#post-files').val('')
     $('#file-id').val('');
     $('#file-name').val('');
-    $('#post-form').find('.progressbar').each(function() {
+    $('#post-form').find('.progressbar').each(function () {
         updateProgressBar($(this), 0);
     });
 
@@ -689,7 +733,7 @@ function removePostFile() {
 
 var fileUploadInProgress = false;
 var fileUploadXhr = null;
-$('#post-files').on('change', function(e) {
+$('#post-files').on('change', function (e) {
     if (!('FormData' in window)) {
         toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
         return false;
@@ -757,7 +801,7 @@ $('#post-files').on('change', function(e) {
         }
     }).always(function () {
         fileUploadInProgress = false;
-    }).done(function (data, textStatus, xhr) {
+    }).done(function (data) {
         updateProgressBar(progressBar, 100);
         data = JSON.parse(data);
         if (data.message.length != 0) {
@@ -771,10 +815,7 @@ $('#post-files').on('change', function(e) {
             updateProgressBar(progressBar, 0);
         }
     }).fail(function (xhr, textStatus, errorThrown) {
-        if (typeof xhr.responseText != 'undefined') {
-            var errorMessage = getErrorMessage(xhr, errorThrown);
-            toastr.error(errorMessage, messages.errorOccurred);
-        }
+        ajaxError(xhr, textStatus, errorThrown);
         updateProgressBar(progressBar, 0);
     });
 });
@@ -811,12 +852,12 @@ function submitPost(e) {
     var fd = new FormData(form[0]);
 
     $.ajax({
-        url: form.attr("action"),
+        url: form.attr('action'),
         type: "POST",
         processData: false,
         contentType: false,
         data: fd
-    }).done(function (data, textStatus, xhr) {
+    }).done(function (data) {
         var dest = $('#post-destination');
         if (dest.attr('name') != 'thread') {
             var thread = null;
@@ -840,10 +881,7 @@ function submitPost(e) {
 
         // Reset post form
         resetPostForm();
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage, messages.errorOccurred);
-    }).always(function () {
+    }).fail(ajaxError).always(function () {
         submitButton.removeAttr('disabled');
         submitInProgress = false;
 
@@ -864,7 +902,7 @@ function updateProgressBar(elm, progress) {
     if (progress == 0) {
         elm.find('div').css('width', 0).removeClass('in-progress');
     } else {
-        elm.find('div').css('width', progress +'%').addClass('in-progress');
+        elm.find('div').css('width', progress + '%').addClass('in-progress');
     }
 }
 
@@ -911,7 +949,7 @@ function playMedia(elm, e) {
         if (xhr.status == '418') {
             toastr.info(errorMessage);
         } else {
-            toastr.error(errorMessage);
+            toastr.error(errorMessage, messages.errorOccurred);
         }
     }).always(function () {
         clearTimeout(loading);
@@ -991,10 +1029,7 @@ function destroySession(sessionId) {
         data: {'session_id': sessionId}
     }).done(function (xhr, textStatus, errorThrown) {
         $('#' + sessionId).fadeOut();
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 }
 
 function changeUsername(e) {
@@ -1013,10 +1048,7 @@ function changeUsername(e) {
         }
     }).done(function (xhr, textStatus, errorThrown) {
         pageReload();
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 }
 
 function changePassword(e) {
@@ -1042,10 +1074,7 @@ function changePassword(e) {
     }).done(function (xhr, textStatus, errorThrown) {
         toastr.success(messages.passwordChanged);
         e.target.reset();
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 }
 
 // -------------------------------------------
@@ -1061,13 +1090,10 @@ function switchThemeVariation() {
 
     var keys = Object.keys(variations);
     var next = keys[($.inArray(current, keys) + 1) % keys.length];
-    console.log(variations);
-    console.log(keys[next]);
+
     if (typeof keys[next] == 'undefined') {
         next = 0;
     }
-    console.log(variations[current]);
-    console.log(variations[keys[next]]);
 
     var oldHref = css.attr('href');
     var newHref = oldHref.replace(variations[current], variations[keys[next]]);
@@ -1083,7 +1109,7 @@ function switchThemeVariation() {
         'data-cur-alt': next,
     }).insertAfter(css);
 
-    var timeout = setTimeout(function(){
+    var timeout = setTimeout(function () {
         $('.css:first').remove();
     }, 2000);
 
@@ -1092,8 +1118,7 @@ function switchThemeVariation() {
         type: "POST",
         data: {'id': next}
     }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
+        ajaxError(xhr, textStatus, errorThrown);
         clearTimeout(timeout);
     });
 }
@@ -1112,10 +1137,7 @@ function toggleHideSidebar() {
     $.ajax({
         url: '/scripts/preferences/togglehidesidebar',
         type: "POST"
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        toastr.error(errorMessage);
-    });
+    }).fail(ajaxError);
 }
 
 // -------------------------------------------
@@ -1142,7 +1164,7 @@ $('body:not(.board-catalog)')
     })
     .on('touchstart mouseenter', '.reflink:not(.tooltipstered)', function (e) {
         var elm = $(this);
-        reflinkCreateTimeout = setTimeout(function() {
+        reflinkCreateTimeout = setTimeout(function () {
             e.preventDefault();
             var id = elm.data('id');
             var content = loadingAnimation();
@@ -1174,16 +1196,13 @@ $('body:not(.board-catalog)')
                         url: '/scripts/posts/get',
                         type: "POST",
                         data: {'post_id': id}
-                    }).done(function (data, textStatus, xhr) {
+                    }).done(function (data) {
                         // Update timestamps
                         data = $(data);
                         data.find('.datetime').localizeTimestamp(this);
 
                         instance.content(data);
-                    }).fail(function (xhr, textStatus, errorThrown) {
-                        var errorMessage = getErrorMessage(xhr, errorThrown);
-                        instance.content(errorMessage);
-                    });
+                    }).fail(ajaxError);
                 }
             }).tooltipster('open');
         }, 100);
@@ -1224,7 +1243,7 @@ function searchCatalog(word) {
         threads.show();
     } else {
         threads.hide();
-        threads.each(function() {
+        threads.each(function () {
             var self = $(this);
             if (self.find('h3').html().toLowerCase().indexOf(word.toLowerCase()) !== -1) {
                 $(this).show();
@@ -1293,13 +1312,28 @@ function returnToBoard() {
     window.location = url;
 }
 
+function ajaxError(xhr, textStatus, errorThrown) {
+    var errorMessage = getErrorMessage(xhr, errorThrown);
+
+    if (errorMessage.length != 0) {
+        toastr.error(errorMessage, messages.errorOccurred);
+    }
+}
+
 function getErrorMessage(xhr, errorThrown) {
-    if (xhr.responseText.length != 0) {
+    if (errorThrown == 'timeout') {
+        errorThrown = messages.timeoutWarning;
+    } else {
         try {
             var text = JSON.parse(xhr.responseText);
             errorThrown = text.message;
         } catch (e) {
+            errorThrown = xhr.status + ' ' + errorThrown;
         }
+    }
+
+    if (errorThrown.length == 0 && xhr.readyState == 0 && xhr.status == 0) {
+        errorThrown = messages.networkError;
     }
     return errorThrown;
 }

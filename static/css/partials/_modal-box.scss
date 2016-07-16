@@ -1,4 +1,5 @@
 .modal-box {
+    position: fixed;
     left: 20px !important;
     top: 20px !important;
     background-color: $contentBgColor;
@@ -7,8 +8,12 @@
     max-height: 90%;
     overflow: hidden;
 
+    h3 {
+        margin-bottom: 10px;
+    }
+
     .modal-content.has-buttons {
-        margin-bottom: 50px;
+        margin-bottom: 20px;
     }
 
     .close-modal-button {
@@ -38,7 +43,6 @@
     .modal-content {
         width: 100%;
         height: 100%;
-        overflow: auto;
     }
 
     .modal-buttons {
@@ -64,5 +68,29 @@
         top: $topMenuHeight !important;
         right: 0 !important;
         bottom: 0 !important;
+    }
+}
+
+#report-form {
+    p {
+        margin: 0;
+    }
+    label {
+        display: block;
+        margin: 5px 0;
+    }
+    #report-extra-info {
+        width: 100%;
+        box-sizing: border-box;
+        margin: 10px 0;
+        padding: 5px;
+        $backgroundColor: #fff;
+        $borderColor: #ccc;
+        @if (lightness($contentBgColor) < 50) {
+            $backgroundColor: #000;
+            $borderColor: #333;
+        }
+        background-color: $backgroundColor;
+        @include input-shadow($borderColor);
     }
 }

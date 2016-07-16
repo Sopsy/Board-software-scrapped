@@ -1,0 +1,19 @@
+<div class="modal-content has-buttons" id="report-form">
+    <h3><?= _('Report post') ?></h3>
+    <form onsubmit="submitReport(event)" method="post" action="/scripts/report/submit">
+        <p><?= _('Choose a reason') ?></p>
+        <input type="hidden" name="post_id" id="report-post-id">
+        <?php foreach ($reasons as $reasonId => $reasonName) : ?>
+            <label>
+                <input type="radio" name="reason_id" value="<?= $reasonId ?>" required>
+                <?= $reasonName ?>
+            </label>
+        <?php endforeach ?>
+        <input id="report-extra-info" type="text" name="report_additional_info"
+               placeholder="<?= _('Additional information (optional)') ?>" maxlength="120">
+        <div id="report-captcha"></div>
+        <div class="modal-buttons">
+            <button type="submit" class="button primary right"><?= _('Report') ?></button>
+        </div>
+    </form>
+</div>

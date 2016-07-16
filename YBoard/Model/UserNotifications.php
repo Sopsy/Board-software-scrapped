@@ -19,8 +19,8 @@ class UserNotifications extends Model
 
     protected $userId;
     protected $hiddenTypes;
+    protected $list = [];
 
-    public $list = [];
     public $unreadCount = 0;
 
     public function __construct(Database $db, int $userId = null, array $hiddenTypes = [], bool $skipLoad = false)
@@ -143,6 +143,54 @@ class UserNotifications extends Model
         return true;
     }
 
+    public function getAll()
+    {
+        foreach ($this->list as $notification) {
+            switch ($notification->type) {
+                case static::NOTIFICATION_TYPE_POST_REPLY:
+                    $text = _('Your message has') . ' ';
+                    if ($notification->count == 1) {
+                        $text .= _('a new reply');
+                    } else {
+                        $text .= _('%d new replies');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_REPLY:
+                    $text = _('Your thread has') . ' ';
+                    if ($notification->count == 1) {
+                        $text .= _('a new reply');
+                    } else {
+                        $text .= _('%d new replies');
+                    }
+                    break;
+                case static::NOTIFICATION_TYPE_GOT_TAG:
+                    $text = _('You just got a new tag: %s!');
+                    break;
+                case static::NOTIFICATION_TYPE_GOT_GOLD:
+                    $text = _('Someone just gave you a gold account!');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_SUPERSAGED:
+                    $text = _('Someone supersaged your thread...');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_FORCEBUMPED:
+                    $text = _('Someone force bumped your thread');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_REVIVED:
+                    $text = _('Someone revived your thread');
+                    break;
+                case static::NOTIFICATION_TYPE_THREAD_AUTOLOCKED:
+                    $text = _('Your thread reached the reply limit');
+                    break;
+                default:
+                    $text = _('Lolwut? Unknown notification!');
+                    break;
+            }
+            $notification->text = $text;
+        }
+
+        return $this->list;
+    }
+
     protected function load()
     {
         // FIXME: IN (:var) does not work
@@ -168,50 +216,6 @@ class UserNotifications extends Model
             $notification->customData = $row->custom_data;
             $notification->count = $row->count == 0 ? 1 : $row->count;
             $notification->isRead = (bool)$row->is_read;
-
-            switch ($notification->type) {
-                case static::NOTIFICATION_TYPE_POST_REPLY:
-                    $text = _('Your message has') . ' ';
-                    if ($notification->count == 1) {
-                        $text .= _('a new reply');
-                    } else {
-                        $text .= _('%d new replies');
-                    }
-                    break;
-                case static::NOTIFICATION_TYPE_THREAD_REPLY:
-                    $text = _('Your thread has') . ' ';
-                    if ($notification->count == 1) {
-                        $text .= _('a new reply');
-                    } else {
-                        $text .= _('%d new replies');
-                    }
-                    break;
-                case static::NOTIFICATION_TYPE_GOT_TAG:
-                    $text = _('You just got a new tag: %s!');
-                    break;
-                case static::NOTIFICATION_TYPE_GOT_GOLD:
-                    $text = _('Someone just gave you a gold account');
-                    if (!empty($notification->postId)) {
-                        $text .= ' ' . _('for your post %s');
-                    }
-                    break;
-                case static::NOTIFICATION_TYPE_THREAD_SUPERSAGED:
-                    $text = _('Someone supersaged your thread...');
-                    break;
-                case static::NOTIFICATION_TYPE_THREAD_FORCEBUMPED:
-                    $text = _('Someone force bumped your thread');
-                    break;
-                case static::NOTIFICATION_TYPE_THREAD_REVIVED:
-                    $text = _('Someone revived your thread');
-                    break;
-                case static::NOTIFICATION_TYPE_THREAD_AUTOLOCKED:
-                    $text = _('Your thread reached the reply limit');
-                    break;
-                default:
-                    $text = _('Lolwut? Unknown notification!');
-                    break;
-            }
-            $notification->text = $text;
 
             if (!$notification->isRead) {
                 ++$this->unreadCount;

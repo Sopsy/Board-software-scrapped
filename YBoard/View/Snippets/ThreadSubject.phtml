@@ -1,7 +1,7 @@
 <h3>
     <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?php
-    if ($user->threadFollow->exists($thread->id) && $user->threadFollow->threads[$thread->id]->lastSeenReply) :
-        ?>#post-<?= $user->threadFollow->threads[$thread->id]->lastSeenReply ?><?php
+    if ($user->threadFollow->exists($thread->id) && $user->threadFollow->getThreadLastSeenReply($thread->id)) :
+        ?>#post-<?= $user->threadFollow->getThreadLastSeenReply($thread->id) ?><?php
     endif ?>">
 
     <?php if ($thread->sticky) :
@@ -12,8 +12,8 @@
     endif;
     ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span>
 
-    <?php if ($user->threadFollow->exists($thread->id) && $user->threadFollow->threads[$thread->id]->unreadCount != 0) : ?>
-        <span class="notification-count"><?= $user->threadFollow->threads[$thread->id]->unreadCount ?></span>
+    <?php if ($user->threadFollow->exists($thread->id) && $user->threadFollow->getThreadUnreadCount($thread->id) != 0) : ?>
+        <span class="notification-count"><?= $user->threadFollow->getThreadUnreadCount($thread->id) ?></span>
     <?php endif ?>
     </a>
 </h3>

@@ -13,7 +13,7 @@ class Board extends ExtendedController
         $this->limitPages($pageNum, $this->config['view']['maxPages']);
 
         $posts = new Posts($this->db);
-        $posts->setHiddenThreads($this->user->threadHide->threads);
+        $posts->setHiddenThreads($this->user->threadHide->getAll());
 
         $board = $this->boards->getByUrl($boardUrl);
         $threads = $posts->getBoardThreads($board->id, $pageNum, $this->user->preferences->threadsPerPage,
@@ -40,7 +40,7 @@ class Board extends ExtendedController
         $this->limitPages($pageNum, $this->config['view']['maxCatalogPages']);
 
         $posts = new Posts($this->db);
-        $posts->setHiddenThreads($this->user->threadHide->threads);
+        $posts->setHiddenThreads($this->user->threadHide->getAll());
 
         $board = $this->boards->getByUrl($boardUrl);
         $threads = $posts->getBoardThreads($board->id, $pageNum, $this->user->preferences->threadsPerCatalogPage);

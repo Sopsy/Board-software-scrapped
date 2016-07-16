@@ -148,7 +148,7 @@
         overflow: hidden;
     }
 
-    .post {
+    &:not(.tooltipster-base) .post {
         &:not(.op-post) {
             &.highlighted,
             &.own-post {

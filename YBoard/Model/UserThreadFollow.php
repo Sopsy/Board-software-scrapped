@@ -7,7 +7,7 @@ use YBoard\Library\Database;
 
 class UserThreadFollow extends UserSubModel
 {
-    public $threads = [];
+    protected $threads = [];
     public $unreadCount = 0;
 
     public function add(int $threadId) : bool
@@ -76,6 +76,29 @@ class UserThreadFollow extends UserSubModel
         $q->execute();
 
         return true;
+    }
+
+    public function getAll()
+    {
+        return $this->threads;
+    }
+
+    public function getThreadUnreadCount(int $threadId)
+    {
+        if (empty($this->threads[$threadId])) {
+            return false;
+        }
+
+        return $this->threads[$threadId]->unreadCount;
+    }
+
+    public function getThreadLastSeenReply(int $threadId)
+    {
+        if (empty($this->threads[$threadId]) || empty($this->threads[$threadId]->lastSeenReply)) {
+            return false;
+        }
+
+        return $this->threads[$threadId]->lastSeenReply;
     }
 
     protected function load() : bool
