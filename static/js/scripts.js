@@ -362,7 +362,7 @@ function closeModals() {
 // Notifications
 // -------------------------------------------
 function getNotifications(elm) {
-    $(elm).openModal('/scripts/notifications/get', null, true, function () {
+    $(elm).openModal('/scripts/notifications/get', false, function () {
         updateUnreadNotificationCount($('.notifications-list .not-read').length);
     });
 }
