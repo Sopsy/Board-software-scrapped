@@ -30,11 +30,15 @@ class Cleanup extends CliDatabase
             }
 
             unlink($file);
-            echo "\n" . $file . " deleted\n";
+            if (!QUIET) {
+                echo "\n" . $file . " deleted";
+            }
             ++$count;
         }
 
-        echo "\n\n" . $count . " files deleted\n";
+        if (!QUIET) {
+            echo "\n\n" . $count . " files deleted\n";
+        }
     }
 
     public function deleteOldPosts()
@@ -55,7 +59,9 @@ class Cleanup extends CliDatabase
             $posts->deleteMany($threads);
         }
 
-        echo count($threads) . " threads deleted\n";
+        if (!QUIET) {
+            echo count($threads) . " threads deleted\n";
+        }
     }
 
     public function deleteOldUsers()
@@ -75,7 +81,9 @@ class Cleanup extends CliDatabase
             $users->deleteMany($unusable);
         }
 
-        echo count($expiredSessions) . " expired sessions deleted\n";
-        echo count($unusable) . " users deleted\n";
+        if (!QUIET) {
+            echo count($expiredSessions) . " expired sessions deleted\n";
+            echo count($unusable) . " users deleted\n";
+        }
     }
 }

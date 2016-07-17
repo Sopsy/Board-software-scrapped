@@ -13,6 +13,12 @@ if (empty($argv[2])) {
 $controller = $argv[1];
 $command = $argv[2];
 
+if (!empty($argv[3])) {
+    define('QUIET', true);
+} else {
+    define('QUIET', false);
+}
+
 // Pre-setup
 define('ROOT_PATH', __DIR__);
 

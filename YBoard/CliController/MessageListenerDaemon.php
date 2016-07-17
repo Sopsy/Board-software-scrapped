@@ -6,6 +6,7 @@ use YBoard\Library\Database;
 use YBoard\Library\FileHandler;
 use YBoard\Library\MessageQueue;
 use YBoard\Model\Files;
+use YBoard\Model\Notifications;
 use YBoard\Model\Posts;
 use YBoard\Model\UserNotifications;
 
@@ -40,27 +41,21 @@ class MessageListenerDaemon
 
         while ($mq->receive(MessageQueue::MSG_TYPE_ALL, $msgType, 102400, $message)) {
             $this->connectDb();
-
             try {
                 switch ($msgType) {
                     case MessageQueue::MSG_TYPE_DO_PNGCRUSH:
-                        // $message should be fileId
                         $this->doPngCrush($message);
                         break;
                     case MessageQueue::MSG_TYPE_PROCESS_VIDEO:
-                        // $message should be fileId
                         $this->processVideo($message);
                         break;
                     case MessageQueue::MSG_TYPE_PROCESS_AUDIO:
-                        // $message should be fileId
                         $this->processAudio($message);
                         break;
                     case MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION:
-                        // Message should be [notificationType, postId, [userId], skipUsers]
                         $this->addPostNotification($message);
                         break;
                     case MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION:
-                        // Message should be $postId or [$postId, $postId, $postId, ...]
                         $this->removePostNotification($message);
                         break;
                     default:
@@ -77,15 +72,16 @@ class MessageListenerDaemon
         }
     }
 
-    protected function doPngCrush($message)
+    protected function doPngCrush(int $fileId) : bool
     {
         $files = new Files($this->db);
-        $file = $files->get($message);
+        $file = $files->get($fileId);
         if (!$file) {
-            CliLogger::write('[ERROR] Invalid file: ' . $message);
+            CliLogger::write('[ERROR] Invalid file: ' . $fileId);
 
             return false;
         }
+
         if ($file->extension != 'png') {
             CliLogger::write('[ERROR] Invalid file extension for PNGCrush: ' . $file->extension);
 
@@ -96,22 +92,24 @@ class MessageListenerDaemon
         FileHandler::pngCrush($filePath);
         $md5 = md5(file_get_contents($filePath));
 
-        $files->saveMd5List($file->id, [$md5]);
-        $files->updateFileSize($file->id, filesize($filePath));
-        $files->updateFileInProgress($file->id, false);
+        $file->saveMd5List([$md5]);
+        $file->updateSize(filesize($filePath));
+        $file->updateInProgress(false);
 
         return true;
     }
 
-    protected function processVideo($message)
+    protected function processVideo(int $fileId) : bool
     {
+        // $message should be int fileId
         $files = new Files($this->db);
-        $file = $files->get($message);
+        $file = $files->get($fileId);
         if (!$file) {
-            CliLogger::write('[ERROR] Invalid file: ' . $message);
+            CliLogger::write('[ERROR] Invalid file: ' . $fileId);
 
             return false;
         }
+
         if ($file->extension != 'mp4') {
             CliLogger::write('[ERROR] Invalid file extension for video: ' . $file->extension);
 
@@ -130,22 +128,23 @@ class MessageListenerDaemon
         }
 
         $md5 = md5(file_get_contents($filePath));
-        $files->saveMd5List($file->id, [$md5]);
-        $files->updateFileSize($file->id, filesize($filePath));
-        $files->updateFileInProgress($file->id, false);
+        $file->saveMd5List([$md5]);
+        $file->updateSize(filesize($filePath));
+        $file->updateInProgress(false);
 
         return true;
     }
 
-    protected function processAudio($message)
+    protected function processAudio(int $fileId) : bool
     {
         $files = new Files($this->db);
-        $file = $files->get($message);
+        $file = $files->get($fileId);
         if (!$file) {
-            CliLogger::write('[ERROR] Invalid file: ' . $message);
+            CliLogger::write('[ERROR] Invalid file: ' . $fileId);
 
             return false;
         }
+
         if ($file->extension != 'm4a') {
             CliLogger::write('[ERROR] Invalid file extension for video: ' . $file->extension);
 
@@ -164,15 +163,16 @@ class MessageListenerDaemon
         }
 
         $md5 = md5(file_get_contents($filePath));
-        $files->saveMd5List($file->id, [$md5]);
-        $files->updateFileSize($file->id, filesize($filePath));
-        $files->updateFileInProgress($file->id, false);
+        $file->saveMd5List([$md5]);
+        $file->updateSize(filesize($filePath));
+        $file->updateInProgress(false);
 
         return true;
     }
 
-    protected function addPostNotification($message)
+    protected function addPostNotification(array $message) : bool
     {
+        // Message should be [notificationType, postId, [userId], skipUsers]
         if (!is_array($message)) {
             return false;
         }
@@ -184,10 +184,10 @@ class MessageListenerDaemon
         list($notificationType, $postId, $skipUsers) = $message;
 
         $posts = new Posts($this->db);
-        $userNotifications = new UserNotifications($this->db);
+        $notifications = new Notifications($this->db);
 
         if (!is_array($postId)) {
-            $repliedPost = $posts->getMeta($postId);
+            $repliedPost = $posts->get($postId, false);
             if (!$repliedPost || empty($repliedPost->userId)) {
                 return false;
             }
@@ -195,15 +195,15 @@ class MessageListenerDaemon
             if (in_array($repliedPost->userId, $skipUsers)) {
                 return true;
             }
-            $userNotifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
+            $notifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
         } else {
-            $repliedPosts = $posts->getMeta($postId);
+            $repliedPosts = $posts->get($postId, false);
             foreach ($repliedPosts as $repliedPost) {
                 if (in_array($repliedPost->userId, $skipUsers)) {
                     continue;
                 }
 
-                $userNotifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
+                $notifications->add($repliedPost->userId, $notificationType, null, $repliedPost->id);
                 $skipUsers[] = $repliedPost->userId;
             }
         }
@@ -211,16 +211,17 @@ class MessageListenerDaemon
         return true;
     }
 
-    protected function removePostNotification($message)
+    protected function removePostNotification($message) : bool
     {
-        $userNotifications = new UserNotifications($this->db);
+        // Message should be $postId or [$postId, $postId, $postId, ...]
+        $notifications = new Notifications($this->db);
 
         if (!is_array($message) || empty($message['types']) || empty($message['posts'])) {
             return false;
         }
 
-        $userNotifications->decrementCountByPostId($message['posts'], $message['types']);
-        $userNotifications->clearInvalid();
+        $notifications->decrementCountByPostId($message['posts'], $message['types']);
+        $notifications->clearInvalid();
 
         return true;
     }

@@ -11,6 +11,6 @@ do
         exit 0
     fi
     I=`expr ${I} + 1`
-    php -f "${CWD}/RunCommand.php" MessageListenerDaemon &
+    php -f "${CWD}/RunCommand.php" MessageListenerDaemon index true &
 done
 exit 0

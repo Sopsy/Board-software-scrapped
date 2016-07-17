@@ -215,9 +215,8 @@ class Posts extends Model
             return false;
         }
 
-        $row = $q->fetch();
         if (!$wasArray) {
-            return new Post($this->db, $row);
+            return new Post($this->db, $q->fetch());
         }
 
         $posts = [];

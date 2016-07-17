@@ -28,7 +28,7 @@ class File Extends ExtendedController
         }
 
         try {
-            $file = $files->processUpload($_FILES['file']);
+            $file = $files->processUpload($_FILES['file'], true);
         } catch (FileUploadException $e) {
             $this->throwJsonError(400, $e->getMessage());
         }
