@@ -31,7 +31,6 @@ class CustomBoard extends ExtendedController
 
     public function followedThreads($pageNum = 1)
     {
-        // TODO: Add "mark all as read"
         $posts = new Posts($this->db);
         $threads = $posts->getCustomThreads(array_keys($this->user->threadFollow->getAll()), $pageNum,
             $this->user->preferences->threadsPerPage, $this->user->preferences->repliesPerThread, true);

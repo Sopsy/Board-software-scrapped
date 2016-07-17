@@ -158,7 +158,7 @@ function deleteFile(id) {
 function followThread(id) {
     toggleFollowButton(id);
     $.ajax({
-        url: '/scripts/threads/follow',
+        url: '/scripts/follow/add',
         type: "POST",
         data: {'thread_id': id}
     }).fail(function (xhr, textStatus, errorThrown) {
@@ -170,7 +170,7 @@ function followThread(id) {
 function unfollowThread(id) {
     toggleFollowButton(id);
     $.ajax({
-        url: '/scripts/threads/unfollow',
+        url: '/scripts/follow/remove',
         type: "POST",
         data: {'thread_id': id}
     }).fail(function (xhr, textStatus, errorThrown) {
@@ -193,6 +193,19 @@ function toggleFollowButton(threadId) {
             .addClass('icon-bookmark-add')
             .attr('onclick', 'followThread(' + threadId + ')');
     }
+}
+
+function markAllFollowedRead() {
+    $('.icon-bookmark2 .unread-count').hide();
+    $('h3 .notification-count').hide();
+    $.ajax({
+        url: '/scripts/follow/markallread',
+        type: "POST"
+    }).fail(function (xhr, textStatus, errorThrown) {
+        ajaxError(xhr, textStatus, errorThrown);
+        $('.icon-bookmark2 .unread-count').show();
+        $('h3 .notification-count').show();
+    });
 }
 
 // -------------------------------------------
@@ -437,23 +450,6 @@ function updateUnreadNotificationCount(count) {
         elm.addClass('none');
     } else {
         elm.removeClass('none');
-    }
-}
-
-// -------------------------------------------
-// Threadlist search
-// -------------------------------------------
-function searchThreadlist(word) {
-    if (word.length == 0) {
-        $('.thread-box').show();
-    } else {
-        $('.thread-box').hide();
-        $('.thread-box').each(function () {
-            var self = $(this);
-            if (self.find('.post').html().toLowerCase().indexOf(word) !== -1) {
-                $(this).show();
-            }
-        });
     }
 }
 
@@ -1284,7 +1280,7 @@ $('body >:not(#topbar):not(#sidebar)').on('click', function (e) {
 });
 
 // -------------------------------------------
-// Catalog search
+// Catalog functions
 // -------------------------------------------
 function searchCatalog(word) {
     var threads = $('.thread-box');

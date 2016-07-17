@@ -161,3 +161,23 @@ h4 {
         display: none !important;
     }
 }
+
+.board-additional-functions {
+    margin: 0 10px;
+
+    input {
+        color: $textColor;
+        width: 300px;
+        max-width: 90%;
+        padding: 5px;
+        box-sizing: border-box;
+        background-color: $contentBgColor;
+        height: 100%;
+
+        $shadowColor: #ccc;
+        @if (lightness($contentBgColor) < 50) {
+            $shadowColor: #333;
+        }
+        @include input-shadow($shadowColor);
+    }
+}

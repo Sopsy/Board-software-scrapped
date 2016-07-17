@@ -57,12 +57,15 @@ return [
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore$#' => ['Thread', 'restore'],
-    '#^/scripts/threads/follow$#' => ['Thread', 'follow'],
-    '#^/scripts/threads/unfollow$#' => ['Thread', 'unfollow'],
     '#^/scripts/files/upload#' => ['File', 'upload'],
     '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
     '#^/scripts/report/getform$#' => ['PostReport', 'getForm'],
     '#^/scripts/report/submit#' => ['PostReport', 'submit'],
+
+    // Follow threads
+    '#^/scripts/follow/add$#' => ['ThreadFollow', 'add'],
+    '#^/scripts/follow/remove$#' => ['ThreadFollow', 'remove'],
+    '#^/scripts/follow/markallread$#' => ['ThreadFollow', 'markAllRead'],
 
     // Boards
     // Checked at the end so other rules override

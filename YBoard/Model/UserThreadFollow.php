@@ -76,6 +76,15 @@ class UserThreadFollow extends UserSubModel
         return true;
     }
 
+    public function markAllRead() : bool
+    {
+        $q = $this->db->prepare("UPDATE user_thread_follow SET unread_count = 0 WHERE user_id = :user_id");
+        $q->bindValue('user_id', $this->userId);
+        $q->execute();
+
+        return true;
+    }
+
     protected function load() : bool
     {
         $q = $this->db->prepare("SELECT id, thread_id, last_seen_reply, unread_count
