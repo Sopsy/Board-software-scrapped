@@ -1,5 +1,5 @@
 <?php
-namespace YBoard\Data;
+namespace YBoard\Model;
 
 class Board
 {

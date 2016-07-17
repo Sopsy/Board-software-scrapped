@@ -6,13 +6,29 @@ use YBoard\Model;
 class PostReports extends Model
 {
     const REASON_ILLEGAL = 1;
-    const REASON_RULE_VIOLATION = 2;
-    const REASON_PLEASE_REMOVE = 3;
+    const REASON_PLEASE_REMOVE = 2;
+    const REASON_RULE_VIOLATION = 3;
     const REASON_OTHER = 4;
 
-    public function getUnchecked()
+    public function getUnchecked() : array
     {
+        $q = $this->db->prepare("SELECT post_id, reason_id, additional_info, time, reported_by FROM posts_reports
+            WHERE is_checked = 0 ORDER BY reason_id ASC, time ASC");
+        $q->execute();
 
+        if ($q->rowCount() == 0) {
+            return [];
+        }
+
+        
+    }
+
+    public function getUncheckedCount() : int
+    {
+        $q = $this->db->prepare("SELECT COUNT(*) AS count FROM posts_reports WHERE is_checked = 0 LIMIT 1");
+        $q->execute();
+
+        return (int) $q->fetch()->count;
     }
 
     public function isReported(int $postId)

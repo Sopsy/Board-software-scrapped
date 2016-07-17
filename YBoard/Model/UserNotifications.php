@@ -1,7 +1,6 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Data\Notification;
 use YBoard\Library\Database;
 use YBoard\Model;
 

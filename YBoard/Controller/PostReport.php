@@ -25,7 +25,7 @@ class PostReport extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        if (!$posts->getMeta($_POST['post_id'])) {
+        if ($posts->get($_POST['post_id'], false) === false) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
 

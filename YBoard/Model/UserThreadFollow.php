@@ -2,7 +2,6 @@
 namespace YBoard\Model;
 
 use YBoard\Abstracts\UserSubModel;
-use YBoard\Data\FollowedThread;
 use YBoard\Library\Database;
 
 class UserThreadFollow extends UserSubModel
@@ -13,16 +12,6 @@ class UserThreadFollow extends UserSubModel
     public function add(int $threadId) : bool
     {
         $q = $this->db->prepare("INSERT IGNORE INTO user_thread_follow (user_id, thread_id) VALUES (:user_id, :thread_id)");
-        $q->bindValue('user_id', $this->userId);
-        $q->bindValue('thread_id', $threadId);
-        $q->execute();
-
-        return true;
-    }
-
-    public function remove(int $threadId) : bool
-    {
-        $q = $this->db->prepare("DELETE FROM user_thread_follow WHERE user_id = :user_id AND thread_id = :thread_id");
         $q->bindValue('user_id', $this->userId);
         $q->bindValue('thread_id', $threadId);
         $q->execute();
@@ -44,43 +33,18 @@ class UserThreadFollow extends UserSubModel
         return $q->fetchAll(Database::FETCH_COLUMN);
     }
 
-    public function setLastSeenReply(int $lastSeenId, int $threadId) : bool
-    {
-        $q = $this->db->prepare("UPDATE user_thread_follow SET last_seen_reply = :last_seen_id
-            WHERE thread_id = :thread_id AND user_id = :user_id LIMIT 1");
-        $q->bindValue('last_seen_id', $lastSeenId);
-        $q->bindValue('thread_id', $threadId);
-        $q->bindValue('user_id', $this->userId);
-        $q->execute();
-
-        return true;
-    }
-
-    public function incrementUnreadCount(int $threadId, int $userNot = 0) : bool
-    {
-        $q = $this->db->prepare("UPDATE user_thread_follow SET unread_count = unread_count+1
-            WHERE thread_id = :thread_id AND user_id != :user_id");
-        $q->bindValue('thread_id', $threadId);
-        $q->bindValue('user_id', $userNot);
-        $q->execute();
-
-        return true;
-    }
-
-    public function resetUnreadCount(int $threadId) : bool
-    {
-        $q = $this->db->prepare("UPDATE user_thread_follow SET unread_count = 0
-            WHERE thread_id = :thread_id AND user_id = :user_id");
-        $q->bindValue('thread_id', $threadId);
-        $q->bindValue('user_id', $this->userId);
-        $q->execute();
-
-        return true;
-    }
-
     public function getAll()
     {
         return $this->threads;
+    }
+
+    public function get(int $threadId)
+    {
+        if (empty($this->threads[$threadId])) {
+            return false;
+        }
+
+        return $this->threads[$threadId];
     }
 
     public function getThreadUnreadCount(int $threadId)
@@ -101,17 +65,29 @@ class UserThreadFollow extends UserSubModel
         return $this->threads[$threadId]->lastSeenReply;
     }
 
+    public function incrementUnreadCount(int $threadId, int $userNot = 0) : bool
+    {
+        $q = $this->db->prepare("UPDATE user_thread_follow SET unread_count = unread_count+1
+            WHERE thread_id = :thread_id AND user_id != :user_id");
+        $q->bindValue('thread_id', $threadId);
+        $q->bindValue('user_id', $userNot);
+        $q->execute();
+
+        return true;
+    }
+
     protected function load() : bool
     {
-        $q = $this->db->prepare("SELECT thread_id, last_seen_reply, unread_count
+        $q = $this->db->prepare("SELECT id, thread_id, last_seen_reply, unread_count
             FROM user_thread_follow WHERE user_id = :user_id ORDER BY unread_count DESC");
         $q->bindValue('user_id', $this->userId);
         $q->execute();
 
         $this->threads = [];
         while ($data = $q->fetch()) {
-            $thread = new FollowedThread();
-            $thread->id = $data->thread_id;
+            $thread = new FollowedThread($this->db);
+            $thread->id = $data->id;
+            $thread->threadId = $data->thread_id;
             $thread->lastSeenReply = $data->last_seen_reply;
             $thread->unreadCount = $data->unread_count;
 

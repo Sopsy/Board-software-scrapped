@@ -2,8 +2,7 @@
 namespace YBoard\Controller;
 
 use YBoard\Abstracts\ExtendedController;
-use YBoard\Data\Board;
-use YBoard\Library\HttpResponse;
+use YBoard\Model\Board;
 use YBoard\Model\Posts;
 
 class CustomBoard extends ExtendedController

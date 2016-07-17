@@ -1,7 +1,6 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Data\Board;
 use YBoard\Library\Database;
 use YBoard\Model;
 
@@ -20,7 +19,7 @@ class Boards extends Model
         }
         $this->boards = [];
         while ($row = $q->fetch()) {
-            $tmp = new Board();
+            $tmp = new Board($this->db);
             $tmp->id = $row->id;
             $tmp->name = $row->name;
             $tmp->description = $row->description;
@@ -32,6 +31,8 @@ class Boards extends Model
             $tmp->inactiveHoursDelete = $row->inactive_hours_delete == 0 ? false : $row->inactive_hours_delete;
             $this->boards[] = $tmp;
         }
+
+        return true;
     }
 
     public function getAll() : array

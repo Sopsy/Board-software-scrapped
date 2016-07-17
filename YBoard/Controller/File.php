@@ -50,7 +50,7 @@ class File Extends ExtendedController
         $files = new Files($this->db);
         $file = $files->get($_POST['file_id']);
 
-        if (!$file) {
+        if ($file === false) {
             $this->throwJsonError(404);
         }
         if ($file->inProgress) {

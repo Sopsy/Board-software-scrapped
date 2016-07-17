@@ -58,13 +58,6 @@
     </script>
     <?php if ($user->requireCaptcha) : ?>
     <script src="//www.google.com/recaptcha/api.js?render=explicit&amp;onload=renderCaptcha" async defer></script>
-    <script>
-        function renderCaptcha() {
-            grecaptcha.render('post-form-captcha', {
-                'sitekey': config.reCaptchaPublicKey
-            });
-        }
-    </script>
     <?php endif ?>
 </head>
 <body<?= (!empty($bodyClass)?' class="' . $bodyClass . '"':'') ?>>
@@ -134,6 +127,10 @@
                     ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
                 endif
             ?></a>
+            <?php if ($user->isMod) : ?>
+                <a class="button square icon-flag2" href="/mod/reports" title="<?= _('Reports') ?>"
+                    ><span class="unread-count red"><?= $uncheckedReports ?></span></a>
+            <?php endif ?>
             <a class="button square icon-user" href="/profile/" title="<?= _('Profile') ?>"></a>
             <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
             <button class="button square icon-lamp" onclick="switchThemeVariation()" title="<?= _('Switch theme colors') ?>"></button>

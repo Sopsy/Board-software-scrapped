@@ -4,7 +4,6 @@ namespace YBoard\Controller;
 use YBoard\Abstracts\ExtendedController;
 use YBoard\Library\Cache;
 use YBoard\Library\HttpResponse;
-use YBoard\Library\MessageQueue;
 use YBoard\Model\Posts;
 
 class Thread extends ExtendedController
@@ -15,7 +14,7 @@ class Thread extends ExtendedController
 
         // Get thread
         $thread = $posts->getThread($threadId);
-        if (!$thread) {
+        if ($thread === false) {
             $this->notFound(_('Not found'), _('The thread you are looking for does not exist.'));
         }
 
@@ -27,20 +26,21 @@ class Thread extends ExtendedController
         }
 
         // Clear unread count and update last seen reply
-        if ($this->user->threadFollow->exists($thread->id)) {
+        $followedThread = $this->user->threadFollow->get($thread->id);
+        if ($followedThread !== false) {
             if (!empty($thread->threadReplies)) {
                 $tmp = array_slice($thread->threadReplies, -1);
                 $lastReply = array_pop($tmp);
-                $this->user->threadFollow->setLastSeenReply($lastReply->id, $thread->id);
+                $followedThread->setLastSeenReply($lastReply->id);
             }
-            $this->user->threadFollow->resetUnreadCount($thread->id);
+            $followedThread->resetUnreadCount();
         }
 
         // Increment thread views
         $viewCacheKey = 'thread-view-' . $thread->id . '-' . $_SERVER['REMOTE_ADDR'];
         if (!Cache::exists($viewCacheKey)) {
             Cache::add($viewCacheKey, 1, 300);
-            $posts->updateThreadStats($thread->id, 'readCount');
+            $thread->updateStats('readCount');
         }
 
         $view = $this->loadTemplateEngine();
@@ -64,27 +64,24 @@ class Thread extends ExtendedController
         $newest = empty($_POST['newest']) ? false : true;
 
         $posts = new Posts($this->db);
-        if ($posts->getThreadMeta($_POST['thread_id']) === false) {
+        $thread = $posts->getThread($_POST['thread_id'], false);
+        if ($thread === false) {
             $this->throwJsonError(404, _('Thread does not exist'));
         }
 
-        $replies = $posts->getReplies($_POST['thread_id'], null, $newest, $_POST['from_id']);
-
         $view = $this->loadTemplateEngine('Blank');
 
-        $view->thread = $posts->getThreadMeta($_POST['thread_id']);
-        $view->board = $this->boards->getById($view->thread->boardId);
-        $view->tooltip = false;
+        $view->thread = $thread;
+        $view->board = $this->boards->getById($thread->boardId);
+        $view->replies = $thread->getReplies(null, $newest, $_POST['from_id']);
 
-        foreach ($replies as $post) {
-            $view->post = $post;
-            $view->display('Ajax/Post');
-        }
+        $view->display('Ajax/ThreadExpand');
 
         // Clear unread count and update last seen reply
-        if ($this->user->threadFollow->exists($_POST['thread_id'])) {
-            $this->user->threadFollow->resetUnreadCount($_POST['thread_id']);
-            $this->user->threadFollow->setLastSeenReply($_POST['from_id'], $_POST['thread_id']);
+        $followedThread = $this->user->threadFollow->get($_POST['thread_id']);
+        if ($followedThread !== false) {
+            $followedThread->resetUnreadCount();
+            $followedThread->setLastSeenReply($_POST['from_id']);
         }
     }
 
@@ -97,7 +94,8 @@ class Thread extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $posts->updateThreadStats($_POST['thread_id'], 'hideCount');
+        $thread = $posts->getThread($_POST['thread_id'], false);
+        $thread->updateStats('hideCount');
 
         $this->user->threadHide->add($_POST['thread_id']);
     }
@@ -111,7 +109,8 @@ class Thread extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $posts->updateThreadStats($_POST['thread_id'], 'hideCount', -1);
+        $thread = $posts->getThread($_POST['thread_id'], false);
+        $thread->updateStats('hideCount', -1);
 
         $this->user->threadHide->remove($_POST['thread_id']);
     }
@@ -125,9 +124,13 @@ class Thread extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $posts->updateThreadStats($_POST['thread_id'], 'followCount');
+        $thread = $posts->getThread($_POST['thread_id'], false);
+        $thread->updateStats('followCount');
 
-        $this->user->threadFollow->add($_POST['thread_id']);
+        $followedThread = $this->user->threadFollow->get($_POST['thread_id']);
+        if ($followedThread === false) {
+            $this->user->threadFollow->add($_POST['thread_id']);
+        }
     }
 
     public function unfollow()
@@ -139,8 +142,12 @@ class Thread extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $posts->updateThreadStats($_POST['thread_id'], 'followCount', -1);
+        $thread = $posts->getThread($_POST['thread_id'], false);
+        $thread->updateStats('followCount', -1);
 
-        $this->user->threadFollow->remove($_POST['thread_id']);
+        $followedThread = $this->user->threadFollow->get($_POST['thread_id']);
+        if ($followedThread !== false) {
+            $followedThread->remove();
+        }
     }
 }

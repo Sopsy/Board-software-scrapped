@@ -284,6 +284,48 @@ $('.mod-menu').tooltipster({
     }
 });
 
+function toggleThreadLock(id) {
+    var url, callback;
+    if ($t(id).find('h3 a .icon-lock').length == 0) {
+        url = '/scripts/threads/lock';
+        callback = function () {
+            $t(id).find('h3 a').prepend('<span class="icon-lock icon"></span>');
+        };
+    } else {
+        url = '/scripts/threads/unlock';
+        callback = function () {
+            $t(id).find('h3 a .icon-lock').remove();
+        };
+    }
+    updateThread(url, callback, id);
+}
+
+function toggleThreadSticky(id) {
+    var url, callback;
+    if ($t(id).find('h3 a .icon-lock').length == 0) {
+        url = '/scripts/threads/stick';
+        callback = function () {
+            $t(id).find('h3 a').prepend('<span class="icon-lock icon"></span>');
+        };
+    } else {
+        url = '/scripts/threads/unstick';
+        callback = function () {
+            $t(id).find('h3 a .icon-lock').remove();
+        };
+    }
+    updateThread(url, callback, id);
+}
+
+function updateThread(url, callback, id) {
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: {'thread_id': id}
+    }).done(function () {
+        callback();
+    }).fail(ajaxError);
+}
+
 // -------------------------------------------
 // Modal windows (not always so modal though)
 // -------------------------------------------
@@ -820,6 +862,12 @@ $('#post-files').on('change', function (e) {
     });
 });
 
+function renderCaptcha() {
+    grecaptcha.render('post-form-captcha', {
+        'sitekey': config.reCaptchaPublicKey
+    });
+}
+
 var submitInProgress;
 function submitPost(e) {
     if (typeof e != 'undefined') {
@@ -859,10 +907,11 @@ function submitPost(e) {
         data: fd
     }).done(function (data) {
         var dest = $('#post-destination');
+        var thread;
         if (dest.attr('name') != 'thread') {
-            var thread = null;
+            thread = null;
         } else {
-            var thread = dest.val();
+            thread = dest.val();
         }
 
         if (thread != null) {
@@ -875,7 +924,7 @@ function submitPost(e) {
             if (typeof data.message == 'undefined') {
                 toastr.error(messages.errorOccurred);
             } else {
-                window.location = '/' + dest.val() + '/' + data.message;
+                window.location = '/' + form.find('[name="board"]').val() + '/' + data.message;
             }
         }
 

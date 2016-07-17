@@ -1,8 +1,6 @@
 <?php
 namespace YBoard\Model;
 
-use YBoard\Data\File;
-use YBoard\Data\UploadedFile;
 use YBoard\Exceptions\FileUploadException;
 use YBoard\Exceptions\InternalException;
 use YBoard\Library\FileHandler;
@@ -41,30 +39,39 @@ class Files extends Model
 
     public function get(int $fileId)
     {
-        $q = $this->db->prepare('SELECT id, folder, name, extension, size, width, height, duration, in_progress,
-            has_sound, is_gif FROM files WHERE id = :file_id LIMIT 1');
+        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
+            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
+            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+            is_gif AS file_is_gif
+            FROM files
+            WHERE id = :file_id LIMIT 1');
         $q->bindValue('file_id', $fileId);
         $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
         }
-        $file = $this->createFileClass($q->fetch());
+        $file = new File($this->db, $q->fetch());
 
         return $file;
     }
 
     public function getByName(string $fileName)
     {
-        $q = $this->db->prepare('SELECT id, folder, name, extension, size, width, height, duration, in_progress,
-            has_sound, is_gif FROM posts_files a LEFT JOIN files b ON a.file_id = b.id WHERE file_name = :file_name LIMIT 1');
+        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
+            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
+            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+            is_gif AS file_is_gif
+            FROM posts_files a
+            LEFT JOIN files b ON a.file_id = b.id
+            WHERE file_name = :file_name LIMIT 1');
         $q->bindValue('file_name', $fileName);
         $q->execute();
 
         if ($q->rowCount() == 0) {
             return false;
         }
-        $file = $this->createFileClass($q->fetch());
+        $file = new File($this->db, $q->fetch());
 
         return $file;
     }
@@ -360,23 +367,5 @@ class Files extends Model
         }
 
         return $sizes[0] * $sizes[1];
-    }
-
-    protected function createFileClass($data) : File
-    {
-        $file = new File();
-        $file->id = $data->id;
-        $file->folder = $data->folder;
-        $file->name = $data->name;
-        $file->extension = $data->extension;
-        $file->size = $data->size;
-        $file->width = $data->width;
-        $file->height = $data->height;
-        $file->duration = $data->duration;
-        $file->inProgress = $data->in_progress;
-        $file->hasSound = $data->has_sound;
-        $file->isGif = $data->is_gif;
-
-        return $file;
     }
 }

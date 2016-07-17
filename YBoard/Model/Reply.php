@@ -1,6 +1,7 @@
 <?php
-namespace YBoard\Data;
+namespace YBoard\Model;
 
 class Reply extends Post
 {
+
 }

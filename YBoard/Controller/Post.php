@@ -27,14 +27,15 @@ class Post extends ExtendedController
 
         $posts = new Posts($this->db);
         $post = $posts->get($_POST['post_id']);
-        if (!$post) {
+        if ($post === false) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
 
+        // Thread meta required for OP tag
         if (empty($post->threadId)) {
             $post->threadId = $post->id;
         }
-        $thread = $posts->getThreadMeta($post->threadId);
+        $thread = $posts->getThread($post->threadId, false);
 
         $view = $this->loadTemplateEngine('Blank');
 
@@ -49,16 +50,16 @@ class Post extends ExtendedController
     public function redirect($postId)
     {
         $posts = new Posts($this->db);
-        $post = $posts->getMeta($postId);
+        $post = $posts->get($postId, false);
 
-        if (!$post) {
+        if ($post === false) {
             $this->notFound(_('Not found'), _('Post does not exist'));
         }
 
         if (!$post->boardId) {
-            $thread = $posts->getMeta($post->threadId);
+            $thread = $posts->getThread($post->threadId, false);
 
-            if (!$thread) {
+            if ($thread === false) {
                 $this->internalError();
             }
 
@@ -139,10 +140,10 @@ class Post extends ExtendedController
 
             $board = $this->boards->getByUrl($_POST['board']);
         } else { // Replying to a thread
-            $thread = $posts->getThreadMeta($_POST['thread']);
+            $thread = $posts->getThread($_POST['thread'], false);
 
             // Verify thread
-            if (!$thread) {
+            if ($thread === false) {
                 $this->throwJsonError(400, _('Invalid thread'));
             }
 
@@ -174,6 +175,7 @@ class Post extends ExtendedController
         $sage = empty($_POST['sage']) ? false : true;
         $hideName = empty($_POST['hidename']) ? false : true;
 
+        // TODO: Add functionality
         if ($this->user->goldLevel == 0) {
             $noCompress = false;
             $goldHide = false;
@@ -215,36 +217,34 @@ class Post extends ExtendedController
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
 
-            $postId = $posts->createThread($this->user->id, $board->id, $subject, $message, $username,
-                $_SERVER['REMOTE_ADDR'], $countryCode);
+            $post = $posts->createThread($this->user->id, $board->id, $subject, $message, $username, $countryCode);
 
             // Increment stats
             $this->user->statistics->increment('createdThreads');
 
             // Enable flood limit
-            Cache::add('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
+            //Cache::add('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
         } else {
             // Check flood limit
             if (Cache::exists('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'])) {
                 $this->throwJsonError(403, _('You are sending messages too fast. Please don\'t spam.'));
             }
 
-            $postId = $posts->addReply($this->user->id, $thread->id, $message, $username, $_SERVER['REMOTE_ADDR'],
-                $countryCode);
+            $post = $thread->addReply($this->user->id, $message, $username, $countryCode);
 
             // Update stats
             $this->user->statistics->increment('sentReplies');
-            $posts->updateThreadStats($thread->id, 'replyCount');
+            $thread->updateStats('replyCount');
 
             // Increment followed threads unread count
             $followed = new UserThreadFollow($this->db);
             $followed->incrementUnreadCount($thread->id, $this->user->id);
 
             // Enable flood limit
-            Cache::add('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
+            //Cache::add('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
 
             if (!$sage) {
-                $posts->bumpThread($thread->id);
+                $thread->bump();
             }
 
             if ($thread->userId != $this->user->id) {
@@ -266,7 +266,7 @@ class Post extends ExtendedController
 
         // Save file
         if ($hasFile) {
-            $posts->addFile($postId, $_POST['file_id'], $_POST['file_name']);
+            $post->addFile($_POST['file_id'], $_POST['file_name']);
         }
 
         // Increment Total message characters -stats
@@ -275,7 +275,7 @@ class Post extends ExtendedController
         // Save replies
         preg_match_all('/>>([0-9]+)/i', $message, $postReplies);
         $postReplies = array_unique($postReplies[1]);
-        $posts->setPostReplies($postId, $postReplies);
+        $post->setReplies($postReplies);
 
         // TODO: Save tags
 
@@ -290,7 +290,7 @@ class Post extends ExtendedController
         }
 
         if (!$isReply) {
-            $this->jsonMessage($postId);
+            $this->jsonMessage($post->id);
         }
     }
 

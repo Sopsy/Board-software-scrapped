@@ -196,9 +196,14 @@ abstract class ExtendedController extends YBoard\Controller
             $templateEngine->$var = $val;
         }
 
-        // Increment user page loads only when using the "Default" -template
+        // Some things are only done when loading regular pages with the "Default" template
         if ($templateFile == 'Default') {
             $this->user->statistics->increment('pageLoads');
+
+            if ($this->user->isMod) {
+                $reports = new Model\PostReports($this->db);
+                $templateEngine->uncheckedReports = $reports->getUncheckedCount();
+            }
         }
 
         // Verify theme exists

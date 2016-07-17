@@ -14,15 +14,15 @@
 
             <?php include($viewFilesPath . '/Snippets/ThreadMeta.phtml') ?>
             <div class="replies">
-            <?php if (!empty($thread->threadReplies)) : ?>
+            <?php if (!empty($thread->replies)) : ?>
                 <div class="replies-buttons">
-                    <?php if ($thread->statistics->replyCount > $previewPosts) : ?>
+                    <?php if ($thread->replyCount > $previewPosts) : ?>
                     <button class="link more-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show more replies') ?></button>
                     <button class="link less-replies" onclick="getMoreReplies(<?= $thread->id ?>)"><?= _('show less replies') ?></button>
                     <?php endif ?>
                 </div>
                 <div class="more-replies-container"></div>
-                <?php foreach($thread->threadReplies as $reply) : ?>
+                <?php foreach($thread->replies as $reply) : ?>
                     <div class="post reply<?= ($reply->userId==$user->id?' own-post':'') ?>" id="post-<?= $reply->id ?>">
                         <?php $post = $reply; include($viewFilesPath . '/Snippets/Post.phtml') ?>
                     </div>
