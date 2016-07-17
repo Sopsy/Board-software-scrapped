@@ -133,7 +133,7 @@ class Post extends ExtendedController
         // Try getting a file by given name
         if (!$hasFile && !empty($fileName)) {
             $files = new Files($this->db);
-            $file = $files->getByName($fileName);
+            $file = $files->getByOrigName($fileName);
             if (!$file) {
                 $this->throwJsonError(404,
                     sprintf(_('File "%s" was not found, please type a different name or choose a file'),

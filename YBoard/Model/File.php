@@ -14,6 +14,8 @@ class File extends Model
     public $size;
     public $width = null;
     public $height = null;
+    public $thumbWidth = null;
+    public $thumbHeight = null;
     public $duration = null;
     public $hasThumbnail = true;
     public $hasSound = null;
@@ -47,6 +49,12 @@ class File extends Model
                 case 'file_height':
                     $this->height = (int)$val;
                     break;
+                case 'file_thumb_width':
+                    $this->thumbWidth = (int)$val;
+                    break;
+                case 'file_thumb_height':
+                    $this->thumbHeight = (int)$val;
+                    break;
                 case 'file_display_name':
                     $this->displayName = $val;
                     break;
@@ -79,11 +87,23 @@ class File extends Model
         return true;
     }
 
+    public function updateThumbSize(int $width, int $height) : bool
+    {
+        $q = $this->db->prepare('UPDATE files SET thumb_width = :thumb_width, thumb_height = :thumb_height
+            WHERE id = :id LIMIT 1');
+        $q->bindValue('thumb_width', $width);
+        $q->bindValue('thumb_height', $height);
+        $q->bindValue('id', $this->id);
+        $q->execute();
+
+        return true;
+    }
+
     public function updateInProgress(bool $inProgress) : bool
     {
         $q = $this->db->prepare('UPDATE files SET in_progress = :in_progress WHERE id = :id LIMIT 1');
-        $q->bindValue('id', $this->id);
         $q->bindValue('in_progress', $inProgress);
+        $q->bindValue('id', $this->id);
         $q->execute();
 
         return true;

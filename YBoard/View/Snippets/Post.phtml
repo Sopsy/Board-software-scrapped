@@ -26,7 +26,8 @@
         <?php if (in_array($post->file->extension, ['m4a', 'mp4'])) : ?>
             <a href="<?= $fileUrl ?>" onclick="playMedia(this, event)">
                 <?php if ($post->file->hasThumbnail) : ?>
-                <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg"
+                     width="<?= $post->file->thumbWidth ?>" height="<?= $post->file->thumbHeight ?>" alt="">
                 <?php else : ?>
                 <span class="no-thumbnail icon-music-note3"></span>
                 <?php endif ?>
@@ -44,7 +45,8 @@
             <button class="button primary stop-media" onclick="stopAllMedia()"><?= _('Hide media') ?></button>
         <?php else : ?>
             <a href="<?= $fileUrl ?>" onclick="expandImage(this, event)">
-                <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg" alt="">
+                <img src="<?= $staticUrl ?>/files/<?= $post->file->folder ?>/t/<?= $post->file->name ?>.jpg"
+                     width="<?= $post->file->thumbWidth ?>" height="<?= $post->file->thumbHeight ?>" alt="">
             </a>
         <?php endif ?>
         <figcaption>

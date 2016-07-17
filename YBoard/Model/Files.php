@@ -41,11 +41,30 @@ class Files extends Model
     {
         $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
             extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
-            is_gif AS file_is_gif
+            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
+            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
             FROM files
             WHERE id = :file_id LIMIT 1');
         $q->bindValue('file_id', $fileId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        return new File($this->db, $q->fetch());
+    }
+
+    public function getByOrigName(string $fileName)
+    {
+        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
+            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
+            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
+            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
+            FROM posts_files a
+            LEFT JOIN files b ON a.file_id = b.id
+            WHERE file_name = :file_name LIMIT 1');
+        $q->bindValue('file_name', $fileName);
         $q->execute();
 
         if ($q->rowCount() == 0) {
@@ -59,12 +78,10 @@ class Files extends Model
     {
         $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
             extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
-            is_gif AS file_is_gif
-            FROM posts_files a
-            LEFT JOIN files b ON a.file_id = b.id
-            WHERE file_name = :file_name LIMIT 1');
-        $q->bindValue('file_name', $fileName);
+            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
+            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
+            FROM files WHERE name = :name LIMIT 1');
+        $q->bindValue('name', $fileName);
         $q->execute();
 
         if ($q->rowCount() == 0) {
@@ -188,7 +205,6 @@ class Files extends Model
             }
         }
 
-        // TODO: save thumbWidth/thumbHeight so we can use <img height=""> to prevent page jumping when loading images
         // Do whatever we do with the uploaded files here.
         switch ($uploadedFile->destinationFormat) {
             case 'jpg':
@@ -199,9 +215,6 @@ class Files extends Model
                     $this->imgMaxHeight, $uploadedFile->destinationFormat);
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
                     $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
-
-                chmod($uploadedFile->destination, 0664);
-                chmod($uploadedFile->thumbDestination, 0664);
 
                 if ($uploadedFile->destinationFormat == 'png') {
                     $sendMessage = MessageQueue::MSG_TYPE_DO_PNGCRUSH;
@@ -215,8 +228,9 @@ class Files extends Model
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->destination));
                 $uploadedFile->md5[] = md5(file_get_contents($uploadedFile->thumbDestination));
 
-                // Get size of the final image
+                // Get size of the final images
                 list($uploadedFile->width, $uploadedFile->height) = getimagesize($uploadedFile->destination);
+                list($uploadedFile->thumbWidth, $uploadedFile->thumbHeight) = getimagesize($uploadedFile->thumbDestination);
 
                 break;
             case 'm4a':
@@ -224,7 +238,6 @@ class Files extends Model
                 $uploadedFile->hasThumbnail = false;
 
                 rename($uploadedFile->tmpName, $uploadedFile->destination);
-                chmod($uploadedFile->destination, 0664);
 
                 $sendMessage = MessageQueue::MSG_TYPE_PROCESS_AUDIO;
 
@@ -239,10 +252,10 @@ class Files extends Model
                 FileHandler::createThumbnail($uploadedFile->destination, $uploadedFile->thumbDestination,
                     $this->thumbMaxWidth, $this->thumbMaxHeight, 'jpg');
 
-                chmod($uploadedFile->destination, 0664);
-                chmod($uploadedFile->thumbDestination, 0664);
-
                 $sendMessage = MessageQueue::MSG_TYPE_PROCESS_VIDEO;
+
+                // Get size of the thumbnail
+                list($uploadedFile->thumbWidth, $uploadedFile->thumbHeight) = getimagesize($uploadedFile->thumbDestination);
 
                 break;
             default:
@@ -250,8 +263,9 @@ class Files extends Model
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, duration, has_thumbnail,
-            has_sound, is_gif, in_progress) VALUES (:folder, :name, :extension, :size, :width, :height, :duration,
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, thumb_width,
+            thumb_height, duration, has_thumbnail, has_sound, is_gif, in_progress)
+            VALUES (:folder, :name, :extension, :size, :width, :height, :thumb_width, :thumb_height, :duration,
             :has_thumbnail, :has_sound, :is_gif, :in_progress)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
@@ -259,6 +273,8 @@ class Files extends Model
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
+        $q->bindValue('thumb_width', $uploadedFile->thumbWidth);
+        $q->bindValue('thumb_height', $uploadedFile->thumbHeight);
         $q->bindValue('duration', $uploadedFile->duration);
         $q->bindValue('has_thumbnail', $uploadedFile->hasThumbnail);
         $q->bindValue('has_sound', $uploadedFile->hasSound);
