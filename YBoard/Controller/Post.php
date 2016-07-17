@@ -97,17 +97,25 @@ class Post extends ExtendedController
 
         $posts = new Posts($this->db);
 
-        // Int cast
-        if (!empty($_POST['file_id'])) {
-            $_POST['file_id'] = (int)$_POST['file_id'];
-        }
+        // Is this a reply or a new thread?
         if (!empty($_POST['thread'])) {
-            $_POST['thread'] = (int)$_POST['thread'];
+            if(!filter_var($_POST['thread'], FILTER_VALIDATE_INT)) {
+                $this->throwJsonError(400, _('Invalid thread'));
+            }
+            $isReply = true;
+        } else {
+            $isReply = false;
         }
 
-        // Is this a reply or a new thread?
-        $isReply = !empty($_POST['thread']);
-        $hasFile = !empty($_POST['file_id']);
+        // Is there a file in the post?
+        if (!empty($_POST['file_id'])) {
+            if(!filter_var($_POST['file_id'], FILTER_VALIDATE_INT)) {
+                $this->throwJsonError(400, _('Invalid file'));
+            }
+            $hasFile = true;
+        } else {
+            $hasFile = false;
+        }
 
         if (!empty($_POST['file_name'])) {
             $fileName = trim(Text::removeForbiddenUnicode($_POST['file_name']));
@@ -334,6 +342,11 @@ class Post extends ExtendedController
             // Log post deletions by mods
             $log = new Log($this->db);
             $log->write(Log::ACTION_ID_MOD_POST_DELETE, $this->user->id, $post->id);
+        }
+
+        if (!empty($post->threadId)) {
+            $thread = $posts->getThread($post->threadId, false);
+            $thread->undoLastBump();
         }
 
         $messageQueue = new MessageQueue();

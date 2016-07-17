@@ -70,6 +70,16 @@ class Thread extends Post
         return true;
     }
 
+    public function undoLastBump() : bool
+    {
+        $q = $this->db->prepare("UPDATE posts a LEFT JOIN posts b ON a.id = b.thread_id
+            SET a.bump_time = IFNULL(b.time, a.time) WHERE a.id = :thread_id");
+        $q->bindValue('thread_id', (int)$this->id);
+        $q->execute();
+
+        return true;
+    }
+
     public function addReply(
         int $userId,
         string $message,
