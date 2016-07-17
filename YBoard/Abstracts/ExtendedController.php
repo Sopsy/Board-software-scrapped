@@ -240,6 +240,13 @@ abstract class ExtendedController extends Controller
         return $templateEngine;
     }
 
+    protected function modOnly()
+    {
+        if (!$this->user->isMod) {
+            $this->notFound();
+        }
+    }
+
     protected function validateCsrfToken($token)
     {
         if (empty($token) || empty($this->user->session->csrfToken)) {

@@ -48,24 +48,34 @@ return [
     '#^/hiddenthreads-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreads'],
     '#^/hiddenthreads/catalog-?([2-9]|[1-9][0-9]+)?/$#' => ['CustomBoard', 'hiddenThreadsCatalog'],
 
-    // Post/thread scripts
+    // Post scripts
     '#^/scripts/posts/get$#' => ['Post', 'get'],
     '#^/scripts/posts/redirect/([0-9]+)$#' => ['Post', 'redirect'],
     '#^/scripts/posts/submit$#' => ['Post', 'submit'],
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
     '#^/scripts/posts/deletefile$#' => ['Post', 'deleteFile'],
+
+    // Thread scripts
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore$#' => ['Thread', 'restore'],
-    '#^/scripts/files/upload#' => ['File', 'upload'],
-    '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
-    '#^/scripts/report/getform$#' => ['PostReport', 'getForm'],
-    '#^/scripts/report/submit#' => ['PostReport', 'submit'],
+    '#^/scripts/threads/stick#' => ['Thread', 'stick'],
+    '#^/scripts/threads/unstick#' => ['Thread', 'unstick'],
+    '#^/scripts/threads/lock#' => ['Thread', 'lock'],
+    '#^/scripts/threads/unlock#' => ['Thread', 'unlock'],
 
     // Follow threads
     '#^/scripts/follow/add$#' => ['ThreadFollow', 'add'],
     '#^/scripts/follow/remove$#' => ['ThreadFollow', 'remove'],
     '#^/scripts/follow/markallread$#' => ['ThreadFollow', 'markAllRead'],
+
+    // File scripts
+    '#^/scripts/files/upload#' => ['File', 'upload'],
+    '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
+
+    // Post reporting
+    '#^/scripts/report/getform$#' => ['PostReport', 'getForm'],
+    '#^/scripts/report/submit#' => ['PostReport', 'submit'],
 
     // Boards
     // Checked at the end so other rules override

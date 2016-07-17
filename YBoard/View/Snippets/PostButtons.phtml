@@ -18,6 +18,7 @@
         <?php endif ?>
     <?php endif ?>
     <button class="button square icon-flag2" onclick="reportPost(this, <?= $post->id?>)" title="<?= _('Report') ?>"></button>
+
     <?php if ($user->isMod) : ?>
         <button class="mod-menu button square icon-wrench" data-ip="<?= $post->ip ?>" data-uid="<?= $post->userId ?>"
                 data-is-reply="<?= (!empty($post->threadId)?'true':'false') ?>"
@@ -29,6 +30,8 @@
                 <p><button onclick="deleteFile(<?= $post->id ?>)" class="link"><?= _('Delete file from post') ?></button></p>
             <?php endif ?>
             <p><button onclick="deletePost(<?= $post->id ?>)" class="link"><?= _('Delete post') ?></button></p>
+            <p><button onclick="toggleThreadSticky(<?= $post->id ?>)" class="link"><?= _('Toggle sticky') ?></button></p>
+            <p><button onclick="toggleThreadLock(<?= $post->id ?>)" class="link"><?= _('Toggle lock') ?></button></p>
         </div>
     <?php else : ?>
         <?php if ($post->userId != $user->id) : ?>

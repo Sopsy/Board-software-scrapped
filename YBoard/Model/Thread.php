@@ -80,6 +80,30 @@ class Thread extends Post
         return true;
     }
 
+    public function setLocked(bool $locked) : bool
+    {
+        $q = $this->db->prepare("UPDATE posts SET locked = :locked WHERE id = :thread_id LIMIT 1");
+        $q->bindValue('thread_id', $this->id);
+        $q->bindValue('locked', $locked);
+        $q->execute();
+
+        $this->locked = $locked;
+
+        return true;
+    }
+
+    public function setSticky(bool $sticky) : bool
+    {
+        $q = $this->db->prepare("UPDATE posts SET sticky = :sticky WHERE id = :thread_id LIMIT 1");
+        $q->bindValue('thread_id', $this->id);
+        $q->bindValue('sticky', $sticky);
+        $q->execute();
+
+        $this->sticky = $sticky;
+
+        return true;
+    }
+
     public function addReply(
         int $userId,
         string $message,

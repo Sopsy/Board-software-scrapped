@@ -303,11 +303,13 @@ function toggleThreadLock(id) {
         url = '/scripts/threads/lock';
         callback = function () {
             $t(id).find('h3 a').prepend('<span class="icon-lock icon"></span>');
+            toastr.success(messages.threadLocked);
         };
     } else {
         url = '/scripts/threads/unlock';
         callback = function () {
             $t(id).find('h3 a .icon-lock').remove();
+            toastr.success(messages.threadUnlocked);
         };
     }
     updateThread(url, callback, id);
@@ -315,15 +317,17 @@ function toggleThreadLock(id) {
 
 function toggleThreadSticky(id) {
     var url, callback;
-    if ($t(id).find('h3 a .icon-lock').length == 0) {
+    if ($t(id).find('h3 a .icon-pushpin').length == 0) {
         url = '/scripts/threads/stick';
         callback = function () {
-            $t(id).find('h3 a').prepend('<span class="icon-lock icon"></span>');
+            $t(id).find('h3 a').prepend('<span class="icon-pushpin icon"></span>');
+            toastr.success(messages.threadStickied);
         };
     } else {
         url = '/scripts/threads/unstick';
         callback = function () {
-            $t(id).find('h3 a .icon-lock').remove();
+            $t(id).find('h3 a .icon-pushpin').remove();
+            toastr.success(messages.threadUnstickied);
         };
     }
     updateThread(url, callback, id);
