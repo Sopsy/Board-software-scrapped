@@ -18,7 +18,7 @@ class Post extends Model
     public $postReplies;
     public $file;
 
-    public function __construct(Database $db, $data)
+    public function __construct(Database $db, $data = [])
     {
         parent::__construct($db);
 

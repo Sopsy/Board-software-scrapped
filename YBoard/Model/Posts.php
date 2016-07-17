@@ -188,10 +188,10 @@ class Posts extends Model
         $q->bindValue('message', $message);
         $q->execute();
 
-        $data = [
-            'id' => $this->db->lastInsertId()
-        ];
-        return new Thread($this->db, $data, false);
+        $thread = new Thread($this->db, [], false);
+        $thread->id = $this->db->lastInsertId();
+
+        return $thread;
     }
 
     public function get($postId, bool $allData = true)
@@ -228,24 +228,17 @@ class Posts extends Model
         return $posts;
     }
 
-    public function deleteMultiple(array $postIds) : bool
+    public function deleteMany(array $postIds) : bool
     {
-        $count = count($postIds);
-        if ($count == 0) {
-            return true;
-        }
-
-        $in = $this->db->buildIn($count);
+        $in = $this->db->buildIn($postIds);
 
         $q = $this->db->prepare("INSERT IGNORE INTO posts_deleted (id, user_id, board_id, thread_id, ip, time, subject, message, time_deleted)
             SELECT id, user_id, board_id, thread_id, ip, time, subject, message, NOW() FROM posts
             WHERE id IN (" . $in . ") OR thread_id IN (" . $in . ")");
         $q->execute(array_merge($postIds, $postIds));
 
-        $q = $this->db->prepare("DELETE FROM posts WHERE id IN (" . $in . ") LIMIT ?");
-        $queryVars = $postIds;
-        array_push($queryVars, $count);
-        $q->execute($queryVars);
+        $q = $this->db->prepare("DELETE FROM posts WHERE id IN (" . $in . ")");
+        $q->execute($postIds);
 
         return $q->rowCount() != 0;
     }

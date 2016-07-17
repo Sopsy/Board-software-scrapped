@@ -74,9 +74,9 @@ abstract class ExtendedController extends YBoard\Controller
             }
 
             // Load user
-            $this->user = new Model\User($this->db);
-            $this->user->loadById($session->userId);
-            if ($this->user->id === null) {
+            $users = new Model\Users($this->db);
+            $this->user = $users->getById($session->userId);
+            if ($this->user === false) {
                 $this->deleteLoginCookie(true);
             }
 
@@ -87,15 +87,15 @@ abstract class ExtendedController extends YBoard\Controller
             $this->user->session->updateLastActive();
         } else {
             // Session does not exist
-            $this->user = new Model\User($this->db);
+            $users = new Model\Users($this->db);
             if ($this->userMaybeBot()) {
-                $this->user->createTemporary();
+                $this->user = $users->createTemporary();
                 $this->user->session = new Model\UserSessions($this->db);
 
                 return false;
             }
 
-            $this->user->create();
+            $this->user = $users->create();
 
             $this->user->session = new Model\UserSessions($this->db, $this->user->id);
             $this->user->session->create();

@@ -51,7 +51,9 @@ class Cleanup extends CliDatabase
             $threads = array_merge($threads, $posts->getOldThreads($board->id, $board->inactiveHoursDelete));
         }
 
-        $posts->deleteMultiple($threads);
+        if (!empty($threads)) {
+            $posts->deleteMany($threads);
+        }
 
         echo count($threads) . " threads deleted\n";
     }

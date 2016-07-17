@@ -23,7 +23,10 @@ class Notifications extends ExtendedController
             $this->throwJsonError(400);
         }
 
-        $this->user->notifications->markRead($_POST['id']);
+        $notification = $this->user->notifications->get($_POST['id']);
+        if ($notification !== false) {
+            $notification->markRead();
+        }
     }
 
     function markAllRead()

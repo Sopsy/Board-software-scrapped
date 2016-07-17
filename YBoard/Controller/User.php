@@ -6,6 +6,7 @@ use YBoard\Exceptions\UserException;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\Text;
 use YBoard\Model\Posts;
+use YBoard\Model\Users;
 use YBoard\Model\UserSessions;
 
 class User extends ExtendedController
@@ -20,8 +21,8 @@ class User extends ExtendedController
                 $this->notFound();
             }
 
-            $user = new \YBoard\Model\User($this->db);
-            $user->loadById($userId);
+            $users = new Users($this->db);
+            $user = $users->getById($userId);
 
             if ($user->id === null) {
                 $this->notFound();
@@ -62,7 +63,8 @@ class User extends ExtendedController
             $this->throwJsonError(400, _('This is your current username'));
         }
 
-        if (!$this->user->usernameIsFree($_POST['new_name'])) {
+        $users = new Users($this->db);
+        if (!$users->usernameIsFree($_POST['new_name'])) {
             $this->throwJsonError(400, _('This username is already taken, please choose another one'));
         }
 
@@ -110,6 +112,10 @@ class User extends ExtendedController
 
         if (empty($_POST['password'])) {
             $this->badRequest();
+        }
+
+        if (!$this->user->validatePassword($_POST['password'])) {
+            $this->unauthorized(_('User account not deleted'), _('Invalid password'));
         }
 
         if (!empty($_POST['delete_posts'])) {

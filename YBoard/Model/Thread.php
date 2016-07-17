@@ -89,10 +89,10 @@ class Thread extends Post
         $q->bindValue('message', $message);
         $q->execute();
 
-        $data = [
-            'id' => $this->db->lastInsertId()
-        ];
-        return new Reply($this->db, $data);
+        $reply = new Reply($this->db);
+        $reply->id = $this->db->lastInsertId();
+
+        return $reply;
     }
 
     public function getReplies(int $count = null, bool $newest = false, int $fromId = null) : array

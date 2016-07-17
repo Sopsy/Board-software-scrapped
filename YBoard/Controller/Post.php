@@ -10,6 +10,8 @@ use YBoard\Library\ReCaptcha;
 use YBoard\Library\Text;
 use YBoard\Model\Files;
 use YBoard\Model\Log;
+use YBoard\Model\Notification;
+use YBoard\Model\Notifications;
 use YBoard\Model\Posts;
 use YBoard\Model\UserNotifications;
 use YBoard\Model\UserThreadFollow;
@@ -223,7 +225,7 @@ class Post extends ExtendedController
             $this->user->statistics->increment('createdThreads');
 
             // Enable flood limit
-            //Cache::add('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
+            Cache::add('SpamLimit-thread-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['threadIntervalLimit']);
         } else {
             // Check flood limit
             if (Cache::exists('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'])) {
@@ -241,7 +243,7 @@ class Post extends ExtendedController
             $followed->incrementUnreadCount($thread->id, $this->user->id);
 
             // Enable flood limit
-            //Cache::add('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
+            Cache::add('SpamLimit-reply-' . $_SERVER['REMOTE_ADDR'], 1, $this->config['posts']['replyIntervalLimit']);
 
             if (!$sage) {
                 $thread->bump();
@@ -250,7 +252,7 @@ class Post extends ExtendedController
             if ($thread->userId != $this->user->id) {
                 // Notify OP
                 $messageQueue->send([
-                    UserNotifications::NOTIFICATION_TYPE_THREAD_REPLY,
+                    Notifications::NOTIFICATION_TYPE_THREAD_REPLY,
                     $thread->id,
                     $notificationsSkipUsers,
                 ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
@@ -283,7 +285,7 @@ class Post extends ExtendedController
         if (!empty($postReplies)) {
             $notificationsSkipUsers[] = $this->user->id;
             $messageQueue->send([
-                UserNotifications::NOTIFICATION_TYPE_POST_REPLY,
+                Notifications::NOTIFICATION_TYPE_POST_REPLY,
                 $postReplies,
                 $notificationsSkipUsers
             ], MessageQueue::MSG_TYPE_ADD_POST_NOTIFICATION);
@@ -302,8 +304,8 @@ class Post extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $post = $posts->getMeta($_POST['post_id']);
-        if (!$post) {
+        $post = $posts->get($_POST['post_id'], false);
+        if ($post === false) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
 
@@ -320,16 +322,16 @@ class Post extends ExtendedController
         $messageQueue = new MessageQueue();
 
         // Delete notifications about post replies
-        $replied = $posts->getRepliedPosts($_POST['post_id']);
+        $replied = $post->getRepliedPosts();
         if (!empty($replied)) {
             $messageQueue->send([
-                'types' => UserNotifications::NOTIFICATION_TYPE_POST_REPLY,
+                'types' => Notifications::NOTIFICATION_TYPE_POST_REPLY,
                 'posts' => $replied,
             ], MessageQueue::MSG_TYPE_REMOVE_POST_NOTIFICATION);
         }
 
         // Delete post
-        $posts->delete($_POST['post_id']);
+        $post->delete();
     }
 
     public function deleteFile()
@@ -340,8 +342,8 @@ class Post extends ExtendedController
         }
 
         $posts = new Posts($this->db);
-        $post = $posts->getMeta($_POST['post_id']);
-        if (!$post) {
+        $post = $posts->get($_POST['post_id'], false);
+        if ($post === false) {
             $this->throwJsonError(404, _('Post does not exist'));
         }
 
@@ -356,6 +358,6 @@ class Post extends ExtendedController
         }
 
         // Delete file
-        $posts->removeFiles($_POST['post_id']);
+        $post->removeFiles();
     }
 }

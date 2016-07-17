@@ -10,6 +10,13 @@ trait ErrorPages
         $this->dieWithMessage($errorTitle, $errorMessage, 400);
     }
 
+    protected function unauthorized($errorTitle = false, $errorMessage = false)
+    {
+        $errorTitle = empty($errorTitle) ? _('Unauthorized') : $errorTitle;
+        $errorMessage = empty($errorMessage) ? _('You are not authorized to perform this operation') : $errorMessage;
+        $this->dieWithMessage($errorTitle, $errorMessage, 401);
+    }
+
     protected function blockAccess($errorTitle = false, $errorMessage = false)
     {
         $errorTitle = empty($errorTitle) ? _('Forbidden') : $errorTitle;
