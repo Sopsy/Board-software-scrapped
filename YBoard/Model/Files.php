@@ -51,9 +51,8 @@ class Files extends Model
         if ($q->rowCount() == 0) {
             return false;
         }
-        $file = new File($this->db, $q->fetch());
 
-        return $file;
+        return new File($this->db, $q->fetch());
     }
 
     public function getByName(string $fileName)
@@ -71,9 +70,8 @@ class Files extends Model
         if ($q->rowCount() == 0) {
             return false;
         }
-        $file = new File($this->db, $q->fetch());
 
-        return $file;
+        return new File($this->db, $q->fetch());
     }
 
     public function processUpload(array $file, bool $skipMd5Check = false) : UploadedFile
@@ -84,7 +82,7 @@ class Files extends Model
         }
 
         $sendMessage = false;
-        $uploadedFile = new UploadedFile();
+        $uploadedFile = new UploadedFile($this->db);
 
         // Rename uploaded file
         if (!move_uploaded_file($file['tmp_name'], $uploadedFile->tmpName)) {
@@ -101,9 +99,9 @@ class Files extends Model
 
         // If the file already exists, use the old one
         if (!$skipMd5Check) {
-            $oldId = $this->getByMd5($md5);
-            if ($oldId) {
-                $uploadedFile->id = $oldId;
+            $oldFile = $this->getByMd5($md5);
+            if ($oldFile !== false) {
+                $uploadedFile->id = $oldFile->id;
 
                 return $uploadedFile;
             }
@@ -276,44 +274,9 @@ class Files extends Model
         }
 
         // Save MD5
-        $this->saveMd5List($uploadedFile->id, $uploadedFile->md5);
+        $uploadedFile->saveMd5List($uploadedFile->md5);
 
         return $uploadedFile;
-    }
-
-    public function updateFileSize(int $fileId, int $fileSize) : bool
-    {
-        $q = $this->db->prepare('UPDATE files SET size = :size WHERE id = :file_id LIMIT 1');
-        $q->bindValue('size', $fileSize);
-        $q->bindValue('file_id', $fileId);
-        $q->execute();
-
-        return true;
-    }
-
-    public function updateFileInProgress(int $fileId, bool $inProgress) : bool
-    {
-        $q = $this->db->prepare('UPDATE files SET in_progress = :in_progress WHERE id = :file_id LIMIT 1');
-        $q->bindValue('file_id', $fileId);
-        $q->bindValue('in_progress', $inProgress);
-        $q->execute();
-
-        return true;
-    }
-
-    public function saveMd5List(int $fileId, array $md5List) : bool
-    {
-        $values = '';
-        foreach ($md5List as &$md5) {
-            $values .= '(' . (int)$fileId . ', ?),';
-            $md5 = hex2bin($md5);
-        }
-        $values = substr($values, 0, -1);
-
-        $q = $this->db->prepare("INSERT IGNORE INTO files_md5 (file_id, md5) VALUES " . $values);
-        $q->execute($md5List);
-
-        return $q !== false;
     }
 
     public function getByMd5(string $md5)
@@ -326,12 +289,11 @@ class Files extends Model
             return false;
         }
 
-        $fileId = (int)$q->fetch()->file_id;
-        if ($fileId === 0) {
-            return false;
-        }
+        $row = $q->fetch();
+        $file = new File($this->db);
+        $file->id = $row->file_id;
 
-        return $fileId;
+        return $file;
     }
 
     public function deleteOrphans() : bool

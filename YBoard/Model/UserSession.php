@@ -20,7 +20,7 @@ class UserSession extends Model
         foreach ($data as $key => $val) {
             switch ($key) {
                 case 'id':
-                    $this->id = (int)$val;
+                    $this->id = $val;
                     break;
                 case 'user_id':
                     $this->userId = (int)$val;
@@ -29,7 +29,7 @@ class UserSession extends Model
                     $this->csrfToken = bin2hex($val);
                     break;
                 case 'ip':
-                    $this->ip = $val;
+                    $this->ip = inet_ntop($val);
                     break;
                 case 'login_time':
                     $this->loginTime = $val;

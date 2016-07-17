@@ -108,7 +108,7 @@ class Users extends Model
     {
         $q = $this->db->query("SELECT a.id FROM users a
             LEFT JOIN user_sessions b ON b.user_id = a.id
-            WHERE b.session_id IS NULL AND a.username IS NULL AND a.gold_level = 0");
+            WHERE b.id IS NULL AND a.username IS NULL AND a.gold_level = 0");
 
         $unused = $q->fetchAll(Database::FETCH_COLUMN);
 

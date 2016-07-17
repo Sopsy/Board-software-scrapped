@@ -1,6 +1,8 @@
 <?php
 namespace YBoard\Model;
 
+use YBoard\Library\Database;
+
 class UploadedFile extends File
 {
     public $tmpName;
@@ -9,8 +11,9 @@ class UploadedFile extends File
     public $destination;
     public $destinationFormat;
 
-    public function __construct()
+    public function __construct(Database $db)
     {
+        parent::__construct($db);
         $this->tmpName = sys_get_temp_dir() . '/uploadedfile-' . time() . mt_rand(000000, 999999);
     }
 

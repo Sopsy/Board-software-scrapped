@@ -97,12 +97,29 @@ class Post extends ExtendedController
 
         $posts = new Posts($this->db);
 
+        // Int cast
+        if (!empty($_POST['file_id'])) {
+            $_POST['file_id'] = (int)$_POST['file_id'];
+        }
+        if (!empty($_POST['thread'])) {
+            $_POST['thread'] = (int)$_POST['thread'];
+        }
+
         // Is this a reply or a new thread?
         $isReply = !empty($_POST['thread']);
         $hasFile = !empty($_POST['file_id']);
 
         if (!empty($_POST['file_name'])) {
             $fileName = trim(Text::removeForbiddenUnicode($_POST['file_name']));
+        }
+
+        // Verify file
+        if ($hasFile) {
+            $files = new Files($this->db);
+            $file = $files->get($_POST['file_id']);
+            if ($file === false) {
+                $this->throwJsonError(400, _('Invalid file'));
+            }
         }
 
         // Try getting a file by given name
@@ -268,7 +285,7 @@ class Post extends ExtendedController
 
         // Save file
         if ($hasFile) {
-            $post->addFile($_POST['file_id'], $_POST['file_name']);
+            $post->addFile($file->id, $_POST['file_name']);
         }
 
         // Increment Total message characters -stats

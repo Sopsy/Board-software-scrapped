@@ -1,4 +1,3 @@
-<?php // FIXME: empty input rows are visible ?>
 <form class="content-box" id="post-form" action="/scripts/posts/submit" method="post" onsubmit="submitPost(event)">
     <fieldset>
         <input type="hidden" id="file-id" name="file_id">
@@ -11,8 +10,8 @@
     <input type="hidden" id="post-destination" name="board" value="<?= $board->url ?>">
     <?php else : ?>
     <input type="hidden" id="post-destination">
-    <div class="input-row">
-        <label id="label-board">
+    <div class="input-row" id="label-board">
+        <label>
             <span class="label"><?= _('Board') ?></span>
             <select name="board" required>
                 <option value="" selected disabled><?= _('Select') ?></option>
@@ -23,8 +22,8 @@
         </label>
     </div>
     <?php endif ?>
-    <div class="input-row">
-        <label id="label-subject">
+    <div class="input-row" id="label-subject">
+        <label>
             <span class="label"><?= _('Subject') ?></span>
             <input type="text" name="subject" placeholder="<?= _('Subject') ?>" maxlength="<?= $subjectMaxLength ?>">
         </label>

@@ -100,9 +100,10 @@ class User extends ExtendedController
 
         $sessionId = Text::filterHex($_POST['session_id']);
 
-        $destroySession = $this->user->session->destroy(hex2bin($sessionId));
-        if (!$destroySession) {
-            $this->throwJsonError(500);
+        $userSessions = new UserSessions($this->db);
+        $session = $userSessions->get($this->user->id, hex2bin($sessionId));
+        if ($session !== false) {
+            $session->destroy();
         }
     }
 
