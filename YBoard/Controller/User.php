@@ -42,7 +42,7 @@ class User extends ExtendedController
         $view->profile = $user;
 
         if ($this->user->id !== null) {
-            $view->loginSessions = $sessions->getAllByUser($this->user->id);
+            $view->loginSessions = $sessions->getAll($this->user->id);
         }
         $view->display('Profile');
     }

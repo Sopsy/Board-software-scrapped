@@ -78,15 +78,16 @@ class Users extends Model
         return $user;
     }
 
-    public function deleteMany($userId) : bool
+    public function deleteMany(array $userIds) : bool
     {
+        $in = $this->db->buildIn($userIds);
+
         // Relations will handle the deletion of rest of the data, so we don't have to care.
         // Thank you relations!
-        $q = $this->db->prepare("DELETE FROM users WHERE id = :user_id");
-        $q->bindValue('user_id', $userId);
-        $q->execute();
+        $q = $this->db->prepare("DELETE FROM users WHERE id IN (" . $in . ")");
+        $q->execute($userIds);
 
-        return true;
+        return $q->rowCount() != 0;
     }
 
     public function usernameIsFree($username) : bool

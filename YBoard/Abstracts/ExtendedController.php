@@ -1,19 +1,27 @@
 <?php
 namespace YBoard\Abstracts;
 
-use YBoard;
+use YBoard\Controller;
 use YBoard\Library\Database;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\i18n;
 use YBoard\Library\TemplateEngine;
-use YBoard\Model;
+use YBoard\Model\Boards;
+use YBoard\Model\PostReports;
+use YBoard\Model\Users;
+use YBoard\Model\UserSession;
+use YBoard\Model\UserSessions;
+use YBoard\Traits\Ajax;
+use YBoard\Traits\Cookies;
+use YBoard\Traits\ErrorPages;
+use YBoard\Traits\PostChecks;
 
-abstract class ExtendedController extends YBoard\Controller
+abstract class ExtendedController extends Controller
 {
-    use YBoard\Traits\ErrorPages;
-    use YBoard\Traits\Cookies;
-    use YBoard\Traits\PostChecks;
-    use YBoard\Traits\Ajax;
+    use ErrorPages;
+    use Cookies;
+    use PostChecks;
+    use Ajax;
 
     protected $config;
     protected $i18n;
@@ -31,7 +39,7 @@ abstract class ExtendedController extends YBoard\Controller
         $this->db = new Database(require(ROOT_PATH . '/YBoard/Config/Database.php'));
 
         // Load some data that are required on almost every page, like the list of boards and user data
-        $this->boards = new Model\Boards($this->db);
+        $this->boards = new Boards($this->db);
 
         // Load internalization
         $this->i18n = new i18n(ROOT_PATH . '/YBoard/Locales');
@@ -68,13 +76,14 @@ abstract class ExtendedController extends YBoard\Controller
         $cookie = $this->getLoginCookie();
         if ($cookie !== false) {
             // Load session
-            $session = new Model\UserSessions($this->db, $cookie['userId'], $cookie['sessionId']);
+            $userSessions = new UserSessions($this->db);
+            $session = $userSessions->get($cookie['userId'], $cookie['sessionId']);
             if ($session->id === null) {
                 $this->deleteLoginCookie(true);
             }
 
             // Load user
-            $users = new Model\Users($this->db);
+            $users = new Users($this->db);
             $this->user = $users->getById($session->userId);
             if ($this->user === false) {
                 $this->deleteLoginCookie(true);
@@ -87,18 +96,18 @@ abstract class ExtendedController extends YBoard\Controller
             $this->user->session->updateLastActive();
         } else {
             // Session does not exist
-            $users = new Model\Users($this->db);
+            $users = new Users($this->db);
             if ($this->userMaybeBot()) {
                 $this->user = $users->createTemporary();
-                $this->user->session = new Model\UserSessions($this->db);
+                $this->user->session = new UserSession($this->db);
 
                 return false;
             }
 
             $this->user = $users->create();
 
-            $this->user->session = new Model\UserSessions($this->db, $this->user->id);
-            $this->user->session->create();
+            $userSessions = new UserSessions($this->db);
+            $this->user->session = $userSessions->create($this->user->id);
 
             $this->setLoginCookie($this->user->id, $this->user->session->id);
         }
@@ -201,7 +210,7 @@ abstract class ExtendedController extends YBoard\Controller
             $this->user->statistics->increment('pageLoads');
 
             if ($this->user->isMod) {
-                $reports = new Model\PostReports($this->db);
+                $reports = new PostReports($this->db);
                 $templateEngine->uncheckedReports = $reports->getUncheckedCount();
             }
         }

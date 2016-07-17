@@ -26,8 +26,8 @@ class Session extends ExtendedController
 
         $this->user->session->destroy();
 
-        $newUser->session = new UserSessions($this->db, $newUser->id);
-        $newUser->session->create();
+        $userSessions = new UserSessions($this->db);
+        $newUser->session = $userSessions->create($newUser->id);
 
         $this->setLoginCookie($newUser->id, $newUser->session->id);
 

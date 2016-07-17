@@ -31,7 +31,7 @@ class User extends Model
 
     protected $password;
 
-    public function __construct(Database $db, $data = false, $skipDbLoad = false)
+    public function __construct(Database $db, $data = [], $skipDbLoad = false)
     {
         parent::__construct($db);
 
