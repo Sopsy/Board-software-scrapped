@@ -35,7 +35,7 @@ class PostReport extends ExtendedController
             $this->throwJsonError(418, _('This message has already been reported'));
         }
 
-        $additionalInfo = empty($_POST['report_additional_info']) ? null : $_POST['report_additional_info'];
+        $additionalInfo = empty($_POST['report_additional_info']) ? null : mb_substr($_POST['report_additional_info'], 0, 120);
         $postReports->add($_POST['post_id'], $_POST['reason_id'], $additionalInfo);
     }
 }

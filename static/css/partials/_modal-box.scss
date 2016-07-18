@@ -36,7 +36,7 @@
 
         &:hover {
             background-color: $red;
-            color: #fff;
+            color: #ffffff;
         }
     }
 
@@ -71,26 +71,41 @@
     }
 }
 
-#report-form {
+.modal-form {
     p {
         margin: 0;
     }
+
     label {
         display: block;
         margin: 5px 0;
     }
-    #report-extra-info {
+
+    h4 {
+        margin-bottom: 5px;
+        &:not(:first-of-type) {
+            margin-top: 10px;
+        }
+    }
+
+    select,
+    input[type="text"],
+    input[type="number"] {
         width: 100%;
+        margin: 5px 0;
         box-sizing: border-box;
-        margin: 10px 0;
         padding: 5px;
-        $backgroundColor: #fff;
-        $borderColor: #ccc;
+        $backgroundColor: #ffffff;
+        $borderColor: #cccccc;
         @if (lightness($contentBgColor) < 50) {
-            $backgroundColor: #000;
-            $borderColor: #333;
+            $backgroundColor: #000000;
+            $borderColor: #333333;
         }
         background-color: $backgroundColor;
         @include input-shadow($borderColor);
+    }
+
+    #report-extra-info {
+        margin: 10px 0;
     }
 }

@@ -1,12 +1,12 @@
 <div class="modal-content has-buttons" id="report-form">
     <h3><?= _('Report post') ?></h3>
-    <form onsubmit="submitReport(event)" method="post" action="/scripts/report/submit">
+    <form class="modal-form" onsubmit="submitReport(event)" method="post" action="/scripts/report/submit">
         <p><?= _('Choose a reason') ?></p>
         <input type="hidden" name="post_id" id="report-post-id">
-        <?php foreach ($reasons as $reasonId => $reasonName) : ?>
+        <?php foreach ($reasons as $reasonId => $reason) : ?>
             <label>
                 <input type="radio" name="reason_id" value="<?= $reasonId ?>" required>
-                <?= $reasonName ?>
+                <?= $reason['name'] ?>
             </label>
         <?php endforeach ?>
         <input id="report-extra-info" type="text" name="report_additional_info"

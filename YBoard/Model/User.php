@@ -125,8 +125,21 @@ class User extends Model
         return true;
     }
 
-    public function isBanned() : bool
+    public function updateLastActive() : bool
     {
+        $q = $this->db->prepare("UPDATE users SET last_active = NOW(), last_ip = :last_ip WHERE id = :id LIMIT 1");
+        $q->bindValue('id', (int)$this->id);
+        $q->bindValue('last_ip', inet_pton($_SERVER['REMOTE_ADDR']));
+        $q->execute();
+
+        return true;
+    }
+
+    public function addBan(string $ip, int $length, int $reason, int $messageId, int $bannedBy) : bool
+    {
+        // TODO: Do this.
+        return false;
+
         $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND is_expired = 0 LIMIT 1");
         $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
         $q->bindValue('user_id', $this->id);
@@ -139,14 +152,32 @@ class User extends Model
         return false;
     }
 
-    public function updateLastActive() : bool
+    public function removeBan(int $id) : bool
     {
-        $q = $this->db->prepare("UPDATE users SET last_active = NOW(), last_ip = :last_ip WHERE id = :id LIMIT 1");
-        $q->bindValue('id', (int)$this->id);
-        $q->bindValue('last_ip', inet_pton($_SERVER['REMOTE_ADDR']));
+        $q = $this->db->prepare("UPDATE bans SET expired = 1 WHERE id = :id AND user_id = :user_id LIMIT 1");
+        $q->bindValue('id', $id);
+        $q->bindValue('user_id', $this->id);
         $q->execute();
 
-        return true;
+        if ($q->rowCount() >= 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isBanned() : bool
+    {
+        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND is_expired = 0 LIMIT 1");
+        $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
+        $q->bindValue('user_id', $this->id);
+        $q->execute();
+
+        if ($q->rowCount() >= 1) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function loadSubclasses(bool $skipDbLoad = false) : bool

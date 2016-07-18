@@ -20,7 +20,7 @@ class PostReports extends Model
             return [];
         }
 
-        
+        return $q->fetchAll();
     }
 
     public function getUncheckedCount() : int
@@ -53,14 +53,34 @@ class PostReports extends Model
         return true;
     }
 
-    public function getReasons() : array
+    public function getReasons(bool $onlyBannable = false) : array
     {
-        $reasons = [
-            static::REASON_ILLEGAL => _('Illegal content'),
-            static::REASON_RULE_VIOLATION => _('Rule violation'),
-            static::REASON_PLEASE_REMOVE => _('The content in this post is about me and I want it to be removed'),
-            static::REASON_OTHER => _('Other, please specify below'),
+        $reportOnlyReasons = [
+            static::REASON_PLEASE_REMOVE => [
+                'name' => _('The content in this post is about me and I want it to be removed'),
+            ],
         ];
+
+        $bannableReasons = [
+            static::REASON_ILLEGAL => [
+                'name' => _('Illegal content'),
+                'banLength' => 604800
+            ],
+            static::REASON_RULE_VIOLATION => [
+                'name' => _('Rule violation'),
+                'banLength' => 86400
+            ],
+            static::REASON_OTHER => [
+                'name' => _('Other'),
+                'banLength' => 3600
+            ],
+        ];
+
+        if (!$onlyBannable) {
+            $reasons = array_merge($reportOnlyReasons, $bannableReasons);
+        } else {
+            $reasons = $bannableReasons;
+        }
 
         return $reasons;
     }

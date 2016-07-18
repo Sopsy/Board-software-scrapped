@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'icomoon';
-    src: url('/fonts/icomoon.woff?11') format('woff');
+    src: url('/fonts/icomoon.woff?13') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -73,8 +73,8 @@
 .icon-exit:before {
     content: "\e6d3";
 }
-.icon-medal-first:before {
-    content: "\e6de";
+.icon-medal-empty:before {
+    content: "\e6dd";
 }
 .icon-music-note3:before {
     content: "\e6e6";
@@ -99,6 +99,9 @@
 }
 .icon-bubble-quote:before {
     content: "\e7e0";
+}
+.icon-sad:before {
+    content: "\e88d";
 }
 .icon-tombstone:before {
     content: "\e8a1";
@@ -154,9 +157,6 @@
 .icon-arrow-left:before {
     content: "\e943";
 }
-.icon-expand4:before {
-    content: "\e952";
-}
 .icon-notification:before {
     content: "\e954";
 }
@@ -168,6 +168,9 @@
 }
 .icon-grid:before {
     content: "\e975";
+}
+.icon-prohibited:before {
+    content: "\e99c";
 }
 .icon-bold:before {
     content: "\e9a3";
@@ -184,6 +187,9 @@
 .icon-pencil-line:before {
     content: "\e9be";
 }
+.icon-file-minus:before {
+    content: "\e9a7";
+}
 .icon-play4:before {
     content: "\ed85";
 }
@@ -196,5 +202,3 @@
 .icon-youtube:before {
     content: "\eefc";
 }
-
-

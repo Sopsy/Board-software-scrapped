@@ -26,12 +26,13 @@
         <div class="mod-menu-html">
             <p><?= _('IP') ?>: <?= $post->ip ?> (<?= $post->countryCode ?>)</p>
             <p><?= _('User ID') ?>: <a href="/profile/<?= $post->userId ?>"><?= $post->userId ?></a></p>
-            <?php if(!empty($post->file)) : ?>
-                <p><button onclick="deleteFile(<?= $post->id ?>)" class="link"><?= _('Delete file from post') ?></button></p>
-            <?php endif ?>
-            <p><button onclick="deletePost(<?= $post->id ?>)" class="link"><?= _('Delete post') ?></button></p>
-            <p><button onclick="toggleThreadSticky(<?= $post->id ?>)" class="link"><?= _('Toggle sticky') ?></button></p>
-            <p><button onclick="toggleThreadLock(<?= $post->id ?>)" class="link"><?= _('Toggle lock') ?></button></p>
+        <?php if(!empty($post->file)) : ?>
+            <button onclick="deleteFile(<?= $post->id ?>)" class="button square icon-file-minus" title="<?= _('Delete file from post') ?>"></button>
+        <?php endif ?>
+            <button onclick="deletePost(<?= $post->id ?>)" class="button square icon-trash2" title="<?= _('Delete post') ?>"></button>
+            <button onclick="toggleThreadSticky(<?= $post->id ?>)" class="button square icon-pushpin" title="<?= _('Toggle sticky') ?>"></button>
+            <button onclick="toggleThreadLock(<?= $post->id ?>)" class="button square icon-lock" title="<?= _('Toggle lock') ?>"></button>
+            <button onclick="banForm(<?= $post->id ?>)" class="button square icon-prohibited" title="<?= _('Ban user') ?>"></button>
         </div>
     <?php else : ?>
         <?php if ($post->userId != $user->id) : ?>

@@ -18,8 +18,8 @@ return [
     // Preferences
     '#^/preferences$#' => ['Preferences', 'index'],
     '#^/scripts/preferences/save$#' => ['Preferences', 'save'],
-    '#^/scripts/preferences/setthemevariation#' => ['Preferences', 'setThemeVariation'],
-    '#^/scripts/preferences/togglehidesidebar#' => ['Preferences', 'toggleHideSidebar'],
+    '#^/scripts/preferences/setthemevariation$#' => ['Preferences', 'setThemeVariation'],
+    '#^/scripts/preferences/togglehidesidebar$#' => ['Preferences', 'toggleHideSidebar'],
 
     // User account related
     '#^/profile/(.+)?$#' => ['User', 'profile'],
@@ -55,14 +55,18 @@ return [
     '#^/scripts/posts/delete$#' => ['Post', 'delete'],
     '#^/scripts/posts/deletefile$#' => ['Post', 'deleteFile'],
 
+    // Mod
+    '#^/scripts/mod/banform$#' => ['Mod', 'banForm'],
+    '#^/scripts/mod/addban$#' => ['Mod', 'addBan'],
+
     // Thread scripts
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],
     '#^/scripts/threads/hide$#' => ['Thread', 'hide'],
     '#^/scripts/threads/restore$#' => ['Thread', 'restore'],
-    '#^/scripts/threads/stick#' => ['Thread', 'stick'],
-    '#^/scripts/threads/unstick#' => ['Thread', 'unstick'],
-    '#^/scripts/threads/lock#' => ['Thread', 'lock'],
-    '#^/scripts/threads/unlock#' => ['Thread', 'unlock'],
+    '#^/scripts/threads/stick$#' => ['Thread', 'stick'],
+    '#^/scripts/threads/unstick$#' => ['Thread', 'unstick'],
+    '#^/scripts/threads/lock$#' => ['Thread', 'lock'],
+    '#^/scripts/threads/unlock$#' => ['Thread', 'unlock'],
 
     // Follow threads
     '#^/scripts/follow/add$#' => ['ThreadFollow', 'add'],
@@ -70,12 +74,12 @@ return [
     '#^/scripts/follow/markallread$#' => ['ThreadFollow', 'markAllRead'],
 
     // File scripts
-    '#^/scripts/files/upload#' => ['File', 'upload'],
+    '#^/scripts/files/upload$#' => ['File', 'upload'],
     '#^/scripts/files/getmediaplayer$#' => ['File', 'getMediaPlayer'],
 
     // Post reporting
     '#^/scripts/report/getform$#' => ['PostReport', 'getForm'],
-    '#^/scripts/report/submit#' => ['PostReport', 'submit'],
+    '#^/scripts/report/submit$#' => ['PostReport', 'submit'],
 
     // Boards
     // Checked at the end so other rules override

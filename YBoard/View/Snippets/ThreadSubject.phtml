@@ -2,17 +2,14 @@
     <a href="/<?= $thread->boardUrl ?>/<?= $thread->id ?><?php
     if ($user->threadFollow->exists($thread->id) && $user->threadFollow->getThreadLastSeenReply($thread->id)) :
         ?>#post-<?= $user->threadFollow->getThreadLastSeenReply($thread->id) ?><?php
-    endif ?>">
-
-    <?php if ($thread->sticky) :
+    endif ?>"><?php if ($thread->sticky) :
         ?><span class="icon-pushpin icon" title="<?= _('Sticky') ?>"></span><?php
     endif;
     if ($thread->locked) :
         ?><span class="icon-lock icon" title="<?= _('Locked') ?>"></span><?php
     endif;
-    ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span>
-
-    <?php if ($user->threadFollow->exists($thread->id) && $user->threadFollow->getThreadUnreadCount($thread->id) != 0) : ?>
+    ?><span class="subject"><?= htmlspecialchars($thread->subject) ?></span><?php
+    if ($user->threadFollow->exists($thread->id) && $user->threadFollow->getThreadUnreadCount($thread->id) != 0) : ?>
         <span class="notification-count"><?= $user->threadFollow->getThreadUnreadCount($thread->id) ?></span>
     <?php endif ?>
     </a>

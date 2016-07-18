@@ -41,8 +41,8 @@ class Files extends Model
     {
         $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
             extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
-            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
+            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+            is_gif AS file_is_gif
             FROM files
             WHERE id = :file_id LIMIT 1');
         $q->bindValue('file_id', $fileId);
@@ -59,8 +59,8 @@ class Files extends Model
     {
         $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
             extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
-            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
+            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+            is_gif AS file_is_gif
             FROM posts_files a
             LEFT JOIN files b ON a.file_id = b.id
             WHERE file_name = :file_name LIMIT 1');
@@ -78,8 +78,8 @@ class Files extends Model
     {
         $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
             extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            thumb_width AS file_thumb_width, thumb_height AS file_thumb_height, duration AS file_duration,
-            in_progress AS file_in_progress, has_sound AS file_has_sound, is_gif AS file_is_gif
+            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+            is_gif AS file_is_gif
             FROM files WHERE name = :name LIMIT 1');
         $q->bindValue('name', $fileName);
         $q->execute();
@@ -230,7 +230,6 @@ class Files extends Model
 
                 // Get size of the final images
                 list($uploadedFile->width, $uploadedFile->height) = getimagesize($uploadedFile->destination);
-                list($uploadedFile->thumbWidth, $uploadedFile->thumbHeight) = getimagesize($uploadedFile->thumbDestination);
 
                 break;
             case 'm4a':
@@ -254,27 +253,22 @@ class Files extends Model
 
                 $sendMessage = MessageQueue::MSG_TYPE_PROCESS_VIDEO;
 
-                // Get size of the thumbnail
-                list($uploadedFile->thumbWidth, $uploadedFile->thumbHeight) = getimagesize($uploadedFile->thumbDestination);
-
                 break;
             default:
                 throw new FileUploadException(sprintf(_('Unsupported file type: %s'), $uploadedFile->extension));
         }
 
         // Save file to database
-        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, thumb_width,
-            thumb_height, duration, has_thumbnail, has_sound, is_gif, in_progress)
-            VALUES (:folder, :name, :extension, :size, :width, :height, :thumb_width, :thumb_height, :duration,
-            :has_thumbnail, :has_sound, :is_gif, :in_progress)");
+        $q = $this->db->prepare("INSERT INTO files (folder, name, extension, size, width, height, duration,
+            has_thumbnail, has_sound, is_gif, in_progress)
+            VALUES (:folder, :name, :extension, :size, :width, :height, :duration, :has_thumbnail, :has_sound,
+            :is_gif, :in_progress)");
         $q->bindValue('folder', $uploadedFile->folder);
         $q->bindValue('name', $uploadedFile->name);
         $q->bindValue('extension', $uploadedFile->destinationFormat);
         $q->bindValue('size', $uploadedFile->size);
         $q->bindValue('width', $uploadedFile->width);
         $q->bindValue('height', $uploadedFile->height);
-        $q->bindValue('thumb_width', $uploadedFile->thumbWidth);
-        $q->bindValue('thumb_height', $uploadedFile->thumbHeight);
         $q->bindValue('duration', $uploadedFile->duration);
         $q->bindValue('has_thumbnail', $uploadedFile->hasThumbnail);
         $q->bindValue('has_sound', $uploadedFile->hasSound);

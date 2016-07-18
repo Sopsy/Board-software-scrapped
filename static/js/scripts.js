@@ -65,7 +65,7 @@ jQuery.fn.reverse = [].reverse;
 // Post reporting
 // -------------------------------------------
 function reportPost(elm, id) {
-    $(elm).openModal('/scripts/report/getform', false, function () {
+    openModal('/scripts/report/getform', false, false, function () {
         if (typeof grecaptcha != 'undefined' && $('#report-captcha').html().length == 0) {
             grecaptcha.render('report-captcha', {
                 'sitekey': config.reCaptchaPublicKey
@@ -75,9 +75,7 @@ function reportPost(elm, id) {
     });
 }
 function submitReport(e) {
-    if (typeof e != 'undefined') {
-        e.preventDefault();
-    }
+    e.preventDefault();
 
     if (!('FormData' in window)) {
         toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
@@ -343,85 +341,118 @@ function updateThread(url, callback, id) {
     }).fail(ajaxError);
 }
 
+function banForm(postId) {
+    var data = {
+        'post_id': postId
+    };
+    openModal('/scripts/mod/banform', data);
+}
+
+function addBan(e) {
+    e.preventDefault();
+
+    if (!('FormData' in window)) {
+        toastr.error(messages.oldBrowserWarning, messages.errorOccurred);
+        return false;
+    }
+
+    var form = $(e.target);
+    var fd = new FormData(e.target);
+
+    var oldHtml = $(e.target).html();
+    $(e.target).html(loadingAnimation());
+
+    $.ajax({
+        url: form.attr('action'),
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: fd
+    }).done(function () {
+        toastr.success(messages.banAdded);
+        closeModals();
+    }).fail(function (xhr, textStatus, errorThrown) {
+        var errorMessage = getErrorMessage(xhr, errorThrown);
+        toastr.error(errorMessage, messages.errorOccurred);
+        $(e.target).html(oldHtml);
+    });
+}
+
 // -------------------------------------------
 // Modal windows (not always so modal though)
 // -------------------------------------------
-$.fn.extend({
-    openModal: function (url, content, completeCallback) {
-        closeModals();
+function openModal(url, postData, content, completeCallback) {
+    closeModals();
 
-        var ajax = typeof url == 'string';
+    var elm = $('#modal-root');
+    var ajax = typeof url == 'string';
 
-        if (typeof content == 'undefined') {
-            content = loadingAnimation();
-        }
-
-        if (typeof completeCallback != 'function') {
-            completeCallback = function () {
-            };
-        }
-
-        // Don't double initialize
-        if (this.hasClass('tooltipstered')) {
-            return true;
-        }
-
-        var closeButton = '<button class="close-modal close-modal-button icon-cross2"></button>';
-
-        this.tooltipster({
-            content: content,
-            side: 'bottom',
-            animationDuration: 0,
-            updateAnimation: null,
-            delay: 0,
-            arrow: false,
-            contentAsHTML: true,
-            theme: 'modal-box',
-            zIndex: 1001,
-            trigger: 'click',
-            interactive: true,
-            trackTooltip: true,
-            functionReady: function (instance, helper) {
-                if (ajax) {
-                    $.ajax({
-                        url: url,
-                        type: "POST"
-                    }).done(function (data) {
-                        data = $(data);
-                        data.find('.datetime').localizeTimestamp(this);
-                        data = data.prop('outerHTML');
-
-                        instance.content(closeButton + data);
-                        completeCallback();
-                    }).fail(ajaxError);
-                } else {
-                    completeCallback();
-                }
-                $(helper.tooltip).on('click', '.close-modal', function () {
-                    instance.close();
-                });
-            },
-            functionAfter: function (instance, helper) {
-                if (ajax) {
-                    instance.content(closeButton + loadingAnimation());
-                }
-            }
-        }).tooltipster('open')
+    if (typeof postData != 'object' || postData === false) {
+        postData = {};
     }
-});
+
+    if (typeof content == 'undefined' || content === false) {
+        content = loadingAnimation();
+    }
+
+    if (typeof completeCallback != 'function') {
+        completeCallback = function () {
+        };
+    }
+
+    var closeButton = '<button class="close-modal close-modal-button icon-cross2"></button>';
+
+    elm.tooltipster({
+        content: content,
+        side: 'bottom',
+        animationDuration: 0,
+        updateAnimation: null,
+        delay: 0,
+        arrow: false,
+        contentAsHTML: true,
+        theme: 'modal-box',
+        zIndex: 1001,
+        trigger: 'click',
+        interactive: true,
+        trackTooltip: true,
+        functionReady: function (instance, helper) {
+            if (ajax) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: postData
+                }).done(function (data) {
+                    data = $(data);
+                    data.find('.datetime').localizeTimestamp(this);
+                    data = data.prop('outerHTML');
+
+                    instance.content(closeButton + data);
+                    completeCallback();
+                }).fail(ajaxError);
+            } else {
+                completeCallback();
+            }
+            $(helper.tooltip).on('click', '.close-modal', function () {
+                instance.close();
+            });
+        },
+        functionAfter: function (instance, helper) {
+            if (ajax) {
+                instance.content(closeButton + loadingAnimation());
+            }
+        }
+    }).tooltipster('open')
+}
 
 function closeModals() {
-    var instances = $.tooltipster.instances();
-    $.each(instances, function(i, instance){
-        instance.close();
-    });
+    $('#modal-root.tooltipstered').tooltipster('destroy');
 }
 
 // -------------------------------------------
 // Notifications
 // -------------------------------------------
-function getNotifications(elm) {
-    $(elm).openModal('/scripts/notifications/get', false, function () {
+function getNotifications() {
+    openModal('/scripts/notifications/get', false, false, function () {
         updateUnreadNotificationCount($('.notifications-list .not-read').length);
     });
 }
