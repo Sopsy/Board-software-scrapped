@@ -209,28 +209,38 @@ function markAllFollowedRead() {
 // -------------------------------------------
 // Thread hiding
 // -------------------------------------------
-function hideThread(id) {
-    $t(id).fadeOut();
+function hideThread(id, showNotification) {
+    showNotification = typeof showNotification == 'undefined';
+    $t(id).fadeToggle();
     $.ajax({
         url: '/scripts/threads/hide',
         type: "POST",
         data: {'thread_id': id}
     }).done(function () {
-        $t(id).remove();
+        if (showNotification) {
+            toastr.success(messages.threadHidden + '<button class="link" onclick="restoreThread(' + id + ', false)">' + messages.undo + '</button>');
+        }
     }).fail(function (xhr, textStatus, errorThrown) {
         ajaxError(xhr, textStatus, errorThrown);
         $t(id).stop().show();
     });
 }
 
-function restoreThread(id) {
+function restoreThread(id, showNotification) {
+    showNotification = typeof showNotification == 'undefined';
+    $t(id).fadeToggle();
     $.ajax({
         url: '/scripts/threads/restore',
         type: "POST",
         data: {'thread_id': id}
     }).done(function () {
-        $t(id).fadeOut();
-    }).fail(ajaxError);
+        if (showNotification) {
+            toastr.success(messages.threadRestored + '<button class="link" onclick="hideThread(' + id + ', false)">' + messages.undo + '</button>');
+        }
+    }).fail(function (xhr, textStatus, errorThrown) {
+        ajaxError(xhr, textStatus, errorThrown);
+        $t(id).stop().show();
+    });
 }
 
 // -------------------------------------------
@@ -341,11 +351,19 @@ function updateThread(url, callback, id) {
     }).fail(ajaxError);
 }
 
-function banForm(postId) {
+function banForm(postId, deleteAfter) {
     var data = {
         'post_id': postId
     };
-    openModal('/scripts/mod/banform', data, false, false, true);
+
+    if (typeof deleteAfter != 'boolean') {
+        deleteAfter = false;
+    } else {
+        deleteAfter = function() {
+            $p(postId).remove();
+        }
+    }
+    openModal('/scripts/mod/banform', data, false, deleteAfter, true);
 }
 
 function addBan(e) {
@@ -367,8 +385,7 @@ function addBan(e) {
         processData: false,
         contentType: false,
         data: fd
-    }).done(function (x) {
-        console.log(x);
+    }).done(function () {
         toastr.success(messages.banAdded);
         closeModals();
     }).fail(function (xhr, textStatus, errorThrown) {
@@ -376,6 +393,18 @@ function addBan(e) {
         toastr.error(errorMessage, messages.errorOccurred);
         $(e.target).html(oldHtml);
     });
+}
+
+function setReportChecked(postId)
+{
+    $.ajax({
+        url: '/scripts/mod/reports/setchecked',
+        type: "POST",
+        data: {'post_id': postId}
+    }).done(function () {
+        toastr.success(messages.reportCleared);
+        $p(postId).remove();
+    }).fail(ajaxError);
 }
 
 // -------------------------------------------

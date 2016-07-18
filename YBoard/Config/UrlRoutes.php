@@ -58,6 +58,8 @@ return [
     // Mod
     '#^/scripts/mod/banform$#' => ['Mod', 'banForm'],
     '#^/scripts/mod/addban$#' => ['Mod', 'addBan'],
+    '#^/scripts/mod/reports/setchecked$#' => ['PostReport', 'setChecked'],
+    '#^/mod/reports$#' => ['PostReport', 'uncheckedReports'],
 
     // Thread scripts
     '#^/scripts/threads/getreplies$#' => ['Thread', 'getReplies'],

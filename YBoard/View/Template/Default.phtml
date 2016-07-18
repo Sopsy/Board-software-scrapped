@@ -34,9 +34,10 @@
         };
         var messages = {
             loading: '<?= _('Loading...') ?>',
+            undo: '<?= _('Undo') ?>',
             errorOccurred: '<?= _('An error occurred') ?>',
-            timeoutWarning: '<?= _('Loading timed out, please check your internet connection') ?>',
-            networkError: '<?= _('Network error, please check that you are connected to the internet') ?>',
+            timeoutWarning: '<?= _('Loading timed out – please check your internet connection') ?>',
+            networkError: '<?= _('Network error – please check that you are connected to the internet') ?>',
             logOutConfirm: '<?= _('Log out?') ?>',
             signUp: '<?= _('Sign up') ?>',
             cancel: '<?= _('Cancel') ?>',
@@ -48,10 +49,13 @@
             postDeleted: '<?= _('Post deleted') ?>',
             fileDeleted: '<?= _('File deleted') ?>',
             postReported: '<?= _('Post reported') ?>',
+            threadHidden: '<?= _('Thread hidden') ?>',
+            threadRestored: '<?= _('Thread restored') ?>',
             threadLocked: '<?= _('Thread locked') ?>',
             threadUnlocked: '<?= _('Thread unlocked') ?>',
             threadStickied: '<?= _('Thread stickied') ?>',
             threadUnstickied: '<?= _('Thread unstickied') ?>',
+            reportCleared: '<?= _('Report cleared') ?>',
             banAdded: '<?= _('Ban added') ?>',
             confirmUnload: '<?= _('Your message will be lost.') ?>',
             noNewReplies: '<?= _('No new replies') ?>',
@@ -83,87 +87,8 @@
     ></div>
 </div>
 
-<div id="sidebar">
-    <button id="sidebar-hide-button" onclick="toggleHideSidebar()"></button>
-    <nav id="main">
-        <a href="/" id="logo">
-            <img src="<?= $staticUrl ?>/img/norppa_ylilauta.svg" alt="<?= htmlspecialchars($siteName) ?>">
-            <span><?= htmlspecialchars($siteName) ?></span>
-        </a>
-        <div class="columns">
-            <a href="/gold"><?= _('Gold account') ?></a>
-            <a href="/faq"><?= _('FAQ') ?></a>
-            <a href="/rules"><?= _('Rules') ?></a>
-            <a href="/about"><?= _('About') ?></a>
-            <a href="/advertising"><?= _('Advertising') ?></a>
-        </div>
-        <form id="search" method="get" action="/search">
-            <input name="cx" value="<?= $gCsePartnerPub ?>" type="hidden">
-            <input name="cof" value="FORID:10" type="hidden">
-            <input name="ie" value="UTF-8" type="hidden">
-            <input id="searchfield" name="q" size="24" placeholder="<?= _('Search Ylilauta...') ?>" type="text" required>
-            <button id="searchbutton" class="icon-magnifier"></button>
-        </form>
-    </nav>
-    <nav id="user">
-    <?php if (!$user->loggedIn) : ?>
-        <h3><?= _('Log in') ?></h3>
-        <form id="login" action="/scripts/session/login" data-signup="/scripts/session/signup" method="post">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-            <input type="hidden" name="redirto" value="<?= htmlspecialchars(empty($redirTo)?$_SERVER['REQUEST_URI']:$redirTo) ?>">
-            <input type="text" name="username" placeholder="<?= _('Username') ?>" maxlength="<?= $usernameMaxLength ?>" required>
-            <input type="password" name="password" placeholder="<?= _('Password') ?>" required>
-            <div id="signup-form">
-                <input type="password" name="repassword" placeholder="<?= _('Password again') ?>">
-                <div id="signup-captcha"></div>
-            </div>
-            <input type="submit" class="button primary" name="login" id="loginbutton" value="<?= _('Log_in') ?>">
-            <button onclick="signupForm(this, event)" class="button transparent" data-open="false"><?= _('Sign up') ?></button>
-        </form>
-    <?php else : ?>
-        <h3><?= htmlspecialchars($user->username) ?></h3>
-    <?php endif ?>
-        <div class="buttons">
-            <button onclick="getNotifications()" class="button square icon-alarm" title="<?= _('Notifications') ?>"
-                ><span class="unread-notifications unread-count red<?= ($user->notifications->unreadCount==0?' none':'') ?>"
-                ><?= $user->notifications->unreadCount ?></span></button>
-            <a href="/followedthreads/" class="button square icon-bookmark2" title="<?= _('Followed threads') ?>"><?php
-                if($user->threadFollow->unreadCount != 0) :
-                    ?><span class="unread-count green"><?= $user->threadFollow->unreadCount ?></span><?php
-                endif
-            ?></a>
-            <?php if ($user->isMod) : ?>
-                <a class="button square icon-flag2" href="/mod/reports" title="<?= _('Reports') ?>"
-                    ><span class="unread-count red"><?= $uncheckedReports ?></span></a>
-            <?php endif ?>
-            <a class="button square icon-user" href="/profile/" title="<?= _('Profile') ?>"></a>
-            <a class="button square icon-cog" href="/preferences" title="<?= _('Preferences') ?>"></a>
-            <button class="button square icon-lamp" onclick="switchThemeVariation()" title="<?= _('Switch theme colors') ?>"></button>
-            <?php if ($user->loggedIn) : ?>
-                <form id="logout" action="/scripts/session/logout" method="post">
-                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                    <button type="submit" class="button square icon-exit" title="<?= _('Log out') ?>"
-                        onclick="if(!confirm(messages.logOutConfirm)){return false}"></button>
-                </form>
-            <?php endif ?>
-        </div>
-        <div class="columns">
-            <a href="/mythreads/"><?= _('My threads') ?></a>
-            <a href="/repliedthreads/"><?= _('Replied threads') ?></a>
-            <a href="/hiddenthreads/"><?= _('Hidden threads') ?></a>
-        </div>
-    </nav>
-    <nav id="boards">
-        <h3><?= _('Discussion boards') ?></h3>
-        <div class="columns">
-    <?php foreach($boardList as $board) : ?>
-        <a href="/<?= htmlspecialchars($board->url) ?>/"
-            <?= ($board->isNsfw?' class="nsfwboard"':'') ?>><?= htmlspecialchars($board->name) ?><?php if($board->isNsfw) :
-            ?><span class="text-tag nsfw"><?= _('NSFW') ?></span><?php endif ?></a>
-    <?php endforeach ?>
-        </div>
-    </nav>
-</div>
+<?php include($viewFilesPath . '/Snippets/Sidebar.phtml') ?>
+
 <div id="content">
     <?php if ($user->ban) : ?>
     <div id="banned">

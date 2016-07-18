@@ -106,8 +106,7 @@
         overflow: hidden;
         margin: 0 0 5px;
         width: 300px;
-        min-height: 50px;
-        padding: 15px 15px 15px 55px;
+        padding: 15px;
         box-shadow: 5px 5px 15px -10px #000;
         color: #fff;
         opacity: 0.8;
@@ -126,30 +125,26 @@
             top: 50%;
             transform: translateY(-50%);
         }
+
+        button.link {
+            font-weight: bold;
+            float: right;
+            &:hover {
+                color: #fff;
+            }
+        }
     }
     .toast-success {
         background-color: #51a351;
-        &:before {
-            content: "\e959";
-        }
     }
     .toast-error {
         background-color: #bd362f;
-        &:before {
-            content: "\e954";
-        }
     }
     .toast-info {
         background-color: #2f96b4;
-        &:before {
-            content: "\e7d9";
-        }
     }
     .toast-warning {
         background-color: #f89406;
-        &:before {
-            content: "\e955";
-        }
     }
 
     &.toast-top-center > div,

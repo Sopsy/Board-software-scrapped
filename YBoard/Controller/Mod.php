@@ -34,9 +34,9 @@ class Mod extends ExtendedController
         $view->post = $post;
         $view->thread = $thread;
         $view->board = $board;
-        $view->banReasons = PostReports::getReasons(true);
+        $view->banReasons = Bans::getReasons(true);
 
-        $view->display('Ajax/Mod/BanForm');
+        $view->display('Mod/BanForm');
     }
 
     public function addBan()
@@ -77,8 +77,12 @@ class Mod extends ExtendedController
         $bans = new Bans($this->db);
         $bans->add($banIp, $banUser, $banLength, $banReason, $additionalInfo, $postId, $this->user->id);
 
-        // Delete posts?
+        if (empty($postId)) {
+            return true;
+        }
+
         if (!empty($_POST['ban_delete_post'])) {
+            // Delete posts?
             $posts = new Posts($this->db);
             $post = $posts->get($_POST['ban_post_id'], false);
             if ($post !== false) {
@@ -86,6 +90,13 @@ class Mod extends ExtendedController
                     $posts->deleteByUser($post->userId, 24);
                 }
                 $post->delete();
+            }
+        } else {
+            // Mark any possible reports as checked
+            $reports = new PostReports($this->db);
+            $report = $reports->get($postId);
+            if ($report !== false) {
+                $report->setChecked($this->user->id);
             }
         }
     }

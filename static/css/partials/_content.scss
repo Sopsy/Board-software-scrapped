@@ -37,20 +37,19 @@ button.link {
     font-size: 0.85rem;
     line-height: 1.5em;
 
-    &.gray {
-        $color: #000;
-        $bg: #ccc;
-        @if (lightness($bgColor) < 50) {
-            $bg: #444;
-            $color: #eee
-        }
-
-        color: $color;
-        background-color: $bg;
-        &:hover {
-            background-color: lighten($bg, 10%);
-        }
+    $color: #000;
+    $bg: #dfdfdf;
+    @if (lightness($bgColor) < 50) {
+        $bg: #333;
+        $color: #eee
     }
+
+    color: $color;
+    background-color: $bg;
+    &:hover {
+        background-color: darken($bg, 10%);
+    }
+
     &.primary {
         color: #fff;
         background-color: $highlightColor;

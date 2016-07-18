@@ -5,22 +5,33 @@ use YBoard\Model;
 
 class PostReports extends Model
 {
-    const REASON_ILLEGAL = 1;
-    const REASON_PLEASE_REMOVE = 2;
-    const REASON_RULE_VIOLATION = 3;
-    const REASON_OTHER = 4;
-
     public function getUnchecked() : array
     {
         $q = $this->db->prepare("SELECT post_id, reason_id, additional_info, time, reported_by FROM posts_reports
             WHERE is_checked = 0 ORDER BY reason_id ASC, time ASC");
         $q->execute();
 
-        if ($q->rowCount() == 0) {
-            return [];
+        $reports = [];
+        while ($row = $q->fetch()) {
+            $reports[] = new PostReport($this->db, $row);
         }
 
-        return $q->fetchAll();
+        return $reports;
+    }
+
+    public function get(int $postId)
+    {
+        $q = $this->db->prepare("SELECT post_id, reason_id, additional_info, time, reported_by FROM posts_reports
+            WHERE post_id = :post_id LIMIT 1");
+        $q->bindValue('post_id', $postId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        $row = $q->fetch();
+        return new PostReport($this->db, $row);
     }
 
     public function getUncheckedCount() : int
@@ -33,7 +44,7 @@ class PostReports extends Model
 
     public function isReported(int $postId)
     {
-        $q = $this->db->prepare("SELECT post_id FROM posts_reports WHERE post_id = :post_id LIMIT 1");
+        $q = $this->db->prepare("SELECT post_id FROM posts_reports WHERE post_id = :post_id AND is_checked = 0 LIMIT 1");
         $q->bindValue('post_id', $postId);
         $q->execute();
 
@@ -51,37 +62,5 @@ class PostReports extends Model
         $q->execute();
 
         return true;
-    }
-
-    public static function getReasons(bool $onlyBannable = false) : array
-    {
-        $reportOnlyReasons = [
-            static::REASON_PLEASE_REMOVE => [
-                'name' => _('The content in this post is about me and I want it to be removed'),
-            ],
-        ];
-
-        $bannableReasons = [
-            static::REASON_ILLEGAL => [
-                'name' => _('Illegal content'),
-                'banLength' => 604800
-            ],
-            static::REASON_RULE_VIOLATION => [
-                'name' => _('Rule violation'),
-                'banLength' => 86400
-            ],
-            static::REASON_OTHER => [
-                'name' => _('Other'),
-                'banLength' => 3600
-            ],
-        ];
-
-        if (!$onlyBannable) {
-            $reasons = $reportOnlyReasons + $bannableReasons;
-        } else {
-            $reasons = $bannableReasons;
-        }
-
-        return $reasons;
     }
 }

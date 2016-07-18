@@ -3,16 +3,18 @@ namespace YBoard\Model;
 
 use YBoard\Library\Database;
 use YBoard\Model;
+use YBoard\Traits\BanReasons;
 
 class Ban extends Model
 {
+    use BanReasons;
+
     public $id;
     public $userId;
     public $ip;
     public $length;
     public $beginTime;
     public $endTime;
-    public $reasonId;
     public $additionalInfo;
     public $postId;
     public $bannedBy;
@@ -102,17 +104,6 @@ class Ban extends Model
         $this->endTime = date('Y-m-d H:i:s', time() + $this->length);
 
         return true;
-    }
-
-    public function getReasonText() : string
-    {
-        foreach (PostReports::getReasons() as $reasonId => $reason) {
-            if ($this->reasonId == $reasonId) {
-                return $reason['name'];
-            }
-        }
-
-        return '';
     }
 
     public function getMessage()

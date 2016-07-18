@@ -6,6 +6,7 @@ use YBoard\Library\Database;
 use YBoard\Library\HttpResponse;
 use YBoard\Library\i18n;
 use YBoard\Library\TemplateEngine;
+use YBoard\Model\Bans;
 use YBoard\Model\Boards;
 use YBoard\Model\PostReports;
 use YBoard\Model\Users;
@@ -209,9 +210,15 @@ abstract class ExtendedController extends Controller
         if ($templateFile == 'Default') {
             $this->user->statistics->increment('pageLoads');
 
+            // Mod functions
             if ($this->user->isMod) {
+                // Get unchecked reports
                 $reports = new PostReports($this->db);
                 $templateEngine->uncheckedReports = $reports->getUncheckedCount();
+
+                // Get ban appeals
+                $bans = new Bans($this->db);
+                $templateEngine->uncheckedBanAppeals = $bans->getUncheckedAppealCount();
             }
         }
 
