@@ -22,13 +22,14 @@
         <button type="button" class="button" onclick="$('#ban-length').val(1209600)"><?= sprintf(_('%dw'), 2) ?></button>
         <button type="button" class="button" onclick="$('#ban-length').val(2592000)"><?= sprintf(_('%dm'), 1) ?></button>
 
-        <h4><?= sprintf(_('Message: %d (%s)'), $post->id, $board->name) ?></h4>
+        <h4><?= _('Message') ?></h4>
+        <input type="text" name="ban_post_id" placeholder="<?= _('Post ID') ?>" value="<?= $post->id ?>">
         <label>
             <input type="checkbox" name="ban_delete_post" checked>
             <?= _('Delete post') ?>
         </label>
         <label>
-            <input type="checkbox" name="ban_delete_post_24h">
+            <input type="checkbox" name="ban_delete_posts_24h">
             <?= _('Delete all posts from the user from the last 24 hours') ?>
         </label>
         <div class="modal-buttons">

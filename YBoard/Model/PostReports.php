@@ -53,7 +53,7 @@ class PostReports extends Model
         return true;
     }
 
-    public function getReasons(bool $onlyBannable = false) : array
+    public static function getReasons(bool $onlyBannable = false) : array
     {
         $reportOnlyReasons = [
             static::REASON_PLEASE_REMOVE => [
@@ -77,7 +77,7 @@ class PostReports extends Model
         ];
 
         if (!$onlyBannable) {
-            $reasons = array_merge($reportOnlyReasons, $bannableReasons);
+            $reasons = $reportOnlyReasons + $bannableReasons;
         } else {
             $reasons = $bannableReasons;
         }

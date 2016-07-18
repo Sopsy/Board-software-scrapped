@@ -181,3 +181,25 @@ h4 {
         @include input-shadow($shadowColor);
     }
 }
+
+#banned {
+    background-color: $red;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px 10px;
+    h3 {
+        font-size: 1.5em;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+    p {
+        margin: 0;
+    }
+    a {
+        color: #eee;
+    }
+    .tooltip {
+        cursor: pointer;
+    }
+}

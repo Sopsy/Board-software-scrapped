@@ -78,7 +78,7 @@ abstract class ExtendedController extends Controller
             // Load session
             $userSessions = new UserSessions($this->db);
             $session = $userSessions->get($cookie['userId'], $cookie['sessionId']);
-            if ($session->id === null) {
+            if ($session === false) {
                 $this->deleteLoginCookie(true);
             }
 
@@ -269,6 +269,10 @@ abstract class ExtendedController extends Controller
 
     protected function validateAjaxCsrfToken()
     {
+        if ($this->user->id === null) {
+            $this->ajaxCsrfValidationFail();
+        }
+
         if (!$this->isPostRequest()) {
             $this->ajaxCsrfValidationFail();
         }

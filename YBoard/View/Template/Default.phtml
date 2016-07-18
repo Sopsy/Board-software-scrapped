@@ -52,6 +52,7 @@
             threadUnlocked: '<?= _('Thread unlocked') ?>',
             threadStickied: '<?= _('Thread stickied') ?>',
             threadUnstickied: '<?= _('Thread unstickied') ?>',
+            banAdded: '<?= _('Ban added') ?>',
             confirmUnload: '<?= _('Your message will be lost.') ?>',
             noNewReplies: '<?= _('No new replies') ?>',
             showFullMessage: '<?= _('show full message') ?>',
@@ -164,6 +165,25 @@
     </nav>
 </div>
 <div id="content">
+    <?php if ($user->ban) : ?>
+    <div id="banned">
+        <h3><?= _('You are banned!') ?></h3>
+        <p>
+            <?= sprintf(_('Reason: %s'), $user->ban->getReasonText()) ?>
+            <?= (empty($user->ban->additionalInfo)?'':', ' . $user->ban->additionalInfo) ?>
+        </p>
+        <p>
+            <?= sprintf(_('Your ban ends: %s'), '<span class="datetime">' . $user->ban->endTime . '</span>') ?>
+        </p>
+        <?php if ($user->ban->messageFrom) : ?>
+            <p class="tooltip" title="<?= htmlspecialchars($user->ban->messageFrom) ?>"
+            ><?= _('Click here to see the post that resulted in this ban.') ?></p>
+        <?php endif ?>
+        <?php if ($user->ban->userId != $user->id) : ?>
+        <p><?= _('This ban was not given to your user account, but to someone near you.') ?></p>
+        <?php endif ?>
+    </div>
+    <?php endif ?>
     <?= $output ?>
 </div>
 <div id="modal-root"></div>

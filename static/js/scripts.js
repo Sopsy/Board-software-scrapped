@@ -345,7 +345,7 @@ function banForm(postId) {
     var data = {
         'post_id': postId
     };
-    openModal('/scripts/mod/banform', data);
+    openModal('/scripts/mod/banform', data, false, false, true);
 }
 
 function addBan(e) {
@@ -356,19 +356,19 @@ function addBan(e) {
         return false;
     }
 
-    var form = $(e.target);
     var fd = new FormData(e.target);
 
     var oldHtml = $(e.target).html();
     $(e.target).html(loadingAnimation());
 
     $.ajax({
-        url: form.attr('action'),
+        url: e.target.getAttribute('target'),
         type: "POST",
         processData: false,
         contentType: false,
         data: fd
-    }).done(function () {
+    }).done(function (x) {
+        console.log(x);
         toastr.success(messages.banAdded);
         closeModals();
     }).fail(function (xhr, textStatus, errorThrown) {
@@ -381,7 +381,7 @@ function addBan(e) {
 // -------------------------------------------
 // Modal windows (not always so modal though)
 // -------------------------------------------
-function openModal(url, postData, content, completeCallback) {
+function openModal(url, postData, content, completeCallback, fullModal) {
     closeModals();
 
     var elm = $('#modal-root');
@@ -393,6 +393,13 @@ function openModal(url, postData, content, completeCallback) {
 
     if (typeof content == 'undefined' || content === false) {
         content = loadingAnimation();
+    }
+
+    var theme;
+    if (typeof fullModal == 'undefined') {
+        theme = 'modal-box';
+    } else {
+        theme = 'modal-box full-modal';
     }
 
     if (typeof completeCallback != 'function') {
@@ -410,11 +417,10 @@ function openModal(url, postData, content, completeCallback) {
         delay: 0,
         arrow: false,
         contentAsHTML: true,
-        theme: 'modal-box',
+        theme: theme,
         zIndex: 1001,
         trigger: 'click',
         interactive: true,
-        trackTooltip: true,
         functionReady: function (instance, helper) {
             if (ajax) {
                 $.ajax({
@@ -457,12 +463,20 @@ function getNotifications() {
     });
 }
 
-function markNotificationRead(id) {
+function markNotificationRead(id, e) {
+    if (typeof e != 'undefined') {
+        e.preventDefault();
+    }
+
     $('#n-' + id).removeClass('not-read').addClass('is-read');
     $.ajax({
         url: '/scripts/notifications/markread',
         type: "POST",
         data: {'id': id}
+    }).done(function() {
+        if (typeof e != 'undefined') {
+            window.location = e.target.getAttribute('href');
+        }
     }).fail(ajaxError);
 
     updateUnreadNotificationCount($('.notification.not-read').length);
@@ -1024,14 +1038,7 @@ function playMedia(elm, e) {
         if (volume != null) {
             container.find('video').prop('volume', volume);
         }
-    }).fail(function (xhr, textStatus, errorThrown) {
-        var errorMessage = getErrorMessage(xhr, errorThrown);
-        if (xhr.status == '418') {
-            toastr.info(errorMessage);
-        } else {
-            toastr.error(errorMessage, messages.errorOccurred);
-        }
-    }).always(function () {
+    }).fail(ajaxError).always(function () {
         clearTimeout(loading);
         container.find('.loading').remove();
         link.removeData('loading');
@@ -1282,7 +1289,10 @@ $('body:not(.board-catalog)')
                         data.find('.datetime').localizeTimestamp(this);
 
                         instance.content(data);
-                    }).fail(ajaxError);
+                    }).fail(function(xhr, textStatus, errorThrown) {
+                        var errorMessage = getErrorMessage(xhr, errorThrown);
+                        instance.content(errorMessage);
+                    });
                 }
             }).tooltipster('open');
         }, 100);
@@ -1297,6 +1307,16 @@ $('body:not(.board-catalog)')
             window.location = window.location.href.split('#')[0] + '#post-' + id;
         }
     });
+
+// -------------------------------------------
+// Basic tooltips
+// -------------------------------------------
+$('.tooltip').tooltipster({
+    side: 'bottom',
+    animationDuration: 0,
+    delay: 0,
+    trigger: 'click'
+});
 
 // -------------------------------------------
 // Mobile menu
@@ -1395,8 +1415,12 @@ function returnToBoard() {
 function ajaxError(xhr, textStatus, errorThrown) {
     var errorMessage = getErrorMessage(xhr, errorThrown);
 
-    if (errorMessage.length != 0) {
+    if (xhr.status == '418') {
+        toastr.info(errorMessage);
+    } else if (errorMessage.length != 0) {
         toastr.error(errorMessage, messages.errorOccurred);
+    } else {
+        toastr.error(messages.errorOccurred);
     }
 }
 

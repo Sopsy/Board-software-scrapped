@@ -19,6 +19,7 @@ class User extends Model
     public $lastIp;
     public $isRegistered = false;
     public $loggedIn = false;
+    public $ban = false;
     public $isMod = false;
     public $isAdmin = false;
     public $requireCaptcha = true;
@@ -64,11 +65,11 @@ class User extends Model
             }
         }
 
-        $this->isRegistered = $this->loggedIn = !empty($data->username); // Doubled just for clarity
-
         $this->loadSubclasses($skipDbLoad);
 
+        $this->isRegistered = $this->loggedIn = !empty($data->username); // Doubled just for clarity
         $this->requireCaptcha = $this->statistics->totalPosts < 1;
+        $this->ban = $this->getBan();
 
         if ($this->class == 1) {
             $this->isMod = true;
@@ -135,49 +136,14 @@ class User extends Model
         return true;
     }
 
-    public function addBan(string $ip, int $length, int $reason, int $messageId, int $bannedBy) : bool
+    public function getBan()
     {
-        // TODO: Do this.
-        return false;
-
-        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND is_expired = 0 LIMIT 1");
-        $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
-        $q->bindValue('user_id', $this->id);
-        $q->execute();
-
-        if ($q->rowCount() >= 1) {
-            return true;
+        if ($this->id === null) {
+            return false;
         }
 
-        return false;
-    }
-
-    public function removeBan(int $id) : bool
-    {
-        $q = $this->db->prepare("UPDATE bans SET expired = 1 WHERE id = :id AND user_id = :user_id LIMIT 1");
-        $q->bindValue('id', $id);
-        $q->bindValue('user_id', $this->id);
-        $q->execute();
-
-        if ($q->rowCount() >= 1) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isBanned() : bool
-    {
-        $q = $this->db->prepare("SELECT id FROM bans WHERE ip = :ip OR user_id = :user_id AND is_expired = 0 LIMIT 1");
-        $q->bindValue('ip', inet_pton($_SERVER['REMOTE_ADDR']));
-        $q->bindValue('user_id', $this->id);
-        $q->execute();
-
-        if ($q->rowCount() >= 1) {
-            return true;
-        }
-
-        return false;
+        $bans = new Bans($this->db);
+        return $bans->get($_SERVER['REMOTE_ADDR'], $this->id);
     }
 
     protected function loadSubclasses(bool $skipDbLoad = false) : bool
@@ -186,7 +152,8 @@ class User extends Model
         $this->statistics = new UserStatistics($this->db, $this->id, $skipDbLoad);
         $this->threadHide = new UserThreadHide($this->db, $this->id, $skipDbLoad);
         $this->threadFollow = new UserThreadFollow($this->db, $this->id, $skipDbLoad);
-        $this->notifications = new Notifications($this->db, $this->id, $this->preferences->hiddenNotificationTypes, $skipDbLoad);
+        $this->notifications = new Notifications($this->db, $this->id, $this->preferences->hiddenNotificationTypes,
+            $skipDbLoad);
 
         return true;
     }

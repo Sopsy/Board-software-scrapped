@@ -91,7 +91,7 @@ class Post extends ExtendedController
         $this->validateAjaxCsrfToken();
 
         // Check bans
-        if ($this->user->isBanned()) {
+        if ($this->user->ban) {
             $this->throwJsonError(403, _('You are banned!'));
         }
 

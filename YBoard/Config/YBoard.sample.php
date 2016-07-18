@@ -15,6 +15,12 @@ return [
         'acceptedFileTypes' => '.jpg,.png,.gif,.m4a,.aac,.mp3,.mp4,.webm',
         'gCsePartnerPub' => 'partner-pub-1234567890:1234567890', // Google CSE
         'usernameMaxLength' => 30,
+        'themes' => [
+            'default' => [
+                'name' => 'Ylilauta',
+                'css' => ['ylilauta', 'ylilauta_dark'],
+            ],
+        ],
     ],
     'posts' => [
         'replyIntervalLimit' => 5,

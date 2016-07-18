@@ -1,12 +1,21 @@
 .modal-box {
+    $margin: 40px;
     position: fixed;
-    left: 20px !important;
-    top: 20px !important;
     background-color: $contentBgColor;
-    min-width: 300px;
-    min-height: 200px;
-    max-height: 90%;
     overflow: hidden;
+    left: $margin !important;
+    top: $margin !important;
+
+    &.full-modal {
+        $margin: 80px;
+        left: $margin !important;
+        top: $margin !important;
+        right: $margin;
+        bottom: $margin;
+        width: auto !important;
+        height: auto !important;
+        box-shadow: 0 0 0 $margin rgba(0, 0, 0, 0.4);
+    }
 
     h3 {
         margin-bottom: 10px;

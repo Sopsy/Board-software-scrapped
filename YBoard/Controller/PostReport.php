@@ -9,16 +9,19 @@ class PostReport extends ExtendedController
 {
     public function getForm()
     {
-        $postReports = new PostReports($this->db);
         $view = $this->loadTemplateEngine('Blank');
 
-        $view->reasons = $postReports->getReasons();
+        $view->reasons = PostReports::getReasons();
         $view->display('Ajax/ReportForm');
     }
 
     public function submit()
     {
         $this->validateAjaxCsrfToken();
+
+        if ($this->user->ban) {
+            $this->throwJsonError(403, _('You are banned!'));
+        }
 
         if (empty($_POST['post_id']) || empty($_POST['reason_id'])) {
             $this->throwJsonError(400);

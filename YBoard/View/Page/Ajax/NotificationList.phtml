@@ -8,7 +8,9 @@
         <div class="notification <?= (!$notification->isRead?'not-read':'is-read') ?>" id="n-<?= $notification->id ?>">
             <?php if (!empty($notification->postId)) : ?>
                 <a href="/scripts/posts/redirect/<?= $notification->postId ?>"
-                   onclick="markNotificationRead(<?= $notification->id ?>)">
+                    <?php if (!$notification->isRead) :
+                        ?>onclick="markNotificationRead(<?= $notification->id ?>, event)"<?php
+                    endif ?>>
                     <?= htmlspecialchars(sprintf($notification->text, $notification->count)) ?>
                 </a>
             <?php else : ?>
@@ -18,7 +20,9 @@
                 <span class="datetime"><?= $notification->time ?></span>
                 <?php if (!empty($notification->postId)) : ?>
                     <a href="/scripts/posts/redirect/<?= $notification->postId ?>" class="reflink"
-                       onclick="markNotificationRead(<?= $notification->id ?>)"
+                       <?php if (!$notification->isRead) :
+                           ?>onclick="markNotificationRead(<?= $notification->id ?>, event)"<?php
+                        endif ?>
                        data-id="<?= $notification->postId ?>">&gt;&gt;<?= $notification->postId ?></a>
                 <?php endif ?>
             </div>

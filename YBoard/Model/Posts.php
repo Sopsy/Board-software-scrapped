@@ -227,6 +227,19 @@ class Posts extends Model
         return $posts;
     }
 
+    public function getDeletedMessage(int $postId)
+    {
+        $q = $this->db->prepare("SELECT message FROM posts_deleted WHERE id = :id LIMIT 1");
+        $q->bindValue('id', $postId);
+        $q->execute();
+
+        if ($q->rowCount() == 0) {
+            return false;
+        }
+
+        return $q->fetch()->message;
+    }
+
     public function deleteMany(array $postIds) : bool
     {
         $in = $this->db->buildIn($postIds);

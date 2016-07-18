@@ -17,6 +17,11 @@ class Files extends Model
     public $thumbMaxWidth = 240;
     public $thumbMaxHeight = 240;
 
+    protected $selectQuery = 'id AS file_id, folder AS file_folder, name AS file_name,
+        extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
+        duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
+        is_gif AS file_is_gif';
+
     public function setConfig(array $config) : bool
     {
         $keys = [
@@ -39,12 +44,7 @@ class Files extends Model
 
     public function get(int $fileId)
     {
-        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
-            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
-            is_gif AS file_is_gif
-            FROM files
-            WHERE id = :file_id LIMIT 1');
+        $q = $this->db->prepare('SELECT ' . $this->selectQuery . ' FROM files WHERE id = :file_id LIMIT 1');
         $q->bindValue('file_id', $fileId);
         $q->execute();
 
@@ -57,11 +57,7 @@ class Files extends Model
 
     public function getByOrigName(string $fileName)
     {
-        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
-            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
-            is_gif AS file_is_gif
-            FROM posts_files a
+        $q = $this->db->prepare('SELECT ' . $this->selectQuery . ' FROM posts_files a
             LEFT JOIN files b ON a.file_id = b.id
             WHERE file_name = :file_name LIMIT 1');
         $q->bindValue('file_name', $fileName);
@@ -76,11 +72,7 @@ class Files extends Model
 
     public function getByName(string $fileName)
     {
-        $q = $this->db->prepare('SELECT id AS file_id, folder AS file_folder, name AS file_name,
-            extension AS file_extension, size AS file_size, width AS file_width, height AS file_height,
-            duration AS file_duration, in_progress AS file_in_progress, has_sound AS file_has_sound,
-            is_gif AS file_is_gif
-            FROM files WHERE name = :name LIMIT 1');
+        $q = $this->db->prepare('SELECT ' . $this->selectQuery . ' FROM files WHERE name = :name LIMIT 1');
         $q->bindValue('name', $fileName);
         $q->execute();
 
